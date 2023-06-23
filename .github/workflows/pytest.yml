@@ -1,0 +1,14 @@
+name: PyTests
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          pip3 install -r requirements.txt
+      - name: Run unit tests
+        run: |
+          pytest tests/
