@@ -103,3 +103,12 @@ def test_array_arithmetics():
 
     # Test numpy functions
     assert str(np.sqrt(Quantity([4, 9, 16], 'm'))) == "Quantity([2. 3. 4.] m)"
+
+def test_operation_sides():
+    
+    p = Quantity([2,3,4], 'm')
+    q = Quantity([5,6,7], 'm')
+    assert p+q == q+p
+    assert p-q == -(q-p)
+    assert q*2 == 2*q
+    assert p/2 == 1/(2/p)

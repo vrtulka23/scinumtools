@@ -58,55 +58,90 @@ class Quantity:
         for unit in list(self.baseunits.keys()):
             if self.baseunits[unit]==0:
                 del self.baseunits[unit]
-        
+
+    def _add(self, left, right):
+        if not isinstance(left, Quantity):
+            left = Quantity(left)
+        if not isinstance(right, Quantity):
+            right = Quantity(right)
+        if not left.dimensions==right.dimensions:
+            raise Exception('Addition of two units with different dimensions:', self, right)
+        magnitude = left.magnitude + right.magnitude
+        dimensions = list(left.dimensions)
+        baseunits = dict(left.baseunits)
+        return Quantity(magnitude, dimensions, baseunits)
+
     def __add__(self, other):
-        if not isinstance(other, Quantity):
-            other = Quantity(other)
-        if not self.dimensions==other.dimensions:
-            raise Exception('Addition of two units with different dimensions:', self, other)
-        magnitude = self.magnitude + other.magnitude
-        dimensions = list(self.dimensions)
-        baseunits = dict(self.baseunits)
+        return self._add(self, other)
+    
+    def __radd__(self, other):
+        return self._add(other, self)
+
+    def _sub(self, left, right):
+        if not isinstance(left, Quantity):
+            left = Quantity(left)
+        if not isinstance(right, Quantity):
+            right = Quantity(right)
+        if not left.dimensions==right.dimensions:
+            raise Exception('Substraction of two units with different dimensions:', self, right)
+        magnitude = left.magnitude - right.magnitude
+        dimensions = list(left.dimensions)
+        baseunits = dict(left.baseunits)
         return Quantity(magnitude, dimensions, baseunits)
 
     def __sub__(self, other):
-        if not isinstance(other, Quantity):
-            other = Quantity(other)
-        if not self.dimensions==other.dimensions:
-            raise Exception('Substraction of two units with different dimensions:', self, other)
-        magnitude = self.magnitude - other.magnitude
-        dimensions = list(self.dimensions)
-        baseunits = dict(self.baseunits)
-        return Quantity(magnitude, dimensions, baseunits)
+        return self._sub(self, other)
+
+    def __rsub__(self, other):
+        return self._sub(other, self)
     
-    def __mul__(self, other):
-        if not isinstance(other, Quantity):
-            other = Quantity(other)
-        magnitude = self.magnitude * other.magnitude
-        dimensions = [self.dimensions[i]+other.dimensions[i] for i in range(len(UnitBase))]
-        baseunits = dict(self.baseunits)
-        for unit,exp in other.baseunits.items():
+    def _mul(self, left, right):
+        if not isinstance(left, Quantity):
+            left = Quantity(left)
+        if not isinstance(right, Quantity):
+            right = Quantity(right)
+        magnitude = left.magnitude * right.magnitude
+        dimensions = [left.dimensions[i]+right.dimensions[i] for i in range(len(UnitBase))]
+        baseunits = dict(left.baseunits)
+        for unit,exp in right.baseunits.items():
             baseunits[unit] = baseunits[unit]+exp if unit in baseunits else exp
         return Quantity(magnitude, dimensions, baseunits)
 
-    def __truediv__(self, other):
-        if not isinstance(other, Quantity):
-            other = Quantity(other)
-        magnitude = self.magnitude / other.magnitude
-        dimensions = [self.dimensions[i]-other.dimensions[i] for i in range(len(UnitBase))]
-        baseunits = dict(self.baseunits)
-        for unit,exp in other.baseunits.items():
+    def __mul__(self, other):
+        return self._mul(self, other)
+
+    def __rmul__(self, other):
+        return self._mul(other, self)
+    
+    def _truediv(self, left, right):
+        if not isinstance(left, Quantity):
+            left = Quantity(left)
+        if not isinstance(right, Quantity):
+            right = Quantity(right)
+        magnitude = left.magnitude / right.magnitude
+        dimensions = [left.dimensions[i]-right.dimensions[i] for i in range(len(UnitBase))]
+        baseunits = dict(left.baseunits)
+        for unit,exp in right.baseunits.items():
             baseunits[unit] = baseunits[unit]-exp if unit in baseunits else -exp
         return Quantity(magnitude, dimensions, baseunits)
 
+    def __truediv__(self, other):
+        return self._truediv(self, other)
+    
+    def __rtruediv__(self, other):
+        return self._truediv(other, self)
+    
     def __pow__(self, power):
         magnitude = self.magnitude**power
         dimensions = [self.dimensions[i]*power for i in range(len(UnitBase))]
         baseunits = {unit:exp*power for unit,exp in self.baseunits.items()}
         return Quantity(magnitude, dimensions, baseunits)
 
+    def __neg__(self):
+        return Quantity(-self.magnitude, self.dimensions, self.baseunits)
+    
     def __eq__(self, other):
-        if not isclose(self.magnitude, other.magnitude, rel_tol=self.precision):
+        if not np.allclose(self.magnitude, other.magnitude, rtol=self.precision):
             return False
         if self.dimensions!=other.dimensions:
             return False
