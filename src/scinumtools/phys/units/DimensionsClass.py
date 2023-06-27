@@ -15,7 +15,7 @@ class Ratio:
             self.numerator = value[0]
             self.denominator = value[1]
         # enforce whole numbers
-        if self.numerator%1!=0 or self.denominator%1!=0:
+        if np.mod(self.numerator,1)!=0 or np.mod(self.denominator,1)!=0:
             raise Exception("Ratio excepts only whole numbers:", self.numerator, self.denominator)
         else:
             self.numerator = int(self.numerator)
@@ -49,8 +49,8 @@ class Ratio:
         if self.numerator==0 or self.denominator==1:
             return str(self.numerator)
         else:
-            return f"Ratio({self.numerator},{self.denominator})"
-
+            return f"Ratio({self.numerator},{self.denominator})"        
+        
     def __add__(self, other):
         return Ratio(
             self.numerator*other.denominator+other.numerator*self.denominator,
@@ -68,6 +68,12 @@ class Ratio:
             self.numerator*power,
             self.denominator
         )
+
+    def value(self):
+        if self.numerator==0 or self.denominator==1:
+            return self.numerator
+        else:
+            return (self.numerator,self.denominator)
     
 @dataclass
 class Dimensions:
@@ -104,7 +110,7 @@ class Dimensions:
                 dimensions.append(f"{f.name}={str(value)}")
         dimensions = ", ".join(dimensions)
         return f"Dimensions({dimensions})"
-        
+                
     def __add__(self, other):
         dimensions = {}
         for f in fields(self):
@@ -142,6 +148,12 @@ class Dimensions:
             if not getattr(self, f.name) == getattr(other, f.name):
                 return False
         return True
+    
+    def value(self):
+        dimensions = []
+        for f in fields(self):
+            dimensions.append( getattr(self, f.name).value() )
+        return dimensions
     
 @dataclass
 class BaseUnits:
