@@ -5,75 +5,75 @@ from typing import Union
 @dataclass
 class Ratio:
     
-    numerator: Union[int, tuple]
-    denominator: int = field(default=1)
+    num: Union[int, tuple]        # numerator
+    den: int = field(default=1)   # denominator
 
     def __post_init__(self):
         # initialize from a tuple
-        if isinstance(self.numerator, tuple):
-            value = self.numerator
-            self.numerator = value[0]
-            self.denominator = value[1]
+        if isinstance(self.num, tuple):
+            value = self.num
+            self.num = value[0]
+            self.den = value[1]
         # enforce whole numbers
-        if np.mod(self.numerator,1)!=0 or np.mod(self.denominator,1)!=0:
-            raise Exception("Ratio excepts only whole numbers:", self.numerator, self.denominator)
+        if np.mod(self.num,1)!=0 or np.mod(self.den,1)!=0:
+            raise Exception("Ratio excepts only whole numbers:", self.num, self.den)
         else:
-            self.numerator = int(self.numerator)
-            self.denominator = int(self.denominator)
+            self.num = int(self.num)
+            self.den = int(self.den)
         # reset zero values
-        if self.numerator in [0, -0]:
-            self.numerator = 0
-            self.denominator = 1
+        if self.num in [0, -0]:
+            self.num = 0
+            self.den = 1
         # keep minus sign always on the top
-        if self.numerator>=0 and self.denominator<0:
-            self.numerator = -self.numerator
-            self.denominator = -self.denominator
-        elif self.numerator<0 and self.denominator<0:
-            self.numerator = -self.numerator
-            self.denominator = -self.denominator
+        if self.num>=0 and self.den<0:
+            self.num = -self.num
+            self.den = -self.den
+        elif self.num<0 and self.den<0:
+            self.num = -self.num
+            self.den = -self.den
         # remove common divisors
-        def reduce(numerator: int, denominator:int):
-            gcd=np.gcd(numerator, denominator)
+        def reduce(num: int, den:int):
+            gcd=np.gcd(num, den)
             if gcd>1:
-                return reduce(int(numerator/gcd), int(denominator/gcd))
-            return int(numerator), int(denominator)
-        self.numerator, self.denominator = reduce(self.numerator, self.denominator)
+                return reduce(int(num/gcd), int(den/gcd))
+            return int(num), int(den)
+        self.num, self.den = reduce(self.num, self.den)
     
     def __str__(self):
-        if self.numerator==0 or self.denominator==1:
-            return str(self.numerator)
+        if self.num==0 or self.den==1:
+            return str(self.num)
         else:
-            return f"Ratio({self.numerator},{self.denominator})"
+            return f"{self.num}/{self.den}"
 
     def __repr__(self):
-        if self.numerator==0 or self.denominator==1:
-            return str(self.numerator)
+        if self.num==0 or self.den==1:
+            return str(self.num)
         else:
-            return f"Ratio({self.numerator},{self.denominator})"        
+            return f"Ratio({self.num},{self.den})"        
         
     def __add__(self, other):
         return Ratio(
-            self.numerator*other.denominator+other.numerator*self.denominator,
-            self.denominator*other.denominator,
+            self.num*other.den+other.num*self.den,
+            self.den*other.den,
         )
             
     def __sub__(self, other):
         return Ratio(
-            self.numerator*other.denominator-other.numerator*self.denominator,
-            self.denominator*other.denominator,
+            self.num*other.den-other.num*self.den,
+            self.den*other.den,
         )
 
     def __mul__(self, power):
         return Ratio(
-            self.numerator*power,
-            self.denominator
+            self.num*power,
+            self.den
         )
 
     def value(self):
-        if self.numerator==0 or self.denominator==1:
-            return self.numerator
+        if self.num==0 or self.den==1:
+            return self.num
         else:
-            return (self.numerator,self.denominator)
+            return (self.num,self.den)
     
 @dataclass
 class Dimensions:
@@ -97,7 +97,7 @@ class Dimensions:
         dimensions = []
         for f in fields(self):
             value = getattr(self, f.name)
-            if value.numerator not in [0, -0]:
+            if value.num not in [0, -0]:
                 dimensions.append(f"{f.name}={str(value)}")
         dimensions = ", ".join(dimensions)
         return f"Dimensions({dimensions})"
@@ -106,7 +106,7 @@ class Dimensions:
         dimensions = []
         for f in fields(self):
             value = getattr(self, f.name)
-            if value.numerator not in [0, -0]:
+            if value.num not in [0, -0]:
                 dimensions.append(f"{f.name}={str(value)}")
         dimensions = ", ".join(dimensions)
         return f"Dimensions({dimensions})"
@@ -148,6 +148,14 @@ class Dimensions:
             if not getattr(self, f.name) == getattr(other, f.name):
                 return False
         return True
+
+    def __neg__(self):
+        """ Inverse dimensions
+        """
+        dimensions = {}
+        for f in fields(self):
+            dimensions[f.name] = getattr(self, f.name) * -1
+        return Dimensions(**dimensions)
     
     def value(self):
         dimensions = []
@@ -157,4 +165,32 @@ class Dimensions:
     
 @dataclass
 class BaseUnits:
-    pass
+
+    baseunits: dict
+
+    def __post_init__(self):
+        for unit,exp in self.baseunits.items():
+            if not isinstance(exp, Ratio):
+                self.baseunits[unit] = Ratio(exp)
+
+    def __str__(self):
+        baseunits = []
+        for unit,exp in self.baseunits.items():
+            if exp.num not in [0, -0]:
+                baseunits.append(f"{unit}={str(exp)}")
+        baseunits = ", ".join(baseunits)
+        return f"BaseUnits({baseunits})"
+
+    def __repr__(self):
+        baseunits = []
+        for unit,exp in self.baseunits.items():
+            if exp.num not in [0, -0]:
+                baseunits.append(f"{unit}={str(exp)}")
+        baseunits = ", ".join(baseunits)
+        return f"BaseUnits({baseunits})"
+    
+    def value(self):
+        baseunits = {}
+        for unit,exp in self.baseunits.items():
+            baseunits[unit] = exp.value()
+        return baseunits
