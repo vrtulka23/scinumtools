@@ -189,3 +189,9 @@ def test_base_units():
     assert str(bu1/bu2)  == "BaseUnits(km=1 g=13/14)"
     assert str(bu1**2)   == "BaseUnits(km=6 g=3)"
     assert str(bu2**0.5) == "BaseUnits(km=1 g=2/7)"
+
+    # Test values
+    value = {"km": 2, "K": (3,2)}
+    bu = BaseUnits(dict(value))
+    assert str(bu) == "BaseUnits(km=2 K=3/2)"
+    assert bu.value() == value
