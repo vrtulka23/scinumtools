@@ -27,7 +27,7 @@ class Dimensions:
             value = getattr(self, f.name)
             if value.num not in [0, -0]:
                 dimensions.append(f"{f.name}={str(value)}")
-        dimensions = ", ".join(dimensions)
+        dimensions = " ".join(dimensions)
         return f"Dimensions({dimensions})"
 
     def __repr__(self):
@@ -36,7 +36,7 @@ class Dimensions:
             value = getattr(self, f.name)
             if value.num not in [0, -0]:
                 dimensions.append(f"{f.name}={str(value)}")
-        dimensions = ", ".join(dimensions)
+        dimensions = " ".join(dimensions)
         return f"Dimensions({dimensions})"
                 
     def __add__(self, other):

@@ -7,7 +7,8 @@ from ...structs.ParameterClass import ParameterDict
 from ...math.solver import ExpressionSolver, AtomBase, OperatorPar, OperatorMul, OperatorTruediv
 from .UnitList import *
 from .UnitConverters import *
-from .DimensionsClass import *
+from .DimensionsClass import Dimensions
+from .BaseUnitsClass import BaseUnits
 
 class Quantity:
     prefixes: dict            # list of prefixes 
@@ -15,14 +16,14 @@ class Quantity:
     
     magnitude: float          # quantity magnitude
     dimensions: Dimensions    # quantity dimensions
-    baseunits: dict           # base units
+    baseunits: BaseUnits      # base units
 
     precision: float = 1e-7
 
     def __init__(
             self, magnitude:float,
             dimensions: Union[str,list,np.ndarray,Dimensions] = None,
-            baseunits = {}
+            baseunits = None
     ):
         # Initialize settings
         self.unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
@@ -38,28 +39,26 @@ class Quantity:
         # Set quantity
         if dimensions is None:
             self.dimensions = Dimensions()
-            self.baseunits = {}
+            self.baseunits = BaseUnits()
         elif isinstance(dimensions, str):
             with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
                 unit = es.solve(dimensions)
             self.magnitude *= unit.magnitude
             self.dimensions = unit.dimensions
-            self.baseunits = dict(unit.baseunits)
+            self.baseunits = unit.baseunits
         elif isinstance(dimensions, (list, np.ndarray, Dimensions)):
             if isinstance(dimensions, Dimensions):
                 self.dimensions = dimensions
             else:
                 self.dimensions = Dimensions(*dimensions)
-            if baseunits:
+            if isinstance(baseunits, dict):
+                self.baseunits = BaseUnits(baseunits)
+            elif isinstance(baseunits, BaseUnits):
                 self.baseunits = baseunits
             else:
-                self.baseunits = {UnitBase[d]:dim for d,dim in enumerate(self.dimensions.value()) if dim!=0}
+                self.baseunits = BaseUnits({UnitBase[d]:dim for d,dim in enumerate(self.dimensions.value()) if dim!=0})
         else:
             raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
-        # Remove zero base units
-        for unit in list(self.baseunits.keys()):
-            if self.baseunits[unit]==0:
-                del self.baseunits[unit]
 
     def _add(self, left, right):
         if not isinstance(left, Quantity):
@@ -68,7 +67,7 @@ class Quantity:
             right = Quantity(right)
         magnitude = left.magnitude + right.magnitude
         dimensions = left.dimensions + right.dimensions
-        baseunits = dict(left.baseunits)
+        baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __add__(self, other):
@@ -84,7 +83,7 @@ class Quantity:
             right = Quantity(right)
         magnitude = left.magnitude - right.magnitude
         dimensions = left.dimensions - right.dimensions
-        baseunits = dict(left.baseunits)
+        baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __sub__(self, other):
@@ -100,9 +99,7 @@ class Quantity:
             right = Quantity(right)
         magnitude = left.magnitude * right.magnitude
         dimensions = left.dimensions * right.dimensions
-        baseunits = dict(left.baseunits)
-        for unit,exp in right.baseunits.items():
-            baseunits[unit] = baseunits[unit]+exp if unit in baseunits else exp
+        baseunits = left.baseunits * right.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __mul__(self, other):
@@ -118,9 +115,7 @@ class Quantity:
             right = Quantity(right)
         magnitude = left.magnitude / right.magnitude
         dimensions = left.dimensions / right.dimensions
-        baseunits = dict(left.baseunits)
-        for unit,exp in right.baseunits.items():
-            baseunits[unit] = baseunits[unit]-exp if unit in baseunits else -exp
+        baseunits = left.baseunits / right.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __truediv__(self, other):
@@ -132,7 +127,7 @@ class Quantity:
     def __pow__(self, power):
         magnitude = self.magnitude**power
         dimensions = self.dimensions**power
-        baseunits = {unit:exp*power for unit,exp in self.baseunits.items()}
+        baseunits = self.baseunits**power
         return Quantity(magnitude, dimensions, baseunits)
 
     def __neg__(self):
@@ -152,8 +147,9 @@ class Quantity:
                 magnitude = f"{str(magnitude):s}"
         else:
             magnitude = f"{magnitude:.03e}"
-        if self.baseunits:
-            return f"Quantity({magnitude:s} {self.units()})"
+        baseunits = self.baseunits.expression()
+        if baseunits:
+            return f"Quantity({magnitude:s} {baseunits})"
         else:
             return f"Quantity({magnitude:s})"
             
@@ -164,8 +160,9 @@ class Quantity:
                 magnitude = f"{str(magnitude):s}"
         else:
             magnitude = f"{magnitude:.03e}"
-        if self.baseunits:
-            return f"Quantity({magnitude:s} {self.units()})"
+        baseunits = self.baseunits.expression()
+        if baseunits:
+            return f"Quantity({magnitude:s} {baseunits})"
         else:
             return f"Quantity({magnitude:s})"
 
@@ -238,34 +235,29 @@ class Quantity:
         return Quantity(magnitude, dimensions, baseunits)
     
     def value(self):
-        if self.baseunits:
-            unit = self/Quantity(1,self.units(self.baseunits))
+        baseunits = self.baseunits.expression()
+        if baseunits:
+            unit = self/Quantity(1,baseunits)
+            return unit.magnitude
         else:
             return self.magnitude
-        return unit.magnitude
 
-    def units(self, baseunits=None):
-        if baseunits is None:
-            baseunits = self.baseunits
-        units = []
-        for unitid,exponent in baseunits.items():
-            symbol = unitid.replace(':','')
-            units.append(f"{symbol}" if exponent==1 else f"{symbol}{exponent}")
-        return "*".join(units)
+    def units(self):
+        return self.baseunits.expression()
 
     def to(self, units):
         if isinstance(units,str):
             unit1 = self
             unit2 = Quantity(1,units)
             # Check if units can be directly converted
-            if unit1.dimensions!=unit2.dimensions:
+            if not unit1.dimensions==unit2.dimensions:
                 # Check if inverted unit can be converted
                 if -unit1.dimensions==unit2.dimensions:
                     unit1 = Quantity(1)/self
                 else:
                     raise Exception("Converting units with different dimensions:",
                                     unit1.dimensions, unit2.dimensions)
-            with TemperatureConverter(unit1.baseunits, unit2.baseunits) as tc:
+            with TemperatureConverter(unit1.baseunits.value(), unit2.baseunits.value()) as tc:
                 if tc.convertable:
                     unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
             unit = unit1/unit2

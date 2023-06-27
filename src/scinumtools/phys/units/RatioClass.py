@@ -69,6 +69,12 @@ class Ratio:
             self.den
         )
 
+    def __neg__(self):
+        return Ratio(
+            -self.num,
+            self.den
+        )
+    
     def value(self):
         if self.num==0 or self.den==1:
             return self.num
