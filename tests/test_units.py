@@ -13,7 +13,7 @@ def test_definitions():
     
     unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
     for symbol, unit in unitlist.items():
-        if unit['definition'] is None:
+        if not isinstance(unit['definition'],str):
             continue
         q = Quantity(1, unit['definition'])
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
@@ -23,19 +23,19 @@ def test_definitions():
 def test_temperatures():
     
     # Temperature conversions
-    assert str(Quantity(23,'K').to('Cel'))          == "Quantity(-2.501e+02 Cel)"
-    assert str(Quantity(23,'K').to('[degF]'))       == "Quantity(-4.183e+02 [degF])"
-    assert str(Quantity(23,'K').to('[degR]'))       == "Quantity(4.140e+01 [degR])"
-    assert str(Quantity(23,'Cel').to('K'))          == "Quantity(2.961e+02 K)"
-    assert str(Quantity(23,'Cel').to('[degF]'))     == "Quantity(7.340e+01 [degF])"
-    assert str(Quantity(23,'Cel').to('[degR]'))     == "Quantity(5.331e+02 [degR])"
-    assert str(Quantity(23,'[degF]').to('K'))       == "Quantity(2.681e+02 K)"
-    assert str(Quantity(23,'[degF]').to('Cel'))     == "Quantity(-5.000e+00 Cel)"
-    assert str(Quantity(23,'[degF]').to('[degR]'))  == "Quantity(4.827e+02 [degR])"
-    assert str(Quantity(23,'[degR]').to('K'))       == "Quantity(1.278e+01 K)"
-    assert str(Quantity(23,'[degR]').to('Cel'))     == "Quantity(-2.604e+02 Cel)"
-    assert str(Quantity(23,'[degR]').to('[degF]'))  == "Quantity(-4.367e+02 [degF])"
-    assert str(Quantity(2300,'Cel').to('kK'))       == "Quantity(2.573e+00 kK)"
+    assert str(Quantity(23,'K').to('Cel'))        == "Quantity(-2.501e+02 Cel)"
+    assert str(Quantity(23,'K').to('degF'))       == "Quantity(-4.183e+02 degF)"
+    assert str(Quantity(23,'K').to('degR'))       == "Quantity(4.140e+01 degR)"
+    assert str(Quantity(23,'Cel').to('K'))        == "Quantity(2.961e+02 K)"
+    assert str(Quantity(23,'Cel').to('degF'))     == "Quantity(7.340e+01 degF)"
+    assert str(Quantity(23,'Cel').to('degR'))     == "Quantity(5.331e+02 degR)"
+    assert str(Quantity(23,'degF').to('K'))       == "Quantity(2.681e+02 K)"
+    assert str(Quantity(23,'degF').to('Cel'))     == "Quantity(-5.000e+00 Cel)"
+    assert str(Quantity(23,'degF').to('degR'))    == "Quantity(4.827e+02 degR)"
+    assert str(Quantity(23,'degR').to('K'))       == "Quantity(1.278e+01 K)"
+    assert str(Quantity(23,'degR').to('Cel'))     == "Quantity(-2.604e+02 Cel)"
+    assert str(Quantity(23,'degR').to('degF'))    == "Quantity(-4.367e+02 degF)"
+    assert str(Quantity(2300,'Cel').to('kK'))     == "Quantity(2.573e+00 kK)"
     
 def test_inversion():
 
@@ -101,8 +101,10 @@ def test_array_arithmetics():
     # Test unit conversion on arrays
     assert str(Quantity([1,2,3], 'm').to('km')) == "Quantity([0.001 0.002 0.003] km)"
 
+def test_numpy():
+    
     # Test numpy functions
-    assert str(np.sqrt(Quantity([4, 9, 16], 'm'))) == "Quantity([2. 3. 4.] m)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm2'))) == "Quantity([2. 3. 4.] m2)"
 
 def test_operation_sides():
     
@@ -112,3 +114,48 @@ def test_operation_sides():
     assert p-q == -(q-p)
     assert q*2 == 2*q
     assert p/2 == 1/(2/p)
+
+def test_units():
+
+    assert str(Unit('m'))         == "Quantity(1.000e+00 m)"
+    assert str(Unit('kg*m2*s-2')) == "Quantity(1.000e+00 kg*m2*s-2)"
+    
+    unit = Unit()
+    assert str(unit.m)      == "Quantity(1.000e+00 m)"
+    assert str(2*unit.kJ)   == "Quantity(2.000e+00 kJ)"
+    assert str(unit.kg*unit.m**2/unit.s**2) == "Quantity(1.000e+00 kg*m2*s-2)"
+    assert str(unit.J.to('erg')) == "Quantity(1.000e+07 erg)"
+
+def test_constants():
+
+    assert str(Constant('c')) == "Quantity(1.000e+00 [c])"
+
+    const = Constant()
+    assert str(const.c)   == "Quantity(1.000e+00 [c])"
+    assert str(const.m_e) == "Quantity(1.000e+00 [m_e])"
+    
+def test_unique_names():
+
+    units = list(UnitStandard.keys())
+    for unit in UnitStandard.keys():
+        for prefix in UnitPrefixes.keys():
+            units.append(f"{prefix}{unit}")
+    units.sort()
+    seen = set()
+    dupes = [x for x in units if x in seen or seen.add(x)]    
+    assert len(dupes)==0
+
+def test_dimensions():
+    
+    dims = Dimensions(m=(5,-2), g=3, s=1, cd=(-0,3), K=(34,1), rad=(18,12))
+    assert str(dims) == "Dimensions(m=Ratio(-5,2), g=3, s=1, K=34, rad=Ratio(3,2))"
+
+    dims1 = Dimensions(m=3, g=(3,2))
+    dims2 = Dimensions(m=2, g=(4,7))
+    assert not dims1==dims2
+    assert str(dims1+dims1) == "Dimensions(m=3, g=Ratio(3,2))"
+    assert str(dims2-dims2) == "Dimensions(m=2, g=Ratio(4,7))"
+    assert str(dims1*dims2) == "Dimensions(m=5, g=Ratio(29,14))"
+    assert str(dims1/dims2) == "Dimensions(m=1, g=Ratio(13,14))"
+    assert str(dims1**2)    == "Dimensions(m=6, g=3)"
+    assert str(dims2**0.5)  == "Dimensions(m=1, g=Ratio(2,7))"

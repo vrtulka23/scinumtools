@@ -7,6 +7,7 @@ sys.path.insert(0, 'src')
 from scinumtools.structs import *
 
 def test_row_collector_list():
+    
     columns = ['col1','col2','col3']
     with ListCollector(columns) as lc:
         lc.append([1,2,3])
@@ -28,14 +29,17 @@ def test_row_collector_list():
                 col3 = [3,6,9],
             ))
         )
-        assert lc.to_text() == dedent("""\
+        result = dedent("""\
                col1  col2  col3
             0     1     2     3
             1     4     5     6
             2     7     8     9
         """.rstrip())
-
+        assert lc.to_text() == result
+        assert str(lc) == result
+        
 def test_row_collector_array():
+    
     with ArrayCollector(['col1','col2','col3']) as ac:
         ac.append([1,2,3])
         ac.append([4,5,6])
@@ -56,12 +60,15 @@ def test_row_collector_array():
                 col3 = [3.,6.,0.],
             ))
         )
-        assert ac.to_text() == dedent("""\
+        result = dedent("""\
                col1  col2  col3
             0   1.0   2.0   3.0
             1   4.0   5.0   6.0
             2   7.0   8.0   0.0
         """.rstrip())
+        assert ac.to_text() == result
+        assert str(ac) == result
+        
     columns = {'col1':dict(dtype=str),'col2':dict(dtype=float),'col3':dict(dtype=bool)}
     with ArrayCollector(columns) as ac:
         ac.append([1,2,3])
@@ -83,12 +90,14 @@ def test_row_collector_array():
                 col3 = [True,True,False],
             ))
         )
-        assert ac.to_text() == dedent("""\
+        result = dedent("""\
               col1  col2   col3
             0    1   2.0   True
             1    4   5.0   True
             2    7   8.0  False
         """.rstrip())
+        assert ac.to_text() == result
+        assert str(ac) == result
 
 def test_parameter_list():
     def test(params):

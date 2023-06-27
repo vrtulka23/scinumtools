@@ -10,6 +10,7 @@ def CachedFunction(file_cache):
         def inner(*args, **kwargs):
             if not os.path.isfile(file_cache):
                 np.save(file_cache, func(*args, **kwargs))
-            return np.load(file_cache, allow_pickle=True)
+            data = np.load(file_cache, allow_pickle=True)
+            return data.item() if data.ndim==0 else data
         return inner
     return wrapped

@@ -1,14 +1,13 @@
 from typing import List
 import numpy as np
 import re
-from math import isclose
 from typing import Union
-from dataclasses import dataclass
 
 from ...structs.ParameterClass import ParameterDict
 from ...math.solver import ExpressionSolver, AtomBase, OperatorPar, OperatorMul, OperatorTruediv
 from .UnitList import *
-from .UnitConverters import TemperatureConverter
+from .UnitConverters import *
+#from .DimensionsClass import *
 
 class Quantity:
     prefixes: dict            # list of prefixes 
@@ -175,6 +174,19 @@ class Quantity:
         return self.magnitude
 
     def __array_wrap__(self, out_arr, context=None):
+        """
+        if context[0]==np.sqrt:
+            dimensions = []
+            for d in range(len(UnitBase)):
+                dimensions.append( self.dimensions[d] )
+                if dimensions[d]==0:
+                    continue
+                elif isinstance(dimensions[d], int):
+                    dimensions[d] = Ratio(dimensions[d], 2)
+                elif isinstance(dimensions[d], Ratio):
+                    dimensions[d] = Ratio(dimensions[d][0], dimensions[d][1]+2)
+            print(dimensions)
+        """
         return Quantity(out_arr, self.dimensions, self.baseunits)
     
     def _atom_parser(self, string=None):
@@ -256,7 +268,8 @@ class Quantity:
                                     unit1.dimensions, unit2.dimensions)
             with TemperatureConverter(unit1.baseunits, unit2.baseunits) as tc:
                 if tc.convertable:
-                    return Quantity(tc.convert(unit1.magnitude, unit2.magnitude), units)
+                    unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
+                    #return Quantity(tc.convert(unit1.magnitude, unit2.magnitude), units)
             unit = unit1/unit2
             return Quantity(unit.magnitude, units)
         else:

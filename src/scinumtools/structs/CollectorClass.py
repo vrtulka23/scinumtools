@@ -33,6 +33,9 @@ class ListCollector:
         for column in columns:
             setattr(self,column,[])
             self._columns.append(column)
+
+    def __str__(self):
+        return self.to_text()
         
     def append(self, values: list):
         """ Append a single row
@@ -116,6 +119,9 @@ class ArrayCollector:
                 setattr(self,column,np.array([]))
                 self._columns.append(column)
 
+    def __str__(self):
+        return self.to_text()
+    
     def append(self, values: list):
         """ Append a single row
 
