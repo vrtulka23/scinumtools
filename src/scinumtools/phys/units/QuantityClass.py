@@ -268,7 +268,7 @@ class Quantity:
         return self.baseunits.expression()
 
     def to(self, units):
-        if isinstance(units,str):
+        if isinstance(units,(str, Quantity)):
             unit1 = self
             unit2 = Quantity(1,units)
             # Check if units can be directly converted

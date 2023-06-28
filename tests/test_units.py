@@ -105,29 +105,6 @@ def test_definitions():
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
         assert q.dimensions.value() == unit['dimensions']
         
-def test_temperatures():
-    
-    # Temperature conversions
-    assert str(Quantity(23,'K').to('Cel'))        == "Quantity(-2.501e+02 Cel)"
-    assert str(Quantity(23,'K').to('degF'))       == "Quantity(-4.183e+02 degF)"
-    assert str(Quantity(23,'K').to('degR'))       == "Quantity(4.140e+01 degR)"
-    assert str(Quantity(23,'Cel').to('K'))        == "Quantity(2.961e+02 K)"
-    assert str(Quantity(23,'Cel').to('degF'))     == "Quantity(7.340e+01 degF)"
-    assert str(Quantity(23,'Cel').to('degR'))     == "Quantity(5.331e+02 degR)"
-    assert str(Quantity(23,'degF').to('K'))       == "Quantity(2.681e+02 K)"
-    assert str(Quantity(23,'degF').to('Cel'))     == "Quantity(-5.000e+00 Cel)"
-    assert str(Quantity(23,'degF').to('degR'))    == "Quantity(4.827e+02 degR)"
-    assert str(Quantity(23,'degR').to('K'))       == "Quantity(1.278e+01 K)"
-    assert str(Quantity(23,'degR').to('Cel'))     == "Quantity(-2.604e+02 Cel)"
-    assert str(Quantity(23,'degR').to('degF'))    == "Quantity(-4.367e+02 degF)"
-    assert str(Quantity(2300,'Cel').to('kK'))     == "Quantity(2.573e+00 kK)"
-    
-def test_inversion():
-
-    assert str(Quantity(23, 'Hz').to('s'))     == "Quantity(4.348e-02 s)"
-    assert str(Quantity(34, 'Ohm').to('S'))    == "Quantity(2.941e-02 S)"
-    assert str(Quantity(102, 'J').to('erg-1')) == "Quantity(9.804e-10 erg-1)"
-
 def test_scalar_arithmetics():
 
     q = Quantity(123e2, [3,3,0,0,1,0,0,0])
@@ -159,6 +136,11 @@ def test_scalar_arithmetics():
     assert excinfo.value.args[1].value()==[0, 0, 0, 0, 0, 0, 0, 0]
     assert excinfo.value.args[2].value()==[-3, 3, 1, 0, 0, 0, 0, 0]
 
+    # test unit conversion on scalars
+    result = "Quantity(3.000e+03 m)"
+    assert str(Quantity(3, 'km').to('m'))      == result
+    assert str(Quantity(3, 'km').to(Unit().m)) == result
+    
 def test_array_arithmetics():
 
     # Test basic arithmetics
@@ -217,3 +199,26 @@ def test_unique_names():
     seen = set()
     dupes = [x for x in units if x in seen or seen.add(x)]    
     assert len(dupes)==0
+
+def test_temperatures():
+    
+    # Temperature conversions
+    assert str(Quantity(23,'K').to('Cel'))        == "Quantity(-2.501e+02 Cel)"
+    assert str(Quantity(23,'K').to('degF'))       == "Quantity(-4.183e+02 degF)"
+    assert str(Quantity(23,'K').to('degR'))       == "Quantity(4.140e+01 degR)"
+    assert str(Quantity(23,'Cel').to('K'))        == "Quantity(2.961e+02 K)"
+    assert str(Quantity(23,'Cel').to('degF'))     == "Quantity(7.340e+01 degF)"
+    assert str(Quantity(23,'Cel').to('degR'))     == "Quantity(5.331e+02 degR)"
+    assert str(Quantity(23,'degF').to('K'))       == "Quantity(2.681e+02 K)"
+    assert str(Quantity(23,'degF').to('Cel'))     == "Quantity(-5.000e+00 Cel)"
+    assert str(Quantity(23,'degF').to('degR'))    == "Quantity(4.827e+02 degR)"
+    assert str(Quantity(23,'degR').to('K'))       == "Quantity(1.278e+01 K)"
+    assert str(Quantity(23,'degR').to('Cel'))     == "Quantity(-2.604e+02 Cel)"
+    assert str(Quantity(23,'degR').to('degF'))    == "Quantity(-4.367e+02 degF)"
+    assert str(Quantity(2300,'Cel').to('kK'))     == "Quantity(2.573e+00 kK)"
+    
+def test_inversion():
+
+    assert str(Quantity(23, 'Hz').to('s'))     == "Quantity(4.348e-02 s)"
+    assert str(Quantity(34, 'Ohm').to('S'))    == "Quantity(2.941e-02 S)"
+    assert str(Quantity(102, 'J').to('erg-1')) == "Quantity(9.804e-10 erg-1)"
