@@ -267,22 +267,19 @@ class Quantity:
     def units(self):
         return self.baseunits.expression()
 
-    def to(self, units):
-        if isinstance(units,(str, Quantity)):
-            unit1 = self
-            unit2 = Quantity(1,units)
-            # Check if units can be directly converted
-            if not unit1.dimensions==unit2.dimensions:
-                # Check if inverted unit can be converted
-                if -unit1.dimensions==unit2.dimensions:
-                    unit1 = Quantity(1)/self
-                else:
-                    raise Exception("Converting units with different dimensions:",
-                                    unit1.dimensions, unit2.dimensions)
-            with TemperatureConverter(unit1.baseunits.value(), unit2.baseunits.value()) as tc:
-                if tc.convertable:
-                    unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
-            unit = unit1/unit2
-            return Quantity(unit.magnitude, units)
-        else:
-            raise Exception("Invalid units format:", units)
+    def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
+        unit1 = self
+        unit2 = Quantity(1,units)
+        # Check if units can be directly converted
+        if not unit1.dimensions==unit2.dimensions:
+            # Check if inverted unit can be converted
+            if -unit1.dimensions==unit2.dimensions:
+                unit1 = Quantity(1)/self
+            else:
+                raise Exception("Converting units with different dimensions:",
+                                unit1.dimensions, unit2.dimensions)
+        with TemperatureConverter(unit1.baseunits.value(), unit2.baseunits.value()) as tc:
+            if tc.convertable:
+                unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
+        unit = unit1/unit2
+        return Quantity(unit.magnitude, units)

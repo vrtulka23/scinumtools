@@ -138,8 +138,12 @@ def test_scalar_arithmetics():
 
     # test unit conversion on scalars
     result = "Quantity(3.000e+03 m)"
-    assert str(Quantity(3, 'km').to('m'))      == result
-    assert str(Quantity(3, 'km').to(Unit().m)) == result
+    assert str(Quantity(3, 'km').to('m'))                 == result
+    assert str(Quantity(3, 'km').to([1,0,0,0,0,0,0,0]))   == result
+    assert str(Quantity(3, 'km').to(Dimensions(m=1)))     == result
+    assert str(Quantity(3, 'km').to({'m':1}))             == result
+    assert str(Quantity(3, 'km').to(BaseUnits({'m':1})))  == result
+    assert str(Quantity(3, 'km').to(Unit().m))            == result
     
 def test_array_arithmetics():
 
