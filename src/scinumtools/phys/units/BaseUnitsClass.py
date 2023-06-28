@@ -6,6 +6,7 @@ from .RatioClass import Ratio
 class BaseUnits:
 
     baseunits: dict = field(default_factory=dict)
+    symbol: str = ':'
 
     def __post_init__(self):
         for unit,exp in self.baseunits.items():
@@ -20,7 +21,7 @@ class BaseUnits:
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(":","")
+                unit = unit.replace(self.symbol,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         return f"BaseUnits({baseunits})"
@@ -29,33 +30,39 @@ class BaseUnits:
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(":","")
+                unit = unit.replace(self.symbol,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         return f"BaseUnits({baseunits})"
 
-    def __mul__(self, other):
+    def __add__(self, other):
         baseunits = dict(self.baseunits)
         for unit,exp in other.baseunits.items():
             baseunits[unit] = baseunits[unit]+exp if unit in baseunits else exp
         return BaseUnits(baseunits)
     
-    def __truediv__(self, other):
+    def __sub__(self, other):
         baseunits = dict(self.baseunits)
         for unit,exp in other.baseunits.items():
             baseunits[unit] = baseunits[unit]-exp if unit in baseunits else -exp
         return BaseUnits(baseunits)
 
-    def __pow__(self, power):
+    def __mul__(self, power):
         baseunits = dict(self.baseunits)
         for unit,exp in self.baseunits.items():
             baseunits[unit] *= power
         return BaseUnits(baseunits)
 
+    def __truediv__(self, div):
+        baseunits = dict(self.baseunits)
+        for unit,exp in self.baseunits.items():
+            baseunits[unit] /= div
+        return BaseUnits(baseunits)
+    
     def expression(self):
         units = []
         for unit,exp in self.baseunits.items():
-            symbol = unit.replace(':','')
+            symbol = unit.replace(self.symbol,'')
             if exp.num==1 and exp.den==1:
                 units.append(symbol)
             else:

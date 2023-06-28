@@ -9,6 +9,7 @@ from .UnitList import *
 from .UnitConverters import *
 from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
+from .RatioClass import Ratio
 
 class Quantity:
     prefixes: dict            # list of prefixes 
@@ -22,8 +23,8 @@ class Quantity:
 
     def __init__(
             self, magnitude:float,
-            dimensions: Union[str,list,np.ndarray,Dimensions] = None,
-            baseunits = None
+            dimensions: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None,
+            baseunits: Union[dict,BaseUnits] = None
     ):
         # Initialize settings
         self.unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
@@ -40,7 +41,11 @@ class Quantity:
         if dimensions is None:
             self.dimensions = Dimensions()
             self.baseunits = BaseUnits()
-        elif isinstance(dimensions, str):
+        elif isinstance(dimensions, (str, dict, BaseUnits)):
+            if isinstance(dimensions, dict):
+                dimensions = BaseUnits(dimensions).expression()
+            elif isinstance(dimensions, BaseUnits):
+                dimensions = dimensions.expression()
             with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
                 unit = es.solve(dimensions)
             self.magnitude *= unit.magnitude
@@ -56,6 +61,7 @@ class Quantity:
             elif isinstance(baseunits, BaseUnits):
                 self.baseunits = baseunits
             else:
+                print(self.dimensions)
                 self.baseunits = BaseUnits({UnitBase[d]:dim for d,dim in enumerate(self.dimensions.value()) if dim!=0})
         else:
             raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
@@ -66,7 +72,9 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude + right.magnitude
-        dimensions = left.dimensions + right.dimensions
+        if not left.dimensions == right.dimensions:
+            raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        dimensions = left.dimensions
         baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
@@ -82,7 +90,9 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude - right.magnitude
-        dimensions = left.dimensions - right.dimensions
+        if not left.dimensions == right.dimensions:
+            raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        dimensions = left.dimensions
         baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
@@ -98,8 +108,8 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude * right.magnitude
-        dimensions = left.dimensions * right.dimensions
-        baseunits = left.baseunits * right.baseunits
+        dimensions = left.dimensions + right.dimensions
+        baseunits = left.baseunits + right.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __mul__(self, other):
@@ -114,8 +124,8 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude / right.magnitude
-        dimensions = left.dimensions / right.dimensions
-        baseunits = left.baseunits / right.baseunits
+        dimensions = left.dimensions - right.dimensions
+        baseunits = left.baseunits - right.baseunits
         return Quantity(magnitude, dimensions, baseunits)
 
     def __truediv__(self, other):
@@ -126,8 +136,8 @@ class Quantity:
     
     def __pow__(self, power):
         magnitude = self.magnitude**power
-        dimensions = self.dimensions**power
-        baseunits = self.baseunits**power
+        dimensions = self.dimensions*power
+        baseunits = self.baseunits*power
         return Quantity(magnitude, dimensions, baseunits)
 
     def __neg__(self):
@@ -170,20 +180,19 @@ class Quantity:
         return self.magnitude
 
     def __array_wrap__(self, out_arr, context=None):
-        """
-        if context[0]==np.sqrt:
-            dimensions = []
-            for d in range(len(UnitBase)):
-                dimensions.append( self.dimensions[d] )
-                if dimensions[d]==0:
-                    continue
-                elif isinstance(dimensions[d], int):
-                    dimensions[d] = Ratio(dimensions[d], 2)
-                elif isinstance(dimensions[d], Ratio):
-                    dimensions[d] = Ratio(dimensions[d][0], dimensions[d][1]+2)
-            print(dimensions)
-        """
-        return Quantity(out_arr, self.dimensions, self.baseunits)
+        dimensions = self.dimensions
+        baseunits = self.baseunits
+        if context:
+            if context[0]==np.sqrt:
+                dimensions /= 2
+                baseunits /= 2
+            elif context[0]==np.cbrt:
+                dimensions /= 3
+                baseunits /= 3
+            elif context[0]==np.power:
+                dimensions *= context[1][1]
+                baseunits *= context[1][1]
+        return Quantity(out_arr, dimensions, baseunits)
     
     def _atom_parser(self, string=None):
         # parse number
@@ -197,7 +206,7 @@ class Quantity:
         symbol, string = string[-1], ' '+string[:-1]
         # parse exponent
         while len(string):
-            if not re.match('^[0-9+-]{1}$', symbol):
+            if not re.match('^[0-9'+Ratio.symbol+'+-]{1}$', symbol):
                 break
             exp = symbol+exp
             symbol, string = string[-1], string[:-1]
@@ -223,13 +232,19 @@ class Quantity:
             if prefix not in self.prefixes.keys():
                 raise Exception(f"Unknown unit prefix:", string_bak)
             magnitude *= self.prefixes[prefix].magnitude
-            unitid = f"{prefix:s}:{unitid}"
+            unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
         # apply exponent
-        if exp:
+        if exp and Ratio.symbol in exp:
+            exp = exp.split(Ratio.symbol)
+            exprat = Ratio(int(exp[0]), int(exp[1]))
+            magnitude = magnitude**(int(exp[0])/int(exp[1]))
+            dimensions = [exprat*dim for dim in dimensions]
+            baseunits = {unitid: exprat}
+        elif exp:
             exp = int(exp)
             magnitude = magnitude**exp
             dimensions = [dim*exp for dim in dimensions]
-            baseunits = {unitid: exp}
+            baseunits = {unitid: exp}            
         else:
             baseunits = {unitid: 1}
         return Quantity(magnitude, dimensions, baseunits)

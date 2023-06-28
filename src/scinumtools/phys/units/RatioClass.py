@@ -4,9 +4,10 @@ from typing import Union
 
 @dataclass
 class Ratio:
-    
+
     num: Union[int, tuple]        # numerator
     den: int = field(default=1)   # denominator
+    symbol: str = ':'             # ratio symbol
 
     def __post_init__(self):
         # initialize from a tuple
@@ -14,6 +15,16 @@ class Ratio:
             value = self.num
             self.num = value[0]
             self.den = value[1]
+        elif isinstance(self.num, Ratio):
+            value = self.num
+            self.num = value.num
+            self.den = value.den
+        # ensure correct type
+        if isinstance(self.num, (int,float)) and isinstance(self.den, (int,float)):
+            self.num = int(self.num)
+            self.den = int(self.den)
+        else:
+            raise Exception("Incorrect input values:", type(self.num), type(self.den))
         # enforce whole numbers
         if np.mod(self.num,1)!=0 or np.mod(self.den,1)!=0:
             raise Exception("Ratio excepts only whole numbers:", self.num, self.den)
@@ -43,7 +54,7 @@ class Ratio:
         if self.num==0 or self.den==1:
             return str(self.num)
         else:
-            return f"{self.num}/{self.den}"
+            return f"{self.num}{self.symbol}{self.den}"
 
     def __repr__(self):
         if self.num==0 or self.den==1:
@@ -52,12 +63,16 @@ class Ratio:
             return f"Ratio({self.num},{self.den})"        
         
     def __add__(self, other):
+        if not isinstance(other, Ratio):
+            other = Ratio(other)
         return Ratio(
             self.num*other.den+other.num*self.den,
             self.den*other.den,
         )
             
     def __sub__(self, other):
+        if not isinstance(other, Ratio):
+            other = Ratio(other)
         return Ratio(
             self.num*other.den-other.num*self.den,
             self.den*other.den,
@@ -69,6 +84,12 @@ class Ratio:
             self.den
         )
 
+    def __truediv__(self, div):
+        return Ratio(
+            self.num,
+            self.den*div
+        )
+    
     def __neg__(self):
         return Ratio(
             -self.num,

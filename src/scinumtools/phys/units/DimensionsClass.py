@@ -38,39 +38,37 @@ class Dimensions:
                 dimensions.append(f"{f.name}={str(value)}")
         dimensions = " ".join(dimensions)
         return f"Dimensions({dimensions})"
-                
+                            
     def __add__(self, other):
         dimensions = {}
         for f in fields(self):
-            if getattr(self, f.name) != getattr(other, f.name):
-                raise Exception('Dimension does not match:', f.name, getattr(self, f.name), getattr(other, f.name))
-        return self
+            if isinstance(other, Dimensions):
+                dimensions[f.name] = getattr(self, f.name) + getattr(other, f.name)
+            else:
+                dimensions[f.name] = getattr(self, f.name) + other
+        return Dimensions(**dimensions)
             
     def __sub__(self, other):
         dimensions = {}
         for f in fields(self):
-            if getattr(self, f.name) != getattr(other, f.name):
-                raise Exception('Dimension does not match:', f.name, getattr(self, f.name), getattr(other, f.name))
-        return self
-
-    def __mul__(self, other):
-        dimensions = {}
-        for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) + getattr(other, f.name)
-        return Dimensions(**dimensions)
-            
-    def __truediv__(self, other):
-        dimensions = {}
-        for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) - getattr(other, f.name)
+            if isinstance(other, Dimensions):
+                dimensions[f.name] = getattr(self, f.name) - getattr(other, f.name)
+            else:
+                dimensions[f.name] = getattr(self, f.name) - other
         return Dimensions(**dimensions)
 
-    def __pow__(self, power):
+    def __mul__(self, power):
         dimensions = {}
         for f in fields(self):
             dimensions[f.name] = getattr(self, f.name) * power
         return Dimensions(**dimensions)
 
+    def __truediv__(self, div):
+        dimensions = {}
+        for f in fields(self):
+            dimensions[f.name] = getattr(self, f.name) / div
+        return Dimensions(**dimensions)
+    
     def __eq__(self, other):
         for f in fields(self):
             if not getattr(self, f.name) == getattr(other, f.name):

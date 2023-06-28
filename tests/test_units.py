@@ -50,8 +50,20 @@ def test_inversion():
     assert str(Quantity(34, 'Ohm').to('S'))    == "Quantity(2.941e-02 S)"
     assert str(Quantity(102, 'J').to('erg-1')) == "Quantity(9.804e-10 erg-1)"
 
-def test_scalar_arithmetics():
+def test_quantity():
     
+    assert str(Quantity(123e2)) == "Quantity(1.230e+04)"
+    
+    result = "Quantity(1.230e+04 m*s2:3)"
+    assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
+    assert str(Quantity(123e2, Dimensions(m=1, s=(2,3)) )) == result
+
+    result = "Quantity(1.230e+04 J2*kg2:3)"
+    assert str(Quantity(123e2, {'J': 2, 'kg':(2,3)} )) == result
+    assert str(Quantity(123e2, BaseUnits({'J': 2, 'kg':(2,3)}) )) == result
+    
+def test_scalar_arithmetics():
+
     q = Quantity(123e2, [3,3,0,0,1,0,0,0])
     assert str(q) == "Quantity(1.230e+04 m3*g3*C)"    
     q /= Quantity(123, 'C')
@@ -111,7 +123,13 @@ def test_array_arithmetics():
 def test_numpy():
     
     # Test numpy functions
-    assert str(np.sqrt(Quantity([4, 9, 16], 'm2'))) == "Quantity([2. 3. 4.] m2)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm2')))  == "Quantity([2. 3. 4.] m)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm3')))  == "Quantity([2. 3. 4.] m3:2)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm-3')))  == "Quantity([2. 3. 4.] m-3:2)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm2:3')))  == "Quantity([2. 3. 4.] m1:3)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm2:3*g3:5*s5')))  == "Quantity([2. 3. 4.] m1:3*g3:10*s5:2)"
+    assert str(np.cbrt(Quantity([8, 27, 64], 'm3'))) == "Quantity([2. 3. 4.] m)"
+    assert str(np.power(Quantity([2, 3, 4], 'm'),3)) == "Quantity([ 8. 27. 64.] m3)"
 
 def test_operation_sides():
     
@@ -156,42 +174,40 @@ def test_dimensions():
 
     # Test simplification
     dims = Dimensions(m=(5,-2), g=3, s=1, cd=(-0,3), K=(34,1), rad=(18,12))
-    assert str(dims) == "Dimensions(m=-5/2 g=3 s=1 K=34 rad=3/2)"
+    assert str(dims) == "Dimensions(m=-5:2 g=3 s=1 K=34 rad=3:2)"
 
     # Test arithmetics
     dims1 = Dimensions(m=3, g=(3,2))
     dims2 = Dimensions(m=2, g=(4,7))
     assert not dims1==dims2
-    assert str(dims1+dims1) == "Dimensions(m=3 g=3/2)"
-    assert str(dims2-dims2) == "Dimensions(m=2 g=4/7)"
-    assert str(dims1*dims2) == "Dimensions(m=5 g=29/14)"
-    assert str(dims1/dims2) == "Dimensions(m=1 g=13/14)"
-    assert str(dims1**2)    == "Dimensions(m=6 g=3)"
-    assert str(dims2**0.5)  == "Dimensions(m=1 g=2/7)"
+    assert str(dims1+dims2) == "Dimensions(m=5 g=29:14)"
+    assert str(dims1-dims2) == "Dimensions(m=1 g=13:14)"
+    assert str(dims1*2)     == "Dimensions(m=6 g=3)"
+    assert str(dims2*0.5)   == "Dimensions(m=1 g=2:7)"
 
     # Test values
     value = [3, (3,2), 0, 0, 0, 0, 0, 0]
     dims = Dimensions(*value)
-    assert str(dims) == "Dimensions(m=3 g=3/2)" 
+    assert str(dims) == "Dimensions(m=3 g=3:2)" 
     assert dims.value() == value
 
 def test_base_units():
 
     # Test simplification
     bu = BaseUnits({'g':(3,2), 'km': 3, '[m_p]': (3,1)})
-    assert str(bu) == "BaseUnits(g=3/2 km=3 [m_p]=3)"
+    assert str(bu) == "BaseUnits(g=3:2 km=3 [m_p]=3)"
 
     # Test arithmetics
     bu1 = BaseUnits({'km':3,'g':(3,2)})
     bu2 = BaseUnits({'km':2,'g':(4,7)})
     assert not bu1 == bu2
-    assert str(bu1*bu2)  == "BaseUnits(km=5 g=29/14)"
-    assert str(bu1/bu2)  == "BaseUnits(km=1 g=13/14)"
-    assert str(bu1**2)   == "BaseUnits(km=6 g=3)"
-    assert str(bu2**0.5) == "BaseUnits(km=1 g=2/7)"
+    assert str(bu1+bu2)  == "BaseUnits(km=5 g=29:14)"
+    assert str(bu1-bu2)  == "BaseUnits(km=1 g=13:14)"
+    assert str(bu1*2)    == "BaseUnits(km=6 g=3)"
+    assert str(bu2*0.5)  == "BaseUnits(km=1 g=2:7)"
 
     # Test values
     value = {"km": 2, "K": (3,2)}
     bu = BaseUnits(dict(value))
-    assert str(bu) == "BaseUnits(km=2 K=3/2)"
+    assert str(bu) == "BaseUnits(km=2 K=3:2)"
     assert bu.value() == value
