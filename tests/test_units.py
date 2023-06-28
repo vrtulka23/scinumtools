@@ -129,7 +129,8 @@ def test_scalar_arithmetics():
     assert str(q) == "Quantity(1.230e+00 kg3*s*cm-3)"
     q = Quantity(134e-34)
     assert str(q) == "Quantity(1.340e-32)"
-    
+
+    # error if converting different units
     with pytest.raises(Exception) as excinfo:
         q = q.to("kg3*s/cm3")
     assert excinfo.value.args[0]=="Converting units with different dimensions:"
@@ -144,6 +145,9 @@ def test_scalar_arithmetics():
     assert str(Quantity(3, 'km').to({'m':1}))             == result
     assert str(Quantity(3, 'km').to(BaseUnits({'m':1})))  == result
     assert str(Quantity(3, 'km').to(Unit().m))            == result
+
+    # reset base units if dimensions are all zero
+    assert str(Quantity(3, 'kg*m2/s2')/Quantity(2, 'J')) == "Quantity(1.500e+00)"
     
 def test_array_arithmetics():
 

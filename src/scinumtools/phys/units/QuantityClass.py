@@ -68,6 +68,8 @@ class Quantity:
                 self.baseunits = BaseUnits(self.dimensions.value(dtype=dict))
         else:
             raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
+        if self.dimensions == Dimensions():
+            self.baseunits = BaseUnits()
 
     def _add(self, left, right):
         if not isinstance(left, Quantity):
