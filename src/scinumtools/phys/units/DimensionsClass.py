@@ -82,10 +82,16 @@ class Dimensions:
         for f in fields(self):
             dimensions[f.name] = getattr(self, f.name) * -1
         return Dimensions(**dimensions)
-    
-    def value(self):
-        dimensions = []
-        for f in fields(self):
-            dimensions.append( getattr(self, f.name).value() )
+
+    def value(self, dtype=list):
+        if dtype==list:
+            dimensions = []
+            for f in fields(self):
+                dimensions.append( getattr(self, f.name).value() )
+        elif dtype==dict:
+            dimensions = {}
+            for f in fields(self):
+                ratio = getattr(self, f.name)
+                if ratio.num not in [0, -0]:
+                    dimensions[f.name] = ratio.value()
         return dimensions
-    

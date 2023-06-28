@@ -9,6 +9,80 @@ from scinumtools.structs import ParameterDict
 from scinumtools.phys.units.UnitList import UnitStandard, UnitPrefixes
 from scinumtools.phys.units import *
 
+def test_quantity():
+    
+    assert str(Quantity(123e2)) == "Quantity(1.230e+04)"
+    
+    result = "Quantity(1.230e+04 m*s2:3)"
+    assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
+    assert str(Quantity(123e2, Dimensions(m=1, s=(2,3)) )) == result
+
+    result = "Quantity(1.230e+04 J2*kg2:3)"
+    assert str(Quantity(123e2, {'J': 2, 'kg':(2,3)} )) == result
+    assert str(Quantity(123e2, BaseUnits({'J': 2, 'kg':(2,3)}) )) == result
+    
+def test_units():
+
+    assert str(Unit('m'))         == "Quantity(1.000e+00 m)"
+    assert str(Unit('kg*m2*s-2')) == "Quantity(1.000e+00 kg*m2*s-2)"
+    
+    unit = Unit()
+    assert str(unit.m)      == "Quantity(1.000e+00 m)"
+    assert str(2*unit.kJ)   == "Quantity(2.000e+00 kJ)"
+    assert str(unit.kg*unit.m**2/unit.s**2) == "Quantity(1.000e+00 kg*m2*s-2)"
+    assert str(unit.J.to('erg')) == "Quantity(1.000e+07 erg)"
+
+def test_constants():
+
+    assert str(Constant('c')) == "Quantity(1.000e+00 [c])"
+
+    const = Constant()
+    assert str(const.c)   == "Quantity(1.000e+00 [c])"
+    assert str(const.m_e) == "Quantity(1.000e+00 [m_e])"
+    
+def test_dimensions():
+
+    # Test simplification
+    dims = Dimensions(m=(5,-2), g=3, s=1, cd=(-0,3), K=(34,1), rad=(18,12))
+    assert str(dims) == "Dimensions(m=-5:2 g=3 s=1 K=34 rad=3:2)"
+
+    # Test arithmetics
+    dims1 = Dimensions(m=3, g=(3,2))
+    dims2 = Dimensions(m=2, g=(4,7))
+    assert not dims1==dims2
+    assert str(dims1+dims2) == "Dimensions(m=5 g=29:14)"
+    assert str(dims1-dims2) == "Dimensions(m=1 g=13:14)"
+    assert str(dims1*2)     == "Dimensions(m=6 g=3)"
+    assert str(dims2*0.5)   == "Dimensions(m=1 g=2:7)"
+
+    # Test values
+    value = [3, (3,2), 0, 0, 0, 0, 0, 0]
+    dims = Dimensions(*value)
+    assert str(dims) == "Dimensions(m=3 g=3:2)" 
+    assert dims.value() == value
+    assert dims.value(dtype=dict) == {'m': 3, 'g':(3,2)}
+    
+def test_base_units():
+
+    # Test simplification
+    bu = BaseUnits({'g':(3,2), 'km': 3, '[m_p]': (3,1)})
+    assert str(bu) == "BaseUnits(g=3:2 km=3 [m_p]=3)"
+
+    # Test arithmetics
+    bu1 = BaseUnits({'km':3,'g':(3,2)})
+    bu2 = BaseUnits({'km':2,'g':(4,7)})
+    assert not bu1 == bu2
+    assert str(bu1+bu2)  == "BaseUnits(km=5 g=29:14)"
+    assert str(bu1-bu2)  == "BaseUnits(km=1 g=13:14)"
+    assert str(bu1*2)    == "BaseUnits(km=6 g=3)"
+    assert str(bu2*0.5)  == "BaseUnits(km=1 g=2:7)"
+
+    # Test values
+    value = {"km": 2, "K": (3,2)}
+    bu = BaseUnits(dict(value))
+    assert str(bu) == "BaseUnits(km=2 K=3:2)"
+    assert bu.value() == value
+    
 def test_definitions():
     
     unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
@@ -26,7 +100,7 @@ def test_definitions():
         q = Quantity(1, unit['definition'])
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
         assert q.dimensions.value() == unit['dimensions']
-
+        
 def test_temperatures():
     
     # Temperature conversions
@@ -50,18 +124,6 @@ def test_inversion():
     assert str(Quantity(34, 'Ohm').to('S'))    == "Quantity(2.941e-02 S)"
     assert str(Quantity(102, 'J').to('erg-1')) == "Quantity(9.804e-10 erg-1)"
 
-def test_quantity():
-    
-    assert str(Quantity(123e2)) == "Quantity(1.230e+04)"
-    
-    result = "Quantity(1.230e+04 m*s2:3)"
-    assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
-    assert str(Quantity(123e2, Dimensions(m=1, s=(2,3)) )) == result
-
-    result = "Quantity(1.230e+04 J2*kg2:3)"
-    assert str(Quantity(123e2, {'J': 2, 'kg':(2,3)} )) == result
-    assert str(Quantity(123e2, BaseUnits({'J': 2, 'kg':(2,3)}) )) == result
-    
 def test_scalar_arithmetics():
 
     q = Quantity(123e2, [3,3,0,0,1,0,0,0])
@@ -139,25 +201,6 @@ def test_operation_sides():
     assert p-q == -(q-p)
     assert q*2 == 2*q
     assert p/2 == 1/(2/p)
-
-def test_units():
-
-    assert str(Unit('m'))         == "Quantity(1.000e+00 m)"
-    assert str(Unit('kg*m2*s-2')) == "Quantity(1.000e+00 kg*m2*s-2)"
-    
-    unit = Unit()
-    assert str(unit.m)      == "Quantity(1.000e+00 m)"
-    assert str(2*unit.kJ)   == "Quantity(2.000e+00 kJ)"
-    assert str(unit.kg*unit.m**2/unit.s**2) == "Quantity(1.000e+00 kg*m2*s-2)"
-    assert str(unit.J.to('erg')) == "Quantity(1.000e+07 erg)"
-
-def test_constants():
-
-    assert str(Constant('c')) == "Quantity(1.000e+00 [c])"
-
-    const = Constant()
-    assert str(const.c)   == "Quantity(1.000e+00 [c])"
-    assert str(const.m_e) == "Quantity(1.000e+00 [m_e])"
     
 def test_unique_names():
 
@@ -169,45 +212,3 @@ def test_unique_names():
     seen = set()
     dupes = [x for x in units if x in seen or seen.add(x)]    
     assert len(dupes)==0
-
-def test_dimensions():
-
-    # Test simplification
-    dims = Dimensions(m=(5,-2), g=3, s=1, cd=(-0,3), K=(34,1), rad=(18,12))
-    assert str(dims) == "Dimensions(m=-5:2 g=3 s=1 K=34 rad=3:2)"
-
-    # Test arithmetics
-    dims1 = Dimensions(m=3, g=(3,2))
-    dims2 = Dimensions(m=2, g=(4,7))
-    assert not dims1==dims2
-    assert str(dims1+dims2) == "Dimensions(m=5 g=29:14)"
-    assert str(dims1-dims2) == "Dimensions(m=1 g=13:14)"
-    assert str(dims1*2)     == "Dimensions(m=6 g=3)"
-    assert str(dims2*0.5)   == "Dimensions(m=1 g=2:7)"
-
-    # Test values
-    value = [3, (3,2), 0, 0, 0, 0, 0, 0]
-    dims = Dimensions(*value)
-    assert str(dims) == "Dimensions(m=3 g=3:2)" 
-    assert dims.value() == value
-
-def test_base_units():
-
-    # Test simplification
-    bu = BaseUnits({'g':(3,2), 'km': 3, '[m_p]': (3,1)})
-    assert str(bu) == "BaseUnits(g=3:2 km=3 [m_p]=3)"
-
-    # Test arithmetics
-    bu1 = BaseUnits({'km':3,'g':(3,2)})
-    bu2 = BaseUnits({'km':2,'g':(4,7)})
-    assert not bu1 == bu2
-    assert str(bu1+bu2)  == "BaseUnits(km=5 g=29:14)"
-    assert str(bu1-bu2)  == "BaseUnits(km=1 g=13:14)"
-    assert str(bu1*2)    == "BaseUnits(km=6 g=3)"
-    assert str(bu2*0.5)  == "BaseUnits(km=1 g=2:7)"
-
-    # Test values
-    value = {"km": 2, "K": (3,2)}
-    bu = BaseUnits(dict(value))
-    assert str(bu) == "BaseUnits(km=2 K=3:2)"
-    assert bu.value() == value

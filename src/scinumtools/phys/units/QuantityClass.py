@@ -61,8 +61,7 @@ class Quantity:
             elif isinstance(baseunits, BaseUnits):
                 self.baseunits = baseunits
             else:
-                print(self.dimensions)
-                self.baseunits = BaseUnits({UnitBase[d]:dim for d,dim in enumerate(self.dimensions.value()) if dim!=0})
+                self.baseunits = BaseUnits(self.dimensions.value(dtype=dict))
         else:
             raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
 

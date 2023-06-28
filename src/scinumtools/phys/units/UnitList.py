@@ -25,8 +25,6 @@ UnitPrefixes = {
     'y':        (1.0e-24,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-24',                  'yocto'            ), 
 }                                                                                        
             
-UnitBase = ['m','g','s','K','C','cd','mol','rad']
-            
 UnitStandard = {
     # base physical units
     'm':        (1.0,            [ 1, 0, 0, 0, 0, 0, 0, 0],  None,                     'meter'            ),
