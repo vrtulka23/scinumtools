@@ -20,6 +20,10 @@ def test_quantity():
     result = "Quantity(1.230e+04 J2*kg2:3)"
     assert str(Quantity(123e2, {'J': 2, 'kg':(2,3)} )) == result
     assert str(Quantity(123e2, BaseUnits({'J': 2, 'kg':(2,3)}) )) == result
+
+    result = "Quantity(2.460e+04 m)"
+    assert str(Quantity(123e2, Quantity(2, 'm'))) == result
+    assert str(Quantity(123e2, 2*Unit('m'))) == result
     
 def test_units():
 

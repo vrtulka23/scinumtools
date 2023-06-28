@@ -51,6 +51,10 @@ class Quantity:
             self.magnitude *= unit.magnitude
             self.dimensions = unit.dimensions
             self.baseunits = unit.baseunits
+        elif isinstance(dimensions, Quantity):
+            self.magnitude *= dimensions.magnitude
+            self.dimensions = dimensions.dimensions
+            self.baseunits = dimensions.baseunits
         elif isinstance(dimensions, (list, np.ndarray, Dimensions)):
             if isinstance(dimensions, Dimensions):
                 self.dimensions = dimensions
@@ -221,6 +225,8 @@ class Quantity:
             base = symbol+base
             symbol, string = string[-1], string[:-1]
         unitid = f"{base:s}"
+        if base not in self.unitlist.keys():
+            raise Exception('Unknown unit', base)
         magnitude = self.unitlist[base].magnitude
         dimensions = self.unitlist[base].dimensions
         # parse unit prefix
