@@ -176,9 +176,11 @@ class Quantity:
             return f"Quantity({magnitude:s})"
 
     def __array__(self):
-        return self.magnitude
+        return np.array(self.magnitude)
 
     def __array_wrap__(self, out_arr, context=None):
+        if out_arr.ndim==0:
+            out_arr = float(out_arr)
         dimensions = self.dimensions
         baseunits = self.baseunits
         if context:

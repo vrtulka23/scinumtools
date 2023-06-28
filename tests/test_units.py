@@ -185,6 +185,7 @@ def test_array_arithmetics():
 def test_numpy():
     
     # Test numpy functions
+    assert str(np.sqrt(Quantity(4, 'm2')))  == "Quantity(2.000e+00 m)"
     assert str(np.sqrt(Quantity([4, 9, 16], 'm2')))  == "Quantity([2. 3. 4.] m)"
     assert str(np.sqrt(Quantity([4, 9, 16], 'm3')))  == "Quantity([2. 3. 4.] m3:2)"
     assert str(np.sqrt(Quantity([4, 9, 16], 'm-3')))  == "Quantity([2. 3. 4.] m-3:2)"
