@@ -9,7 +9,7 @@ from .UnitList import *
 from .UnitConverters import *
 from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
-from .RatioClass import Ratio
+from .FractionClass import Fraction
 
 class Quantity:
     prefixes: dict            # list of prefixes 
@@ -139,8 +139,14 @@ class Quantity:
     def __rtruediv__(self, other):
         return self._truediv(other, self)
     
-    def __pow__(self, power):
-        magnitude = self.magnitude**power
+    def __pow__(self, power: Union[float,int,tuple,Fraction]):
+        if isinstance(power, tuple):
+            exp = power[0]/power[1]
+        elif isinstance(power, Fraction):
+            exp = power.num/power.den
+        else:
+            exp = power
+        magnitude = self.magnitude**exp
         dimensions = self.dimensions*power
         baseunits = self.baseunits*power
         return Quantity(magnitude, dimensions, baseunits)
@@ -183,7 +189,13 @@ class Quantity:
 
     def __array__(self):
         return np.array(self.magnitude)
-
+    
+    def __array_prepare__(self, array, context=None):
+        if context:
+            if context[0] in [np.sin, np.cos, np.tan]:
+                array = np.array(context[1][0].to('rad'))
+        return array
+    
     def __array_wrap__(self, out_arr, context=None):
         if out_arr.ndim==0:
             out_arr = float(out_arr)
@@ -199,6 +211,9 @@ class Quantity:
             elif context[0]==np.power:
                 dimensions *= context[1][1]
                 baseunits *= context[1][1]
+            elif context[0] in [np.sin, np.cos, np.tan]:
+                dimensions = Dimensions()
+                baseunits = BaseUnits()
         return Quantity(out_arr, dimensions, baseunits)
     
     def _atom_parser(self, string=None):
@@ -213,7 +228,7 @@ class Quantity:
         symbol, string = string[-1], ' '+string[:-1]
         # parse exponent
         while len(string):
-            if not re.match('^[0-9'+Ratio.symbol+'+-]{1}$', symbol):
+            if not re.match('^[0-9'+Fraction.symbol+'+-]{1}$', symbol):
                 break
             exp = symbol+exp
             symbol, string = string[-1], string[:-1]
@@ -243,9 +258,9 @@ class Quantity:
             magnitude *= self.prefixes[prefix].magnitude
             unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
         # apply exponent
-        if exp and Ratio.symbol in exp:
-            exp = exp.split(Ratio.symbol)
-            exprat = Ratio(int(exp[0]), int(exp[1]))
+        if exp and Fraction.symbol in exp:
+            exp = exp.split(Fraction.symbol)
+            exprat = Fraction(int(exp[0]), int(exp[1]))
             magnitude = magnitude**(int(exp[0])/int(exp[1]))
             dimensions = [exprat*dim for dim in dimensions]
             baseunits = {unitid: exprat}

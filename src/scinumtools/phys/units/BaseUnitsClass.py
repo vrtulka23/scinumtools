@@ -1,6 +1,6 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
-from .RatioClass import Ratio
+from .FractionClass import Fraction
 
 @dataclass
 class BaseUnits:
@@ -10,8 +10,8 @@ class BaseUnits:
 
     def __post_init__(self):
         for unit,exp in self.baseunits.items():
-            if not isinstance(exp, Ratio):
-                self.baseunits[unit] = Ratio(exp)
+            if not isinstance(exp, Fraction):
+                self.baseunits[unit] = Fraction(exp)
         # remove zero dimensions
         for unit in list(self.baseunits.keys()):
             if self.baseunits[unit].num==0:
@@ -47,10 +47,10 @@ class BaseUnits:
             baseunits[unit] = baseunits[unit]-exp if unit in baseunits else -exp
         return BaseUnits(baseunits)
 
-    def __mul__(self, power):
+    def __mul__(self, other):
         baseunits = dict(self.baseunits)
         for unit,exp in self.baseunits.items():
-            baseunits[unit] *= power
+            baseunits[unit] *= other
         return BaseUnits(baseunits)
 
     def __truediv__(self, div):

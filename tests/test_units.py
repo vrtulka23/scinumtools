@@ -27,22 +27,25 @@ def test_quantity():
     
 def test_units():
 
-    assert str(Unit('m'))         == "Quantity(1.000e+00 m)"
-    assert str(Unit('kg*m2*s-2')) == "Quantity(1.000e+00 kg*m2*s-2)"
-    
-    unit = Unit()
-    assert str(unit.m)      == "Quantity(1.000e+00 m)"
-    assert str(2*unit.kJ)   == "Quantity(2.000e+00 kJ)"
+    assert str(Unit('m'))                   == "Quantity(1.000e+00 m)"
+    assert str(Unit('kg*m2*s-2'))           == "Quantity(1.000e+00 kg*m2*s-2)"
+                                            
+    unit = Unit()                           
+    assert str(unit.m)                      == "Quantity(1.000e+00 m)"
+    assert str(2*unit.kJ)                   == "Quantity(2.000e+00 kJ)"
     assert str(unit.kg*unit.m**2/unit.s**2) == "Quantity(1.000e+00 kg*m2*s-2)"
-    assert str(unit.J.to('erg')) == "Quantity(1.000e+07 erg)"
+    assert str(unit.J.to('erg'))            == "Quantity(1.000e+07 erg)"
+    assert str(unit.m**(2,3))               == "Quantity(1.000e+00 m2:3)"
+    assert str(unit.m**Fraction(2,3))       == "Quantity(1.000e+00 m2:3)"
+    assert str((9*unit.m)**(1,2))           == "Quantity(3.000e+00 m1:2)"
 
 def test_constants():
 
     assert str(Constant('c')) == "Quantity(1.000e+00 [c])"
 
     const = Constant()
-    assert str(const.c)   == "Quantity(1.000e+00 [c])"
-    assert str(const.m_e) == "Quantity(1.000e+00 [m_e])"
+    assert str(const.c)       == "Quantity(1.000e+00 [c])"
+    assert str(const.m_e)     == "Quantity(1.000e+00 [m_e])"
     
 def test_dimensions():
 
@@ -65,6 +68,27 @@ def test_dimensions():
     assert str(dims) == "Dimensions(m=3 g=3:2)" 
     assert dims.value() == value
     assert dims.value(dtype=dict) == {'m': 3, 'g':(3,2)}
+
+def test_fractions():
+
+    # Test initialization
+    assert str(Fraction(2))   == "2"
+    assert str(Fraction(0,3)) == "0"
+    assert str(Fraction(1,3)) == "1:3"
+
+    # Test arithmetics
+    assert str(Fraction(1,3)+3)             == "10:3"
+    assert str(Fraction(1,3)+(3,2))         == "11:6"
+    assert str(Fraction(1,3)+Fraction(3,2)) == "11:6"
+    assert str(Fraction(1,3)-3)             == "-8:3"
+    assert str(Fraction(1,3)-(3,2))         == "-7:6"
+    assert str(Fraction(1,3)-Fraction(3,2)) == "-7:6"
+    assert str(Fraction(1,3)*3)             == "1"
+    assert str(Fraction(1,3)*(3,2))         == "1:2"
+    assert str(Fraction(1,3)*Fraction(3,2)) == "1:2"
+    assert str(Fraction(1,3)/3)             == "1:9"
+    assert str(Fraction(1,3)/(3,2))         == "2:9"
+    assert str(Fraction(1,3)/Fraction(3,2)) == "2:9"
     
 def test_base_units():
 
@@ -179,15 +203,16 @@ def test_array_arithmetics():
 def test_numpy():
     
     # Test numpy functions
-    assert str(np.sqrt(Quantity(4, 'm2')))  == "Quantity(2.000e+00 m)"
-    assert str(np.sqrt(Quantity([4, 9, 16], 'm2')))  == "Quantity([2. 3. 4.] m)"
-    assert str(np.sqrt(Quantity([4, 9, 16], 'm3')))  == "Quantity([2. 3. 4.] m3:2)"
-    assert str(np.sqrt(Quantity([4, 9, 16], 'm-3')))  == "Quantity([2. 3. 4.] m-3:2)"
+    assert str(np.sqrt(Quantity(4, 'm2')))             == "Quantity(2.000e+00 m)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm2')))    == "Quantity([2. 3. 4.] m)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm3')))    == "Quantity([2. 3. 4.] m3:2)"
+    assert str(np.sqrt(Quantity([4, 9, 16], 'm-3')))   == "Quantity([2. 3. 4.] m-3:2)"
     assert str(np.sqrt(Quantity([4, 9, 16], 'm2:3')))  == "Quantity([2. 3. 4.] m1:3)"
     assert str(np.sqrt(Quantity([4, 9, 16], 'm2:3*g3:5*s5')))  == "Quantity([2. 3. 4.] m1:3*g3:10*s5:2)"
-    assert str(np.cbrt(Quantity([8, 27, 64], 'm3'))) == "Quantity([2. 3. 4.] m)"
-    assert str(np.power(Quantity([2, 3, 4], 'm'),3)) == "Quantity([ 8. 27. 64.] m3)"
-
+    assert str(np.cbrt(Quantity([8, 27, 64], 'm3')))   == "Quantity([2. 3. 4.] m)"
+    assert str(np.power(Quantity([2, 3, 4], 'm'),3))   == "Quantity([ 8. 27. 64.] m3)"
+    assert str(np.sin(Quantity([45, 60], "deg")))      == "Quantity([0.707 0.866])"
+    
 def test_operation_sides():
     
     p = Quantity([2,3,4], 'm')
@@ -227,6 +252,6 @@ def test_temperatures():
     
 def test_inversion():
 
-    assert str(Quantity(23, 'Hz').to('s'))     == "Quantity(4.348e-02 s)"
-    assert str(Quantity(34, 'Ohm').to('S'))    == "Quantity(2.941e-02 S)"
-    assert str(Quantity(102, 'J').to('erg-1')) == "Quantity(9.804e-10 erg-1)"
+    assert str(Quantity(23, 'Hz').to('s'))        == "Quantity(4.348e-02 s)"
+    assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"
+    assert str(Quantity(102, 'J').to('erg-1'))    == "Quantity(9.804e-10 erg-1)"

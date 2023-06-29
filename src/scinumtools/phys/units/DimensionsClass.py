@@ -1,25 +1,25 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
-from .RatioClass import Ratio
+from .FractionClass import Fraction
     
 @dataclass
 class Dimensions:
     
-    m: Union[int,Ratio] = field(default=0)
-    g: Union[int,Ratio] = field(default=0)
-    s: Union[int,Ratio] = field(default=0)
-    K: Union[int,Ratio] = field(default=0)
-    C: Union[int,Ratio] = field(default=0)
-    cd: Union[int,Ratio] = field(default=0)
-    mol: Union[int,Ratio] = field(default=0)
-    rad: Union[int,Ratio] = field(default=0)
+    m: Union[int,Fraction] = field(default=0)
+    g: Union[int,Fraction] = field(default=0)
+    s: Union[int,Fraction] = field(default=0)
+    K: Union[int,Fraction] = field(default=0)
+    C: Union[int,Fraction] = field(default=0)
+    cd: Union[int,Fraction] = field(default=0)
+    mol: Union[int,Fraction] = field(default=0)
+    rad: Union[int,Fraction] = field(default=0)
     
     def __post_init__(self):
         for f in fields(self):
             value = getattr(self, f.name)
-            if not isinstance(value, Ratio):
-                setattr(self, f.name, Ratio(value))
+            if not isinstance(value, Fraction):
+                setattr(self, f.name, Fraction(value))
 
     def __str__(self):
         dimensions = []
@@ -57,16 +57,16 @@ class Dimensions:
                 dimensions[f.name] = getattr(self, f.name) - other
         return Dimensions(**dimensions)
 
-    def __mul__(self, power):
+    def __mul__(self, other):
         dimensions = {}
         for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) * power
+            dimensions[f.name] = getattr(self, f.name) * other
         return Dimensions(**dimensions)
 
-    def __truediv__(self, div):
+    def __truediv__(self, other):
         dimensions = {}
         for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) / div
+            dimensions[f.name] = getattr(self, f.name) / other
         return Dimensions(**dimensions)
     
     def __eq__(self, other):
@@ -91,7 +91,7 @@ class Dimensions:
         elif dtype==dict:
             dimensions = {}
             for f in fields(self):
-                ratio = getattr(self, f.name)
-                if ratio.num not in [0, -0]:
-                    dimensions[f.name] = ratio.value()
+                fraction = getattr(self, f.name)
+                if fraction.num not in [0, -0]:
+                    dimensions[f.name] = fraction.value()
         return dimensions
