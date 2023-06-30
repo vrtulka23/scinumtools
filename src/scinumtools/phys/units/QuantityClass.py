@@ -273,10 +273,11 @@ class Quantity:
             baseunits = {unitid: 1}
         return Quantity(magnitude, dimensions, baseunits)
     
-    def value(self):
-        baseunits = self.baseunits.expression()
-        if baseunits:
-            unit = self/Quantity(1,baseunits)
+    def value(self, expression=None):
+        if not expression:
+            expression = self.baseunits.expression()
+        if expression:
+            unit = self/Quantity(1,expression)
             return unit.magnitude
         else:
             return self.magnitude

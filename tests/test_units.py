@@ -11,7 +11,12 @@ from scinumtools.phys.units import *
 
 def test_quantity():
     
-    assert str(Quantity(123e2)) == "Quantity(1.230e+04)"
+    assert str(Quantity(123e2))         == "Quantity(1.230e+04)"
+    q = Quantity(123e2, 'km/s')
+    assert str(q) == "Quantity(1.230e+04 km*s-1)"
+    assert str(q.value()) == "12300.0"
+    assert str(q.value('m/s')) == "12300000.0"
+    assert str(q.units()) == "km*s-1"
     
     result = "Quantity(1.230e+04 m*s2:3)"
     assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
