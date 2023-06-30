@@ -14,9 +14,10 @@ def test_quantity():
     assert str(Quantity(123e2))         == "Quantity(1.230e+04)"
     q = Quantity(123e2, 'km/s')
     assert str(q) == "Quantity(1.230e+04 km*s-1)"
-    assert str(q.value()) == "12300.0"
-    assert str(q.value('m/s')) == "12300000.0"
-    assert str(q.units()) == "km*s-1"
+    assert str(q.value())               == "12300.0"
+    assert str(q.value('m/s'))          == "12300000.0"
+    assert str(q.value({'m':1,'s':-1})) == "12300000.0"
+    assert str(q.units())               == "km*s-1"
     
     result = "Quantity(1.230e+04 m*s2:3)"
     assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
@@ -136,6 +137,11 @@ def test_definitions():
         
 def test_scalar_arithmetics():
 
+    # addition and substtraction
+    assert str(Quantity(1.1, 'km')-Quantity(100, 'm')) == "Quantity(1.000e+00 km)"
+    assert str(Quantity(1.0, 'km')+Quantity(100, 'm')) == "Quantity(1.100e+00 km)"
+
+    # multiplication, division and power
     q = Quantity(123e2, [3,3,0,0,1,0,0,0])
     assert str(q) == "Quantity(1.230e+04 m3*g3*C)"    
     q /= Quantity(123, 'C')
@@ -205,6 +211,10 @@ def test_array_arithmetics():
     # Test unit conversion on arrays
     assert str(Quantity([1,2,3], 'm').to('km')) == "Quantity([0.001 0.002 0.003] km)"
 
+    # Array slicing
+    q = Quantity([1,2,3], 'm')
+    assert str(q[:2]) == "Quantity([1. 2.] m)"
+    
 def test_numpy():
     
     # Test numpy functions

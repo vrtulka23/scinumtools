@@ -76,9 +76,9 @@ class Quantity:
             left = Quantity(left)
         if not isinstance(right, Quantity):
             right = Quantity(right)
-        magnitude = left.magnitude + right.magnitude
         if not left.dimensions == right.dimensions:
             raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        magnitude = left.magnitude + right.to(left.baseunits).magnitude 
         dimensions = left.dimensions
         baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
@@ -94,9 +94,9 @@ class Quantity:
             left = Quantity(left)
         if not isinstance(right, Quantity):
             right = Quantity(right)
-        magnitude = left.magnitude - right.magnitude
         if not left.dimensions == right.dimensions:
             raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        magnitude = left.magnitude - right.to(left.baseunits).magnitude
         dimensions = left.dimensions
         baseunits = left.baseunits
         return Quantity(magnitude, dimensions, baseunits)
@@ -187,6 +187,9 @@ class Quantity:
         else:
             return f"Quantity({magnitude:s})"
 
+    def __getitem__(self, key):
+        return Quantity(self.magnitude[key], self.dimensions, self.baseunits)
+        
     def __array__(self):
         return np.array(self.magnitude)
     
@@ -274,11 +277,10 @@ class Quantity:
         return Quantity(magnitude, dimensions, baseunits)
     
     def value(self, expression=None):
-        if not expression:
-            expression = self.baseunits.expression()
         if expression:
-            unit = self/Quantity(1,expression)
-            return unit.magnitude
+            return self.to(expression).value()
+        elif expr:=self.baseunits.expression():
+            return (self/Quantity(1, expr)).magnitude
         else:
             return self.magnitude
 
