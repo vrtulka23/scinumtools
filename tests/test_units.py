@@ -227,6 +227,16 @@ def test_numpy():
     assert str(np.cbrt(Quantity([8, 27, 64], 'm3')))   == "Quantity([2. 3. 4.] m)"
     assert str(np.power(Quantity([2, 3, 4], 'm'),3))   == "Quantity([ 8. 27. 64.] m3)"
     assert str(np.sin(Quantity([45, 60], "deg")))      == "Quantity([0.707 0.866])"
+    assert str(np.cos(Quantity([45, 60], "deg")))      == "Quantity([0.707 0.5  ])"
+    assert str(np.tan(Quantity([45, 60], "deg")))      == "Quantity([1.    1.732])"
+    assert str(np.arcsin(Quantity([0.3, -0.7])))       == "Quantity([ 0.305 -0.775] rad)"
+    assert str(np.arccos(Quantity([0.3, -0.7])))       == "Quantity([1.266 2.346] rad)"
+    assert str(np.arctan(Quantity([0.3, -0.7])))       == "Quantity([ 0.291 -0.611] rad)"
+    assert str(np.linspace(0,Quantity(20,'m'),3))      == "Quantity([ 0. 10. 20.] m)"
+    assert str(np.linspace(Quantity(10,'m'),Quantity(0.03,'km'),3))  == "Quantity([10. 20. 30.] m)"
+    assert str(np.logspace(1,Quantity(3,'m'),3))       == "Quantity([  10.  100. 1000.] m)"
+    assert str(np.absolute(Quantity(-3,'m')))          == "Quantity(3.000e+00 m)"
+    assert str(np.abs(Quantity(-3,'m')))               == "Quantity(3.000e+00 m)"
     
 def test_operation_sides():
     

@@ -11,6 +11,8 @@ from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
 from .FractionClass import Fraction
 
+HANDLED_FUNCTIONS = {}
+
 class Quantity:
     prefixes: dict            # list of prefixes 
     unitlist: dict            # list of units
@@ -196,7 +198,7 @@ class Quantity:
     def __array_prepare__(self, array, context=None):
         if context:
             if context[0] in [np.sin, np.cos, np.tan]:
-                array = np.array(context[1][0].to('rad'))
+                return np.array(context[1][0].to('rad'))
         return array
     
     def __array_wrap__(self, out_arr, context=None):
@@ -205,20 +207,24 @@ class Quantity:
         dimensions = self.dimensions
         baseunits = self.baseunits
         if context:
-            if context[0]==np.sqrt:
-                dimensions /= 2
-                baseunits /= 2
-            elif context[0]==np.cbrt:
-                dimensions /= 3
-                baseunits /= 3
-            elif context[0]==np.power:
-                dimensions *= context[1][1]
-                baseunits *= context[1][1]
-            elif context[0] in [np.sin, np.cos, np.tan]:
-                dimensions = Dimensions()
-                baseunits = BaseUnits()
+            fn = context[0]
+            if fn==np.sqrt:
+                return Quantity(out_arr, dimensions/2, baseunits/2)
+            elif fn==np.cbrt:
+                return Quantity(out_arr, dimensions/3, baseunits/3)
+            elif fn==np.power:
+                return Quantity(out_arr, dimensions*context[1][1], baseunits*context[1][1])
+            elif fn in [np.sin, np.cos, np.tan]:
+                return Quantity(out_arr)
+            elif fn in [np.arcsin, np.arccos, np.arctan]:
+                return Quantity(out_arr, 'rad')
         return Quantity(out_arr, dimensions, baseunits)
     
+    def __array_function__(self, func, types, args, kwargs):
+        if func not in HANDLED_FUNCTIONS:
+            raise NotImplementedError()
+        return HANDLED_FUNCTIONS[func](*args, **kwargs)
+
     def _atom_parser(self, string=None):
         # parse number
         m = re.match(r'^[-]?([0-9.]+)(e([0-9+-]+)|)$', str(string))
@@ -303,3 +309,33 @@ class Quantity:
                 unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
         unit = unit1/unit2
         return Quantity(unit.magnitude, units)
+
+def implements(np_function):
+    def decorator(func):
+        HANDLED_FUNCTIONS[np_function] = func
+        return func
+    return decorator
+
+@implements(np.linspace)
+def linspace(a, b, c, **kwargs):
+    if isinstance(a,Quantity):
+        b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
+    else:
+        a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
+    return Quantity(np.linspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+
+@implements(np.logspace)
+def logspace(a, b, c, **kwargs):
+    if isinstance(a,Quantity):
+        b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
+    else:
+        a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
+    return Quantity(np.logspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+
+@implements(np.absolute)
+def absolute(a, **kwargs):
+    return Quantity(np.absolute(a.magnitude, a.baseunits))
+
+@implements(np.abs)
+def abs(a, **kwargs):
+    return Quantity(np.abs(a.magnitude, a.baseunits))
