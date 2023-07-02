@@ -53,6 +53,12 @@ def test_constants():
     assert str(const.c)       == "Quantity(1.000e+00 [c])"
     assert str(const.m_e)     == "Quantity(1.000e+00 [m_e])"
     
+def test_aliases():
+    from scinumtools import quant, unit, const
+    assert str(quant(23, 'km'))   == "Quantity(2.300e+01 km)"
+    assert str(unit('m'))         == "Quantity(1.000e+00 m)"
+    assert str(const('c'))        == "Quantity(1.000e+00 [c])"    
+    
 def test_dimensions():
 
     # Test simplification
@@ -239,7 +245,7 @@ def test_numpy():
     assert str(np.logspace(1,Quantity(3,'m'),3))       == "Quantity([  10.  100. 1000.] m)"
     assert str(np.absolute(Quantity(-3,'m')))          == "Quantity(3.000e+00 m)"
     assert str(np.abs(Quantity(-3,'m')))               == "Quantity(3.000e+00 m)"
-    
+
 def test_operation_sides():
     
     p = Quantity([2,3,4], 'm')
