@@ -234,6 +234,8 @@ def test_numpy():
     assert str(np.arctan(Quantity([0.3, -0.7])))       == "Quantity([ 0.291 -0.611] rad)"
     assert str(np.linspace(0,Quantity(20,'m'),3))      == "Quantity([ 0. 10. 20.] m)"
     assert str(np.linspace(Quantity(10,'m'),Quantity(0.03,'km'),3))  == "Quantity([10. 20. 30.] m)"
+    assert str(np.absolute(Quantity(-3,'m')))          == "Quantity(3.000e+00 m)"
+    assert str(np.linspace(0,Quantity(23,'km'),3))     == "Quantity([ 0.  11.5 23. ] km)"
     assert str(np.logspace(1,Quantity(3,'m'),3))       == "Quantity([  10.  100. 1000.] m)"
     assert str(np.absolute(Quantity(-3,'m')))          == "Quantity(3.000e+00 m)"
     assert str(np.abs(Quantity(-3,'m')))               == "Quantity(3.000e+00 m)"

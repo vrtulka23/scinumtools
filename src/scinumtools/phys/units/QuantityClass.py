@@ -322,7 +322,7 @@ def linspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.linspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+    return Quantity(np.linspace(a.value(), b.value(), c, **kwargs), a.baseunits)
 
 @implements(np.logspace)
 def logspace(a, b, c, **kwargs):
@@ -330,12 +330,12 @@ def logspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.logspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+    return Quantity(np.logspace(a.value(), b.value(), c, **kwargs), a.baseunits)
 
 @implements(np.absolute)
 def absolute(a, **kwargs):
-    return Quantity(np.absolute(a.magnitude, a.baseunits))
+    return Quantity(np.absolute(a.value()), a.baseunits)
 
 @implements(np.abs)
 def abs(a, **kwargs):
-    return Quantity(np.abs(a.magnitude, a.baseunits))
+    return Quantity(np.abs(a.value()), a.baseunits)
