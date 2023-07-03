@@ -45,6 +45,9 @@ def test_units():
     assert str(unit.m**Fraction(2,3))       == "Quantity(1.000e+00 m2:3)"
     assert str((9*unit.m)**(1,2))           == "Quantity(3.000e+00 m1:2)"
 
+    with Unit() as unit:
+        assert str(unit.m)                  == "Quantity(1.000e+00 m)"
+
 def test_constants():
 
     assert str(Constant('c')) == "Quantity(1.000e+00 [c])"
@@ -52,6 +55,9 @@ def test_constants():
     const = Constant()
     assert str(const.c)       == "Quantity(1.000e+00 [c])"
     assert str(const.m_e)     == "Quantity(1.000e+00 [m_e])"
+
+    with Constant() as const:
+        assert str(const.c)   == "Quantity(1.000e+00 [c])"
     
 def test_aliases():
     from scinumtools import quant, unit, const
