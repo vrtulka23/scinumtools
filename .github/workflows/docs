@@ -1,0 +1,19 @@
+name: DeployDocs
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          pip3 install sphinx sphinx_rtd_theme
+          pip3 install -r requirements.txt
+      - name: Sphinx build
+        run: |
+          ./build_doc.sh
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/build/html # The folder the action should deploy.
