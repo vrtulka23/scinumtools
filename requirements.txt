@@ -3,3 +3,4 @@ numpy
 pandas
 h5py
 matplotlib
+sphinx-rtd-theme
