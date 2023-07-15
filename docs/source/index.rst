@@ -10,8 +10,14 @@ Welcome to scinumtools's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
-
+   introduction
+   data
+   math
+   phys
+   stats
+   structs
+   api/modules
+   
 Indices and tables
 ==================
 

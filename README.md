@@ -2,4 +2,4 @@
 
 Essential tools for numerical scientific calculations
 
-See the scinumtools [documentation]()
+For more information see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
