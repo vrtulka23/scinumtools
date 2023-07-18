@@ -105,6 +105,41 @@ class NormalizeData:
             vmax=np.log10(np.nanmax(self._collector.zmax))
         )
 
+class DataPlotGrid:
+    data: Union[list,dict]
+    ndata: int
+    ncols: int
+    nrows: int
+    figsize: tuple
+
+    def __init__(self, data, ncols=2, axsize=(4,2)):
+        self.data = data
+        self.ndata = len(data)
+        self.ncols = ncols
+        self.nrows = int(np.ceil(self.ndata/self.ncols))
+        self.figsize = (self.ncols*axsize[0], self.nrows*axsize[1])
+
+    def items(self, missing=None, transpose=False):
+        if missing:
+            for i in range(self.ndata, self.ncols*self.nrows):
+                if transpose:
+                    yield (i,int(i%self.nrows),int(i/self.nrows))
+                else:
+                    yield (i,int(i/self.ncols),int(i%self.ncols))
+        else:
+            if isinstance(self.data, list):
+                for i,d in enumerate(self.data):
+                    if transpose:
+                        yield (i,int(i%self.nrows),int(i/self.nrows),d)
+                    else:
+                        yield (i,int(i/self.ncols),int(i%self.ncols),d)
+            elif isinstance(self.data, dict):
+                for i,(k,v) in enumerate(self.data.items()):
+                    if transpose:
+                        yield (i,int(i%self.nrows),int(i/self.nrows),k,v)
+                    else:
+                        yield (i,int(i/self.ncols),int(i%self.ncols),k,v)
+
 def ListToGrid(data, ncols, missing=None, transpose=False):
     """
     Enumerate given data with an index and row/column number specified by number of columns
