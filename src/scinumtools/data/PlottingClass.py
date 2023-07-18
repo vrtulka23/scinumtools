@@ -1,6 +1,7 @@
 from matplotlib.colors import Normalize, LogNorm
 from dataclasses import dataclass
 import numpy as np
+from typing import Union
 
 from ..structs import ArrayCollector
 
