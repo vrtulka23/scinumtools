@@ -1,4 +1,3 @@
-from .CollectorClass import ListCollector
-from .CollectorClass import ArrayCollector
-from .ParameterClass import ParameterList
-from .ParameterClass import ParameterDict
+from .CollectorClass import ListCollector, ArrayCollector
+from .ParameterClass import ParameterList, ParameterDict
+from .ProgressBar import ProgressBar
