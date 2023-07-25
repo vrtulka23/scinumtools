@@ -113,14 +113,14 @@ class DataPlotGrid:
     nrows: int
     figsize: tuple
 
-    def __init__(self, data, ncols=2, axsize=(4,2)):
+    def __init__(self, data: Union[list,dict], ncols:int=2, axsize:tuple=(4,2)):
         self.data = data
         self.ndata = len(data)
         self.ncols = ncols
         self.nrows = int(np.ceil(self.ndata/self.ncols))
         self.figsize = (self.ncols*axsize[0], self.nrows*axsize[1])
 
-    def items(self, missing=None, transpose=False):
+    def items(self, missing:bool=None, transpose:bool=False):
         if missing:
             for i in range(self.ndata, self.ncols*self.nrows):
                 if transpose:
@@ -140,40 +140,5 @@ class DataPlotGrid:
                         yield (i,int(i%self.nrows),int(i/self.nrows),k,v)
                     else:
                         yield (i,int(i/self.ncols),int(i%self.ncols),k,v)
-
-def ListToGrid(data, ncols, missing=None, transpose=False):
-    """
-    Enumerate given data with an index and row/column number specified by number of columns
-
-    :param list data: Any iterable data, e.g. list, array
-    :param int ncols: Number of grid columns
-    :param bool missing: List only missing grid points
-    :param bool transpose: Transpose grid layout from horizontal to vertical arrangement
-    """
-    ndata = len(data)
-    nrows = int(np.ceil(ndata/ncols))
-    if missing:
-        for i in range(ndata, ncols*nrows):
-            yield (i,int(i%nrows),int(i/nrows)) if transpose else (i,int(i/ncols),int(i%ncols))
-    else:
-        for i,d in enumerate(data):
-            yield (i,int(i%nrows),int(i/nrows),d) if transpose else (i,int(i/ncols),int(i%ncols),d)
-    
-def DictToGrid(data, ncols, missing=None, transpose=False):
-    """
-    Enumerate given data with an index and row/column number specified by number of columns
-
-    :param dict data: A Python dictionary with keys and values
-    :param int ncols: Number of grid columns
-    :param bool missing: List only missing grid points
-    :param bool transpose: Transpose grid layout from horizontal to vertical arrangement
-    """
-    ndata = len(data)
-    nrows = int(np.ceil(ndata/ncols))
-    if missing:
-        for i in range(ndata, ncols*nrows):
-            yield (i,int(i%nrows),int(i/nrows)) if transpose else (i,int(i/ncols),int(i%ncols))
-    else:
-        for i,(k,v) in enumerate(data.items()):
-            yield (i,int(i%nrows),int(i/nrows),k,v) if transpose else (i,int(i/ncols),int(i%ncols),k,v)
-    
+            else:
+                raise Exception('Wrong data type:', self.data)

@@ -55,6 +55,14 @@ class ListCollector:
         if reverse: ids = ids[::-1]
         for n, name in enumerate(self._columns):
             setattr(self,name,list(np.array(getattr(self, name))[ids]))
+
+    def size(self):
+        """ Get number of items in columns
+        """
+        if self._columns:
+            return len(getattr(self, self._columns[0]))
+        else:
+            return 0
             
     def to_dict(self):
         """ Convert class data to a dictionary of lists/arrays
@@ -93,7 +101,7 @@ class ArrayCollector:
     
         import scinumtools as snt
         
-        with snt.structs.RowCollector(['col1','col2','col3']) as rc:
+        with snt.structs.ArrayCollector(['col1','col2','col3']) as rc:
              rc.append([1,2,3])
              rc.append([4,5,6])
              data = rc.to_dict()
@@ -142,6 +150,14 @@ class ArrayCollector:
         for n, name in enumerate(self._columns):
             setattr(self,name,getattr(self, name)[ids])
             
+    def size(self):
+        """ Get number of items in columns
+        """
+        if self._columns:
+            return len(getattr(self, self._columns[0]))
+        else:
+            return 0
+        
     def to_dict(self):
         """ Convert class data to a dictionary of lists/arrays
         """

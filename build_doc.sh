@@ -7,4 +7,6 @@ cd docs
 #make html latexpdf
 #make html
 sphinx-build -b html source build/html -v
-cd ..
+cd build/html
+echo "Documentation HTML:"
+echo $(pwd)/index.html

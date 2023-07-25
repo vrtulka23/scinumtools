@@ -91,13 +91,9 @@ def test_normalizing():
     assert yranges.minpos == 0.10526315789473673
     assert yranges.min == -18
     assert yranges.max == 18
-    
-def test_list_to_grid():
 
-    data = range(5)
-    ncols = 2
-    
-    # List all defined grid points
+def test_data_plot_grid():
+    # test lists
     grid = [
         (0, 0, 0, 0),
         (1, 0, 1, 1),
@@ -105,14 +101,11 @@ def test_list_to_grid():
         (3, 1, 1, 3),
         (4, 2, 0, 4),
     ]
-    for r,row in enumerate(ListToGrid(data,ncols)):
-        assert grid[r] == row
-
-    # List all missing grid points
-    for r,row in enumerate(ListToGrid(data,ncols,missing=True)):
-        assert (5, 2, 1) == row
-
-    # List transposed grid points
+    dpg = DataPlotGrid(list(range(5)), 2)
+    for i, m, n, v in dpg.items():
+        assert grid[i] == (i, m, n, v)
+    for i, m, n in dpg.items(missing=True):
+        assert (i, m, n) == (5, 2, 1)
     grid = [
         (0, 0, 0, 0),
         (1, 1, 0, 1),
@@ -120,25 +113,19 @@ def test_list_to_grid():
         (3, 0, 1, 3),
         (4, 1, 1, 4),
     ]
-    for r,row in enumerate(ListToGrid(data,ncols,transpose=True)):
-        assert grid[r] == row
+    for i, m, n, v in dpg.items(transpose=True):
+        assert grid[i] == (i, m, n, v)
+    for i, m, n in dpg.items(transpose=True, missing=True):
+        assert (i, m, n) == (5, 2, 1)
         
-    # List all missing transposed grid points
-    for r,row in enumerate(ListToGrid(data,ncols,transpose=True,missing=True)):
-        assert (5, 2, 1) == row
-        
-def test_dict_to_grid():
-
-    data = dict(
+    # test dictionaries
+    dpg = DataPlotGrid(dict(
         a = 0,
         b = 1,
         c = 2,
         d = 3,
         e = 4
-    )
-    ncols = 2
-    
-    # List all defined grid points
+    ), 2)
     grid = [
         (0, 0, 0, 'a', 0),
         (1, 0, 1, 'b', 1),
@@ -146,17 +133,10 @@ def test_dict_to_grid():
         (3, 1, 1, 'd', 3),
         (4, 2, 0, 'e', 4),
     ]
-    for r,row in enumerate(DictToGrid(data,ncols)):
-        assert grid[r] == row
-
-    # List all missing grid points
-    grid = [
-        (5, 2, 1)
-    ]
-    for r,row in enumerate(DictToGrid(data,ncols,missing=True)):
-        assert grid[r] == row
-        
-    # List all transposed grid points
+    for i,m,n,k,v in dpg.items():
+        assert grid[i] == (i,m,n,k,v)
+    for i,m,n in dpg.items(missing=True):
+        assert (5, 2, 1) == (i,m,n)
     grid = [
         (0, 0, 0, 'a', 0),
         (1, 1, 0, 'b', 1),
@@ -164,15 +144,10 @@ def test_dict_to_grid():
         (3, 0, 1, 'd', 3),
         (4, 1, 1, 'e', 4),
     ]
-    for r,row in enumerate(DictToGrid(data,ncols,transpose=True)):
-        assert grid[r] == row
-
-    # List all missing transposed grid points
-    grid = [
-        (5, 2, 1)
-    ]
-    for r,row in enumerate(DictToGrid(data,ncols,transpose=True,missing=True)):
-        assert grid[r] == row
+    for i,m,n,k,v in dpg.items(transpose=True):
+        assert grid[i] == (i,m,n,k,v)
+    for i,m,n in dpg.items(transpose=True,missing=True):
+        assert (5, 2, 1) == (i,m,n)
         
 def test_thumbnail():
 
@@ -182,10 +157,10 @@ def test_thumbnail():
     for i in range(nx):
         for j in range(ny):
             data[i,j] = (i-nx/2)**2 + (j-ny/2)**2
-            imold = ThumbnailImage(
-                extent = (-30,30,-20,20),
-                data = data
-            )
+    imold = ThumbnailImage(
+        extent = (-30,30,-20,20),
+        data = data
+    )
     np.testing.assert_equal(np.asarray(imold.im), data)
 
     # Test grayscale resizing

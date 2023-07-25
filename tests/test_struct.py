@@ -13,6 +13,7 @@ def test_row_collector_list():
         lc.append([1,2,3])
         lc.append([4,5,6])
         lc.append([7,8,9])
+        assert lc.size() == 3
         assert lc.col1 == [1,4,7]
         assert lc.col2 == [2,5,8]
         assert lc.col3 == [3,6,9]
@@ -44,6 +45,7 @@ def test_row_collector_array():
         ac.append([1,2,3])
         ac.append([4,5,6])
         ac.append([7,8,0])
+        assert ac.size() == 3
         np.testing.assert_equal(ac.col1, [1,4,7])
         np.testing.assert_equal(ac.col2, [2,5,8])
         np.testing.assert_equal(ac.col3, [3,6,0])
@@ -138,3 +140,14 @@ def test_parameter_dict():
         'e': [4, 5, 6]
     })
     test(params)
+
+def test_progressbar():
+
+    nsteps = 200
+    pb = ProgressBar(nsteps)
+    for i in range(nsteps):
+        pb.step()
+    pb.close()
+
+    with ProgressBar(nsteps) as pb:
+        pb.step()

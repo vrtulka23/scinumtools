@@ -20,6 +20,14 @@ scinumtools.structs.ParameterClass module
    :undoc-members:
    :show-inheritance:
 
+scinumtools.structs.ProgressBar module
+--------------------------------------
+
+.. automodule:: scinumtools.structs.ProgressBar
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
