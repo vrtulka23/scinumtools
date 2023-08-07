@@ -1,3 +1,4 @@
 from .CachingClass import CachedFunction
-from .PlottingClass import NormalizeData, DataPlotGrid
+from .NormalizeDataClass import NormalizeData
+from .DataPlotGridClass import DataPlotGrid
 from .ImageClass import ThumbnailImage

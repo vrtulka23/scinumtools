@@ -294,3 +294,8 @@ def test_inversion():
     assert str(Quantity(23, 'Hz').to('s'))        == "Quantity(4.348e-02 s)"
     assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"
     assert str(Quantity(102, 'J').to('erg-1'))    == "Quantity(9.804e-10 erg-1)"
+
+def test_nan():
+
+    assert str(NaN()) == "Quantity(nan)"
+    assert str(NaN('cm')) == "Quantity(nan cm)"
