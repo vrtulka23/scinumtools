@@ -11,11 +11,9 @@ Welcome to scinumtools's documentation!
    :caption: Contents:
 
    introduction
-   data
-   math
-   phys
-   stats
-   structs
+   cached_function
+   image_thumbnails
+   quantity
    api/modules
    
 Indices and tables

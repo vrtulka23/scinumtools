@@ -1,3 +1,5 @@
+import numpy as np
+
 from .UnitList import UnitStandard
 from .QuantityClass import Quantity
 
@@ -34,3 +36,12 @@ class Constant:
     
     def __getattr__(self, unit):
         return Quantity(1,f"[{str(unit)}]")
+
+class NaN:
+
+    def __new__(cls, unit=None):
+        if unit:
+            return Quantity(np.nan,str(unit))
+        else:
+            return Quantity(np.nan)
+        
