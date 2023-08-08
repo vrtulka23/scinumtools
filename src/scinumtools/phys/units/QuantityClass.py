@@ -343,3 +343,15 @@ def absolute(a, **kwargs):
 @implements(np.abs)
 def abs(a, **kwargs):
     return Quantity(np.abs(a.value()), a.baseunits)
+
+@implements(np.round)
+def round(a, **kwargs):
+    return Quantity(np.round(a.value()), a.baseunits)
+
+@implements(np.floor)
+def round(a, **kwargs):
+    return Quantity(np.floor(a.value()), a.baseunits)
+
+@implements(np.ceil)
+def round(a, **kwargs):
+    return Quantity(np.ceil(a.value()), a.baseunits)

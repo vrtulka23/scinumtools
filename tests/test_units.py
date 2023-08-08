@@ -255,7 +255,10 @@ def test_numpy():
     assert str(np.logspace(1,Quantity(3,'m'),3))       == "Quantity([  10.  100. 1000.] m)"
     assert str(np.absolute(Quantity(-3,'m')))          == "Quantity(3.000e+00 m)"
     assert str(np.abs(Quantity(-3,'m')))               == "Quantity(3.000e+00 m)"
-
+    assert str(np.round(Quantity(2.3,'m')))            == "Quantity(2.000e+00 m)"
+    assert str(np.floor(Quantity(2.3,'m')))            == "Quantity(2.000e+00 m)"
+    assert str(np.ceil(Quantity(2.3,'m')))             == "Quantity(3.000e+00 m)"
+    
 def test_operation_sides():
     
     p = Quantity([2,3,4], 'm')
