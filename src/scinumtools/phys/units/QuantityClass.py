@@ -31,6 +31,7 @@ class Quantity:
         # Initialize settings
         self.unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
         self.prefixes = ParameterDict(['magnitude','dimensions','definition','name'], UnitPrefixes)
+        # Set magnitude
         if isinstance(magnitude, (int,float)):
             self.magnitude = float(magnitude)
         elif isinstance(magnitude, list):
@@ -48,8 +49,11 @@ class Quantity:
                 dimensions = BaseUnits(dimensions).expression()
             elif isinstance(dimensions, BaseUnits):
                 dimensions = dimensions.expression()
-            with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
-                unit = es.solve(dimensions)
+            if dimensions is None:
+                unit = Quantity(1)
+            else:
+                with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
+                    unit = es.solve(dimensions)
             self.magnitude *= unit.magnitude
             self.dimensions = unit.dimensions
             self.baseunits = unit.baseunits

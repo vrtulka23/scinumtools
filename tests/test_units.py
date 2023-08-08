@@ -195,6 +195,10 @@ def test_scalar_arithmetics():
 
     # reset base units if dimensions are all zero
     assert str(Quantity(3, 'kg*m2/s2')/Quantity(2, 'J')) == "Quantity(1.500e+00)"
+
+    # arithmetics of dimensionless quantities
+    q = Quantity(34)
+    assert str(q-1) == "Quantity(3.300e+01)"
     
 def test_array_arithmetics():
 

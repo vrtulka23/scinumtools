@@ -67,7 +67,10 @@ class BaseUnits:
                 units.append(symbol)
             else:
                 units.append(f"{symbol}{exp}")
-        return "*".join(units)
+        if units:
+            return "*".join(units)
+        else:
+            return None
     
     def value(self):
         baseunits = {}
