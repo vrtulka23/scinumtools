@@ -286,13 +286,17 @@ class Quantity:
             baseunits = {unitid: 1}
         return Quantity(magnitude, dimensions, baseunits)
     
-    def value(self, expression=None):
+    def value(self, expression=None, dtype=None):
         if expression:
-            return self.to(expression).value()
+            value = self.to(expression).value()
         elif expr:=self.baseunits.expression():
-            return (self/Quantity(1, expr)).magnitude
+            value = (self/Quantity(1, expr)).magnitude
         else:
-            return self.magnitude
+            value = self.magnitude
+        if dtype:
+            return value.astype(dtype) if isinstance(value, np.ndarray) else dtype(value)
+        else:
+            return value
 
     def units(self):
         return self.baseunits.expression()

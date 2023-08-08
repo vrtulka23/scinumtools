@@ -11,13 +11,14 @@ from scinumtools.phys.units import *
 
 def test_quantity():
     
-    assert str(Quantity(123e2))         == "Quantity(1.230e+04)"
+    assert str(Quantity(123e2))          == "Quantity(1.230e+04)"
     q = Quantity(123e2, 'km/s')
     assert str(q) == "Quantity(1.230e+04 km*s-1)"
-    assert str(q.value())               == "12300.0"
-    assert str(q.value('m/s'))          == "12300000.0"
-    assert str(q.value({'m':1,'s':-1})) == "12300000.0"
-    assert str(q.units())               == "km*s-1"
+    assert str(q.value())                == "12300.0"
+    assert str(q.value('m/s'))           == "12300000.0"
+    assert str(q.value('m/s',dtype=int)) == "12300000"
+    assert str(q.value({'m':1,'s':-1}))  == "12300000.0"
+    assert str(q.units())                == "km*s-1"
     
     result = "Quantity(1.230e+04 m*s2:3)"
     assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
@@ -229,7 +230,8 @@ def test_array_arithmetics():
 
     # Array slicing
     q = Quantity([1,2,3], 'm')
-    assert str(q[:2]) == "Quantity([1. 2.] m)"
+    assert str(q[:2])              == "Quantity([1. 2.] m)"
+    assert str(q.value(dtype=int)) == "[1 2 3]"
     
 def test_numpy():
     
