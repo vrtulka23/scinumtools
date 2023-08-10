@@ -225,21 +225,28 @@ def test_parameter_combinations():
         ['a','b'],
         ['c','d','e']
     ])
-    
-    tids = [(0, 0),
+
+    # test keys
+    keys = [(0, 0),
             (0, 1),
             (0, 2),
             (1, 0),
             (1, 1),
             (1, 2)]
-    for i,ids in enumerate(pc.keys()):
-        assert tids[i] == ids
+    for i,key in enumerate(pc.keys()):
+        assert keys[i] == key
 
-    tids = [('a', 'c'),
-            ('a', 'd'),
-            ('a', 'e'),
-            ('b', 'c'),
-            ('b', 'd'),
-            ('b', 'e')]
-    for i,ids in enumerate(pc.values()):
-        assert tids[i] == ids
+    # test values
+    values = [('a', 'c'),
+              ('a', 'd'),
+              ('a', 'e'),
+              ('b', 'c'),
+              ('b', 'd'),
+              ('b', 'e')]
+    for i,value in enumerate(pc.values()):
+        assert values[i] == value
+
+    # test items
+    for i,(key,value) in enumerate(pc.items()):
+        assert keys[i] == key
+        assert values[i] == value

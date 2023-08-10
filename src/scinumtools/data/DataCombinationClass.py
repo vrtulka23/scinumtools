@@ -15,3 +15,9 @@ class DataCombination:
     def values(self):
         for values in itertools.product(*self._items):
             yield values
+
+    def items(self):
+        ids = [range(len(item)) for item in self._items]
+        iditems = range(len(self._items))
+        for keys in itertools.product(*ids):
+            yield keys, tuple([self._items[i][keys[i]] for i in iditems])
