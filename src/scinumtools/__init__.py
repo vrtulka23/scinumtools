@@ -7,6 +7,7 @@ from scinumtools.data.CachingClass import CachedFunction
 from scinumtools.data.NormalizeDataClass import NormalizeData
 from scinumtools.data.DataPlotGridClass import DataPlotGrid
 from scinumtools.data.ImageClass import ThumbnailImage
+from scinumtools.data.DataCombinationClass import DataCombination
 
 from scinumtools.math.solver.SolverClass import ExpressionSolver
 from scinumtools.math.solver.AtomClass import AtomBase

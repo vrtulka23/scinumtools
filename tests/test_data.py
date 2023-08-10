@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools.data import *
+import scinumtools as snt
 
 def test_caching():
 
@@ -219,3 +220,27 @@ def test_thumbnail():
     imnew = imold.resize((-35,35,-25,25), (5,5))
     np.testing.assert_equal(np.asarray(imnew.im), data_resized)
     
+def test_parameter_combinations():
+    
+    pc = snt.DataCombination([
+        ['a','b'],
+        ['c','d','e']
+    ])
+    
+    tids = [(0, 0),
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (1, 1),
+            (1, 2)]
+    for i,ids in enumerate(pc.keys()):
+        assert tids[i] == ids
+
+    tids = [('a', 'c'),
+            ('a', 'd'),
+            ('a', 'e'),
+            ('b', 'c'),
+            ('b', 'd'),
+            ('b', 'e')]
+    for i,ids in enumerate(pc.values()):
+        assert tids[i] == ids
