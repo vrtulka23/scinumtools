@@ -3,7 +3,6 @@ import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.data import *
 import scinumtools as snt
 
 def test_caching():
@@ -14,7 +13,7 @@ def test_caching():
         os.remove(file_cache)
     assert not os.path.isfile(file_cache)
     
-    @CachedFunction(file_cache)
+    @snt.CachedFunction(file_cache)
     def read_data(a, b):
         return dict(a=a, b=b)
 
@@ -29,7 +28,7 @@ def test_caching():
         os.remove(file_cache)
     assert not os.path.isfile(file_cache)
 
-    @CachedFunction(file_cache)
+    @snt.CachedFunction(file_cache)
     def read_data():
         return {
             'array': np.linspace(1,100,100),
@@ -51,7 +50,7 @@ def test_normalizing():
     data = np.linspace(1,xlen*ylen,xlen*ylen).reshape(xlen,ylen) - 10
 
     # Test only data
-    with NormalizeData() as n:
+    with snt.NormalizeData() as n:
         for row in data:
             n.append(row)
         linnorm = n.linnorm()
@@ -67,7 +66,7 @@ def test_normalizing():
     assert zranges.max == 190.0
     
     # Test data and x-axis
-    with NormalizeData(xaxis=True) as n:
+    with snt.NormalizeData(xaxis=True) as n:
         for r,row in enumerate(data):
             xdata = np.linspace(-r,r,xlen)
             n.append(row, xdata)
@@ -78,7 +77,7 @@ def test_normalizing():
     assert xranges.max == 9
 
     # Test data and both axes
-    with NormalizeData(xaxis=True, yaxis=True) as n:
+    with snt.NormalizeData(xaxis=True, yaxis=True) as n:
         for r,row in enumerate(data):
             xdata = np.linspace(-r,r,xlen)
             ydata = np.linspace(-r*2,r*2,ylen)
@@ -102,7 +101,7 @@ def test_data_plot_grid():
         (3, 1, 1, 3),
         (4, 2, 0, 4),
     ]
-    dpg = DataPlotGrid(list(range(5)), 2)
+    dpg = snt.DataPlotGrid(list(range(5)), 2)
     for i, m, n, v in dpg.items():
         assert grid[i] == (i, m, n, v)
     for i, m, n in dpg.items(missing=True):
@@ -120,7 +119,7 @@ def test_data_plot_grid():
         assert (i, m, n) == (5, 2, 1)
         
     # test dictionaries
-    dpg = DataPlotGrid(dict(
+    dpg = snt.DataPlotGrid(dict(
         a = 0,
         b = 1,
         c = 2,
@@ -158,7 +157,7 @@ def test_thumbnail():
     for i in range(nx):
         for j in range(ny):
             data[i,j] = (i-nx/2)**2 + (j-ny/2)**2
-    imold = ThumbnailImage(
+    imold = snt.ThumbnailImage(
         extent = (-30,30,-20,20),
         data = data
     )
@@ -182,7 +181,7 @@ def test_thumbnail():
         for j in range(ny):
             data[i,j] = [(i-nx/2)**2 + (j-ny/2)**2]*3
     data = (255*data/data.max()).astype(np.uint8)
-    imold = ThumbnailImage(
+    imold = snt.ThumbnailImage(
         extent = (-30,30,-20,20),
         data = data,
         mode = 'RGB'
