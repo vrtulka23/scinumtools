@@ -271,19 +271,18 @@ class Quantity:
             magnitude *= self.prefixes[prefix].magnitude
             unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
         # apply exponent
-        if exp and Fraction.symbol in exp:
-            exp = exp.split(Fraction.symbol)
-            exprat = Fraction(int(exp[0]), int(exp[1]))
-            magnitude = magnitude**(int(exp[0])/int(exp[1]))
-            dimensions = [exprat*dim for dim in dimensions]
-            baseunits = {unitid: exprat}
-        elif exp:
-            exp = int(exp)
-            magnitude = magnitude**exp
-            dimensions = [dim*exp for dim in dimensions]
-            baseunits = {unitid: exp}            
+        if exp:
+            if Fraction.symbol in exp:
+                exp = exp.split(Fraction.symbol)
+                magnitude = magnitude**(int(exp[0])/int(exp[1]))
+                exp = Fraction(int(exp[0]), int(exp[1]))
+            else:
+                exp = int(exp)
+                magnitude = magnitude**exp
+            dimensions = [exp*dim for dim in dimensions]
         else:
-            baseunits = {unitid: 1}
+            exp = 1
+        baseunits = {unitid: exp}
         return Quantity(magnitude, dimensions, baseunits)
     
     def value(self, expression=None, dtype=None):
