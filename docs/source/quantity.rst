@@ -57,42 +57,44 @@ In the above example classes ``Unit`` and ``Constant`` are called as functions t
 
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
 
-Every quantity object contains three fundamental data that are set during object initialization.
+Every quantity object contains following data:
+
+``dimensions`` (aka. base dimensions)
+
+  exponents of 8 base dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``)
 
 ``magnitude``
 
-  is a numerical value of the quantity with base dimensions
+  numerical value of a quantity in base dimensions
 
-``dimensions`` 
+``baseunits`` (aka. base units, or quantity units)
 
-  holds exponents of base units (i.e.: ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``)
+  actual units of a quantity
 
-``baseunits``  
-
-This data can be accessed in a following fashion:
+This data can be accessed in a following way:
 
 .. code-block::
 
    >>> distance = Quantity(2, 'km')
-   >>> distance.magnitude
-   2000.0 
-   >>> distance.dimensions
+   >>> distance.dimensions            # exponents of base dimension
    Dimensions(m=1)
-   >>> distance.baseunits
+   >>> distance.magnitude             # numerical value in base dimensions (meters)
+   2000.0 
+   >>> distance.baseunits             # exponents of base units
    BaseUnits(km=1)
 
 Further on, native value representation of a quantity, dimension and baseunits can be accessed using ``value()`` methods:
 
 .. code-block::
 
-   >>> distance.value()
+   >>> distance.value()               # numerical value in base units (kilometers)
    2.0
-   >>> distance.dimensions.value()
+   >>> distance.dimensions.value()    # list of base dimensions exponents
    [1, 0, 0, 0, 0, 0, 0, 0]
-   >>> distance.baseunits.value()
+   >>> distance.baseunits.value()     # dictionary of base units exponents
    {'k:m': 1}
    
-Note that value of the quantity is given in units of ``baseunits`` instead of ``dimensions``. Value of ``dimensions`` object is represented as a Python list, where integers are exponents of individual base units, respectively. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit symbols separate unit prefixes and unit symbols with a colon.
+Note that value of the quantity is given in units of ``baseunits`` instead of ``dimensions``. Value of ``dimensions`` object is represented as a Python list, where integers are exponents of individual base units, respectively. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit prefixes are separated from unit symbols with a colon.
    
 Conversion between units
 ^^^^^^^^^^^^^^^^^^^^^^^^
