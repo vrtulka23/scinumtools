@@ -83,7 +83,7 @@ This data can be accessed in a following way:
    >>> distance.baseunits             # exponents of base units
    BaseUnits(km=1)
 
-Further on, native value representation of a quantity, dimension and baseunits can be accessed using ``value()`` methods:
+Further on, numerical value of quantity in base units, dimension and baseunits can be accessed using ``value()`` methods:
 
 .. code-block::
 
