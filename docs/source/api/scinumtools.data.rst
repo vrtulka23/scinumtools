@@ -12,6 +12,22 @@ scinumtools.data.CachingClass module
    :undoc-members:
    :show-inheritance:
 
+scinumtools.data.DataCombinationClass module
+--------------------------------------------
+
+.. automodule:: scinumtools.data.DataCombinationClass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+scinumtools.data.DataPlotGridClass module
+-----------------------------------------
+
+.. automodule:: scinumtools.data.DataPlotGridClass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 scinumtools.data.ImageClass module
 ----------------------------------
 
@@ -20,10 +36,10 @@ scinumtools.data.ImageClass module
    :undoc-members:
    :show-inheritance:
 
-scinumtools.data.PlottingClass module
--------------------------------------
+scinumtools.data.NormalizeDataClass module
+------------------------------------------
 
-.. automodule:: scinumtools.data.PlottingClass
+.. automodule:: scinumtools.data.NormalizeDataClass
    :members:
    :undoc-members:
    :show-inheritance:
