@@ -1,5 +1,5 @@
-Quantities, units and constants
-===============================
+Physical quantities
+===================
 
 Class ``Quantity`` and its derivates, ``Unit`` and ``Constant``, can be used in many scientific applications, because they enable easy manipulation and calculations with physical quantities. Among the most interesting features of ``Quantity`` are:
 
@@ -12,13 +12,16 @@ Class ``Quantity`` and its derivates, ``Unit`` and ``Constant``, can be used in 
 
 All available units, constants and prefixes with their corresponding symbols and definitions are listed in `UnitList.py <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/phys/units/UnitList.py>`_. In this text we will use them without extensive introduction.
 
-All units used by ``Quantity`` are based on 8 fundamental `base units`, also called `dimensions`. These are not identical with any standard metric system (SI, CGS) but conveniently selected for ease of implementation and internal calculations. Six units are physical (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela) and two are numerical (``mol`` mole, ``rad`` radian). Derived units use combinations of these dimensions.
+All units used by ``Quantity`` are based on 8 fundamental ``base units``, also called ``dimensions``. These are not identical with any standard metric system (SI, CGS) but conveniently selected for ease of implementation and internal calculations. Six units are physical (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela) and two are numerical (``mol`` mole, ``rad`` radian). Derived units use combinations of these dimensions.
 
 Units can be used individually, or combined together using basic mathematical operations. Multiplication is denoted using asterisk symbol ``m*m``, division using slash symbol ``m/s``, integer powers are indicated with a number after the unit ``m2`` (or ``m-2``) and fractional powers are denoted using two numbers separated by a colon ``s3:3`` (or ``s-3:3``). Units can also have a numerical part ``60*s`` (or ``365.25*day``, or ``1.67e-24*g``) and can use parenthesis ``m3/(kg*s2)``. No empty spaces in unit expressions are alowed.
 
 * Units without prefixes: ``g``, ``J``, ``ly``
 * Units with prefixes: ``mg``, ``MJ``, ``kly``
 * Unit expressions: ``kg*m2/s2``, ``V/(C/s)``, ``1/Hz1:2``
+
+Quantity definitions
+^^^^^^^^^^^^^^^^^^^^
 
 Working with quantities is fairly straightforward and follows similar patters as other Python unit modules:
 
@@ -32,7 +35,7 @@ Working with quantities is fairly straightforward and follows similar patters as
    Quantity(1.850e+00 m)
 
 Units and constants can be used directly in operations with a scalar values or ``numpy`` arrays:
-   
+
 .. code-block::
 
    >>> import numpy as np
@@ -54,4 +57,58 @@ In the above example classes ``Unit`` and ``Constant`` are called as functions t
 
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
 
+Every quantity object contains three fundamental data that are set during object initialization.
+
+``magnitude``
+
+  is a numerical value of the quantity with base dimensions
+
+``dimensions`` 
+
+  holds exponents of base units (i.e.: ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``)
+
+``baseunits``  
+
+This data can be accessed in a following fashion:
+
+.. code-block::
+
+   >>> distance = Quantity(2, 'km')
+   >>> distance.magnitude
+   2000.0 
+   >>> distance.dimensions
+   Dimensions(m=1)
+   >>> distance.baseunits
+   BaseUnits(km=1)
+
+Further on, native value representation of a quantity, dimension and baseunits can be accessed using ``value()`` methods:
+
+.. code-block::
+
+   >>> distance.value()
+   2.0
+   >>> distance.dimensions.value()
+   [1, 0, 0, 0, 0, 0, 0, 0]
+   >>> distance.baseunits.value()
+   {'k:m': 1}
+   
+Note that value of the quantity is given in units of ``baseunits`` instead of ``dimensions``. Value of ``dimensions`` object is represented as a Python list, where integers are exponents of individual base units, respectively. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit symbols separate unit prefixes and unit symbols with a colon.
+   
+Conversion between units
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Unit conversion is an integral part of this package. Every quantity can be converted to other units (with the same dimensions) using ``to(<unit>)`` method.
+
+.. code-block::
+
+   >>> distance = Quantity(2, 'km')
+   >>> distance.to('m')
+   Quantity(2.000e+03 m)
+
+Values of quantities can be casted in different units as well, by specifying new base units.
+
+.. code-block::
+
+   >>> distance.value('cm')
+   200000.0
 
