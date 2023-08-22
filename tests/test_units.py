@@ -137,6 +137,8 @@ def test_definitions():
         if not isinstance(unit['definition'],str):
             continue
         q = Quantity(1, unit['definition'])
+        if q.dimensions.value() != unit['dimensions'] or not isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07):
+            print(q, symbol)
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
         assert q.dimensions.value() == unit['dimensions']
         
@@ -271,11 +273,21 @@ def test_operation_sides():
     assert p/2 == 1/(2/p)
     
 def test_unique_names():
-
-    units = list(UnitStandard.keys())
-    for unit in UnitStandard.keys():
-        for prefix in UnitPrefixes.keys():
-            units.append(f"{prefix}{unit}")
+    
+    unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
+    prefixes = UnitPrefixes.keys()
+    
+    units = list(unitlist.keys())
+    for symbol, unit in unitlist.items():
+        if isinstance(unit.prefixes, list):
+            for prefix in unit.prefixes:
+                assert prefix in prefixes
+                units.append(f"{prefix}{symbol}")
+        elif unit.prefixes is True:
+            for prefix in prefixes:
+                units.append(f"{prefix}{symbol}")
+    #print(units)
+    #exit(1)
     units.sort()
     seen = set()
     dupes = [x for x in units if x in seen or seen.add(x)]    
@@ -308,3 +320,28 @@ def test_nan():
 
     assert str(NaN()) == "Quantity(nan)"
     assert str(NaN('cm')) == "Quantity(nan cm)"
+
+def test_unit_list():
+    
+    assert str(Unit())
+    assert str(Constant())
+
+    #print(Constant())
+    #exit(1)
+    
+def test_prefixes():
+    
+    # unit can have any prefix
+    assert str(Quantity(1, 'km'))    == "Quantity(1.000e+00 km)"
+    
+    # unit cannot have prefixes
+    with pytest.raises(Exception) as excinfo:
+        Quantity(1, 'kCel')
+    assert excinfo.value.args[0]=="Unit cannot have any prefixes:"
+    assert excinfo.value.args[1]=="Cel"
+    
+    # unit can have only selected prefixes
+    with pytest.raises(Exception) as excinfo:
+        Quantity(1, 'mpc')
+    assert excinfo.value.args[0]=="Unit can have only following prefixes:"
+    assert excinfo.value.args[1]==['k', 'M', 'G', 'T']

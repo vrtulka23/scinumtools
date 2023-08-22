@@ -29,8 +29,8 @@ class Quantity:
             baseunits: Union[dict,BaseUnits] = None
     ):
         # Initialize settings
-        self.unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
-        self.prefixes = ParameterDict(['magnitude','dimensions','definition','name'], UnitPrefixes)
+        self.unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
+        self.prefixes = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes)
         # Set magnitude
         if isinstance(magnitude, (int,float)):
             self.magnitude = float(magnitude)
@@ -266,8 +266,12 @@ class Quantity:
             if symbol==' ':
                 break
         if prefix:
-            if prefix not in self.prefixes.keys():
+            if isinstance(self.unitlist[base].prefixes,list) and prefix not in self.unitlist[base].prefixes:
+                raise Exception(f"Unit can have only following prefixes:", self.unitlist[base].prefixes)
+            elif self.unitlist[base].prefixes is True and prefix not in self.prefixes.keys():
                 raise Exception(f"Unknown unit prefix:", string_bak)
+            elif self.unitlist[base].prefixes is False:
+                raise Exception(f"Unit cannot have any prefixes:", base)
             magnitude *= self.prefixes[prefix].magnitude
             unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
         # apply exponent
