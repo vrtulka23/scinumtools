@@ -1,6 +1,7 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
 from .FractionClass import Fraction
+from .UnitList import UnitStandard, UnitPrefixes
 
 @dataclass
 class BaseUnits:

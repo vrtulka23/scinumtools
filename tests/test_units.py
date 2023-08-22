@@ -345,3 +345,15 @@ def test_prefixes():
         Quantity(1, 'mpc')
     assert excinfo.value.args[0]=="Unit can have only following prefixes:"
     assert excinfo.value.args[1]==['k', 'M', 'G', 'T']
+    
+def test_rebase():
+    
+    # simple prefix rebasing 
+    assert str(Quantity(1, 'cm*m*dm').rebase())  == "Quantity(1.000e+03 cm3)"
+    
+    # rebasing prefixes with exponents
+    assert str(Quantity(1, 'C3*cm*m2').rebase()) == "Quantity(1.000e+04 C3*cm3)"
+    assert str(Quantity(1, 'cm*m3:2').rebase())  == "Quantity(1.000e+03 cm5:2)"
+    
+    # rebasing different units
+    assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"

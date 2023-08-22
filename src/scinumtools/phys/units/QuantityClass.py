@@ -321,6 +321,25 @@ class Quantity:
         unit = unit1/unit2
         return Quantity(unit.magnitude, units)
 
+    def rebase(self):
+        factor = 1
+        baseunits = {}
+        for unitid,exp in self.baseunits.baseunits.items():
+            if ":" in unitid:
+                prefix, base = unitid.split(":")
+            else:
+                prefix, base = '', unitid
+            _, dimensions, _, _, _ = UnitStandard[base]
+            dims = str(dimensions)
+            if dims in baseunits:
+                quant = Quantity(1, prefix+base).to(baseunits[dims][1]+baseunits[dims][2])
+                factor *= quant.value()**(exp.num/exp.den)
+                baseunits[dims][3] += exp
+            else:
+                baseunits[dims] = [unitid,prefix,base,exp]
+        self.baseunits = BaseUnits({unitid:exp for unitid,prefix,base,exp in baseunits.values()})
+        return self
+
 def implements(np_function):
     def decorator(func):
         HANDLED_FUNCTIONS[np_function] = func
