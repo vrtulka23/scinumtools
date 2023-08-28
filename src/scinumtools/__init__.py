@@ -25,6 +25,6 @@ from scinumtools.phys.units.UnitClass import NaN as nan
 
 from scinumtools.stats.StopwatchClass import Stopwatch
 
-from scinumtools.structs.CollectorClass import ListCollector, ArrayCollector
+from scinumtools.structs.CollectorClass import RowCollector
 from scinumtools.structs.ParameterClass import ParameterList, ParameterDict
 from scinumtools.structs.ProgressBar import ProgressBar

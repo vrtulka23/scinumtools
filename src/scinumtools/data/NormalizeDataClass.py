@@ -2,7 +2,7 @@ from matplotlib.colors import Normalize, LogNorm
 from dataclasses import dataclass
 import numpy as np
 
-from ..structs import ArrayCollector
+from ..structs.CollectorClass import RowCollector
 
 @dataclass
 class Ranges:
@@ -18,7 +18,7 @@ class NormalizeData:
 
     xaxis: bool
     yaxis: bool
-    _collector: ArrayCollector
+    _collector: RowCollector
     
     def __enter__(self):
         return self
@@ -32,7 +32,7 @@ class NormalizeData:
         columns = ['zminpos','zmin','zmax']
         if xaxis: columns += ['xminpos','xmin','xmax']
         if yaxis: columns += ['yminpos','ymin','ymax']
-        self._collector = ArrayCollector(columns)
+        self._collector = RowCollector(columns)
 
     def append(self, vdata, xdata=None, ydata=None):
         """ Append data to the range collector

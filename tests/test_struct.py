@@ -4,12 +4,12 @@ from textwrap import dedent
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.structs import *
+import scinumtools as snt
 
 def test_row_collector_list():
     
     columns = ['col1','col2','col3']
-    with ListCollector(columns) as lc:
+    with snt.RowCollector(columns) as lc:
         lc.append([1,2,3])
         lc.append([4,5,6])
         lc.append([7,8,9])
@@ -41,7 +41,7 @@ def test_row_collector_list():
         
 def test_row_collector_array():
     
-    with ArrayCollector(['col1','col2','col3']) as ac:
+    with snt.RowCollector(['col1','col2','col3'], array=True) as ac:
         ac.append([1,2,3])
         ac.append([4,5,6])
         ac.append([7,8,0])
@@ -72,7 +72,7 @@ def test_row_collector_array():
         assert str(ac) == result
         
     columns = {'col1':dict(dtype=str),'col2':dict(dtype=float),'col3':dict(dtype=bool)}
-    with ArrayCollector(columns) as ac:
+    with snt.RowCollector(columns, array=True) as ac:
         ac.append([1,2,3])
         ac.append([4,5,6])
         ac.append([7,8,0])
@@ -110,12 +110,12 @@ def test_parameter_list():
         for index,settings in params.items():
             assert param['b'] in [2,5]        
     # append values
-    with ParameterList(['a','b','c']) as params:
+    with snt.ParameterList(['a','b','c']) as params:
         params.append([1, 2, 3])
         params.append([4, 5, 6])
         test(params)
     # direct value insertion
-    params = ParameterList(['a','b','c'],[
+    params = snt.ParameterList(['a','b','c'],[
         [1, 2, 3],
         [4, 5, 6]
     ])
@@ -130,12 +130,12 @@ def test_parameter_dict():
         for index,settings in params.items():
             assert param['b'] in [2,5]
     # append values
-    with ParameterDict(['a','b','c']) as params:
+    with snt.ParameterDict(['a','b','c']) as params:
         params['d'] = [1, 2, 3]
         params.append( 'e', [4, 5, 6] )
         test(params)
     # direct value insertion
-    params = ParameterDict(['a','b','c'],{
+    params = snt.ParameterDict(['a','b','c'],{
         'd': [1, 2, 3],
         'e': [4, 5, 6]
     })
@@ -144,10 +144,11 @@ def test_parameter_dict():
 def test_progressbar():
 
     nsteps = 200
-    pb = ProgressBar(nsteps)
+    pb = snt.ProgressBar(nsteps)
     for i in range(nsteps):
         pb.step()
     pb.close()
 
-    with ProgressBar(nsteps) as pb:
+    with snt.ProgressBar(nsteps) as pb:
         pb.step()
+        

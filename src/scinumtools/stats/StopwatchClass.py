@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-from ..structs import ListCollector
+from ..structs.CollectorClass import RowCollector
 
 class Stopwatch:
     """ Helper class that measures time of various processes in the code
@@ -68,7 +68,7 @@ class Stopwatch:
     def report(self):
         """ Print time report for all nodes
         """        
-        lc = ListCollector(['Laps','Time','Time/Lap','Node'])
+        lc = RowCollector(['Laps','Time','Time/Lap','Node'])
         for name,watch in self._watches.items():
             lc.append([
                 watch['laps'],
