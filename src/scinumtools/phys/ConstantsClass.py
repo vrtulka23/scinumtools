@@ -1,4 +1,3 @@
-from ..structs import ParameterDict
 from enum import Enum
 from dataclasses import dataclass
 

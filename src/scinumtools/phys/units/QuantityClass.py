@@ -3,7 +3,7 @@ import numpy as np
 import re
 from typing import Union
 
-from ...structs.ParameterClass import ParameterDict
+from ...structs.ParameterClass import ParameterTable
 from ...math.solver import ExpressionSolver, AtomBase, OperatorPar, OperatorMul, OperatorTruediv
 from .UnitList import *
 from .UnitConverters import *
@@ -29,8 +29,8 @@ class Quantity:
             baseunits: Union[dict,BaseUnits] = None
     ):
         # Initialize settings
-        self.unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
-        self.prefixes = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes)
+        self.unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
+        self.prefixes = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes, keys=True)
         # Set magnitude
         if isinstance(magnitude, (int,float)):
             self.magnitude = float(magnitude)

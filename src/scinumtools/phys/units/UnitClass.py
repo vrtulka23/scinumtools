@@ -2,7 +2,7 @@ import numpy as np
 
 from .UnitList import UnitStandard, UnitPrefixes
 from .QuantityClass import Quantity
-from ...structs.ParameterClass import ParameterDict
+from ...structs.ParameterClass import ParameterTable
 
 class Unit:
     
@@ -37,8 +37,8 @@ class Unit:
             else:
                 return ''
         
-        unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
-        prefixes = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes)
+        unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
+        prefixes = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes, keys=True)
         sw, uw, dw, pw = 8, 20, 20, 15
         text =  "Units\n"
         text += "\nPrefixes:\n\n"
@@ -101,7 +101,7 @@ class Constant:
 
     @staticmethod
     def _list():
-        unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
+        unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
         sw, uw, dw = 8, 20, 20
         text = "Constants\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"

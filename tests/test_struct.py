@@ -110,12 +110,12 @@ def test_parameter_list():
         for index,settings in params.items():
             assert param['b'] in [2,5]        
     # append values
-    with snt.ParameterList(['a','b','c']) as params:
+    with snt.ParameterTable(['a','b','c']) as params:
         params.append([1, 2, 3])
         params.append([4, 5, 6])
         test(params)
     # direct value insertion
-    params = snt.ParameterList(['a','b','c'],[
+    params = snt.ParameterTable(['a','b','c'],[
         [1, 2, 3],
         [4, 5, 6]
     ])
@@ -130,15 +130,15 @@ def test_parameter_dict():
         for index,settings in params.items():
             assert param['b'] in [2,5]
     # append values
-    with snt.ParameterDict(['a','b','c']) as params:
+    with snt.ParameterTable(['a','b','c'], keys=True) as params:
         params['d'] = [1, 2, 3]
         params.append( 'e', [4, 5, 6] )
         test(params)
     # direct value insertion
-    params = snt.ParameterDict(['a','b','c'],{
+    params = snt.ParameterTable(['a','b','c'],{
         'd': [1, 2, 3],
         'e': [4, 5, 6]
-    })
+    }, keys=True)
     test(params)
 
 def test_progressbar():

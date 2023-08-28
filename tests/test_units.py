@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.structs import ParameterDict
+from scinumtools import ParameterTable
 from scinumtools.phys.units.UnitList import UnitStandard, UnitPrefixes
 from scinumtools.phys.units import *
 
@@ -132,7 +132,7 @@ def test_base_units():
     
 def test_definitions():
     
-    unitlist = ParameterDict(['magnitude','dimensions','definition','name'], UnitStandard)
+    unitlist = ParameterTable(['magnitude','dimensions','definition','name'], UnitStandard, keys=True)
     for symbol, unit in unitlist.items():
         if not isinstance(unit['definition'],str):
             continue
@@ -142,7 +142,7 @@ def test_definitions():
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
         assert q.dimensions.value() == unit['dimensions']
         
-    prefixes = ParameterDict(['magnitude','dimensions','definition','name'], UnitPrefixes)
+    prefixes = ParameterTable(['magnitude','dimensions','definition','name'], UnitPrefixes, keys=True)
     for symbol, unit in prefixes.items():
         if not isinstance(unit['definition'],str):
             continue
@@ -274,7 +274,7 @@ def test_operation_sides():
     
 def test_unique_names():
     
-    unitlist = ParameterDict(['magnitude','dimensions','definition','name','prefixes'], UnitStandard)
+    unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
     prefixes = UnitPrefixes.keys()
     
     units = list(unitlist.keys())
