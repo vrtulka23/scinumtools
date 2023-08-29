@@ -14,8 +14,8 @@ All available units, constants and prefixes with their corresponding symbols and
 
 .. code-block::
 
-   >>> import scinumtools as snt
-   >>> print(snt.Unit())
+   >>> import scinumtools.units as su
+   >>> print(su.Unit())
    Units
 
    Prefixes:
@@ -28,7 +28,7 @@ All available units, constants and prefixes with their corresponding symbols and
    P        | peta                 | 1e15                
    ...
    
-   >>> print(snt.Constant())
+   >>> print(su.Constant())
    Constants
    
    Symbol   | Unit                 | Definition          
