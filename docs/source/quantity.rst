@@ -10,7 +10,33 @@ Class ``Quantity`` and its derivates, ``Unit`` and ``Constant``, can be used in 
 * ``Quantity`` is a self-content class that does not need initialization in a header, or use of registries. Quantities can be pickled and are compatible when created in different parts of the code.
 * Support of fractional powers
 
-All available units, constants and prefixes with their corresponding symbols and definitions are listed in `UnitList.py <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/phys/units/UnitList.py>`_. In this text we will use them without extensive introduction.
+All available units, constants and prefixes with their corresponding symbols and definitions are listed in `UnitList.py <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/UnitList.py>`_. In this text we will use them without extensive introduction. List of available units and constants can be printed using following python command:
+
+.. code-block::
+
+   >>> import scinumtools as snt
+   >>> print(snt.Unit())
+   Units
+
+   Prefixes:
+   
+   Symbol   | Prefix               | Definition          
+   ---------+----------------------+---------------------
+   Y        | yotta                | 1e24                
+   Z        | zetta                | 1e21                
+   E        | exa                  | 1e18                
+   P        | peta                 | 1e15                
+   ...
+   
+   >>> print(snt.Constant())
+   Constants
+   
+   Symbol   | Unit                 | Definition          
+   ---------+----------------------+---------------------
+   [c]      | velocity of light    | 299792458*m/s       
+   [h]      | Planck const.        | 6.6260755e-34*J*s   
+   [k]      | Boltzmann const.     | 1.380658e-23*J/K    
+   [eps_0]  | permit. of vac.      | 8.854187817e-12*F/m 
 
 All units used by ``Quantity`` are based on 8 fundamental ``base units``, also called ``dimensions``. These are not identical with any standard metric system (SI, CGS) but conveniently selected for ease of implementation and internal calculations. Six units are physical (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela) and two are numerical (``mol`` mole, ``rad`` radian). Derived units use combinations of these dimensions.
 
@@ -27,7 +53,7 @@ Working with quantities is fairly straightforward and follows similar patters as
 
 .. code-block::
 
-   >>> from scinumtools import Quantity, Unit, Constant
+   >>> from scinumtools.units import Quantity, Unit, Constant
    >>> 
    >>> height = Quantity(1.85, 'm')
    >>> height

@@ -1,11 +1,8 @@
 #!/bin/bash
-
-rm -rf docs/build/*
-rm -fr ./docs/source/api
-sphinx-apidoc -o ./docs/source/api ./src/*
 cd docs
-#make html latexpdf
-#make html
+make clean
+rm -fr ./source/api
+sphinx-apidoc -o ./source/api ../src/*
 sphinx-build -b html source build/html -v
 cd build/html
 echo "Documentation HTML:"

@@ -6,8 +6,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools import ParameterTable
-from scinumtools.phys.units.UnitList import UnitStandard, UnitPrefixes
-from scinumtools.phys.units import *
+from scinumtools.units import *
 
 def test_quantity():
     
@@ -61,7 +60,6 @@ def test_constants():
         assert str(const.c)   == "Quantity(1.000e+00 [c])"
     
 def test_aliases():
-    from scinumtools import quant, unit, const
     assert str(quant(23, 'km'))   == "Quantity(2.300e+01 km)"
     assert str(unit('m'))         == "Quantity(1.000e+00 m)"
     assert str(const('c'))        == "Quantity(1.000e+00 [c])"    
@@ -138,7 +136,7 @@ def test_definitions():
             continue
         q = Quantity(1, unit['definition'])
         if q.dimensions.value() != unit['dimensions'] or not isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07):
-            print(q, symbol)
+            print(q, symbol, unit['definition'], unit['magnitude'])
         assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
         assert q.dimensions.value() == unit['dimensions']
         
