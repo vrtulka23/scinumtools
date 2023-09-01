@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-from .CollectorClass import RowCollector
+from .RowCollectorClass import RowCollector
 
 class Stopwatch:
     """ Helper class that measures time of various processes in the code

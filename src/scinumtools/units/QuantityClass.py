@@ -3,7 +3,7 @@ import numpy as np
 import re
 from typing import Union
 
-from ..ParameterClass import ParameterTable
+from ..ParameterTableClass import ParameterTable
 from ..solver import ExpressionSolver, AtomBase, OperatorPar, OperatorMul, OperatorTruediv
 from .UnitList import *
 from .UnitConverters import *

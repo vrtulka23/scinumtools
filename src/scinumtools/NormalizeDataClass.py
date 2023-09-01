@@ -2,7 +2,7 @@ from matplotlib.colors import Normalize, LogNorm
 from dataclasses import dataclass
 import numpy as np
 
-from .CollectorClass import RowCollector
+from .RowCollectorClass import RowCollector
 
 @dataclass
 class Ranges:

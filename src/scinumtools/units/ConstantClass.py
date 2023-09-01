@@ -2,7 +2,7 @@ import numpy as np
 
 from .UnitList import UnitStandard
 from .QuantityClass import Quantity
-from ..ParameterClass import ParameterTable
+from ..ParameterTableClass import ParameterTable
 
 class Constant:
 
