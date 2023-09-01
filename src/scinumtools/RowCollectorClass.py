@@ -30,7 +30,7 @@ class RowCollector:
     def __exit__(self, type, value, tb):
         pass
     
-    def __init__(self, columns: Union[list,dict], array: bool = False):
+    def __init__(self, columns: Union[list,dict], rows: list = None, array: bool = False):
         self._columns = []
         self._array = array
         if self._array is False:
@@ -47,6 +47,9 @@ class RowCollector:
                 for column in columns:
                     setattr(self,column,np.array([]))
                     self._columns.append(column)
+        if rows:
+            for row in rows:
+                self.append(row)
 
     def __str__(self):
         return self.to_text()
