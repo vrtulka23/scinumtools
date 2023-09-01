@@ -1,63 +1,78 @@
 class Converter:
 
-    convertable: bool = False
-    unit1: dict = None
-    unit2: dict = None
-    
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, type, value, traceback):
-        pass
-        
-    def __init__(self, baseunits1, baseunits2):
-        for unitid, exponent in baseunits1.items():
-            if unitid.split(':')[-1] in self.process:
-                self.convertable = True
-        for unitid, exponent in baseunits2.items():
-            if unitid.split(':')[-1] in self.process:
-                self.convertable = True
-        if self.convertable:
-            if len(baseunits1)!=1 or len(baseunits2)!=1:
-                raise Exception("Only simple units can be converted between each other:", baseunits1, baseunits2)
-            else:
-                self.unit1 = list(baseunits1.keys())[0].split(':')[-1]
-                self.unit2 = list(baseunits2.keys())[0].split(':')[-1]
+    def __new__(cls, *args):
+        obj = object.__new__(cls)
+        if method := obj.convert(args[0].baseunits.value(), args[1].baseunits.value()):
+            if not hasattr(obj,method):
+                raise Exception('Invalid conversion:', symbol1, symbol2)
+            obj.method = method
+            return obj
+        else:
+            return None
+
+    def __init__(self, unit1, unit2):
+        factor = getattr(self,self.method)(unit1.magnitude, unit2.magnitude)
+        unit2.magnitude = unit1.magnitude/factor
+        self.unit1 = unit1
+        self.unit2 = unit2
 
 class TemperatureConverter(Converter):
-                
-    process: list = ['Cel','degF']
     
-    def convert(self, magnitude1, magnitude2):
-        if self.unit1=='K' and self.unit2=='Cel':
-            return (magnitude1-273.15)/magnitude2
-        elif self.unit1=='K' and self.unit2=='degF':
-            return ((magnitude1-273.15)*9/5+32)/magnitude2
-        elif self.unit1=='degR' and self.unit2=='degF':
-            return (magnitude1*9/5-459.67)/magnitude2
-        elif self.unit1=='degR' and self.unit2=='Cel':
-            return ((magnitude1*9/5-491.67)*5/9)/magnitude2
-        elif self.unit1=='Cel' and self.unit2=='K':
-            return (magnitude1+273.15)/magnitude2
-        elif self.unit1=='Cel' and self.unit2=='degF':
-            return ((magnitude1*9/5)+32)/magnitude2
-        elif self.unit1=='Cel' and self.unit2=='degR':
-            return ((magnitude1*9/5)+491.67)/(magnitude2*9/5)
-        elif self.unit1=='degF' and self.unit2=='K':
-            return (((magnitude1-32)*5/9)+273.15)/magnitude2
-        elif self.unit1=='degF' and self.unit2=='Cel':
-            return ((magnitude1-32)*5/9)/magnitude2
-        elif self.unit1=='degF' and self.unit2=='degR':
-            return (magnitude1+459.67)/(magnitude2*9/5)
+    def convert(self, baseunits1, baseunits2):
+        process: list = ['Cel','degF']
+        convert = False
+        for unitid, exponent in baseunits1.items():
+            if unitid.split(':')[-1] in process:
+                convert = True
+        for unitid, exponent in baseunits2.items():
+            if unitid.split(':')[-1] in process:
+                convert = True
+        if convert:
+            if len(baseunits1)!=1 or len(baseunits2)!=1:
+                raise Exception("Only simple units can be converted between each other:", baseunits1, baseunits2)
+            symbol1 = list(baseunits1.keys())[0].split(':')[-1]
+            symbol2 = list(baseunits2.keys())[0].split(':')[-1]
+            return f"convert_{symbol1}_{symbol2}"
         else:
-            raise Exception('Invalid conversion:', self.unit1, self.unit2)
-
+            return False
+        
+    def convert_K_Cel(self, mag1, mag2):
+        return (mag1-273.15)/mag2
+        
+    def convert_K_degF(self, mag1, mag2):
+        return ((mag1-273.15)*9/5+32)/mag2
+        
+    def convert_degR_degF(self, mag1, mag2):
+        return (mag1*9/5-459.67)/mag2
+        
+    def convert_degR_Cel(self, mag1, mag2):
+        return ((mag1*9/5-491.67)*5/9)/mag2
+        
+    def convert_Cel_K(self, mag1, mag2):
+        return (mag1+273.15)/mag2
+        
+    def convert_Cel_degF(self, mag1, mag2):
+        return ((mag1*9/5)+32)/mag2
+        
+    def convert_Cel_degR(self, mag1, mag2):
+        return ((mag1*9/5)+491.67)/(mag2*9/5)
+        
+    def convert_degF_K(self, mag1, mag2):
+        return (((mag1-32)*5/9)+273.15)/mag2
+    
+    def convert_degF_Cel(self, mag1, mag2):
+        return ((mag1-32)*5/9)/mag2
+        
+    def convert_degF_degR(self, mag1, mag2):
+        return (mag1+459.67)/(mag2*9/5)
+        
+        
 class LogarithmicConverter(Converter):
 
     process: list = ['dBm','dBmW']
     
     def convert(self, magnitude1, magnitude2):
-        if self.unit1=='dBm' and self.unit2=='W':
+        if symbol1=='dBm' and symbol2=='W':
             return 234
         else:
-            raise Exception('Invalid conversion:', self.unit1, self.unit2)
+            raise Exception('Invalid conversion:', symbol1, symbol2)

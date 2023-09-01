@@ -315,10 +315,10 @@ class Quantity:
             else:
                 raise Exception("Converting units with different dimensions:",
                                 unit1.dimensions, unit2.dimensions)
-        with TemperatureConverter(unit1.baseunits.value(), unit2.baseunits.value()) as tc:
-            if tc.convertable:
-                unit2.magnitude = unit1.magnitude/tc.convert(unit1.magnitude, unit2.magnitude)
-        unit = unit1/unit2
+        if tc := TemperatureConverter(unit1, unit2):
+            unit = tc.unit1/tc.unit2
+        else:
+            unit = unit1/unit2
         return Quantity(unit.magnitude, units)
 
     def rebase(self):
