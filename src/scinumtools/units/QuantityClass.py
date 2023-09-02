@@ -75,6 +75,7 @@ class Quantity:
         else:
             raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
         if self.dimensions == Dimensions():
+            #self.rebase()
             self.baseunits = BaseUnits()
 
     def _add(self, left, right):
@@ -315,8 +316,10 @@ class Quantity:
             else:
                 raise Exception("Converting units with different dimensions:",
                                 unit1.dimensions, unit2.dimensions)
-        if tc := TemperatureConverter(unit1, unit2):
-            unit = tc.unit1/tc.unit2
+        if c := TemperatureConverter(unit1, unit2):
+            unit = c.unit1/c.unit2
+        elif c := LogarithmicConverter(unit1, unit2):
+            unit = c.unit1/c.unit2
         else:
             unit = unit1/unit2
         return Quantity(unit.magnitude, units)
@@ -324,19 +327,32 @@ class Quantity:
     def rebase(self):
         factor = 1
         baseunits = {}
-        for unitid,exp in self.baseunits.baseunits.items():
+        def get_unit(unitid):
             if ":" in unitid:
                 prefix, base = unitid.split(":")
+                pref, _, _, _ = UnitPrefixes[prefix]
             else:
                 prefix, base = '', unitid
-            _, dimensions, _, _, _ = UnitStandard[base]
-            dims = str(dimensions)
-            if dims in baseunits:
-                quant = Quantity(1, prefix+base).to(baseunits[dims][1]+baseunits[dims][2])
+                pref = 1
+            mag, dim, _, _, _ = UnitStandard[base]
+            return pref, mag, dim, prefix, base
+        for unitid,exp in self.baseunits.baseunits.items():
+            # find dimensions
+            pref1, mag1, dim1, prefix, base = get_unit(unitid)
+            # does dimensions string already exist in the list?
+            dim1 = str(dim1)
+            if dim1 in baseunits:
+                # exists: convert units
+                #print(pref1, mag1, dim1)
+                #print(prefix+base, baseunits[dim1][1]+baseunits[dim1][2])
+                quant = Quantity(1, prefix+base).to(baseunits[dim1][1]+baseunits[dim1][2])
                 factor *= quant.value()**(exp.num/exp.den)
-                baseunits[dims][3] += exp
+                baseunits[dim1][3] += exp
+                #exit(1)
             else:
-                baseunits[dims] = [unitid,prefix,base,exp]
+                # does not exist: register new
+                baseunits[dim1] = [unitid,prefix,base,exp]
+        # construct new base units
         self.baseunits = BaseUnits({unitid:exp for unitid,prefix,base,exp in baseunits.values()})
         return self
 

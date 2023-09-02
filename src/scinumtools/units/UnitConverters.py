@@ -21,21 +21,22 @@ class TemperatureConverter(Converter):
     def convert(self, baseunits1, baseunits2):
         process: list = ['Cel','degF']
         convert = False
-        for unitid, exponent in baseunits1.items():
+        for unitid in baseunits1.keys():
             if unitid.split(':')[-1] in process:
                 convert = True
-        for unitid, exponent in baseunits2.items():
+        for unitid in baseunits2.keys():
             if unitid.split(':')[-1] in process:
                 convert = True
         if convert:
             if len(baseunits1)!=1 or len(baseunits2)!=1:
-                raise Exception("Only simple units can be converted between each other:", baseunits1, baseunits2)
+                raise Exception("Only simple units can be converted between each other:",
+                                baseunits1, baseunits2)
             symbol1 = list(baseunits1.keys())[0].split(':')[-1]
             symbol2 = list(baseunits2.keys())[0].split(':')[-1]
             return f"convert_{symbol1}_{symbol2}"
         else:
             return False
-        
+
     def convert_K_Cel(self, mag1, mag2):
         return (mag1-273.15)/mag2
         
@@ -69,10 +70,25 @@ class TemperatureConverter(Converter):
         
 class LogarithmicConverter(Converter):
 
-    process: list = ['dBm','dBmW']
-    
-    def convert(self, magnitude1, magnitude2):
-        if symbol1=='dBm' and symbol2=='W':
-            return 234
+    def convert(self, baseunits1, baseunits2):
+        process: list = ['B','dBm','dBmW']
+        convert = False
+        for unitid, exponent in baseunits1.items():
+            if unitid.split(':')[-1] in process:
+                convert = True
+        for unitid, exponent in baseunits2.items():
+            if unitid.split(':')[-1] in process:
+                convert = True
+        if convert:
+            if len(baseunits1)!=1 or len(baseunits2)!=1:
+                raise Exception("Only simple units can be converted between each other:",
+                                baseunits1, baseunits2)
+            symbol1 = list(baseunits1.keys())[0].split(':')[-1]
+            symbol2 = list(baseunits2.keys())[0].split(':')[-1]
+            return f"convert_{symbol1}_{symbol2}"
         else:
-            raise Exception('Invalid conversion:', symbol1, symbol2)
+            return False
+
+    def convert_B_B(self, mag1, mag2):
+        return 1
+        

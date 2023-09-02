@@ -355,3 +355,8 @@ def test_rebase():
     
     # rebasing different units
     assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"
+
+def test_logarithmic():
+
+    #assert str(Quantity(1, 'B').to('dB'))   == "Quantity(1.000e+00 dB)"
+    pass

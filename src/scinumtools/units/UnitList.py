@@ -107,7 +107,7 @@ UnitStandard = {
     # logarithmic units and ratios
     #'ratP':     (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Power ratio',       False              ),      
     #'ratA':     (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Amplitude ratio',   False              ),      
-    #'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  None,                     'Bell',              ['d']),
+    'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Bell',              ['d']              ),
     #'Np':       (1.151277918,    [ 0, 0, 0, 0, 0, 0, 0, 0],  '1.151277918*B',          'Nepers',            False              ),
     'dBm':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', False              ),
     'dBmW':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', False              ),
