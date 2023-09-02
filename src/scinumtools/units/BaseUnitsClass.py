@@ -72,7 +72,7 @@ class BaseUnits:
             return "*".join(units)
         else:
             return None
-    
+        
     def value(self):
         baseunits = {}
         for unit,exp in self.baseunits.items():

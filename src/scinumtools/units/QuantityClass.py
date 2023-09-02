@@ -312,7 +312,7 @@ class Quantity:
         if not unit1.dimensions==unit2.dimensions:
             # Check if inverted unit can be converted
             if -unit1.dimensions==unit2.dimensions:
-                unit1 = Quantity(1)/self
+                unit1 = 1/unit1
             else:
                 raise Exception("Converting units with different dimensions:",
                                 unit1.dimensions, unit2.dimensions)
