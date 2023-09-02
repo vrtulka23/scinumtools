@@ -328,6 +328,7 @@ class Quantity:
         factor = 1
         baseunits = {}
         def get_unit(unitid):
+            # get unit conversion factor
             if ":" in unitid:
                 prefix, base = unitid.split(":")
                 pref, _, _, _ = UnitPrefixes[prefix]
@@ -335,25 +336,20 @@ class Quantity:
                 prefix, base = '', unitid
                 pref = 1
             mag, dim, _, _, _ = UnitStandard[base]
-            return pref, mag, dim, prefix, base
-        for unitid,exp in self.baseunits.baseunits.items():
+            return pref*mag, str(dim)
+        for unitid1,exp1 in self.baseunits.baseunits.items():
             # find dimensions
-            pref1, mag1, dim1, prefix, base = get_unit(unitid)
-            # does dimensions string already exist in the list?
-            dim1 = str(dim1)
+            mag1, dim1 = get_unit(unitid1)
             if dim1 in baseunits:
                 # exists: convert units
-                #print(pref1, mag1, dim1)
-                #print(prefix+base, baseunits[dim1][1]+baseunits[dim1][2])
-                quant = Quantity(1, prefix+base).to(baseunits[dim1][1]+baseunits[dim1][2])
-                factor *= quant.value()**(exp.num/exp.den)
-                baseunits[dim1][3] += exp
-                #exit(1)
+                mag0, dim0 = get_unit(baseunits[dim1][0])
+                factor *= mag1/mag0**(exp1.num/exp1.den)
+                baseunits[dim1][1] += exp1
             else:
                 # does not exist: register new
-                baseunits[dim1] = [unitid,prefix,base,exp]
+                baseunits[dim1] = [unitid1,exp1] #,prefix,base,exp]
         # construct new base units
-        self.baseunits = BaseUnits({unitid:exp for unitid,prefix,base,exp in baseunits.values()})
+        self.baseunits = BaseUnits({unitid:exp for unitid,exp in baseunits.values()})
         return self
 
 def implements(np_function):
