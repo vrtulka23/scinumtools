@@ -24,7 +24,7 @@ class Fraction:
             self.num = int(self.num)
             self.den = int(self.den)
         else:
-            raise Exception("Incorrect input values:", type(self.num), type(self.den))
+            raise Exception("Incorrect numerator, or denominator:", self.num, self.den)
         # enforce whole numbers
         if np.mod(self.num,1)!=0 or np.mod(self.den,1)!=0:
             raise Exception("Fraction excepts only whole numbers:", self.num, self.den)

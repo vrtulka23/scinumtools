@@ -1,6 +1,9 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
+
 from .FractionClass import Fraction
+from .DimensionsClass import Dimensions
+from .UnitList import UnitStandardTable, UnitPrefixesTable
 
 @dataclass
 class BaseUnits:
@@ -9,6 +12,8 @@ class BaseUnits:
     symbol: str = ':'
 
     def __post_init__(self):
+        self.unitlist = UnitStandardTable()
+        self.prefixes = UnitPrefixesTable()
         for unit,exp in self.baseunits.items():
             if not isinstance(exp, Fraction):
                 self.baseunits[unit] = Fraction(exp)
@@ -59,10 +64,23 @@ class BaseUnits:
             baseunits[unit] /= div
         return BaseUnits(baseunits)
     
+    def base(self):
+        magnitude = 1
+        dimensions = Dimensions()
+        for unitid,exp in self.baseunits.items():
+            if ":" in unitid:
+                prefix, base = unitid.split(":")
+                magnitude  *= (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** (exp.num/exp.den)
+            else:
+                prefix, base = '', unitid
+                magnitude  *= self.unitlist[base].magnitude ** (exp.num/exp.den)
+            dimensions += Dimensions(*self.unitlist[base].dimensions)*exp
+        return magnitude, dimensions
+    
     def expression(self):
         units = []
-        for unit,exp in self.baseunits.items():
-            symbol = unit.replace(self.symbol,'')
+        for unitid,exp in self.baseunits.items():
+            symbol = unitid.replace(self.symbol,'')
             if exp.num==1 and exp.den==1:
                 units.append(symbol)
             else:
