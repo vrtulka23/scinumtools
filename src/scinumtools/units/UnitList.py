@@ -3,7 +3,8 @@ import numpy as np
 from ..ParameterTableClass import ParameterTable
 from .UnitConverters import *
         
-UnitPrefixes = {
+def UnitPrefixesTable():
+    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
     'Y':        (1.0e24,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e24',                   'yotta'            ), 
     'Z':        (1.0e21,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e21',                   'zetta'            ), 
     'E':        (1.0e18,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e18',                   'exa'              ), 
@@ -24,11 +25,10 @@ UnitPrefixes = {
     'a':        (1.0e-18,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-18',                  'atto'             ), 
     'z':        (1.0e-21,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-21',                  'zepto'            ), 
     'y':        (1.0e-24,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-24',                  'yocto'            ), 
-}
-def UnitPrefixesTable():
-    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes, keys=True)
-            
-UnitStandard = {
+    }, keys=True)
+    
+def UnitStandardTable():
+    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
     # base physical units
     'm':        (1.0,            [ 1, 0, 0, 0, 0, 0, 0, 0],  None,                     'meter',             True               ),
     'g':        (1.0,            [ 0, 1, 0, 0, 0, 0, 0, 0],  None,                     'gram',              True               ),
@@ -137,7 +137,4 @@ UnitStandard = {
     '[euler]':  (np.e,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '2.718282',               "Euler's num.",      False              ),
     '[N_A]':    (6.0221367e23,   [ 0, 0, 0, 0, 0, 0, 0, 0],  '6.022137e23',            "Avogadro's num.",   False              ),
     '[alpha]':  (7.29735256e-3,  [ 0, 0, 0, 0, 0, 0, 0, 0],  '7.29735256e-3',          "fine str. const.",  False              ),
-}
-    
-def UnitStandardTable():
-    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
+    }, keys=True)

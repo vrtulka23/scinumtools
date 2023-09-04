@@ -1,8 +1,7 @@
 import numpy as np
 
-from .UnitList import UnitStandard, UnitPrefixes
+from .UnitList import UnitStandardTable, UnitPrefixesTable
 from .QuantityClass import Quantity
-from ..ParameterTableClass import ParameterTable
 
 class Unit:
     
@@ -37,8 +36,8 @@ class Unit:
             else:
                 return ''
         
-        unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
-        prefixes = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes, keys=True)
+        unitlist = UnitStandardTable()
+        prefixes = UnitPrefixesTable()
         sw, uw, dw, pw = 8, 20, 20, 15
         text =  "Units\n"
         text += "\nPrefixes:\n\n"

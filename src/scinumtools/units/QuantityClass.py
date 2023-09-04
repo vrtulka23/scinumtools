@@ -330,11 +330,12 @@ class Quantity:
             # get unit conversion factor
             if ":" in unitid:
                 prefix, base = unitid.split(":")
-                pref, _, _, _ = UnitPrefixes[prefix]
+                pref = self.prefixes[prefix]['magnitude']
             else:
                 prefix, base = '', unitid
                 pref = 1
-            mag, dim, _, _, _ = UnitStandard[base]
+            mag = self.unitlist[base]['magnitude']
+            dim = self.unitlist[base]['dimensions']
             return pref*mag, str(dim)
         for unitid1,exp1 in self.baseunits.baseunits.items():
             # find dimensions

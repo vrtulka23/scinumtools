@@ -1,8 +1,7 @@
 import numpy as np
 
-from .UnitList import UnitStandard
+from .UnitList import UnitStandardTable
 from .QuantityClass import Quantity
-from ..ParameterTableClass import ParameterTable
 
 class Constant:
 
@@ -29,7 +28,7 @@ class Constant:
 
     @staticmethod
     def _list():
-        unitlist = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
+        unitlist = UnitStandardTable()
         sw, uw, dw = 8, 20, 20
         text = "Constants\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
