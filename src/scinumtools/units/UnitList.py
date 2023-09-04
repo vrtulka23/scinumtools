@@ -1,5 +1,6 @@
 import numpy as np
 
+from ..ParameterTableClass import ParameterTable
 from .UnitConverters import *
         
 UnitPrefixes = {
@@ -23,7 +24,9 @@ UnitPrefixes = {
     'a':        (1.0e-18,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-18',                  'atto'             ), 
     'z':        (1.0e-21,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-21',                  'zepto'            ), 
     'y':        (1.0e-24,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-24',                  'yocto'            ), 
-}                                                                                        
+}
+def UnitPrefixesTable():
+    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitPrefixes, keys=True)
             
 UnitStandard = {
     # base physical units
@@ -135,3 +138,6 @@ UnitStandard = {
     '[N_A]':    (6.0221367e23,   [ 0, 0, 0, 0, 0, 0, 0, 0],  '6.022137e23',            "Avogadro's num.",   False              ),
     '[alpha]':  (7.29735256e-3,  [ 0, 0, 0, 0, 0, 0, 0, 0],  '7.29735256e-3',          "fine str. const.",  False              ),
 }
+    
+def UnitStandardTable():
+    return ParameterTable(['magnitude','dimensions','definition','name','prefixes'], UnitStandard, keys=True)
