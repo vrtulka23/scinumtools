@@ -43,11 +43,16 @@ class Quantity:
         if dimensions is None:
             self.dimensions = Dimensions()
             self.baseunits = BaseUnits()
-        elif isinstance(dimensions, (str, dict, BaseUnits)):
+        elif isinstance(dimensions, (dict,BaseUnits)):
             if isinstance(dimensions, dict):
-                dimensions = BaseUnits(dimensions).expression()
-            elif isinstance(dimensions, BaseUnits):
-                dimensions = dimensions.expression()
+                baseunits = BaseUnits(dimensions)
+            else:
+                baseunits = dimensions
+            mag, dim = baseunits.base()
+            self.magnitude *= mag
+            self.dimensions = dim
+            self.baseunits = baseunits
+        elif isinstance(dimensions, str):
             if dimensions is None:
                 unit = Quantity(1)
             else:
