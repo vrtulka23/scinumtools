@@ -108,12 +108,12 @@ def UnitStandardTable():
     'F':        (1.0e-3,         [-2,-1, 2, 0, 2, 0, 0, 0],  'C/V',                    'farad',             True               ),
     'S':        (1.0e-3,         [-2,-1, 1, 0, 2, 0, 0, 0],  'Ohm-1',                  'siemens',           True               ),
     # logarithmic units and ratios
-    #'ratP':     (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Power ratio',       False              ),      
-    #'ratA':     (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Amplitude ratio',   False              ),      
+    'PR':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Power ratio',       False              ), 
+    'AR':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Amplitude ratio',   False              ),
+    'Np':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Nepers',            ['c','d']          ),
     'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Bell',              ['d']              ),
-    #'Np':       (1.151277918,    [ 0, 0, 0, 0, 0, 0, 0, 0],  '1.151277918*B',          'Nepers',            False              ),
-    'dBm':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', False              ),
-    'dBmW':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', False              ),
+    'Bm':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', ['d']              ),
+    'BmW':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', ['d']              ),
     # percentages
     '%':        (1e-2,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-2',                   'percent',           False              ),
     'ppth':     (1e-3,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-3',                   'promile',           False              ),

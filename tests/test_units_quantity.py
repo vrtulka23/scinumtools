@@ -154,6 +154,18 @@ def test_inversion():
 
 def test_logarithmic():
 
-    #assert str(Quantity(1, 'B').to('dB'))   == "Quantity(1.000e+00 dB)"
-    pass
+    assert str(Quantity(1, 'B').to('dB'))     == "Quantity(1.000e+01 dB)"
+    assert str(Quantity(1, 'dB').to('B'))     == "Quantity(1.000e-01 B)"
+    assert str(Quantity(1, 'B').to('Np'))     == "Quantity(1.151e+00 Np)"
+    assert str(Quantity(1, 'Np').to('B'))     == "Quantity(8.686e-01 B)"
+    assert str(Quantity(1, 'dB').to('cNp'))   == "Quantity(1.151e+01 cNp)"
+    assert str(Quantity(1000, 'AR').to('dB')) == "Quantity(6.000e+01 dB)"
+    assert str(Quantity(30, 'dB').to('AR'))   == "Quantity(3.162e+01 AR)"
+    assert str(Quantity(1000, 'PR').to('dB')) == "Quantity(3.000e+01 dB)"
+    assert str(Quantity(6, 'dB').to('PR'))    == "Quantity(3.981e+00 PR)"
+    
+    #assert str(Quantity(1, 'mW').baseunits)   == 1
+    
+    #assert str(Quantity(1, 'mW').to('dBm'))   == "Quantity(0.000e+00 dBm)"
+
 
