@@ -84,10 +84,10 @@ class BaseUnits:
             exp = self.baseunits[unitid]
             if ":" in unitid:
                 prefix, base = unitid.split(":")
-                magnitude  = (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** (exp.num/exp.den)
+                magnitude  = (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** exp.value(dtype=float)
             else:
                 prefix, base = '', unitid
-                magnitude  = self.unitlist[base].magnitude ** (exp.num/exp.den)
+                magnitude  = self.unitlist[base].magnitude ** exp.value(dtype=float)
             dimensions = Dimensions(*self.unitlist[base].dimensions)*exp
             return magnitude, dimensions
         if unitid:

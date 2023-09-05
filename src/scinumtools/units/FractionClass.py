@@ -91,8 +91,11 @@ class Fraction:
     def __neg__(self):
         return Fraction(-self.num, self.den)
     
-    def value(self):
+    def value(self, dtype=tuple):
         if self.num==0 or self.den==1:
             return self.num
         else:
-            return (self.num,self.den)
+            if dtype==tuple:
+                return (self.num,self.den)
+            elif dtype==float:
+                return self.num/self.den

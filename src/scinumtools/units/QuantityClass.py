@@ -131,7 +131,7 @@ class Quantity:
         if isinstance(power, tuple):
             exp = power[0]/power[1]
         elif isinstance(power, Fraction):
-            exp = power.num/power.den
+            exp = power.value(dtype=float)
         else:
             exp = power
         magnitude = self.magnitude**exp
@@ -296,7 +296,7 @@ class Quantity:
             if dim1 in baseunits:
                 # exists: convert units
                 base0 = self.baseunits.base(baseunits[dim1][0])
-                factor *= (base1.magnitude/base0.magnitude)**(exp1.num/exp1.den)
+                factor *= (base1.magnitude/base0.magnitude)**exp1.value(dtype=float)
                 baseunits[dim1][1] += exp1
             else:
                 # does not exist: register new
