@@ -73,7 +73,7 @@ class TemperatureConverter(Converter):
 class LogarithmicConverter(Converter):
 
     def convert(self, baseunits1, baseunits2):
-        process: list = ['Np','B','dBm','dBmW']
+        process: list = ['Np','B','Bm','BmW']
         convert = False
         for unitid, exponent in baseunits1.items():
             if unitid.split(':')[-1] in process:

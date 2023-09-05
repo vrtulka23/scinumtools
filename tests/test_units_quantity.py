@@ -164,7 +164,8 @@ def test_logarithmic():
     assert str(Quantity(1000, 'PR').to('dB')) == "Quantity(3.000e+01 dB)"
     assert str(Quantity(6, 'dB').to('PR'))    == "Quantity(3.981e+00 PR)"
     
-    #assert str(Quantity(1, 'mW').baseunits)   == 1
+    #assert str(Quantity(1, 'mW').to('W'))   == 1
+    #assert str(Quantity(1, 'dBm').to('Bm')) == 1
     
     #assert str(Quantity(1, 'mW').to('dBm'))   == "Quantity(0.000e+00 dBm)"
 

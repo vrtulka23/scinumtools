@@ -113,7 +113,7 @@ def UnitStandardTable():
     'Np':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Nepers',            ['c','d']          ),
     'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Bell',              ['d']              ),
     'Bm':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', ['d']              ),
-    'BmW':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', ['d']              ),
+    #'BmW':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'decibel-milliwatt', ['d']              ),
     # percentages
     '%':        (1e-2,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-2',                   'percent',           False              ),
     'ppth':     (1e-3,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-3',                   'promile',           False              ),
