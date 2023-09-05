@@ -18,7 +18,7 @@ def test_unit_list():
 def test_unique_names():
     
     unitlist = UnitStandardTable()
-    prefixes = UnitPrefixesTable().keys()
+    prefixes = UnitPrefixesTable()
     
     units = list(unitlist.keys())
     for symbol, unit in unitlist.items():
@@ -27,7 +27,7 @@ def test_unique_names():
                 assert prefix in prefixes
                 units.append(f"{prefix}{symbol}")
         elif unit.prefixes is True:
-            for prefix in prefixes:
+            for prefix in prefixes.keys():
                 units.append(f"{prefix}{symbol}")
     #print(units)
     #exit(1)
@@ -58,19 +58,22 @@ def test_definitions():
     
     unitlist = UnitStandardTable()
     for symbol, unit in unitlist.items():
-        if not isinstance(unit['definition'],str):
+        if not isinstance(unit.definition,str):
             continue
-        q = Quantity(1, unit['definition'])
-        if q.dimensions.value() != unit['dimensions'] or not isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07):
-            print(q, symbol, unit['definition'], unit['magnitude'])
-        assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
-        assert q.dimensions.value() == unit['dimensions']
+        q = Quantity(1, unit.definition)
+        base = q.baseunits.base()
+        magnitude = q.magnitude*base.magnitude
+        if base.dimensions.value(dtype=list) != unit.dimensions or not isclose(magnitude,  unit.magnitude, rel_tol=1e-07):
+            print(q, symbol, unit.definition, unit.magnitude)
+        assert isclose(magnitude,  unit.magnitude, rel_tol=1e-07)
+        assert base.dimensions.value(dtype=list) == unit.dimensions
         
     prefixes = UnitPrefixesTable()
     for symbol, unit in prefixes.items():
-        if not isinstance(unit['definition'],str):
+        if not isinstance(unit.definition,str):
             continue
-        q = Quantity(1, unit['definition'])
-        assert isclose(q.magnitude,  unit['magnitude'], rel_tol=1e-07)
-        assert q.dimensions.value() == unit['dimensions']
+        q = Quantity(1, unit.definition)
+        base = q.baseunits.base()
+        assert isclose(q.magnitude,  unit.magnitude, rel_tol=1e-07)
+        assert base.dimensions.value(dtype=list) == unit.dimensions
         

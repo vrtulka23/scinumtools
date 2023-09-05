@@ -6,6 +6,12 @@ from .DimensionsClass import Dimensions
 from .UnitList import UnitStandardTable, UnitPrefixesTable
 
 @dataclass
+class Base:
+    
+    magnitude: float
+    dimensions: Dimensions
+
+@dataclass
 class BaseUnits:
 
     baseunits: dict = field(default_factory=dict)
@@ -14,13 +20,22 @@ class BaseUnits:
     def __post_init__(self):
         self.unitlist = UnitStandardTable()
         self.prefixes = UnitPrefixesTable()
+        # convert units exponents to fractions
         for unit,exp in self.baseunits.items():
             if not isinstance(exp, Fraction):
                 self.baseunits[unit] = Fraction(exp)
-        # remove zero dimensions
+        # remove units with zero exponents
         for unit in list(self.baseunits.keys()):
             if self.baseunits[unit].num==0:
                 del self.baseunits[unit]
+        # remove units with nonzero dimensions if total dimension is zero
+        base = self.base()
+        if base.dimensions == Dimensions():
+            zerodim = Dimensions().value()
+            for unitid in list(self.baseunits.keys()):
+                symbol = unitid.split(":")[-1] if ":" in unitid else unitid
+                if self.unitlist[symbol].dimensions != zerodim:
+                    del self.baseunits[unitid]
 
     def __str__(self):
         baseunits = []
@@ -64,18 +79,27 @@ class BaseUnits:
             baseunits[unit] /= div
         return BaseUnits(baseunits)
     
-    def base(self):
-        magnitude = 1
-        dimensions = Dimensions()
-        for unitid,exp in self.baseunits.items():
+    def base(self, unitid=None):
+        def unit_base(unitid):
+            exp = self.baseunits[unitid]
             if ":" in unitid:
                 prefix, base = unitid.split(":")
-                magnitude  *= (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** (exp.num/exp.den)
+                magnitude  = (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** (exp.num/exp.den)
             else:
                 prefix, base = '', unitid
-                magnitude  *= self.unitlist[base].magnitude ** (exp.num/exp.den)
-            dimensions += Dimensions(*self.unitlist[base].dimensions)*exp
-        return magnitude, dimensions
+                magnitude  = self.unitlist[base].magnitude ** (exp.num/exp.den)
+            dimensions = Dimensions(*self.unitlist[base].dimensions)*exp
+            return magnitude, dimensions
+        if unitid:
+            magnitude, dimensions = unit_base(unitid)
+        else:
+            magnitude = 1
+            dimensions = Dimensions()
+            for unitid in self.baseunits.keys():
+                mag, dim = unit_base(unitid)
+                magnitude *= mag
+                dimensions += dim
+        return Base(magnitude, dimensions)
     
     def expression(self):
         units = []

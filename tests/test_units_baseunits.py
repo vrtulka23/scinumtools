@@ -43,12 +43,12 @@ def test_rebase():
 
 def test_base():
     
-    mag, dim = BaseUnits({'k:m':3,'g':2}).base()
-    assert mag            == 1.0e9
-    assert str(dim)       == "Dimensions(m=3 g=2)"
-    mag, dim = BaseUnits({'J':1,'s':-1}).base()
-    assert mag            == 1000.0
-    assert str(dim)       == "Dimensions(m=2 g=1 s=-3)"
-    mag, dim = BaseUnits({'W':(3,2),'s':(9,2)}).base()
-    assert mag            == 31622.776601683792
-    assert str(dim)       == "Dimensions(m=3 g=3:2)"
+    base = BaseUnits({'k:m':3,'g':2}).base()
+    assert base.magnitude       == 1.0e9
+    assert str(base.dimensions) == "Dimensions(m=3 g=2)"
+    base = BaseUnits({'J':1,'s':-1}).base()
+    assert base.magnitude       == 1000.0
+    assert str(base.dimensions) == "Dimensions(m=2 g=1 s=-3)"
+    base = BaseUnits({'W':(3,2),'s':(9,2)}).base()
+    assert base.magnitude       == 31622.776601683792
+    assert str(base.dimensions) == "Dimensions(m=3 g=3:2)"

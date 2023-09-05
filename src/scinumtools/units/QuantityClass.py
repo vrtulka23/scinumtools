@@ -17,15 +17,13 @@ class Quantity:
     unitlist: dict            # list of units
     
     magnitude: float          # quantity magnitude
-    dimensions: Dimensions    # quantity dimensions
     baseunits: BaseUnits      # base units
 
     precision: float = 1e-7
 
     def __init__(
             self, magnitude:float,
-            dimensions: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None,
-            baseunits: Union[dict,BaseUnits] = None
+            baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None
     ):
         # Initialize settings
         self.unitlist = UnitStandardTable()
@@ -39,60 +37,40 @@ class Quantity:
             self.magnitude = magnitude.astype(float)
         else:
             raise Exception("Magnitude can be either a number or an list/array of numbers")
-        # Set quantity
-        if dimensions is None:
-            self.dimensions = Dimensions()
+        # Set base units
+        if baseunits is None:
             self.baseunits = BaseUnits()
-        elif isinstance(dimensions, (dict,BaseUnits)):
-            if isinstance(dimensions, dict):
-                baseunits = BaseUnits(dimensions)
-            else:
-                baseunits = dimensions
-            mag, dim = baseunits.base()
-            self.magnitude *= mag
-            self.dimensions = dim
+        elif isinstance(baseunits, dict):
+            self.baseunits = BaseUnits(baseunits)
+        elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits
-        elif isinstance(dimensions, str):
-            if dimensions is None:
-                unit = Quantity(1)
-            else:
-                with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
-                    unit = es.solve(dimensions)
+        elif isinstance(baseunits, str):
+            with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
+                unit = es.solve(baseunits)
             self.magnitude *= unit.magnitude
-            self.dimensions = unit.dimensions
             self.baseunits = unit.baseunits
-        elif isinstance(dimensions, Quantity):
-            self.magnitude *= dimensions.magnitude
-            self.dimensions = dimensions.dimensions
-            self.baseunits = dimensions.baseunits
-        elif isinstance(dimensions, (list, np.ndarray, Dimensions)):
-            if isinstance(dimensions, Dimensions):
-                self.dimensions = dimensions
-            else:
-                self.dimensions = Dimensions(*dimensions)
-            if isinstance(baseunits, dict):
-                self.baseunits = BaseUnits(baseunits)
-            elif isinstance(baseunits, BaseUnits):
-                self.baseunits = baseunits
-            else:
-                self.baseunits = BaseUnits(self.dimensions.value(dtype=dict))
+        elif isinstance(baseunits, Quantity):
+            self.magnitude *= baseunits.magnitude
+            self.baseunits = baseunits.baseunits
+        elif isinstance(baseunits, Dimensions):
+            self.baseunits = BaseUnits(baseunits.value(dtype=dict))
+        elif isinstance(baseunits, (list, np.ndarray)):
+            self.baseunits = BaseUnits(Dimensions(*baseunits).value(dtype=dict))
         else:
-            raise Exception("Insufficient quantity definition", magnitude, dimensions, baseunits)
-        if self.dimensions == Dimensions():
-            #self.rebase()
-            self.baseunits = BaseUnits()
+            raise Exception("Insufficient quantity definition", magnitude, baseunits)
 
     def _add(self, left, right):
         if not isinstance(left, Quantity):
             left = Quantity(left)
         if not isinstance(right, Quantity):
             right = Quantity(right)
-        if not left.dimensions == right.dimensions:
-            raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        left_dim = left.baseunits.base().dimensions
+        right_dim = right.baseunits.base().dimensions
+        if not left_dim == right_dim:
+            raise Exception('Dimension does not match:', left_dim, right_dim)
         magnitude = left.magnitude + right.to(left.baseunits).magnitude 
-        dimensions = left.dimensions
         baseunits = left.baseunits
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def __add__(self, other):
         return self._add(self, other)
@@ -105,12 +83,13 @@ class Quantity:
             left = Quantity(left)
         if not isinstance(right, Quantity):
             right = Quantity(right)
-        if not left.dimensions == right.dimensions:
-            raise Exception('Dimension does not match:', left.dimensions, right.dimensions)
+        left_dim = left.baseunits.base().dimensions
+        right_dim = right.baseunits.base().dimensions
+        if not left_dim == right_dim:
+            raise Exception('Dimension does not match:', left_dim, right_dim)
         magnitude = left.magnitude - right.to(left.baseunits).magnitude
-        dimensions = left.dimensions
         baseunits = left.baseunits
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def __sub__(self, other):
         return self._sub(self, other)
@@ -124,9 +103,8 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude * right.magnitude
-        dimensions = left.dimensions + right.dimensions
         baseunits = left.baseunits + right.baseunits
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def __mul__(self, other):
         return self._mul(self, other)
@@ -140,9 +118,8 @@ class Quantity:
         if not isinstance(right, Quantity):
             right = Quantity(right)
         magnitude = left.magnitude / right.magnitude
-        dimensions = left.dimensions - right.dimensions
         baseunits = left.baseunits - right.baseunits
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def __truediv__(self, other):
         return self._truediv(self, other)
@@ -158,17 +135,16 @@ class Quantity:
         else:
             exp = power
         magnitude = self.magnitude**exp
-        dimensions = self.dimensions*power
         baseunits = self.baseunits*power
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def __neg__(self):
-        return Quantity(-self.magnitude, self.dimensions, self.baseunits)
+        return Quantity(-self.magnitude, self.baseunits)
     
     def __eq__(self, other):
         if not np.allclose(self.magnitude, other.magnitude, rtol=self.precision):
             return False
-        if not self.dimensions==other.dimensions:
+        if not self.baseunits==other.baseunits:
             return False
         return True
     
@@ -199,35 +175,21 @@ class Quantity:
             return f"Quantity({magnitude:s})"
 
     def __getitem__(self, key):
-        return Quantity(self.magnitude[key], self.dimensions, self.baseunits)
+        return Quantity(self.magnitude[key], self.baseunits)
         
-    def __array__(self):
-        return np.array(self.magnitude)
-    
-    def __array_prepare__(self, array, context=None):
-        if context:
-            if context[0] in [np.sin, np.cos, np.tan]:
-                return np.array(context[1][0].to('rad'))
-        return array
-    
-    def __array_wrap__(self, out_arr, context=None):
-        if out_arr.ndim==0:
-            out_arr = float(out_arr)
-        dimensions = self.dimensions
-        baseunits = self.baseunits
-        if context:
-            fn = context[0]
-            if fn==np.sqrt:
-                return Quantity(out_arr, dimensions/2, baseunits/2)
-            elif fn==np.cbrt:
-                return Quantity(out_arr, dimensions/3, baseunits/3)
-            elif fn==np.power:
-                return Quantity(out_arr, dimensions*context[1][1], baseunits*context[1][1])
-            elif fn in [np.sin, np.cos, np.tan]:
-                return Quantity(out_arr)
-            elif fn in [np.arcsin, np.arccos, np.arctan]:
-                return Quantity(out_arr, 'rad')
-        return Quantity(out_arr, dimensions, baseunits)
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        if ufunc==np.sqrt:
+            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits/2)
+        elif ufunc==np.cbrt:
+            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits/3)
+        elif ufunc==np.power:
+            return Quantity(ufunc(inputs[0].magnitude,inputs[1]), inputs[0].baseunits*inputs[1])
+        elif ufunc in [np.sin, np.cos, np.tan]:
+            return Quantity(ufunc(inputs[0].to('rad').magnitude))
+        elif ufunc in [np.arcsin, np.arccos, np.arctan]:
+            return Quantity(ufunc(inputs[0].to(None).magnitude),'rad')
+        else:
+            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits)
     
     def __array_function__(self, func, types, args, kwargs):
         if func not in HANDLED_FUNCTIONS:
@@ -262,8 +224,6 @@ class Quantity:
         unitid = f"{base:s}"
         if base not in self.unitlist.keys():
             raise Exception('Unknown unit', base, string_bak)
-        magnitude = self.unitlist[base].magnitude
-        dimensions = self.unitlist[base].dimensions
         # parse unit prefix
         while len(string):
             prefix = symbol+prefix
@@ -277,22 +237,17 @@ class Quantity:
                 raise Exception(f"Unknown unit prefix:", string_bak)
             elif self.unitlist[base].prefixes is False:
                 raise Exception(f"Unit cannot have any prefixes:", base)
-            magnitude *= self.prefixes[prefix].magnitude
             unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
         # apply exponent
         if exp:
             if Fraction.symbol in exp:
                 exp = exp.split(Fraction.symbol)
-                magnitude = magnitude**(int(exp[0])/int(exp[1]))
                 exp = Fraction(int(exp[0]), int(exp[1]))
             else:
                 exp = int(exp)
-                magnitude = magnitude**exp
-            dimensions = [exp*dim for dim in dimensions]
         else:
             exp = 1
-        baseunits = {unitid: exp}
-        return Quantity(magnitude, dimensions, baseunits)
+        return Quantity(1.0, {unitid: exp})
     
     def value(self, expression=None, dtype=None):
         if expression:
@@ -313,47 +268,41 @@ class Quantity:
         unit1 = self
         unit2 = Quantity(1,units)
         # Check if units can be directly converted
-        if not unit1.dimensions==unit2.dimensions:
+        base1 = unit1.baseunits.base()
+        base2 = unit2.baseunits.base()
+        if not base1.dimensions==base2.dimensions:
             # Check if inverted unit can be converted
-            if -unit1.dimensions==unit2.dimensions:
+            if -base1.dimensions==base2.dimensions:
                 unit1 = 1/unit1
+                base1 = unit1.baseunits.base()
             else:
                 raise Exception("Converting units with different dimensions:",
-                                unit1.dimensions, unit2.dimensions)
+                                base1.dimensions, base2.dimensions)
         if c := TemperatureConverter(unit1, unit2):
-            unit = c.unit1/c.unit2
+            unit2 = c.unit
         elif c := LogarithmicConverter(unit1, unit2):
-            unit = c.unit1/c.unit2
+            unit2 = c.unit
         else:
-            unit = unit1/unit2
-        return Quantity(unit.magnitude, units)
+            unit2.magnitude = unit1.magnitude*base1.magnitude/base2.magnitude
+        return unit2
 
     def rebase(self):
         factor = 1
         baseunits = {}
-        def get_unit(unitid):
-            # get unit conversion factor
-            if ":" in unitid:
-                prefix, base = unitid.split(":")
-                pref = self.prefixes[prefix].magnitude
-            else:
-                prefix, base = '', unitid
-                pref = 1
-            mag = self.unitlist[base].magnitude
-            dim = self.unitlist[base].dimensions
-            return pref*mag, str(dim)
         for unitid1,exp1 in self.baseunits.baseunits.items():
-            # find dimensions
-            mag1, dim1 = get_unit(unitid1)
+            # find base units
+            base1 = self.baseunits.base(unitid1)
+            dim1 = str(base1.dimensions.value(dtype=tuple))
             if dim1 in baseunits:
                 # exists: convert units
-                mag0, dim0 = get_unit(baseunits[dim1][0])
-                factor *= mag1/mag0**(exp1.num/exp1.den)
+                base0 = self.baseunits.base(baseunits[dim1][0])
+                factor *= (base1.magnitude/base0.magnitude)**(exp1.num/exp1.den)
                 baseunits[dim1][1] += exp1
             else:
                 # does not exist: register new
-                baseunits[dim1] = [unitid1,exp1] #,prefix,base,exp]
+                baseunits[dim1] = [unitid1,exp1] 
         # construct new base units
+        self.magnitude *= factor
         self.baseunits = BaseUnits({unitid:exp for unitid,exp in baseunits.values()})
         return self
 

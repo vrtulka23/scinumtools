@@ -61,6 +61,12 @@ class ParameterTable:
         else:
             self.append(key, values)
 
+    def __contains__(self, item):
+        if self._keys is None:
+            raise Exception("Parameter table does not have string keys")
+        else:
+            return item in self._keys
+
     def keys(self):
         if self._keys is None:
             raise Exception("Parameters do not have keys.")

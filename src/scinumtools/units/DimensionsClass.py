@@ -94,4 +94,11 @@ class Dimensions:
                 fraction = getattr(self, f.name)
                 if fraction.num not in [0, -0]:
                     dimensions[f.name] = fraction.value()
+        elif dtype==tuple:
+            dimensions = []
+            for f in fields(self):
+                fraction = getattr(self, f.name)
+                if fraction.num not in [0, -0]:
+                    dimensions.append(f.name)
+            dimensions = tuple(dimensions)
         return dimensions
