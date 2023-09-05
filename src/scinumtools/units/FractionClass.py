@@ -94,8 +94,7 @@ class Fraction:
     def value(self, dtype=tuple):
         if self.num==0 or self.den==1:
             return self.num
-        else:
-            if dtype==tuple:
-                return (self.num,self.den)
-            elif dtype==float:
-                return self.num/self.den
+        elif dtype==tuple:
+            return (self.num,self.den)
+        elif dtype==float:
+            return self.num/self.den
