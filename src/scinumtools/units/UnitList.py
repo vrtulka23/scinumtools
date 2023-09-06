@@ -46,6 +46,7 @@ def UnitStandardTable():
     'AU':       (1.49597870e11,  [ 1, 0, 0, 0, 0, 0, 0, 0],  'au',                     'astr. unit',        False              ),
     'ly':       (9.460730e15,    [ 1, 0, 0, 0, 0, 0, 0, 0],  '[c]*yr_j',               'light-year',        ['k','M','G']      ),
     'pc':       (3.0857e16,      [ 1, 0, 0, 0, 0, 0, 0, 0],  '3.0857e16*m',            'parsec',            ['k','M','G','T']  ),
+    'Ao':       (1e-10,          [ 1, 0, 0, 0, 0, 0, 0, 0],  '1e-10*m',                'Angstrom',          ['m','k']          ),
     # units of mass
     'u':        (1.6605402e-24,  [ 0, 1, 0, 0, 0, 0, 0, 0],  '1.6605402e-24*g',        'atomic mass unit',  False              ),
     'amu':      (1.6605402e-24,  [ 0, 1, 0, 0, 0, 0, 0, 0],  'u',                      'atomic mass unit',  False              ),
