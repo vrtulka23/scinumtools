@@ -149,7 +149,7 @@ class Quantity:
         return True
     
     def __str__(self):
-        magnitude = self.value()
+        magnitude = self.magnitude
         if isinstance(magnitude, np.ndarray):
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
@@ -162,7 +162,7 @@ class Quantity:
             return f"Quantity({magnitude:s})"
             
     def __repr__(self):
-        magnitude = self.value()
+        magnitude = self.magnitude
         if isinstance(magnitude, np.ndarray):
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
@@ -238,7 +238,7 @@ class Quantity:
     
     def value(self, expression=None, dtype=None):
         if expression:
-            value = self.to(expression).value()
+            value = self.to(expression).magnitude
         else:
             value = self.magnitude
         if dtype:
@@ -303,7 +303,7 @@ def linspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.linspace(a.value(), b.value(), c, **kwargs), a.baseunits)
+    return Quantity(np.linspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
 
 @implements(np.logspace)
 def logspace(a, b, c, **kwargs):
@@ -311,24 +311,24 @@ def logspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.logspace(a.value(), b.value(), c, **kwargs), a.baseunits)
+    return Quantity(np.logspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
 
 @implements(np.absolute)
 def absolute(a, **kwargs):
-    return Quantity(np.absolute(a.value()), a.baseunits)
+    return Quantity(np.absolute(a.magnitude), a.baseunits)
 
 @implements(np.abs)
 def abs(a, **kwargs):
-    return Quantity(np.abs(a.value()), a.baseunits)
+    return Quantity(np.abs(a.magnitude), a.baseunits)
 
 @implements(np.round)
 def round(a, **kwargs):
-    return Quantity(np.round(a.value()), a.baseunits)
+    return Quantity(np.round(a.magnitude), a.baseunits)
 
 @implements(np.floor)
 def round(a, **kwargs):
-    return Quantity(np.floor(a.value()), a.baseunits)
+    return Quantity(np.floor(a.magnitude), a.baseunits)
 
 @implements(np.ceil)
 def round(a, **kwargs):
-    return Quantity(np.ceil(a.value()), a.baseunits)
+    return Quantity(np.ceil(a.magnitude), a.baseunits)
