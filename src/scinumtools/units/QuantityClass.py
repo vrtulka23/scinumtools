@@ -42,6 +42,10 @@ class Quantity:
             self.baseunits = BaseUnits()
         elif isinstance(baseunits, dict):
             self.baseunits = BaseUnits(baseunits)
+        elif isinstance(baseunits, Dimensions):
+            self.baseunits = BaseUnits(baseunits.value(dtype=dict))
+        elif isinstance(baseunits, (list, np.ndarray)):
+            self.baseunits = BaseUnits(Dimensions(*baseunits).value(dtype=dict))
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits
         elif isinstance(baseunits, str):
@@ -52,10 +56,6 @@ class Quantity:
         elif isinstance(baseunits, Quantity):
             self.magnitude *= baseunits.magnitude
             self.baseunits = baseunits.baseunits
-        elif isinstance(baseunits, Dimensions):
-            self.baseunits = BaseUnits(baseunits.value(dtype=dict))
-        elif isinstance(baseunits, (list, np.ndarray)):
-            self.baseunits = BaseUnits(Dimensions(*baseunits).value(dtype=dict))
         else:
             raise Exception("Insufficient quantity definition", magnitude, baseunits)
 
@@ -236,9 +236,19 @@ class Quantity:
         # return quantity
         return Quantity(1.0, {unitid: exp})
     
+    def _convert(self, magnitude1, baseunits1, magnitude2, baseunits2):
+        if c := TemperatureConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+            return c.magnitude
+        elif c := LogarithmicConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+            return c.magnitude
+        elif c := StandardConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+            return c.magnitude
+        else:
+            raise Exception("Unsupported conversion between units:", baseunits1.expression(), baseunits2.expression())
+
     def value(self, expression=None, dtype=None):
         if expression:
-            value = self.to(expression).magnitude
+            value = self._convert(self.magnitude, self.baseunits, 1.0, Quantity(1.0, expression).baseunits)
         else:
             value = self.magnitude
         if dtype:
@@ -250,26 +260,9 @@ class Quantity:
         return self.baseunits.expression()
 
     def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
-        unit1 = self
-        unit2 = Quantity(1,units)
-        # Check if units can be directly converted
-        base1 = unit1.baseunits.base()
-        base2 = unit2.baseunits.base()
-        if not base1.dimensions==base2.dimensions:
-            # Check if inverted unit can be converted
-            if -base1.dimensions==base2.dimensions:
-                unit1 = 1/unit1
-                base1 = unit1.baseunits.base()
-            else:
-                raise Exception("Converting units with different dimensions:",
-                                base1.dimensions, base2.dimensions)
-        if c := TemperatureConverter(unit1, unit2):
-            unit2 = c.unit
-        elif c := LogarithmicConverter(unit1, unit2):
-            unit2 = c.unit
-        else:
-            unit2.magnitude = unit1.magnitude*base1.magnitude/base2.magnitude
-        return unit2
+        baseunits = Quantity(1.0, units).baseunits
+        magnitude = self._convert(self.magnitude, self.baseunits, 1.0, baseunits)
+        return Quantity(magnitude, baseunits)
 
     def rebase(self):
         factor = 1

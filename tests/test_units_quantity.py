@@ -104,9 +104,9 @@ def test_scalar_unit_conversion():
     q = Quantity(134e-34)
     with pytest.raises(Exception) as excinfo:
         q = q.to("kg3*s/cm3")
-    assert excinfo.value.args[0]=="Converting units with different dimensions:"
-    assert excinfo.value.args[1].value()==[0, 0, 0, 0, 0, 0, 0, 0]
-    assert excinfo.value.args[2].value()==[-3, 3, 1, 0, 0, 0, 0, 0]
+    assert excinfo.value.args[0]=="Unsupported conversion between units:"
+    assert excinfo.value.args[1]==None
+    assert excinfo.value.args[2]=='kg3*s*cm-3'
 
     # test unit conversion on scalars
     result = "Quantity(3.000e+03 m)"

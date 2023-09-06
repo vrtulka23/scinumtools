@@ -1,5 +1,6 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
+from typing import Union
 
 from .FractionClass import Fraction
 from .DimensionsClass import Dimensions
@@ -11,13 +12,18 @@ class Base:
     magnitude: float
     dimensions: Dimensions
 
-@dataclass
 class BaseUnits:
 
-    baseunits: dict = field(default_factory=dict)
+    baseunits: Union[str,list,dict]
     symbol: str = ':'
 
-    def __post_init__(self):
+    def __init__(self, baseunits: Union[str,list,dict]=None):
+        if baseunits is None:
+            self.baseunits = {}
+        elif isinstance(baseunits, dict):
+            self.baseunits = baseunits
+        else:
+            raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
         self.unitlist = UnitStandardTable()
         self.prefixes = UnitPrefixesTable()
         # convert units exponents to fractions
@@ -78,6 +84,16 @@ class BaseUnits:
         for unit,exp in self.baseunits.items():
             baseunits[unit] /= div
         return BaseUnits(baseunits)
+    
+    def __eq__(self, other):
+        if len(self.baseunits) != len(other.baseunits):
+            return False
+        for unit,exp in self.baseunits.items():
+            if unit not in other.baseunits:
+                return False
+            elif not other.baseunits[unit] == exp:
+                return False
+        return True
     
     def base(self, unitid=None):
         def unit_base(unitid):
