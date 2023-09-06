@@ -5,16 +5,20 @@ from typing import Union
 @dataclass
 class Fraction:
 
-    num: Union[int, tuple]        # numerator
+    num: Union[int, tuple, str]   # numerator
     den: int = field(default=1)   # denominator
     symbol: str = ':'             # fraction symbol
 
     def __post_init__(self):
         # initialize from a tuple
-        if isinstance(self.num, tuple):
-            value = self.num
-            self.num = value[0]
-            self.den = value[1]
+        if isinstance(self.num, str):
+            if Fraction.symbol in self.num:
+                num, den = self.num.split(Fraction.symbol)
+                self.num, self.den = int(num), int(den)
+            else:
+                self.num, self.den = int(self.num), 1
+        elif isinstance(self.num, tuple):
+            self.num, self.den = self.num
         elif isinstance(self.num, Fraction):
             value = self.num
             self.num = value.num

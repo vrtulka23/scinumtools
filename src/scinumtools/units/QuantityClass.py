@@ -204,56 +204,41 @@ class Quantity:
             return Quantity(magnitude)
         # parse unit
         string_bak = string
-        exp, base, prefix = '', '', ''
-        symbol, string = string[-1], ' '+string[:-1]
+        string = ' '+string
         # parse exponent
-        while len(string):
-            if not re.match('^[0-9'+Fraction.symbol+'+-]{1}$', symbol):
-                break
-            exp = symbol+exp
-            symbol, string = string[-1], string[:-1]
+        if m := re.search(r"[0-9"+Fraction.symbol+r"+-]+$", string):
+            exp = m.group() 
+            string = string[:-len(exp)]
+            exp = Fraction(exp)
+        else:
+            exp = 1
         # parse unit symbol
-        unitkeys = self.unitlist.keys()
-        while len(string):
-            nbase = len(base)+1
-            ukeys = [key[-nbase:] for key in unitkeys]
-            if symbol+base not in ukeys:
-                break
-            base = symbol+base
-            symbol, string = string[-1], string[:-1]
-        unitid = f"{base:s}"
-        if base not in self.unitlist.keys():
-            raise Exception('Unknown unit', base, string_bak)
+        bases = [u for u in self.unitlist.keys() if string.endswith(u)]
+        if bases:
+            base = max(bases, key=len)
+            string = string[-len(base)-1]
+            unitid = f"{base:s}"
+        else:
+            raise Exception('Unknown unit', string, string_bak)
         # parse unit prefix
-        while len(string):
-            prefix = symbol+prefix
-            symbol, string = string[-1], string[:-1]
-            if symbol==' ':
-                break
-        if prefix:
+        prefixes = [p for p in self.prefixes.keys() if string.endswith(p)]
+        if prefixes:
+            prefix = max(prefixes, key=len)
             if isinstance(self.unitlist[base].prefixes,list) and prefix not in self.unitlist[base].prefixes:
-                raise Exception(f"Unit can have only following prefixes:", self.unitlist[base].prefixes)
+                raise Exception(f"Unit can have only following prefixes:", self.unitlist[base].prefixes, prefix)
             elif self.unitlist[base].prefixes is True and prefix not in self.prefixes.keys():
                 raise Exception(f"Unknown unit prefix:", string_bak)
             elif self.unitlist[base].prefixes is False:
                 raise Exception(f"Unit cannot have any prefixes:", base)
             unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
-        # apply exponent
-        if exp:
-            if Fraction.symbol in exp:
-                exp = exp.split(Fraction.symbol)
-                exp = Fraction(int(exp[0]), int(exp[1]))
-            else:
-                exp = int(exp)
-        else:
-            exp = 1
+        elif len(string)>1:
+            raise Exception("Unknown unit prefix:", string)
+        # return quantity
         return Quantity(1.0, {unitid: exp})
     
     def value(self, expression=None, dtype=None):
         if expression:
             value = self.to(expression).value()
-        elif expr:=self.baseunits.expression():
-            value = (self/Quantity(1, expr)).magnitude
         else:
             value = self.magnitude
         if dtype:

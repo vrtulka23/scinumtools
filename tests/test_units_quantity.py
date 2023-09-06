@@ -154,6 +154,7 @@ def test_inversion():
 
 def test_logarithmic():
 
+    # Bels, Nepers and Amplitude/Power Ratios
     assert str(Quantity(1, 'B').to('dB'))     == "Quantity(1.000e+01 dB)"
     assert str(Quantity(1, 'dB').to('B'))     == "Quantity(1.000e-01 B)"
     assert str(Quantity(1, 'B').to('Np'))     == "Quantity(1.151e+00 Np)"
@@ -164,9 +165,32 @@ def test_logarithmic():
     assert str(Quantity(1000, 'PR').to('dB')) == "Quantity(3.000e+01 dB)"
     assert str(Quantity(6, 'dB').to('PR'))    == "Quantity(3.981e+00 PR)"
     
-    #assert str(Quantity(1, 'mW').to('W'))   == 1
-    #assert str(Quantity(1, 'dBm').to('Bm')) == 1
+    # Decibel-milliwatts (dBm)
+    assert str(Quantity(1, 'mW').to('W'))     == "Quantity(1.000e-03 W)"
+    assert str(Quantity(1, 'mW').to('dBm'))   == "Quantity(0.000e+00 dBm)"
+    assert str(Quantity(10, 'W').to('dBm'))   == "Quantity(4.000e+01 dBm)"
+    assert str(Quantity(10, 'pW').to('dBm'))  == "Quantity(-8.000e+01 dBm)"
+    assert str(Quantity(-3, 'dBm').to('uW'))  == "Quantity(5.012e+02 uW)"
+    assert str(Quantity(22, 'dBm').to('mW'))  == "Quantity(1.585e+02 mW)"
     
-    #assert str(Quantity(1, 'mW').to('dBm'))   == "Quantity(0.000e+00 dBm)"
+    # Decibel-milliwatts (dBmW)
+    assert str(Quantity(10, 'W').to('dBmW'))   == "Quantity(4.000e+01 dBmW)"
+    assert str(Quantity(-3, 'dBmW').to('uW'))  == "Quantity(5.012e+02 uW)"
+    
+    # Decibel-watts (dBW)
+    
+    assert str(Quantity(1, 'W').to('dBW'))     == "Quantity(0.000e+00 dBW)"
+    assert str(Quantity(20,'dBW').to('W'))     == "Quantity(1.000e+02 W)"
+    
+    # Decibel-Volt (dBV)
+    assert str(Quantity(100, 'mV').to('dBV'))  == "Quantity(-2.000e+01 dBV)"
+    assert str(Quantity(1, 'V').to('dBV'))     == "Quantity(0.000e+00 dBV)"
+    assert str(Quantity(10, 'V').to('dBV'))    == "Quantity(2.000e+01 dBV)"
+    assert str(Quantity(-60, 'dBV').to('mV'))  == "Quantity(1.000e+00 mV)"
+    assert str(Quantity(0, 'dBV').to('V'))     == "Quantity(1.000e+00 V)"
+    assert str(Quantity(40, 'dBV').to('V'))    == "Quantity(1.000e+02 V)"
 
-
+    # Decibel-microvolt (dBuV)
+    assert str(Quantity(42, 'dBuV').to('uV'))   == "Quantity(1.259e+02 uV)"
+    assert str(Quantity(1000, 'uV').to('dBuV')) == "Quantity(6.000e+01 dBuV)"
+    
