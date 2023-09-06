@@ -2,7 +2,7 @@ import numpy as np
 
 class Converter:
 
-    def __new__(cls, magnitude1, baseunits1, magnitude2, baseunits2):
+    def __new__(cls, magnitude1, baseunits1, baseunits2):
         obj = object.__new__(cls)
         if method := obj.method(baseunits1, baseunits2):
             if not hasattr(obj,method[0]):
@@ -12,7 +12,7 @@ class Converter:
         else:
             return None
 
-    def __init__(self, magnitude1, baseunits1, magnitude2, baseunits2):
+    def __init__(self, magnitude1, baseunits1, baseunits2):
         base1 = baseunits1.base()
         base2 = baseunits2.base()
         self.magnitude = getattr(self,self.method[0])(magnitude1 * base1.magnitude, *self.method[1:]) / base2.magnitude

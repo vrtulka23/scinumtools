@@ -236,19 +236,20 @@ class Quantity:
         # return quantity
         return Quantity(1.0, {unitid: exp})
     
-    def _convert(self, magnitude1, baseunits1, magnitude2, baseunits2):
-        if c := TemperatureConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+    def _convert(self, magnitude1, baseunits1, baseunits2):
+        if c := TemperatureConverter(magnitude1, baseunits1, baseunits2):
             return c.magnitude
-        elif c := LogarithmicConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+        elif c := LogarithmicConverter(magnitude1, baseunits1, baseunits2):
             return c.magnitude
-        elif c := StandardConverter(magnitude1, baseunits1, magnitude2, baseunits2):
+        elif c := StandardConverter(magnitude1, baseunits1, baseunits2):
             return c.magnitude
         else:
             raise Exception("Unsupported conversion between units:", baseunits1.expression(), baseunits2.expression())
 
     def value(self, expression=None, dtype=None):
         if expression:
-            value = self._convert(self.magnitude, self.baseunits, 1.0, Quantity(1.0, expression).baseunits)
+            baseunits = Quantity(1.0, expression).baseunits
+            value = self._convert(self.magnitude, self.baseunits, baseunits)
         else:
             value = self.magnitude
         if dtype:
@@ -261,7 +262,7 @@ class Quantity:
 
     def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
         baseunits = Quantity(1.0, units).baseunits
-        magnitude = self._convert(self.magnitude, self.baseunits, 1.0, baseunits)
+        magnitude = self._convert(self.magnitude, self.baseunits, baseunits)
         return Quantity(magnitude, baseunits)
 
     def rebase(self):

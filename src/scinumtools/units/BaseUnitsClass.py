@@ -22,6 +22,8 @@ class BaseUnits:
             self.baseunits = {}
         elif isinstance(baseunits, dict):
             self.baseunits = baseunits
+        elif isinstance(baseunits, str):
+            pass
         else:
             raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
         self.unitlist = UnitStandardTable()
