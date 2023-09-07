@@ -17,17 +17,14 @@ def test_unit_list():
     
 def test_unique_names():
     
-    unitlist = UnitStandardTable()
-    prefixes = UnitPrefixesTable()
-    
-    units = list(unitlist.keys())
-    for symbol, unit in unitlist.items():
+    units = list(UnitStandard.keys())
+    for symbol, unit in UnitStandard.items():
         if isinstance(unit.prefixes, list):
             for prefix in unit.prefixes:
-                assert prefix in prefixes
+                assert prefix in UnitPrefixes
                 units.append(f"{prefix}{symbol}")
         elif unit.prefixes is True:
-            for prefix in prefixes.keys():
+            for prefix in UnitPrefixes.keys():
                 units.append(f"{prefix}{symbol}")
     #print(units)
     #exit(1)
@@ -56,8 +53,7 @@ def test_prefixes():
 
 def test_definitions():
     
-    unitlist = UnitStandardTable()
-    for symbol, unit in unitlist.items():
+    for symbol, unit in UnitStandard.items():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)
@@ -68,8 +64,7 @@ def test_definitions():
         assert isclose(magnitude,  unit.magnitude, rel_tol=1e-07)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         
-    prefixes = UnitPrefixesTable()
-    for symbol, unit in prefixes.items():
+    for symbol, unit in UnitPrefixes.items():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)

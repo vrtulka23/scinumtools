@@ -1,8 +1,8 @@
 import re
 
+from .UnitList import *
 from ..solver import ExpressionSolver, OperatorPar, OperatorMul, OperatorTruediv
 from .FractionClass import Fraction
-from .UnitList import UnitStandardTable, UnitPrefixesTable
 
 class Atom:
     
@@ -53,7 +53,6 @@ class Atom:
             return f"Atom({self.magnitude:.3e})"
 
 def AtomParser(string=None):
-    global unitlist, prefixes
     # parse number
     m = re.match(r'^[-]?([0-9.]+)(e([0-9+-]+)|)$', str(string))
     if m:
@@ -70,7 +69,7 @@ def AtomParser(string=None):
     else:
         exp = Fraction(1)
     # parse unit symbol
-    bases = [u for u in unitlist.keys() if string.endswith(u)]
+    bases = [u for u in UnitStandard.keys() if string.endswith(u)]
     if bases:
         base = max(bases, key=len)
         string = string[-len(base)-1]
@@ -78,14 +77,14 @@ def AtomParser(string=None):
     else:
         raise Exception('Unknown unit', string, string_bak)
     # parse unit prefix
-    prefkeys = [p for p in prefixes.keys() if string.endswith(p)]
+    prefkeys = [p for p in UnitPrefixes.keys() if string.endswith(p)]
     if prefkeys:
         prefix = max(prefkeys, key=len)
-        if isinstance(unitlist[base].prefixes,list) and prefix not in unitlist[base].prefixes:
-            raise Exception(f"Unit can have only following prefixes:", unitlist[base].prefixes, prefix)
-        elif unitlist[base].prefixes is True and prefix not in prefixes.keys():
+        if isinstance(UnitStandard[base].prefixes,list) and prefix not in UnitStandard[base].prefixes:
+            raise Exception(f"Unit can have only following prefixes:", UnitStandard[base].prefixes, prefix)
+        elif UnitStandard[base].prefixes is True and prefix not in UnitPrefixes.keys():
             raise Exception(f"Unknown unit prefix:", string_bak)
-        elif unitlist[base].prefixes is False:
+        elif UnitStandard[base].prefixes is False:
             raise Exception(f"Unit cannot have any prefixes:", base)
         unitid = f"{prefix:s}{Atom.symbol}{unitid}"
     elif len(string)>1:
@@ -94,8 +93,5 @@ def AtomParser(string=None):
     return Atom(1.0, {unitid: exp})
         
 def UnitSolver(expression):
-    global unitlist, prefixes
-    unitlist = UnitStandardTable()
-    prefixes = UnitPrefixesTable()
     with ExpressionSolver(AtomParser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
         return es.solve(expression)

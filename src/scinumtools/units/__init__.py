@@ -9,5 +9,5 @@ from .NaNClass import NaN as nan
 from .DimensionsClass import Dimensions
 from .FractionClass import Fraction
 from .BaseUnitsClass import BaseUnits
-from .UnitList import UnitPrefixesTable, UnitStandardTable
+from .UnitList import UnitPrefixes, UnitStandard
 from .UnitSolver import UnitSolver

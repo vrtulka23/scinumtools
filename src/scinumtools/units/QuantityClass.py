@@ -25,9 +25,6 @@ class Quantity:
             self, magnitude:float,
             baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None
     ):
-        # Initialize settings
-        self.unitlist = UnitStandardTable()
-        self.prefixes = UnitPrefixesTable()
         # Set magnitude
         if isinstance(magnitude, (int,float)):
             self.magnitude = float(magnitude)

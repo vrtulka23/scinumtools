@@ -1,6 +1,6 @@
 import numpy as np
 
-from .UnitList import UnitStandardTable
+from .UnitList import UnitStandard
 from .QuantityClass import Quantity
 
 class Constant:
@@ -28,12 +28,11 @@ class Constant:
 
     @staticmethod
     def _list():
-        unitlist = UnitStandardTable()
         sw, uw, dw = 8, 20, 20
         text = "Constants\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
-        for symbol, unit in unitlist.items():
+        for symbol, unit in UnitStandard.items():
             if symbol.startswith('['):
                 text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {unit['definition']:{dw}s}\n"
         return text

@@ -2,9 +2,9 @@ import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
 
+from .UnitList import *
 from .FractionClass import Fraction
 from .DimensionsClass import Dimensions
-from .UnitList import UnitStandardTable, UnitPrefixesTable
 from .UnitSolver import UnitSolver
 
 @dataclass
@@ -33,8 +33,6 @@ class BaseUnits:
             self.baseunits = UnitSolver(baseunits).baseunits
         else:
             raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
-        self.unitlist = UnitStandardTable()
-        self.prefixes = UnitPrefixesTable()
         # convert units exponents to fractions
         for unit,exp in self.baseunits.items():
             if not isinstance(exp, Fraction):
@@ -49,7 +47,7 @@ class BaseUnits:
             zerodim = Dimensions().value()
             for unitid in list(self.baseunits.keys()):
                 symbol = unitid.split(":")[-1] if ":" in unitid else unitid
-                if self.unitlist[symbol].dimensions != zerodim:
+                if UnitStandard[symbol].dimensions != zerodim:
                     del self.baseunits[unitid]
 
     def __str__(self):
@@ -109,11 +107,11 @@ class BaseUnits:
             exp = self.baseunits[unitid]
             if ":" in unitid:
                 prefix, base = unitid.split(":")
-                magnitude  = (self.prefixes[prefix].magnitude*self.unitlist[base].magnitude) ** exp.value(dtype=float)
+                magnitude  = (UnitPrefixes[prefix].magnitude*UnitStandard[base].magnitude) ** exp.value(dtype=float)
             else:
                 prefix, base = '', unitid
-                magnitude  = self.unitlist[base].magnitude ** exp.value(dtype=float)
-            dimensions = Dimensions(*self.unitlist[base].dimensions)*exp
+                magnitude  = UnitStandard[base].magnitude ** exp.value(dtype=float)
+            dimensions = Dimensions(*UnitStandard[base].dimensions)*exp
             return magnitude, dimensions
         if unitid:
             magnitude, dimensions = unit_base(unitid)
