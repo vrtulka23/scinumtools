@@ -160,11 +160,17 @@ def test_logarithmic():
     assert str(Quantity(1, 'B').to('Np'))     == "Quantity(1.151e+00 Np)"
     assert str(Quantity(1, 'Np').to('B'))     == "Quantity(8.686e-01 B)"
     assert str(Quantity(1, 'dB').to('cNp'))   == "Quantity(1.151e+01 cNp)"
+    
     assert str(Quantity(1000, 'AR').to('dB')) == "Quantity(6.000e+01 dB)"
     assert str(Quantity(30, 'dB').to('AR'))   == "Quantity(3.162e+01 AR)"
     assert str(Quantity(1000, 'PR').to('dB')) == "Quantity(3.000e+01 dB)"
     assert str(Quantity(6, 'dB').to('PR'))    == "Quantity(3.981e+00 PR)"
-    
+
+    assert str(Quantity(3.16228, 'AR').to('Np')) == "Quantity(1.151e+00 Np)"
+    assert str(Quantity(1, 'Np').to('AR'))       == "Quantity(2.718e+00 AR)"
+    assert str(Quantity(7.389, 'PR').to('Np'))   == "Quantity(1.000e+00 Np)"
+    assert str(Quantity(0.115, 'Np').to('PR'))   == "Quantity(1.259e+00 PR)"
+
     # Decibel-milliwatts (dBm)
     assert str(Quantity(1, 'mW').to('W'))     == "Quantity(1.000e-03 W)"
     assert str(Quantity(1, 'mW').to('dBm'))   == "Quantity(0.000e+00 dBm)"

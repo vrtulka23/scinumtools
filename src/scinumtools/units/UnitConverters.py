@@ -99,21 +99,25 @@ class LogarithmicConverter(SingleUnitConverter):
     def method(self, baseunits1, baseunits2):
         conversions = {
             # power ratios
-            'convert_PR_B':  ("convert_Ratio_B", 1, 1),
-            'convert_B_PR':  ("convert_B_Ratio", 1, 1),
-            'convert_W_Bm':  ("convert_Ratio_B", 1, 1),
-            'convert_W_BmW': ("convert_Ratio_B", 1, 1),
-            'convert_Bm_W':  ("convert_B_Ratio", 1, 1),
-            'convert_BmW_W': ("convert_B_Ratio", 1, 1),
-            'convert_W_BW':  ("convert_Ratio_B", 1, 1e-3),
-            'convert_BW_W':  ("convert_B_Ratio", 1, 1e3),
+            'convert_PR_B':  ("convert_Ratio_B",  1,   1),
+            'convert_B_PR':  ("convert_B_Ratio",  1,   1),
+            'convert_PR_Np': ("convert_Ratio_Np", 0.5, 1),
+            'convert_Np_PR': ("convert_Np_Ratio", 0.5, 1),
+            'convert_W_Bm':  ("convert_Ratio_B",  1,   1),
+            'convert_W_BmW': ("convert_Ratio_B",  1,   1),
+            'convert_Bm_W':  ("convert_B_Ratio",  1,   1),
+            'convert_BmW_W': ("convert_B_Ratio",  1,   1),
+            'convert_W_BW':  ("convert_Ratio_B",  1,   1e-3),
+            'convert_BW_W':  ("convert_B_Ratio",  1,   1e3),
             # amplitude ratios
-            'convert_AR_B':  ("convert_Ratio_B", 2, 1),
-            'convert_B_AR':  ("convert_B_Ratio", 2, 1),
-            'convert_V_BV':  ("convert_Ratio_B", 2, 1e-3),
-            'convert_BV_V':  ("convert_B_Ratio", 2, 1e3),
-            'convert_V_BuV': ("convert_Ratio_B", 2, 1e3),
-            'convert_BuV_V': ("convert_B_Ratio", 2, 1e-3),
+            'convert_AR_B':  ("convert_Ratio_B",  2,   1),
+            'convert_B_AR':  ("convert_B_Ratio",  2,   1),
+            'convert_AR_Np': ("convert_Ratio_Np", 1,   1),
+            'convert_Np_AR': ("convert_Np_Ratio", 1,   1),
+            'convert_V_BV':  ("convert_Ratio_B",  2,   1e-3),
+            'convert_BV_V':  ("convert_B_Ratio",  2,   1e3),
+            'convert_V_BuV': ("convert_Ratio_B",  2,   1e3),
+            'convert_BuV_V': ("convert_B_Ratio",  2,   1e-3),
         }
         method = super().method(baseunits1, baseunits2)
         if method and method[0] in conversions:
@@ -135,4 +139,10 @@ class LogarithmicConverter(SingleUnitConverter):
         
     def convert_B_Ratio(self, value, exp, conv):
         return np.power(10,value/exp)*conv
+        
+    def convert_Ratio_Np(self, value, exp, conv):
+        return exp*np.log(value*conv)
+        
+    def convert_Np_Ratio(self, value, exp, conv):
+        return np.exp(value/exp)*conv
         

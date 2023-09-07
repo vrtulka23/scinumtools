@@ -67,6 +67,14 @@ class Unit:
                 continue
             defn = unit['definition'] if isinstance(unit['definition'],str) else 'fn(K)'
             text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {defn:{dw}s}\n"
+        text += "\nLogarithmic units:\n\n"
+        text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
+        text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
+        for symbol, unit in UNIT_STANDARD.items():
+            if symbol not in ['Np','B','Bm','BmW','BW','BV','BuV']:
+                continue
+            defn = unit['definition'] if isinstance(unit['definition'],str) else 'fn(K)'
+            text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {defn:{dw}s}\n"
         return text
     
     @staticmethod
