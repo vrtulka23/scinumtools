@@ -3,9 +3,13 @@ import numpy as np
 from ..ParameterTableClass import ParameterTable
 from .UnitConverters import *
 
-global UnitPrefixes, UnitStandard
+MAGNITUDE_PRECISION = 1e-7
 
-UnitPrefixes = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
+SYMBOL_UNITID   = ":"
+SYMBOL_FRACTION = ":"
+SYMBOL_MULTIPLY = "*"
+
+UNIT_PREFIXES = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
 'Y':        (1.0e24,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e24',                   'yotta'            ), 
 'Z':        (1.0e21,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e21',                   'zetta'            ), 
 'E':        (1.0e18,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e18',                   'exa'              ), 
@@ -28,7 +32,7 @@ UnitPrefixes = ParameterTable(['magnitude','dimensions','definition','name','pre
 'y':        (1.0e-24,        [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-24',                  'yocto'            ), 
 }, keys=True)
     
-UnitStandard = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
+UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
 # base physical units
 'm':        (1.0,            [ 1, 0, 0, 0, 0, 0, 0, 0],  None,                     'meter',             True               ),
 'g':        (1.0,            [ 0, 1, 0, 0, 0, 0, 0, 0],  None,                     'gram',              True               ),

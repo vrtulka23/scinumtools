@@ -2,18 +2,19 @@ import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
 
+from .settings import *
+
 @dataclass
 class Fraction:
 
     num: Union[int, tuple, str]   # numerator
     den: int = field(default=1)   # denominator
-    symbol: str = ':'             # fraction symbol
 
     def __post_init__(self):
         # initialize from a tuple
         if isinstance(self.num, str):
-            if Fraction.symbol in self.num:
-                num, den = self.num.split(Fraction.symbol)
+            if SYMBOL_FRACTION in self.num:
+                num, den = self.num.split(SYMBOL_FRACTION)
                 self.num, self.den = int(num), int(den)
             else:
                 self.num, self.den = int(self.num), 1
@@ -58,7 +59,7 @@ class Fraction:
         if self.num==0 or self.den==1:
             return str(self.num)
         else:
-            return f"{self.num}{self.symbol}{self.den}"
+            return f"{self.num}{SYMBOL_FRACTION}{self.den}"
 
     def __repr__(self):
         if self.num==0 or self.den==1:

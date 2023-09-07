@@ -6,6 +6,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools.units import *
+from scinumtools.units.settings import *
     
 def test_unit_list():
     
@@ -17,14 +18,14 @@ def test_unit_list():
     
 def test_unique_names():
     
-    units = list(UnitStandard.keys())
-    for symbol, unit in UnitStandard.items():
+    units = list(UNIT_STANDARD.keys())
+    for symbol, unit in UNIT_STANDARD.items():
         if isinstance(unit.prefixes, list):
             for prefix in unit.prefixes:
-                assert prefix in UnitPrefixes
+                assert prefix in UNIT_PREFIXES
                 units.append(f"{prefix}{symbol}")
         elif unit.prefixes is True:
-            for prefix in UnitPrefixes.keys():
+            for prefix in UNIT_PREFIXES.keys():
                 units.append(f"{prefix}{symbol}")
     #print(units)
     #exit(1)
@@ -53,22 +54,22 @@ def test_prefixes():
 
 def test_definitions():
     
-    for symbol, unit in UnitStandard.items():
+    for symbol, unit in UNIT_STANDARD.items():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)
         base = q.baseunits.base()
         magnitude = q.magnitude*base.magnitude
-        if base.dimensions.value(dtype=list) != unit.dimensions or not isclose(magnitude,  unit.magnitude, rel_tol=1e-07):
+        if base.dimensions.value(dtype=list) != unit.dimensions or not isclose(magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION):
             print(q, symbol, unit.definition, unit.magnitude)
-        assert isclose(magnitude,  unit.magnitude, rel_tol=1e-07)
+        assert isclose(magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         
-    for symbol, unit in UnitPrefixes.items():
+    for symbol, unit in UNIT_PREFIXES.items():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)
         base = q.baseunits.base()
-        assert isclose(q.magnitude,  unit.magnitude, rel_tol=1e-07)
+        assert isclose(q.magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         

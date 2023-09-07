@@ -1,6 +1,6 @@
 import re
 
-from .UnitList import *
+from .settings import *
 from ..solver import ExpressionSolver, OperatorPar, OperatorMul, OperatorTruediv
 from .FractionClass import Fraction
 
@@ -8,7 +8,6 @@ class Atom:
     
     magnitude: float
     baseunits: dict
-    symbol: str = ':'
     
     def __init__(self, magnitude, baseunits):
         self.magnitude = magnitude
@@ -32,7 +31,7 @@ class Atom:
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(self.symbol,"")
+                unit = unit.replace(SYMBOL_UNITID,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         if baseunits:
@@ -44,7 +43,7 @@ class Atom:
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(self.symbol,"")
+                unit = unit.replace(SYMBOL_UNITID,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         if baseunits:
@@ -62,14 +61,14 @@ def AtomParser(string=None):
     string_bak = string
     string = ' '+string
     # parse exponent
-    if m := re.search(r"[0-9"+Fraction.symbol+r"+-]+$", string):
+    if m := re.search(r"[0-9"+SYMBOL_FRACTION+r"+-]+$", string):
         exp = m.group() 
         string = string[:-len(exp)]
         exp = Fraction(exp)
     else:
         exp = Fraction(1)
     # parse unit symbol
-    bases = [u for u in UnitStandard.keys() if string.endswith(u)]
+    bases = [u for u in UNIT_STANDARD.keys() if string.endswith(u)]
     if bases:
         base = max(bases, key=len)
         string = string[-len(base)-1]
@@ -77,16 +76,16 @@ def AtomParser(string=None):
     else:
         raise Exception('Unknown unit', string, string_bak)
     # parse unit prefix
-    prefkeys = [p for p in UnitPrefixes.keys() if string.endswith(p)]
+    prefkeys = [p for p in UNIT_PREFIXES.keys() if string.endswith(p)]
     if prefkeys:
         prefix = max(prefkeys, key=len)
-        if isinstance(UnitStandard[base].prefixes,list) and prefix not in UnitStandard[base].prefixes:
-            raise Exception(f"Unit can have only following prefixes:", UnitStandard[base].prefixes, prefix)
-        elif UnitStandard[base].prefixes is True and prefix not in UnitPrefixes.keys():
+        if isinstance(UNIT_STANDARD[base].prefixes,list) and prefix not in UNIT_STANDARD[base].prefixes:
+            raise Exception(f"Unit can have only following prefixes:", UNIT_STANDARD[base].prefixes, prefix)
+        elif UNIT_STANDARD[base].prefixes is True and prefix not in UNIT_PREFIXES.keys():
             raise Exception(f"Unknown unit prefix:", string_bak)
-        elif UnitStandard[base].prefixes is False:
+        elif UNIT_STANDARD[base].prefixes is False:
             raise Exception(f"Unit cannot have any prefixes:", base)
-        unitid = f"{prefix:s}{Atom.symbol}{unitid}"
+        unitid = f"{prefix:s}{SYMBOL_UNITID}{unitid}"
     elif len(string)>1:
         raise Exception("Unknown unit prefix:", string)
     # return quantity

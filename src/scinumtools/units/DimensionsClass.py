@@ -1,6 +1,7 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
+
 from .FractionClass import Fraction
     
 @dataclass

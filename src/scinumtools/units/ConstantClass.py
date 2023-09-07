@@ -1,6 +1,6 @@
 import numpy as np
 
-from .UnitList import UnitStandard
+from .settings import *
 from .QuantityClass import Quantity
 
 class Constant:
@@ -32,7 +32,7 @@ class Constant:
         text = "Constants\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
-        for symbol, unit in UnitStandard.items():
+        for symbol, unit in UNIT_STANDARD.items():
             if symbol.startswith('['):
                 text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {unit['definition']:{dw}s}\n"
         return text

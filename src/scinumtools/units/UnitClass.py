@@ -1,6 +1,6 @@
 import numpy as np
 
-from .UnitList import *
+from .settings import *
 from .QuantityClass import Quantity
 
 class Unit:
@@ -41,19 +41,19 @@ class Unit:
         text += "\nPrefixes:\n\n"
         text += f"{'Symbol':{sw}s} | {'Prefix':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
-        for symbol, prefix in UnitPrefixes.items():
+        for symbol, prefix in UNIT_PREFIXES.items():
             text += f"{symbol:{sw}s} | {prefix['name']:{uw}s} | {prefix['definition']:{dw}s}\n"
         text += "\nBase units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Prefixes':{pw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*pw+"\n"
-        for symbol, unit in UnitStandard.items():
+        for symbol, unit in UNIT_STANDARD.items():
             if not symbol.startswith('[') and unit['definition'] is None:
                 pref = get_pref(unit['prefixes'])
                 text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {pref:{pw}s}\n"         
         text += "\nDerived units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Prefixes':{pw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*pw+"-+-"+"-"*dw+"\n"
-        for symbol, unit in UnitStandard.items():
+        for symbol, unit in UNIT_STANDARD.items():
             if symbol.startswith('['): continue
             if not isinstance(unit['definition'], str): continue
             if symbol=='degR': continue
@@ -62,7 +62,7 @@ class Unit:
         text += "\nTemperature units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
-        for symbol, unit in UnitStandard.items():
+        for symbol, unit in UNIT_STANDARD.items():
             if symbol not in ['Cel', 'degR', 'degF']:
                 continue
             defn = unit['definition'] if isinstance(unit['definition'],str) else 'fn(K)'

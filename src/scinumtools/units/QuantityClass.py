@@ -3,7 +3,7 @@ import numpy as np
 import re
 from typing import Union
 
-from .UnitList import *
+from .settings import *
 from .UnitConverters import *
 from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
@@ -18,8 +18,6 @@ class Quantity:
     
     magnitude: float          # quantity magnitude
     baseunits: BaseUnits      # base units
-
-    precision: float = 1e-7
 
     def __init__(
             self, magnitude:float,
@@ -132,7 +130,7 @@ class Quantity:
         return Quantity(-self.magnitude, self.baseunits)
     
     def __eq__(self, other):
-        if not np.allclose(self.magnitude, other.magnitude, rtol=self.precision):
+        if not np.allclose(self.magnitude, other.magnitude, rtol=MAGNITUDE_PRECISION):
             return False
         if not self.baseunits==other.baseunits:
             return False

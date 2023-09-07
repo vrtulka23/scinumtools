@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
 
-from .UnitList import *
+from .settings import *
 from .FractionClass import Fraction
 from .DimensionsClass import Dimensions
 from .UnitSolver import UnitSolver
@@ -16,7 +16,6 @@ class Base:
 class BaseUnits:
 
     baseunits: dict
-    symbol: str = ':'
 
     def __init__(self, baseunits: Union[str,list,dict,Dimensions]=None):
         if baseunits is None:
@@ -46,15 +45,15 @@ class BaseUnits:
         if base.dimensions == Dimensions():
             zerodim = Dimensions().value()
             for unitid in list(self.baseunits.keys()):
-                symbol = unitid.split(":")[-1] if ":" in unitid else unitid
-                if UnitStandard[symbol].dimensions != zerodim:
+                symbol = unitid.split(SYMBOL_UNITID)[-1] if SYMBOL_UNITID in unitid else unitid
+                if UNIT_STANDARD[symbol].dimensions != zerodim:
                     del self.baseunits[unitid]
 
     def __str__(self):
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(self.symbol,"")
+                unit = unit.replace(SYMBOL_UNITID,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         return f"BaseUnits({baseunits})"
@@ -63,7 +62,7 @@ class BaseUnits:
         baseunits = []
         for unit,exp in self.baseunits.items():
             if exp.num not in [0, -0]:
-                unit = unit.replace(self.symbol,"")
+                unit = unit.replace(SYMBOL_UNITID,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
         return f"BaseUnits({baseunits})"
@@ -105,13 +104,13 @@ class BaseUnits:
     def base(self, unitid=None):
         def unit_base(unitid):
             exp = self.baseunits[unitid]
-            if ":" in unitid:
-                prefix, base = unitid.split(":")
-                magnitude  = (UnitPrefixes[prefix].magnitude*UnitStandard[base].magnitude) ** exp.value(dtype=float)
+            if SYMBOL_UNITID in unitid:
+                prefix, base = unitid.split(SYMBOL_UNITID)
+                magnitude  = (UNIT_PREFIXES[prefix].magnitude*UNIT_STANDARD[base].magnitude) ** exp.value(dtype=float)
             else:
                 prefix, base = '', unitid
-                magnitude  = UnitStandard[base].magnitude ** exp.value(dtype=float)
-            dimensions = Dimensions(*UnitStandard[base].dimensions)*exp
+                magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
+            dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
             return magnitude, dimensions
         if unitid:
             magnitude, dimensions = unit_base(unitid)
@@ -127,13 +126,13 @@ class BaseUnits:
     def expression(self):
         units = []
         for unitid,exp in self.baseunits.items():
-            symbol = unitid.replace(self.symbol,'')
+            symbol = unitid.replace(SYMBOL_UNITID,'')
             if exp.num==1 and exp.den==1:
                 units.append(symbol)
             else:
                 units.append(f"{symbol}{exp}")
         if units:
-            return "*".join(units)
+            return SYMBOL_MULTIPLY.join(units)
         else:
             return None
         
