@@ -10,3 +10,4 @@ from .DimensionsClass import Dimensions
 from .FractionClass import Fraction
 from .BaseUnitsClass import BaseUnits
 from .UnitList import UnitPrefixesTable, UnitStandardTable
+from .UnitSolver import UnitSolver

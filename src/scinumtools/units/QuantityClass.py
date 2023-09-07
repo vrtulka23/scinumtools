@@ -3,12 +3,12 @@ import numpy as np
 import re
 from typing import Union
 
-from ..solver import ExpressionSolver, AtomBase, OperatorPar, OperatorMul, OperatorTruediv
 from .UnitList import *
 from .UnitConverters import *
 from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
 from .FractionClass import Fraction
+from .UnitSolver import UnitSolver
 
 HANDLED_FUNCTIONS = {}
 
@@ -38,21 +38,14 @@ class Quantity:
         else:
             raise Exception("Magnitude can be either a number or an list/array of numbers")
         # Set base units
-        if baseunits is None:
-            self.baseunits = BaseUnits()
-        elif isinstance(baseunits, dict):
+        if baseunits is None or isinstance(baseunits, (dict,Dimensions,list,np.ndarray)):
             self.baseunits = BaseUnits(baseunits)
-        elif isinstance(baseunits, Dimensions):
-            self.baseunits = BaseUnits(baseunits.value(dtype=dict))
-        elif isinstance(baseunits, (list, np.ndarray)):
-            self.baseunits = BaseUnits(Dimensions(*baseunits).value(dtype=dict))
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits
         elif isinstance(baseunits, str):
-            with ExpressionSolver(self._atom_parser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
-                unit = es.solve(baseunits)
-            self.magnitude *= unit.magnitude
-            self.baseunits = unit.baseunits
+            atom = UnitSolver(baseunits)
+            self.magnitude *= atom.magnitude
+            self.baseunits = BaseUnits(atom.baseunits)
         elif isinstance(baseunits, Quantity):
             self.magnitude *= baseunits.magnitude
             self.baseunits = baseunits.baseunits
@@ -195,46 +188,6 @@ class Quantity:
         if func not in HANDLED_FUNCTIONS:
             raise NotImplementedError()
         return HANDLED_FUNCTIONS[func](*args, **kwargs)
-
-    def _atom_parser(self, string=None):
-        # parse number
-        m = re.match(r'^[-]?([0-9.]+)(e([0-9+-]+)|)$', str(string))
-        if m:
-            magnitude = float(string)
-            return Quantity(magnitude)
-        # parse unit
-        string_bak = string
-        string = ' '+string
-        # parse exponent
-        if m := re.search(r"[0-9"+Fraction.symbol+r"+-]+$", string):
-            exp = m.group() 
-            string = string[:-len(exp)]
-            exp = Fraction(exp)
-        else:
-            exp = 1
-        # parse unit symbol
-        bases = [u for u in self.unitlist.keys() if string.endswith(u)]
-        if bases:
-            base = max(bases, key=len)
-            string = string[-len(base)-1]
-            unitid = f"{base:s}"
-        else:
-            raise Exception('Unknown unit', string, string_bak)
-        # parse unit prefix
-        prefixes = [p for p in self.prefixes.keys() if string.endswith(p)]
-        if prefixes:
-            prefix = max(prefixes, key=len)
-            if isinstance(self.unitlist[base].prefixes,list) and prefix not in self.unitlist[base].prefixes:
-                raise Exception(f"Unit can have only following prefixes:", self.unitlist[base].prefixes, prefix)
-            elif self.unitlist[base].prefixes is True and prefix not in self.prefixes.keys():
-                raise Exception(f"Unknown unit prefix:", string_bak)
-            elif self.unitlist[base].prefixes is False:
-                raise Exception(f"Unit cannot have any prefixes:", base)
-            unitid = f"{prefix:s}{BaseUnits.symbol}{unitid}"
-        elif len(string)>1:
-            raise Exception("Unknown unit prefix:", string)
-        # return quantity
-        return Quantity(1.0, {unitid: exp})
     
     def _convert(self, magnitude1, baseunits1, baseunits2):
         if c := TemperatureConverter(magnitude1, baseunits1, baseunits2):

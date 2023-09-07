@@ -5,6 +5,7 @@ from typing import Union
 from .FractionClass import Fraction
 from .DimensionsClass import Dimensions
 from .UnitList import UnitStandardTable, UnitPrefixesTable
+from .UnitSolver import UnitSolver
 
 @dataclass
 class Base:
@@ -14,16 +15,20 @@ class Base:
 
 class BaseUnits:
 
-    baseunits: Union[str,list,dict]
+    baseunits: dict
     symbol: str = ':'
 
-    def __init__(self, baseunits: Union[str,list,dict]=None):
+    def __init__(self, baseunits: Union[str,list,dict,Dimensions]=None):
         if baseunits is None:
             self.baseunits = {}
         elif isinstance(baseunits, dict):
             self.baseunits = baseunits
+        elif isinstance(baseunits, Dimensions):
+            self.baseunits = baseunits.value(dtype=dict)
+        elif isinstance(baseunits, (list, np.ndarray)):
+            self.baseunits = Dimensions(*baseunits).value(dtype=dict)
         elif isinstance(baseunits, str):
-            pass
+            self.baseunits = UnitSolver(baseunits).baseunits
         else:
             raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
         self.unitlist = UnitStandardTable()

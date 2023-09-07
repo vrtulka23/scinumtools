@@ -7,9 +7,16 @@ sys.path.insert(0, 'src')
 
 from scinumtools.units import *
 
-def test_base_units():
+def test_initialization():
+    
+    assert str(BaseUnits())                 == "BaseUnits()"
+    dim = [0,2,3,-2,(3,2),0,0,0]
+    assert str(BaseUnits(dim))              == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
+    assert str(BaseUnits(Dimensions(*dim))) == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
+    assert str(BaseUnits("kg*m2/s2"))       == "BaseUnits(kg=1 m=2 s=-2)"
 
-    # Test arithmetics
+def test_arithmetics():
+    
     bu1 = BaseUnits({'k:m':3,'g':(3,2)})
     bu2 = BaseUnits({'k:m':2,'g':(4,7)})
     assert not bu1 == bu2
@@ -29,18 +36,6 @@ def test_values():
     bu = BaseUnits({'g':(3,2), 'k:m': 3, '[m_p]': (3,1)})
     assert str(bu) == "BaseUnits(g=3:2 km=3 [m_p]=3)"
     
-def test_rebase():
-    
-    # simple prefix rebasing 
-    assert str(Quantity(1, 'cm*m*dm').rebase())  == "Quantity(1.000e+03 cm3)"
-    
-    # rebasing prefixes with exponents
-    assert str(Quantity(1, 'C3*cm*m2').rebase()) == "Quantity(1.000e+04 C3*cm3)"
-    assert str(Quantity(1, 'cm*m3:2').rebase())  == "Quantity(1.000e+03 cm5:2)"
-    
-    # rebasing different units
-    assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"
-
 def test_base():
     
     base = BaseUnits({'k:m':3,'g':2}).base()
@@ -52,3 +47,15 @@ def test_base():
     base = BaseUnits({'W':(3,2),'s':(9,2)}).base()
     assert base.magnitude       == 31622.776601683792
     assert str(base.dimensions) == "Dimensions(m=3 g=3:2)"
+    
+def test_rebase():
+    
+    # simple prefix rebasing 
+    assert str(Quantity(1, 'cm*m*dm').rebase())  == "Quantity(1.000e+03 cm3)"
+    
+    # rebasing prefixes with exponents
+    assert str(Quantity(1, 'C3*cm*m2').rebase()) == "Quantity(1.000e+04 C3*cm3)"
+    assert str(Quantity(1, 'cm*m3:2').rebase())  == "Quantity(1.000e+03 cm5:2)"
+    
+    # rebasing different units
+    assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"
