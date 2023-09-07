@@ -194,3 +194,14 @@ def test_logarithmic():
     assert str(Quantity(42, 'dBuV').to('uV'))   == "Quantity(1.259e+02 uV)"
     assert str(Quantity(1000, 'uV').to('dBuV')) == "Quantity(6.000e+01 dBuV)"
     
+def test_rebase():
+    
+    # simple prefix rebasing 
+    assert str(Quantity(1, 'cm*m*dm').rebase())  == "Quantity(1.000e+03 cm3)"
+    
+    # rebasing prefixes with exponents
+    assert str(Quantity(1, 'C3*cm*m2').rebase()) == "Quantity(1.000e+04 C3*cm3)"
+    assert str(Quantity(1, 'cm*m3:2').rebase())  == "Quantity(1.000e+03 cm5:2)"
+    
+    # rebasing different units
+    assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"

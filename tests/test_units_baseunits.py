@@ -48,14 +48,3 @@ def test_base():
     assert base.magnitude       == 31622.776601683792
     assert str(base.dimensions) == "Dimensions(m=3 g=3:2)"
     
-def test_rebase():
-    
-    # simple prefix rebasing 
-    assert str(Quantity(1, 'cm*m*dm').rebase())  == "Quantity(1.000e+03 cm3)"
-    
-    # rebasing prefixes with exponents
-    assert str(Quantity(1, 'C3*cm*m2').rebase()) == "Quantity(1.000e+04 C3*cm3)"
-    assert str(Quantity(1, 'cm*m3:2').rebase())  == "Quantity(1.000e+03 cm5:2)"
-    
-    # rebasing different units
-    assert str(Quantity(1, 'erg*J').rebase())    == "Quantity(1.000e+07 erg2)"

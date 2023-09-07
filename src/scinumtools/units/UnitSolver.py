@@ -6,6 +6,8 @@ from .UnitList import UnitStandardTable, UnitPrefixesTable
 
 class Atom:
     
+    magnitude: float
+    baseunits: dict
     symbol: str = ':'
     
     def __init__(self, magnitude, baseunits):
@@ -33,7 +35,10 @@ class Atom:
                 unit = unit.replace(self.symbol,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
-        return f"Atom({str(self.magnitude):s} {baseunits})"
+        if baseunits:
+            return f"Atom({self.magnitude:.3e} {baseunits})"
+        else:
+            return f"Atom({self.magnitude:.3e})"
             
     def __repr__(self):
         baseunits = []
@@ -42,8 +47,10 @@ class Atom:
                 unit = unit.replace(self.symbol,"")
                 baseunits.append(f"{unit}={str(exp)}")
         baseunits = " ".join(baseunits)
-        return f"Atom({str(self.magnitude):s} {baseunits})"
-
+        if baseunits:
+            return f"Atom({self.magnitude:.3e} {baseunits})"
+        else:
+            return f"Atom({self.magnitude:.3e})"
 
 def AtomParser(string=None):
     global unitlist, prefixes
