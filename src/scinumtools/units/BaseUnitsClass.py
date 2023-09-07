@@ -27,6 +27,8 @@ class BaseUnits:
             self.baseunits = baseunits.value(dtype=dict)
         elif isinstance(baseunits, (list, np.ndarray)):
             self.baseunits = Dimensions(*baseunits).value(dtype=dict)
+        elif isinstance(baseunits, BaseUnits):
+            self.baseunits = baseunits.baseunits
         elif isinstance(baseunits, str):
             self.baseunits = UnitSolver(baseunits).baseunits
         else:

@@ -201,8 +201,7 @@ class Quantity:
 
     def value(self, expression=None, dtype=None):
         if expression:
-            baseunits = Quantity(1.0, expression).baseunits
-            value = self._convert(self.magnitude, self.baseunits, baseunits)
+            value = self._convert(self.magnitude, self.baseunits, BaseUnits(expression))
         else:
             value = self.magnitude
         if dtype:
@@ -214,9 +213,14 @@ class Quantity:
         return self.baseunits.expression()
 
     def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
-        baseunits = Quantity(1.0, units).baseunits
-        magnitude = self._convert(self.magnitude, self.baseunits, baseunits)
-        return Quantity(magnitude, baseunits)
+        if isinstance(units, Quantity):
+            baseunits = units.baseunits
+            self.magnitude = self._convert(self.magnitude, self.baseunits, baseunits) / units.magnitude
+        else:
+            baseunits = BaseUnits(units)
+            self.magnitude = self._convert(self.magnitude, self.baseunits, baseunits)
+        self.baseunits = baseunits
+        return self
 
     def rebase(self):
         factor = 1

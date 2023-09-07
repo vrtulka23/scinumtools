@@ -14,6 +14,7 @@ def test_initialization():
     assert str(BaseUnits(dim))              == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
     assert str(BaseUnits(Dimensions(*dim))) == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
     assert str(BaseUnits("kg*m2/s2"))       == "BaseUnits(kg=1 m=2 s=-2)"
+    assert str(BaseUnits(BaseUnits("kg")))  == "BaseUnits(kg=1)"
 
 def test_arithmetics():
     
