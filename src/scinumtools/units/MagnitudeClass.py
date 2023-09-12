@@ -1,5 +1,6 @@
 import numpy as np
 from dataclasses import dataclass, field
+from typing import Union
 
 class Magnitude:
     value: float
@@ -17,6 +18,11 @@ class Magnitude:
     def _rel_to_abs(self, rele):
         return self.value*rele/100
         
+    def _abs_to_rel(self, abse=None):
+        if abse is None:
+            abse = self.error
+        return 100*abse/self.value
+        
     def _to_string(self):
         exps = np.floor(np.log10([np.abs(self.value),self.error]))
         diff = np.abs(exps[0]-exps[1])
@@ -24,8 +30,8 @@ class Magnitude:
         vformat = f".0{int(diff+1)}f"
         error = int(np.round(np.round(self.error*10**(1-exps[1]),decimals=1))) # double round because of values like 0.4999999
         exponent = int(np.abs(np.round(exps[0])))
-        sign = "e+" if exps[0]>=0  else "e-"
-        return f"{value:{vformat}}({error:2d}){sign}{exponent:-02d}"
+        sign = "+" if exps[0]>=0  else "-"
+        return f"{value:{vformat}}({error:2d})e{sign}{exponent:-02d}"
         
     def __str__(self):
         if self.error is None:
@@ -133,3 +139,10 @@ class Magnitude:
             other = Magnitude(other)
         return self._truediv(other, self)
         
+    def __pow__(self, power: Union[float,int]):
+        value = self.value**power
+        error = self._rel_to_abs(self._abs_to_rel()*power)
+        return Magnitude(value, error)
+        
+    def __neg__(self):
+        return Magnitude(-self.value, self.error)

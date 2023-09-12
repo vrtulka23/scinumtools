@@ -16,20 +16,21 @@ def test_initialization():
 def test_arithmetics():
     a = Magnitude(4, 0.01)
     b = Magnitude(1, 0.005)
-    
+    # addition
     assert str(a+b)    == "5.000(15)e+00"
     assert str(b+a)    == "5.000(15)e+00"
     assert str(a+3)    == "7.000(10)e+00"
     assert str(3+a)    == "7.000(10)e+00"
-    
+    # substraction
     assert str(a-b)    == "3.000(15)e+00"
     assert str(b-a)    == "-3.000(15)e+00"
     assert str(a-3)    == "1.000(10)e+00"
     assert str(3-a)    == "-1.000(10)e+00"
+    assert str(-a)     == "-4.000(10)e+00"
     
     a = Magnitude(4, 0.05)
     b = Magnitude(7, 0.1)
-    
+    # multiplication
     assert str(a*b)    == "2.800(76)e+01"
     assert str(b*a)    == "2.800(76)e+01"
     assert str(a*5)    == "2.000(25)e+01"
@@ -37,8 +38,31 @@ def test_arithmetics():
     
     a = Magnitude(12, 0.2)
     b = Magnitude(4, 0.1)
-
+    # division
     assert str(a/b)    == "3.00(13)e+00"
     assert str(b/a)    == "3.33(14)e-01"
     assert str(a/6)    == "2.000(33)e+00"
     assert str(6/a)    == "5.000(85)e-01"
+    # power
+    assert str(a**2)   == "1.4400(40)e+02"
+    
+def test_numpy():
+    
+    #a = Magnitude([12, 3], 0.2)
+    #assert str(a)      == ""
+    pass
+    
+def test_quantities():
+    
+    m1 = Magnitude(12, 0.2)
+    m2 = Magnitude(4, 0.1)
+    
+    q1 = Quantity(m1, 'cm')
+    q2 = Quantity(m2, 'cm')
+    
+    assert str(q1)     == "Quantity(1.200(20)e+01 cm)"
+    assert str(q2)     == "Quantity(4.00(10)e+00 cm)"
+    assert str(q1+q2)  == "Quantity(1.600(30)e+01 cm)"
+    assert str(q1*2)   == "Quantity(2.400(40)e+01 cm)"
+    assert str(q1*q2)  == "Quantity(4.80(20)e+01 cm2)"
+    assert str(q1**2)  == "Quantity(1.4400(40)e+02 cm2)"

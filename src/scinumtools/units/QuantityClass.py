@@ -32,6 +32,8 @@ class Quantity:
             self.magnitude = np.array(magnitude, dtype=float)
         elif isinstance(magnitude, np.ndarray):
             self.magnitude = magnitude.astype(float)
+        elif isinstance(magnitude, Magnitude):
+            self.magnitude = magnitude
         else:
             raise Exception("Magnitude can be either a number or an list/array of numbers")
         # Set base units
@@ -143,6 +145,8 @@ class Quantity:
         if isinstance(magnitude, np.ndarray):
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
+        elif isinstance(magnitude, Magnitude):
+            magnitude = f"{magnitude._to_string()}"
         else:
             magnitude = f"{magnitude:.03e}"
         baseunits = self.baseunits.expression()
@@ -156,6 +160,8 @@ class Quantity:
         if isinstance(magnitude, np.ndarray):
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
+        elif isinstance(magnitude, Magnitude):
+            magnitude = f"{magnitude._to_string()}"
         else:
             magnitude = f"{magnitude:.03e}"
         baseunits = self.baseunits.expression()
