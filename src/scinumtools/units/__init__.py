@@ -6,6 +6,7 @@ from .ConstantClass import Constant
 from .ConstantClass import Constant as const
 from .NaNClass import NaN
 from .NaNClass import NaN as nan
+from .MagnitudeClass import Magnitude
 from .DimensionsClass import Dimensions
 from .FractionClass import Fraction
 from .BaseUnitsClass import BaseUnits

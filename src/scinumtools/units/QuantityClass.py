@@ -5,6 +5,7 @@ from typing import Union
 
 from .settings import *
 from .UnitConverters import *
+from .MagnitudeClass import Magnitude
 from .DimensionsClass import Dimensions
 from .BaseUnitsClass import BaseUnits
 from .FractionClass import Fraction
@@ -16,12 +17,13 @@ class Quantity:
     prefixes: dict            # list of prefixes 
     unitlist: dict            # list of units
     
-    magnitude: float          # quantity magnitude
+    magnitude: Union[float,Magnitude]          # quantity magnitude
     baseunits: BaseUnits      # base units
 
     def __init__(
-            self, magnitude:float,
-            baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None
+        self, 
+        magnitude: Union[int,float,list,np.ndarray,Magnitude],
+        baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None
     ):
         # Set magnitude
         if isinstance(magnitude, (int,float)):
