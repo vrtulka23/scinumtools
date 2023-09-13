@@ -48,20 +48,24 @@ def test_arithmetics():
     
 def test_numpy():
     
-    #a = Magnitude([12, 3], 0.2)
-    #assert str(a)      == ""
-    pass
-    
+    a = Magnitude([12, 3], 0.2)
+    b = Magnitude([2, 4], 0.1)
+    assert str(a.value)  == "[12.  3.]"
+    assert str(a.error)  == "[0.2 0.2]"
+    assert str(a)        == "[1.200(20)e+01 3.00(20)e+00]"
+    assert str(b)        == "[2.00(10)e+00 4.00(10)e+00]"
+
 def test_quantities():
     
     m1 = Magnitude(12, 0.2)
-    m2 = Magnitude(4, 0.1)
-    
+
     q1 = Quantity(m1, 'cm')
-    q2 = Quantity(m2, 'cm')
+    q2 = Quantity(4, 'cm', abse=0.1)
+    q3 = Quantity(4, 'cm', rele=10)
     
     assert str(q1)     == "Quantity(1.200(20)e+01 cm)"
     assert str(q2)     == "Quantity(4.00(10)e+00 cm)"
+    assert str(q3)     == "Quantity(4.00(40)e+00 cm)"
     assert str(q1+q2)  == "Quantity(1.600(30)e+01 cm)"
     assert str(q1*2)   == "Quantity(2.400(40)e+01 cm)"
     assert str(q1*q2)  == "Quantity(4.80(20)e+01 cm2)"

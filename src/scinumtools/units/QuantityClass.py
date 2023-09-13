@@ -23,11 +23,18 @@ class Quantity:
     def __init__(
         self, 
         magnitude: Union[int,float,list,np.ndarray,Magnitude],
-        baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None
+        baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None,
+        abse: Union[int,float] = None,
+        rele: Union[int,float] = None
     ):
         # Set magnitude
         if isinstance(magnitude, (int,float)):
-            self.magnitude = float(magnitude)
+            if abse is not None:
+                self.magnitude = Magnitude(magnitude, abse)
+            elif rele is not None:
+                self.magnitude = Magnitude(magnitude, rele=rele)
+            else:
+                self.magnitude = magnitude
         elif isinstance(magnitude, list):
             self.magnitude = np.array(magnitude, dtype=float)
         elif isinstance(magnitude, np.ndarray):
@@ -146,7 +153,7 @@ class Quantity:
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
         elif isinstance(magnitude, Magnitude):
-            magnitude = f"{magnitude._to_string()}"
+            magnitude = f"{str(magnitude)}"
         else:
             magnitude = f"{magnitude:.03e}"
         baseunits = self.baseunits.expression()
@@ -161,7 +168,7 @@ class Quantity:
             with np.printoptions(precision=3, suppress=False, threshold=5):
                 magnitude = f"{str(magnitude):s}"
         elif isinstance(magnitude, Magnitude):
-            magnitude = f"{magnitude._to_string()}"
+            magnitude = f"{str(magnitude)}"
         else:
             magnitude = f"{magnitude:.03e}"
         baseunits = self.baseunits.expression()

@@ -3,17 +3,29 @@ from dataclasses import dataclass, field
 from typing import Union
 
 class Magnitude:
-    value: float
-    error: float = None   # absolute error 
+    value: Union[float,np.ndarray]
+    error: Union[float,np.ndarray] = None   # absolute error 
 
     def __init__(self, value: float, abse: float = None, rele: float = None):
-        self.value = value
-        if abse is not None and rele is None:
+        # set value
+        if isinstance(value, (float,int)):
+            self.value = value
+        elif isinstance(value, list):
+            self.value = np.array(value, dtype=float)
+        elif isinstance(value, np.ndarray):
+            self.value = value.astype(float)
+        else:
+            raise Exception("Magnitude value can be either a number or an list/array of numbers")
+        # set error
+        if abse is not None and rele is not None:
+            raise Exception("Magnitude cannot have both absolute and relative errors!", abse, rele)
+        elif abse is not None and rele is None:
             self.error = abse
         elif abse is None and rele is not None:
             self.error = self._rel_to_abs(rele)
-        if abse is not None and rele is not None:
-            raise Exception("Magnitude cannot have both absolute and relative errors!", abse, rele)
+        # set array of errors if value is an array
+        if isinstance(self.value, np.ndarray):
+            self.error = np.full_like(self.value, self.error)
 
     def _rel_to_abs(self, rele):
         return self.value*rele/100
@@ -23,27 +35,36 @@ class Magnitude:
             abse = self.error
         return 100*abse/self.value
         
-    def _to_string(self):
-        exps = np.floor(np.log10([np.abs(self.value),self.error]))
-        diff = np.abs(exps[0]-exps[1])
-        value = self.value*10**-exps[0]
-        vformat = f".0{int(diff+1)}f"
-        error = int(np.round(np.round(self.error*10**(1-exps[1]),decimals=1))) # double round because of values like 0.4999999
-        exponent = int(np.abs(np.round(exps[0])))
-        sign = "+" if exps[0]>=0  else "-"
-        return f"{value:{vformat}}({error:2d})e{sign}{exponent:-02d}"
+    @staticmethod
+    def parse_string(value, error):
+        def formatter(val, err):
+            exps = np.floor(np.log10([np.abs(val),err]))
+            val = val*10**-exps[0]
+            ndec = int(np.abs(exps[0]-exps[1])+1)
+            vformat = f".0{ndec}f"
+            err = int(np.round(np.round(err*10**(1-exps[1]),decimals=1))) # double round because of values like 0.4999999
+            exponent = int(np.abs(np.round(exps[0])))
+            sign = "+" if exps[0]>=0  else "-"
+            return f"{val:{vformat}}({err:2d})e{sign}{exponent:-02d}"
+        if isinstance(value, np.ndarray):
+            out = np.empty_like(value, dtype=object)
+            for index, x in np.ndenumerate(out):
+                out[index] = formatter(value[index],error[index])
+            return np.array2string(out, formatter={'all': lambda x: str(x)})
+        else:
+            return formatter(value,error)
         
     def __str__(self):
         if self.error is None:
             return f"{self.value:.03e}"
         else:          
-            return self._to_string()
+            return Magnitude.parse_string(self.value, self.error)
 
     def __repr__(self):
         if self.error is None:
             return f"{self.value:.03e}"
         else:          
-            return self._to_string()
+            return Magnitude.parse_string(self.value, self.error)
 
     def _add(self, left, right):
         value = left.value + right.value
