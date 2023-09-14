@@ -65,12 +65,17 @@ def test_quantities():
     q1 = Quantity(m1, 'cm')
     q2 = Quantity(4, 'cm', abse=0.1)
     q3 = Quantity(4, 'cm', rele=10)
-    q4 = Quantity([2, 4], 'cm', abse=0.1)
+    q4 = Quantity(4, 'cm')
+    q5 = Quantity([2, 4], 'cm', abse=0.1)
     
-    assert str(q1)     == "Quantity(1.200(20)e+01 cm)"
-    assert str(q2)     == "Quantity(4.00(10)e+00 cm)"
-    assert str(q3)     == "Quantity(4.00(40)e+00 cm)"
-    assert str(q4)     == "Quantity([2.00(10)e+00 4.00(10)e+00] cm)"
+    assert str(q1)               == "Quantity(1.200(20)e+01 cm)"
+    assert str(q2)               == "Quantity(4.00(10)e+00 cm)"
+    assert str(q3)               == "Quantity(4.00(40)e+00 cm)"
+    assert str(q4.abse(0.1))     == "Quantity(4.00(10)e+00 cm)"  # setting new Magnitude
+    assert str(q4.rele(10))      == "Quantity(4.00(40)e+00 cm)"
+    assert str(q4.abse(0.2))     == "Quantity(4.00(20)e+00 cm)"  # changing existing Mangitude error
+    assert str(q4.rele(20))      == "Quantity(4.00(80)e+00 cm)"
+    assert str(q5)               == "Quantity([2.00(10)e+00 4.00(10)e+00] cm)"
     
     assert str(q1+q2)  == "Quantity(1.600(30)e+01 cm)"
     assert str(q1*2)   == "Quantity(2.400(40)e+01 cm)"
