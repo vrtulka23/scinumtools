@@ -1,21 +1,24 @@
 import numpy as np
 from dataclasses import dataclass, field
+from decimal import Decimal
 from typing import Union
 
 class Magnitude:
-    value: Union[float,np.ndarray]
-    error: Union[float,np.ndarray] = None   # absolute error 
+    value: Union[int,float,Decimal,np.ndarray]
+    error: Union[int,float,Decimal,np.ndarray] = None   # absolute error 
 
     def __init__(self, value: float, abse: float = None, rele: float = None):
         # set value
         if isinstance(value, (float,int)):
             self.value = float(value)
+        elif isinstance(value, Decimal):
+            self.value = value
         elif isinstance(value, list):
             self.value = np.array(value, dtype=float)
         elif isinstance(value, np.ndarray):
             self.value = value.astype(float)
         else:
-            raise Exception("Magnitude value can be either a number or an list/array of numbers")
+            raise Exception("Magnitude value can be either a number or an list/array of numbers", value)
         # set error
         if abse is not None and rele is not None:
             raise Exception("Magnitude cannot have both absolute and relative errors!", abse, rele)
@@ -24,9 +27,9 @@ class Magnitude:
         elif abse is None and rele is not None:
             self.error = self._rel_to_abs(rele)
         # set array of errors if value is an array
-        if isinstance(self.value, np.ndarray):
+        if isinstance(self.value, np.ndarray) and self.error is not None:
             self.error = np.full_like(self.value, self.error)
-
+            
     def _rel_to_abs(self, rele):
         return self.value*rele/100
         
@@ -53,21 +56,28 @@ class Magnitude:
             return np.array2string(out, formatter={'all': lambda x: str(x)})
         else:
             return formatter(value,error)
-        
+    
+    def _str(self):    
+        if self.error is None:
+            if isinstance(self.value, (list,np.ndarray)):
+                with np.printoptions(precision=3, suppress=False, threshold=5):
+                    return str(self.value)
+            else:
+                return f"{self.value:.03e}"
+        else:          
+            return Magnitude.parse_string(self.value, self.error)
+    
     def __str__(self):
-        if self.error is None:
-            return f"{self.value:.03e}"
-        else:          
-            return Magnitude.parse_string(self.value, self.error)
-
+        return self._str()
+        
     def __repr__(self):
-        if self.error is None:
-            return f"{self.value:.03e}"
-        else:          
-            return Magnitude.parse_string(self.value, self.error)
+        return self._str()
 
     def _add(self, left, right):
-        value = left.value + right.value
+        if isinstance(left.value, Decimal) or isinstance(right.value, Decimal):
+            value = Decimal(left.value) + Decimal(right.value)
+        else:
+            value = left.value + right.value
         if left.error is None and right.error is None:
             error = None
         elif left.error is None and right.error is not None:
@@ -89,7 +99,10 @@ class Magnitude:
         return self._add(other, self)
         
     def _sub(self, left, right):
-        value = left.value - right.value
+        if isinstance(left.value, Decimal) or isinstance(right.value, Decimal):
+            value = Decimal(left.value) - Decimal(right.value)
+        else:
+            value = left.value - right.value
         if left.error is None and right.error is None:
             error = None
         elif left.error is None and right.error is not None:
@@ -111,7 +124,10 @@ class Magnitude:
         return self._sub(other, self)
         
     def _mul(self, left, right):
-        value = left.value * right.value
+        if isinstance(left.value, Decimal) or isinstance(right.value, Decimal):
+            value = Decimal(left.value) * Decimal(right.value)
+        else:
+            value = left.value * right.value
         if left.error is None and right.error is None:
             error = None
         elif left.error is None and right.error is not None:
@@ -135,7 +151,10 @@ class Magnitude:
         return self._mul(other, self)
         
     def _truediv(self, left, right):
-        value = left.value / right.value
+        if isinstance(left.value, Decimal) or isinstance(right.value, Decimal):
+            value = Decimal(left.value) / Decimal(right.value)
+        else:
+            value = left.value / right.value
         if left.error is None and right.error is None:
             error = None
         elif left.error is None and right.error is not None:
@@ -162,7 +181,10 @@ class Magnitude:
         
     def __pow__(self, power: Union[float,int]):
         value = self.value**power
-        error = self._rel_to_abs(self._abs_to_rel()*power)
+        if self.error is not None:
+            error = self._rel_to_abs(self._abs_to_rel()*power)
+        else:
+            error = None
         return Magnitude(value, error)
         
     def __neg__(self):

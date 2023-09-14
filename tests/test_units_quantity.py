@@ -3,6 +3,7 @@ import pytest
 from math import isclose
 import os
 import sys
+from decimal import Decimal
 sys.path.insert(0, 'src')
 
 from scinumtools import ParameterTable
@@ -30,6 +31,8 @@ def test_quantity():
     result = "Quantity(2.460e+04 m)"
     assert str(Quantity(123e2, Quantity(2, 'm'))) == result
     assert str(Quantity(123e2, 2*Unit('m'))) == result
+    
+    assert str(Quantity(Decimal(3.3239840203948394e-3), 'cm')) == "Quantity(3.324e-3 cm)"
     
 def test_units():
 

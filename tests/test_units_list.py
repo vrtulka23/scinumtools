@@ -59,7 +59,7 @@ def test_definitions():
             continue
         q = Quantity(1, unit.definition)
         base = q.baseunits.base()
-        magnitude = q.magnitude*base.magnitude
+        magnitude = q.magnitude.value*base.magnitude
         if base.dimensions.value(dtype=list) != unit.dimensions or not isclose(magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION):
             print(q, symbol, unit.definition, unit.magnitude)
         assert isclose(magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
@@ -70,6 +70,6 @@ def test_definitions():
             continue
         q = Quantity(1, unit.definition)
         base = q.baseunits.base()
-        assert isclose(q.magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
+        assert isclose(q.magnitude.value,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         

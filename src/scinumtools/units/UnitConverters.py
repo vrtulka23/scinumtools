@@ -1,5 +1,7 @@
 import numpy as np
 
+from .MagnitudeClass import Magnitude
+
 class Converter:
 
     def __new__(cls, magnitude1, baseunits1, baseunits2):
@@ -15,7 +17,10 @@ class Converter:
     def __init__(self, magnitude1, baseunits1, baseunits2):
         base1 = baseunits1.base()
         base2 = baseunits2.base()
-        self.magnitude = getattr(self,self.method[0])(magnitude1 * base1.magnitude, *self.method[1:]) / base2.magnitude
+        self.magnitude = Magnitude(
+            getattr(self,self.method[0])(magnitude1.value * base1.magnitude, *self.method[1:]) / base2.magnitude,
+            magnitude1.error
+        )
 
 class StandardConverter(Converter):
     

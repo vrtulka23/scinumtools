@@ -1,5 +1,6 @@
 from typing import List
 import numpy as np
+from decimal import Decimal
 import re
 from typing import Union
 
@@ -17,34 +18,27 @@ class Quantity:
     prefixes: dict            # list of prefixes 
     unitlist: dict            # list of units
     
-    magnitude: Union[float,Magnitude]          # quantity magnitude
+    magnitude: Magnitude      # magnitude
     baseunits: BaseUnits      # base units
 
     def __init__(
         self, 
-        magnitude: Union[int,float,list,np.ndarray,Magnitude],
+        magnitude: Union[int,float,Decimal,list,np.ndarray,Magnitude],
         baseunits: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits] = None,
         abse: Union[int,float] = None,
         rele: Union[int,float] = None
     ):
         # Set magnitude
-        if isinstance(magnitude, (int,float)):
-            self.magnitude = magnitude
-        elif isinstance(magnitude, list):
-            self.magnitude = np.array(magnitude, dtype=float)
-        elif isinstance(magnitude, np.ndarray):
-            self.magnitude = magnitude.astype(float)
+        if isinstance(magnitude, (int,float,Decimal,list,np.ndarray)):
+            self.magnitude = Magnitude(magnitude, abse=abse, rele=rele)
         elif isinstance(magnitude, Magnitude):
+            if abse is not None:
+                magnitude.abse(abse)
+            elif rele is not None:
+                magnitude.rele(rele)
             self.magnitude = magnitude
         else:
-            raise Exception("Magnitude can be either a number or an list/array of numbers")
-        # Set magnitude errors
-        if isinstance(magnitude, Magnitude):
-            pass
-        elif abse is not None:
-            self.magnitude = Magnitude(magnitude, abse)
-        elif rele is not None:
-            self.magnitude = Magnitude(magnitude, rele=rele)
+            raise Exception("Magnitude can be either a number or an list/array of numbers", magnitude)
         # Set base units
         if baseunits is None or isinstance(baseunits, (dict,Dimensions,list,np.ndarray)):
             self.baseunits = BaseUnits(baseunits)
@@ -61,10 +55,6 @@ class Quantity:
             raise Exception("Insufficient quantity definition", magnitude, baseunits)
 
     def _add(self, left, right):
-        if not isinstance(left, Quantity):
-            left = Quantity(left)
-        if not isinstance(right, Quantity):
-            right = Quantity(right)
         left_dim = left.baseunits.base().dimensions
         right_dim = right.baseunits.base().dimensions
         if not left_dim == right_dim:
@@ -74,16 +64,16 @@ class Quantity:
         return Quantity(magnitude, baseunits)
 
     def __add__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._add(self, other)
     
     def __radd__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._add(other, self)
 
     def _sub(self, left, right):
-        if not isinstance(left, Quantity):
-            left = Quantity(left)
-        if not isinstance(right, Quantity):
-            right = Quantity(right)
         left_dim = left.baseunits.base().dimensions
         right_dim = right.baseunits.base().dimensions
         if not left_dim == right_dim:
@@ -93,39 +83,43 @@ class Quantity:
         return Quantity(magnitude, baseunits)
 
     def __sub__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._sub(self, other)
 
     def __rsub__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._sub(other, self)
     
     def _mul(self, left, right):
-        if not isinstance(left, Quantity):
-            left = Quantity(left)
-        if not isinstance(right, Quantity):
-            right = Quantity(right)
         magnitude = left.magnitude * right.magnitude
         baseunits = left.baseunits + right.baseunits
         return Quantity(magnitude, baseunits)
 
     def __mul__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._mul(self, other)
 
     def __rmul__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._mul(other, self)
     
     def _truediv(self, left, right):
-        if not isinstance(left, Quantity):
-            left = Quantity(left)
-        if not isinstance(right, Quantity):
-            right = Quantity(right)
         magnitude = left.magnitude / right.magnitude
         baseunits = left.baseunits - right.baseunits
         return Quantity(magnitude, baseunits)
 
     def __truediv__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._truediv(self, other)
     
     def __rtruediv__(self, other):
+        if not isinstance(other, Quantity):
+            other = Quantity(other)
         return self._truediv(other, self)
     
     def __pow__(self, power: Union[float,int,tuple,Fraction]):
@@ -143,21 +137,14 @@ class Quantity:
         return Quantity(-self.magnitude, self.baseunits)
     
     def __eq__(self, other):
-        if not np.allclose(self.magnitude, other.magnitude, rtol=MAGNITUDE_PRECISION):
+        if not np.allclose(self.magnitude.value, other.magnitude.value, rtol=MAGNITUDE_PRECISION):
             return False
         if not self.baseunits==other.baseunits:
             return False
         return True
     
     def __str__(self):
-        magnitude = self.magnitude
-        if isinstance(magnitude, np.ndarray):
-            with np.printoptions(precision=3, suppress=False, threshold=5):
-                magnitude = f"{str(magnitude):s}"
-        elif isinstance(magnitude, Magnitude):
-            magnitude = f"{str(magnitude)}"
-        else:
-            magnitude = f"{magnitude:.03e}"
+        magnitude = str(self.magnitude)
         baseunits = self.baseunits.expression()
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
@@ -165,14 +152,7 @@ class Quantity:
             return f"Quantity({magnitude:s})"
             
     def __repr__(self):
-        magnitude = self.magnitude
-        if isinstance(magnitude, np.ndarray):
-            with np.printoptions(precision=3, suppress=False, threshold=5):
-                magnitude = f"{str(magnitude):s}"
-        elif isinstance(magnitude, Magnitude):
-            magnitude = f"{str(magnitude)}"
-        else:
-            magnitude = f"{magnitude:.03e}"
+        magnitude = str(self.magnitude)
         baseunits = self.baseunits.expression()
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
@@ -180,21 +160,21 @@ class Quantity:
             return f"Quantity({magnitude:s})"
 
     def __getitem__(self, key):
-        return Quantity(self.magnitude[key], self.baseunits)
+        return Quantity(self.magnitude.value[key], self.baseunits)
         
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         if ufunc==np.sqrt:
-            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits/2)
+            return Quantity(ufunc(inputs[0].magnitude.value), inputs[0].baseunits/2)
         elif ufunc==np.cbrt:
-            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits/3)
+            return Quantity(ufunc(inputs[0].magnitude.value), inputs[0].baseunits/3)
         elif ufunc==np.power:
-            return Quantity(ufunc(inputs[0].magnitude,inputs[1]), inputs[0].baseunits*inputs[1])
+            return Quantity(ufunc(inputs[0].magnitude.value,inputs[1]), inputs[0].baseunits*inputs[1])
         elif ufunc in [np.sin, np.cos, np.tan]:
-            return Quantity(ufunc(inputs[0].to('rad').magnitude))
+            return Quantity(ufunc(inputs[0].to('rad').magnitude.value))
         elif ufunc in [np.arcsin, np.arccos, np.arctan]:
-            return Quantity(ufunc(inputs[0].to(None).magnitude),'rad')
+            return Quantity(ufunc(inputs[0].to(None).magnitude.value),'rad')
         else:
-            return Quantity(ufunc(inputs[0].magnitude), inputs[0].baseunits)
+            return Quantity(ufunc(inputs[0].magnitude.value), inputs[0].baseunits)
     
     def __array_function__(self, func, types, args, kwargs):
         if func not in HANDLED_FUNCTIONS:
@@ -213,9 +193,9 @@ class Quantity:
 
     def value(self, expression=None, dtype=None):
         if expression:
-            value = self._convert(self.magnitude, self.baseunits, BaseUnits(expression))
+            value = self._convert(self.magnitude, self.baseunits, BaseUnits(expression)).value
         else:
-            value = self.magnitude
+            value = self.magnitude.value
         if dtype:
             return value.astype(dtype) if isinstance(value, np.ndarray) else dtype(value)
         else:
@@ -280,7 +260,7 @@ def linspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.linspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+    return Quantity(np.linspace(a.magnitude.value, b.magnitude.value, c, **kwargs), a.baseunits)
 
 @implements(np.logspace)
 def logspace(a, b, c, **kwargs):
@@ -288,24 +268,24 @@ def logspace(a, b, c, **kwargs):
         b = b.to(a.baseunits) if isinstance(b,Quantity) else Quantity(b, a.baseunits)
     else:
         a = a.to(b.baseunits) if isinstance(a,Quantity) else Quantity(a, b.baseunits)
-    return Quantity(np.logspace(a.magnitude, b.magnitude, c, **kwargs), a.baseunits)
+    return Quantity(np.logspace(a.magnitude.value, b.magnitude.value, c, **kwargs), a.baseunits)
 
 @implements(np.absolute)
 def absolute(a, **kwargs):
-    return Quantity(np.absolute(a.magnitude), a.baseunits)
+    return Quantity(np.absolute(a.magnitude.value), a.baseunits)
 
 @implements(np.abs)
 def abs(a, **kwargs):
-    return Quantity(np.abs(a.magnitude), a.baseunits)
+    return Quantity(np.abs(a.magnitude.value), a.baseunits)
 
 @implements(np.round)
 def round(a, **kwargs):
-    return Quantity(np.round(a.magnitude), a.baseunits)
+    return Quantity(np.round(a.magnitude.value), a.baseunits)
 
 @implements(np.floor)
 def round(a, **kwargs):
-    return Quantity(np.floor(a.magnitude), a.baseunits)
+    return Quantity(np.floor(a.magnitude.value), a.baseunits)
 
 @implements(np.ceil)
 def round(a, **kwargs):
-    return Quantity(np.ceil(a.magnitude), a.baseunits)
+    return Quantity(np.ceil(a.magnitude.value), a.baseunits)
