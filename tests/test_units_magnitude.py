@@ -54,6 +54,9 @@ def test_numpy():
     assert str(a.error)  == "[0.2 0.2]"
     assert str(a)        == "[1.200(20)e+01 3.00(20)e+00]"
     assert str(b)        == "[2.00(10)e+00 4.00(10)e+00]"
+    assert str(a+b)      == "[1.400(30)e+01 7.00(30)e+00]"
+    assert str(a*b)      == "[2.40(16)e+01 1.20(16)e+01]"
+    assert str(a**2)     == "[1.4400(40)e+02 9.00(40)e+00]"
 
 def test_quantities():
     
@@ -62,10 +65,13 @@ def test_quantities():
     q1 = Quantity(m1, 'cm')
     q2 = Quantity(4, 'cm', abse=0.1)
     q3 = Quantity(4, 'cm', rele=10)
+    q4 = Quantity([2, 4], 'cm', abse=0.1)
     
     assert str(q1)     == "Quantity(1.200(20)e+01 cm)"
     assert str(q2)     == "Quantity(4.00(10)e+00 cm)"
     assert str(q3)     == "Quantity(4.00(40)e+00 cm)"
+    assert str(q4)     == "Quantity([2.00(10)e+00 4.00(10)e+00] cm)"
+    
     assert str(q1+q2)  == "Quantity(1.600(30)e+01 cm)"
     assert str(q1*2)   == "Quantity(2.400(40)e+01 cm)"
     assert str(q1*q2)  == "Quantity(4.80(20)e+01 cm2)"

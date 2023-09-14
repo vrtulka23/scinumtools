@@ -29,12 +29,7 @@ class Quantity:
     ):
         # Set magnitude
         if isinstance(magnitude, (int,float)):
-            if abse is not None:
-                self.magnitude = Magnitude(magnitude, abse)
-            elif rele is not None:
-                self.magnitude = Magnitude(magnitude, rele=rele)
-            else:
-                self.magnitude = magnitude
+            self.magnitude = magnitude
         elif isinstance(magnitude, list):
             self.magnitude = np.array(magnitude, dtype=float)
         elif isinstance(magnitude, np.ndarray):
@@ -43,6 +38,13 @@ class Quantity:
             self.magnitude = magnitude
         else:
             raise Exception("Magnitude can be either a number or an list/array of numbers")
+        # Set magnitude errors
+        if isinstance(magnitude, Magnitude):
+            pass
+        elif abse is not None:
+            self.magnitude = Magnitude(magnitude, abse)
+        elif rele is not None:
+            self.magnitude = Magnitude(magnitude, rele=rele)
         # Set base units
         if baseunits is None or isinstance(baseunits, (dict,Dimensions,list,np.ndarray)):
             self.baseunits = BaseUnits(baseunits)

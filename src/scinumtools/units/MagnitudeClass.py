@@ -9,7 +9,7 @@ class Magnitude:
     def __init__(self, value: float, abse: float = None, rele: float = None):
         # set value
         if isinstance(value, (float,int)):
-            self.value = value
+            self.value = float(value)
         elif isinstance(value, list):
             self.value = np.array(value, dtype=float)
         elif isinstance(value, np.ndarray):
