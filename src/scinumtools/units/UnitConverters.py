@@ -40,8 +40,10 @@ class StandardConverter(Converter):
     def convert_linear(self, value):
         return value
 
-class SingleUnitConverter(Converter):
-
+class TemperatureConverter(Converter):
+    
+    process = ['Cel','degF']
+    
     def method(self, baseunits1, baseunits2):
         baseunits1 = baseunits1.value()
         baseunits2 = baseunits2.value()
@@ -61,10 +63,6 @@ class SingleUnitConverter(Converter):
             return (f"convert_{symbol1}_{symbol2}",)
         else:
             return False
-
-class TemperatureConverter(SingleUnitConverter):
-    
-    process = ['Cel','degF']
     
     def convert_K_Cel(self, value):
         return value-273.15
@@ -97,52 +95,69 @@ class TemperatureConverter(SingleUnitConverter):
         return (value+459.67)*5/9
         
         
-class LogarithmicConverter(SingleUnitConverter):
+class LogarithmicConverter(Converter):
 
     process: list = ['Np','B','Bm','BmW','BW','BV','BuV','BuA','Bohm']
+    conversions: dict = {
+        # power ratios
+        'convert_PR_B':     ("convert_Ratio_B",   1,   1),
+        'convert_B_PR':     ("convert_B_Ratio",   1,   1),
+        'convert_PR_Np':    ("convert_Ratio_Np",  0.5, 1),
+        'convert_Np_PR':    ("convert_Np_Ratio",  0.5, 1),
+        'convert_W_Bm':     ("convert_Ratio_B",   1,   1),
+        'convert_W_BmW':    ("convert_Ratio_B",   1,   1),
+        'convert_Bm_W':     ("convert_B_Ratio",   1,   1),
+        'convert_BmW_W':    ("convert_B_Ratio",   1,   1),
+        'convert_W_BW':     ("convert_Ratio_B",   1,   1e-3),
+        'convert_BW_W':     ("convert_B_Ratio",   1,   1e3),
+        # amplitude ratios
+        'convert_AR_B':     ("convert_Ratio_B",   2,   1),
+        'convert_B_AR':     ("convert_B_Ratio",   2,   1),
+        'convert_AR_Np':    ("convert_Ratio_Np",  1,   1),
+        'convert_Np_AR':    ("convert_Np_Ratio",  1,   1),
+        'convert_V_BV':     ("convert_Ratio_B",   2,   1e-3),
+        'convert_BV_V':     ("convert_B_Ratio",   2,   1e3),
+        'convert_V_BuV':    ("convert_Ratio_B",   2,   1e3),
+        'convert_BuV_V':    ("convert_B_Ratio",   2,   1e-3),
+        'convert_A_BuA':    ("convert_Ratio_B",   2,   1e6),
+        'convert_BuA_A':    ("convert_B_Ratio",   2,   1e-6),
+        'convert_Ohm_Bohm': ("convert_Ratio_B",   2,   1e-3),
+        'convert_Bohm_Ohm': ("convert_B_Ratio",   2,   1e3),
+        # decibel conversions
+        'convert_BW_Bm':    ("convert_B_B",       3),
+        'convert_Bm_BW':    ("convert_B_B",      -3),
+        'convert_BW_BmW':   ("convert_B_B",       3),
+        'convert_BmW_BW':   ("convert_B_B",      -3),
+        'convert_Bm_BmW':   ("convert_B_B",       0),
+        'convert_BmW_Bm':   ("convert_B_B",       0),
+        'convert_BV_BuV':   ("convert_B_B",       12),
+        'convert_BuV_BV':   ("convert_B_B",      -12),
+    }
     
     def method(self, baseunits1, baseunits2):
-        conversions = {
-            # power ratios
-            'convert_PR_B':     ("convert_Ratio_B",   1,   1),
-            'convert_B_PR':     ("convert_B_Ratio",   1,   1),
-            'convert_PR_Np':    ("convert_Ratio_Np",  0.5, 1),
-            'convert_Np_PR':    ("convert_Np_Ratio",  0.5, 1),
-            'convert_W_Bm':     ("convert_Ratio_B",   1,   1),
-            'convert_W_BmW':    ("convert_Ratio_B",   1,   1),
-            'convert_Bm_W':     ("convert_B_Ratio",   1,   1),
-            'convert_BmW_W':    ("convert_B_Ratio",   1,   1),
-            'convert_W_BW':     ("convert_Ratio_B",   1,   1e-3),
-            'convert_BW_W':     ("convert_B_Ratio",   1,   1e3),
-            # amplitude ratios
-            'convert_AR_B':     ("convert_Ratio_B",   2,   1),
-            'convert_B_AR':     ("convert_B_Ratio",   2,   1),
-            'convert_AR_Np':    ("convert_Ratio_Np",  1,   1),
-            'convert_Np_AR':    ("convert_Np_Ratio",  1,   1),
-            'convert_V_BV':     ("convert_Ratio_B",   2,   1e-3),
-            'convert_BV_V':     ("convert_B_Ratio",   2,   1e3),
-            'convert_V_BuV':    ("convert_Ratio_B",   2,   1e3),
-            'convert_BuV_V':    ("convert_B_Ratio",   2,   1e-3),
-            'convert_A_BuA':    ("convert_Ratio_B",   2,   1e6),
-            'convert_BuA_A':    ("convert_B_Ratio",   2,   1e-6),
-            'convert_Ohm_Bohm': ("convert_Ratio_B",   2,   1e-3),
-            'convert_Bohm_Ohm': ("convert_B_Ratio",   2,   1e3),
-            # decibel conversions
-            'convert_BW_Bm':    ("convert_B_B",       3),
-            'convert_Bm_BW':    ("convert_B_B",      -3),
-            'convert_BW_BmW':   ("convert_B_B",       3),
-            'convert_BmW_BW':   ("convert_B_B",      -3),
-            'convert_Bm_BmW':   ("convert_B_B",       0),
-            'convert_BmW_Bm':   ("convert_B_B",       0),
-            'convert_BV_BuV':   ("convert_B_B",       12),
-            'convert_BuV_BV':   ("convert_B_B",      -12),
-        }
-        method = super().method(baseunits1, baseunits2)
-        if method and method[0] in conversions:
-            return conversions[method[0]]
+        baseunits1 = baseunits1.value()
+        baseunits2 = baseunits2.value()
+        convert = False
+        for unitid in baseunits1.keys():
+            if unitid.split(':')[-1] in self.process:
+                convert = True
+        for unitid in baseunits2.keys():
+            if unitid.split(':')[-1] in self.process:
+                convert = True
+        if convert:
+            if len(baseunits1) not in [1,2] or len(baseunits2) not in [1,2]:
+                raise Exception("Only simple units can be converted between each other:",
+                                baseunits1, baseunits2)
+            symbol1 = list(baseunits1.keys())[0].split(':')[-1]
+            symbol2 = list(baseunits2.keys())[0].split(':')[-1]
+            method = f"convert_{symbol1}_{symbol2}"
+            if method in self.conversions:
+                return self.conversions[method]
+            else:
+                return (method,)
         else:
-            return method
-
+            return False
+    
     def convert_B_B(self, value, exp=0):
         return value + exp
         

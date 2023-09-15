@@ -151,8 +151,8 @@ def test_temperatures():
     
 def test_inversion():
 
-    assert str(Quantity(23, 'Hz').to('s'))        == "Quantity(4.348e-02 s)"
-    assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"
+    assert str(Quantity(23, 'Hz').to('s'))        == "Quantity(4.348e-02 s)"      # frequency to period
+    assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"      # Ohm to Siemens
     assert str(Quantity(102, 'J').to('erg-1'))    == "Quantity(9.804e-10 erg-1)"
 
 def test_logarithmic():
@@ -217,9 +217,15 @@ def test_logarithmic():
     assert str(Quantity(10, 'dBohm').to('Ohm'))   == "Quantity(3.162e+00 Ohm)"
     assert str(Quantity(100, 'Ohm').to('dBohm'))  == "Quantity(4.000e+01 dBohm)"
     
-    q = Quantity(10, 'dBm/Hz')
-    assert str(q) == "Quantity(1.000e+01 dBm*Hz-1)"
-    assert str(q*Quantity(2, 'Hz')) == "Quantity(2.000e+01 dBm)"
+    # Compound logarithmic units (e.g.: dBx/y)
+    q = Quantity(10, 'dBmW/Hz')
+    assert str(q)                == "Quantity(1.000e+01 dBmW*Hz-1)"
+    q.to('W/Hz')
+    assert str(q)                == "Quantity(1.000e-02 W*Hz-1)"
+    q = q*Quantity(100, 'Hz')
+    assert str(q)                == "Quantity(1.000e+00 W)"
+    q.to('dBm')
+    assert str(q)                == "Quantity(3.000e+01 dBm)"
     
 def test_rebase():
     
