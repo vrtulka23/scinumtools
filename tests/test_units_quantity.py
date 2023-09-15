@@ -181,15 +181,19 @@ def test_logarithmic():
     assert str(Quantity(10, 'pW').to('dBm'))  == "Quantity(-8.000e+01 dBm)"
     assert str(Quantity(-3, 'dBm').to('uW'))  == "Quantity(5.012e+02 uW)"
     assert str(Quantity(22, 'dBm').to('mW'))  == "Quantity(1.585e+02 mW)"
-    
     # Decibel-milliwatts (dBmW)
     assert str(Quantity(10, 'W').to('dBmW'))   == "Quantity(4.000e+01 dBmW)"
     assert str(Quantity(-3, 'dBmW').to('uW'))  == "Quantity(5.012e+02 uW)"
-    
     # Decibel-watts (dBW)
-    
     assert str(Quantity(1, 'W').to('dBW'))     == "Quantity(0.000e+00 dBW)"
     assert str(Quantity(20,'dBW').to('W'))     == "Quantity(1.000e+02 W)"
+    # Conversions btw. dBm, dBmW and dBW
+    assert str(Quantity(2, 'dBW').to('dBm'))    == "Quantity(3.200e+01 dBm)"
+    assert str(Quantity(-20, 'dBm').to('dBW'))  == "Quantity(-5.000e+01 dBW)"
+    assert str(Quantity(2, 'dBW').to('dBmW'))   == "Quantity(3.200e+01 dBmW)"
+    assert str(Quantity(-20, 'dBmW').to('dBW')) == "Quantity(-5.000e+01 dBW)"
+    assert str(Quantity(2, 'dBm').to('dBmW'))   == "Quantity(2.000e+00 dBmW)"
+    assert str(Quantity(-20, 'dBmW').to('dBm')) == "Quantity(-2.000e+01 dBm)"
     
     # Decibel-Volt (dBV)
     assert str(Quantity(100, 'mV').to('dBV'))  == "Quantity(-2.000e+01 dBV)"
@@ -198,10 +202,24 @@ def test_logarithmic():
     assert str(Quantity(-60, 'dBV').to('mV'))  == "Quantity(1.000e+00 mV)"
     assert str(Quantity(0, 'dBV').to('V'))     == "Quantity(1.000e+00 V)"
     assert str(Quantity(40, 'dBV').to('V'))    == "Quantity(1.000e+02 V)"
-
     # Decibel-microvolt (dBuV)
     assert str(Quantity(42, 'dBuV').to('uV'))   == "Quantity(1.259e+02 uV)"
     assert str(Quantity(1000, 'uV').to('dBuV')) == "Quantity(6.000e+01 dBuV)"
+    # Conversions btw. dBV and dBuV
+    assert str(Quantity(10, 'dBV').to('dBuV'))   == "Quantity(1.300e+02 dBuV)"
+    assert str(Quantity(-20, 'dBuV').to('dBV'))  == "Quantity(-1.400e+02 dBV)"
+    
+    # Decibel-microamps (dBuA)
+    assert str(Quantity(-40, 'dBuA').to('uA'))   == "Quantity(1.000e-02 uA)"
+    assert str(Quantity(1000, 'uA').to('dBuA'))  == "Quantity(6.000e+01 dBuA)"
+    
+    # Decibel-ohm (dBohm)
+    assert str(Quantity(10, 'dBohm').to('Ohm'))   == "Quantity(3.162e+00 Ohm)"
+    assert str(Quantity(100, 'Ohm').to('dBohm'))  == "Quantity(4.000e+01 dBohm)"
+    
+    q = Quantity(10, 'dBm/Hz')
+    assert str(q) == "Quantity(1.000e+01 dBm*Hz-1)"
+    assert str(q*Quantity(2, 'Hz')) == "Quantity(2.000e+01 dBm)"
     
 def test_rebase():
     
