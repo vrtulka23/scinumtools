@@ -217,6 +217,16 @@ def test_logarithmic():
     assert str(Quantity(10, 'dBohm').to('Ohm'))   == "Quantity(3.162e+00 Ohm)"
     assert str(Quantity(100, 'Ohm').to('dBohm'))  == "Quantity(4.000e+01 dBohm)"
     
+    # Sound pressure level (dBSPL)
+    assert str(Quantity(110, 'Pa').to('dBSPL'))  == "Quantity(1.348e+02 dBSPL)"
+    assert str(Quantity(10, 'dBSPL').to('Pa'))   == "Quantity(6.325e-05 Pa)"
+    # Sound intensity level (dBSIL)
+    assert str(Quantity(100, 'W/m2').to('dBSIL'))  == "Quantity(1.400e+02 dBSIL)"
+    assert str(Quantity(100, 'dBSIL').to('W/m2'))   == "Quantity(1.000e-02 W*m-2)"
+    # Sound power level (dBSWL)
+    assert str(Quantity(100, 'W').to('dBSWL'))  == "Quantity(1.400e+02 dBSWL)"
+    assert str(Quantity(100, 'dBSWL').to('W'))   == "Quantity(1.000e-02 W)"
+    
     # Compound logarithmic units (e.g.: dBx/y)
     q = Quantity(10, 'dBmW/Hz')
     assert str(q)                == "Quantity(1.000e+01 dBmW*Hz-1)"

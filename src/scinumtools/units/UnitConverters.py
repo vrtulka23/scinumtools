@@ -97,7 +97,7 @@ class TemperatureConverter(Converter):
         
 class LogarithmicConverter(Converter):
 
-    process: list = ['Np','B','Bm','BmW','BW','BV','BuV','BuA','Bohm']
+    process: list = ['Np','B','Bm','BmW','BW','BV','BuV','BuA','Bohm','BSPL','BSIL','BSWL']
     conversions: dict = {
         # power ratios
         'convert_PR_B':     ("convert_Ratio_B",   1,   1),
@@ -110,6 +110,10 @@ class LogarithmicConverter(Converter):
         'convert_BmW_W':    ("convert_B_Ratio",   1,   1),
         'convert_W_BW':     ("convert_Ratio_B",   1,   1e-3),
         'convert_BW_W':     ("convert_B_Ratio",   1,   1e3),
+        'convert_W_BSIL':   ("convert_Ratio_B",   1,   1e9),
+        'convert_BSIL_W':   ("convert_B_Ratio",   1,   1e-9),
+        'convert_W_BSWL':   ("convert_Ratio_B",   1,   1e9),
+        'convert_BSWL_W':   ("convert_B_Ratio",   1,   1e-9),
         # amplitude ratios
         'convert_AR_B':     ("convert_Ratio_B",   2,   1),
         'convert_B_AR':     ("convert_B_Ratio",   2,   1),
@@ -123,6 +127,8 @@ class LogarithmicConverter(Converter):
         'convert_BuA_A':    ("convert_B_Ratio",   2,   1e-6),
         'convert_Ohm_Bohm': ("convert_Ratio_B",   2,   1e-3),
         'convert_Bohm_Ohm': ("convert_B_Ratio",   2,   1e3),
+        'convert_Pa_BSPL':  ("convert_Ratio_B",   2,   50),
+        'convert_BSPL_Pa':  ("convert_B_Ratio",   2,   0.02),
         # decibel conversions
         'convert_BW_Bm':    ("convert_B_B",       3),
         'convert_Bm_BW':    ("convert_B_B",      -3),
