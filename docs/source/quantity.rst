@@ -6,7 +6,9 @@ Class ``Quantity`` and its derivates, ``Unit`` and ``Constant``, can be used in 
 * Concise and regularized unit notation with arbitrary unit prefixes.
 * Conversion of units with the same, or inversed dimensionality (SI, CGS, natural units and more...).
 * Conversion of temperatures (K, degR, degC, degF).
+* Conversion of logarithmic units (dB, Np, dBmW,...).
 * Integration with ``numpy`` functions.
+* Usage of float or ``Decimal`` precision.
 * ``Quantity`` is a self-content class that does not need initialization in a header, or use of registries. Quantities can be pickled and are compatible when created in different parts of the code.
 * Support of fractional powers
 
@@ -46,8 +48,8 @@ Units can be used individually, or combined together using basic mathematical op
 * Units with prefixes: ``mg``, ``MJ``, ``kly``
 * Unit expressions: ``kg*m2/s2``, ``V/(C/s)``, ``1/Hz1:2``
 
-Quantity definitions
-^^^^^^^^^^^^^^^^^^^^
+Quantities
+^^^^^^^^^^
 
 Working with quantities is fairly straightforward and follows similar patters as other Python unit modules:
 
@@ -85,15 +87,11 @@ In the above example classes ``Unit`` and ``Constant`` are called as functions t
 
 Every quantity object contains following data:
 
-``dimensions`` (aka. base dimensions)
-
-  exponents of 8 base dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``)
-
 ``magnitude``
 
-  numerical value of a quantity in base dimensions
+  numerical value of a quantity in base units
 
-``baseunits`` (aka. base units, or quantity units)
+``baseunits`` 
 
   actual units of a quantity
 
@@ -102,8 +100,6 @@ This data can be accessed in a following way:
 .. code-block::
 
    >>> distance = Quantity(2, 'km')
-   >>> distance.dimensions            # exponents of base dimension
-   Dimensions(m=1)
    >>> distance.magnitude             # numerical value in base dimensions (meters)
    2000.0 
    >>> distance.baseunits             # exponents of base units
@@ -115,15 +111,25 @@ Further on, numerical value of quantity in base units, dimension and baseunits c
 
    >>> distance.value()               # numerical value in base units (kilometers)
    2.0
-   >>> distance.dimensions.value()    # list of base dimensions exponents
-   [1, 0, 0, 0, 0, 0, 0, 0]
    >>> distance.baseunits.value()     # dictionary of base units exponents
    {'k:m': 1}
    
-Note that value of the quantity is given in units of ``baseunits`` instead of ``dimensions``. Value of ``dimensions`` object is represented as a Python list, where integers are exponents of individual base units, respectively. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit prefixes are separated from unit symbols with a colon.
+Note that value of the quantity is given in units of ``baseunits``. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit prefixes are separated from unit symbols with a colon.
    
-Conversion between units
-^^^^^^^^^^^^^^^^^^^^^^^^
+Magnitude
+"""""""""
+
+Base units
+""""""""""
+
+Fractional exponents
+""""""""""""""""""""
+
+Unit conversions
+^^^^^^^^^^^^^^^^
+
+Linear units
+""""""""""""
 
 Unit conversion is an integral part of this package. Every quantity can be converted to other units (with the same dimensions) using ``to(<unit>)`` method.
 
@@ -139,4 +145,18 @@ Values of quantities can be casted in different units as well, by specifying new
 
    >>> distance.value('cm')
    200000.0
+   
+Logarithmic units
+"""""""""""""""""
 
+Temperature units
+"""""""""""""""""
+
+Integration with 3rd party libraries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NumPy arrays
+""""""""""""
+   
+Decimal prescision
+""""""""""""""""""
