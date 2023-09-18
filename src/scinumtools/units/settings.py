@@ -124,9 +124,9 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'BuV':      (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicConverter,     'bel-microvolt',     ['d']              ),
 'BuA':      (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicConverter,     'bel-microamps',     ['d']              ),
 'Bohm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicConverter,     'bel-ohms',          ['d']              ),
-'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SPL',           ['d']              ),
-'BSIL':     (1,              [ 0, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SIL',           ['d']              ),
-'BSWL':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SWL',           ['d']              ),
+'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SPL (Pa)',      ['d']              ),
+'BSIL':     (1,              [ 0, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SIL (W/m2)',    ['d']              ), 
+'BSWL':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SWL (W)',       ['d']              ),
 # percentages
 '%':        (1e-2,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-2',                   'percent',           False              ),
 'ppth':     (1e-3,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-3',                   'promile',           False              ),
