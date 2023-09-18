@@ -65,9 +65,9 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'yr_g':     (3.155695e7,     [ 0, 0, 1, 0, 0, 0, 0, 0],  '365.2425*day',           'Gregorian year',    ['k','m','G']      ),
 'yr':       (3.155760e7,     [ 0, 0, 1, 0, 0, 0, 0, 0],  'yr_j',                   'year',              ['k','m','G']      ),
 # units of temperature
+'degR':     (5/9,            [ 0, 0, 0, 1, 0, 0, 0, 0],  '5/9*K',                  'degree Rankine',    False              ),
 'Cel':      (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureConverter,     'degree Celsius',    False              ),
 'degF':     (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureConverter,     'degree Fahrenheit', False              ),
-'degR':     (5/9,            [ 0, 0, 0, 1, 0, 0, 0, 0],  '5/9*K',                  'degree Rankine',    False              ),
 # angular units
 'deg':      (1.7453292e-2,   [ 0, 0, 0, 0, 0, 0, 0, 1],  '2*[pi]*rad/360',         'angle degree',      False              ),
 "'":        (2.908882e-4,    [ 0, 0, 0, 0, 0, 0, 0, 1],  'deg/60',                 'angle minute',      False              ),
