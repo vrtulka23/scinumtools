@@ -214,19 +214,19 @@ class Quantity:
         self.baseunits = baseunits
         return self
 
-    def abse(self, error: Union[int,float]):
-        if isinstance(self.magnitude, Magnitude):
-            self.magnitude.error = error
+    def abse(self, error: Union[int,float] = None):
+        if error is None:
+            return self.magnitude.abse()
         else:
-            self.magnitude = Magnitude(self.magnitude, error)
-        return self
+            self.magnitude.abse(error)
+            return self
         
-    def rele(self, error):
-        if isinstance(self.magnitude, Magnitude):
-            self.magnitude.error = self.magnitude._rel_to_abs(error)
+    def rele(self, error: Union[int,float] = None):
+        if error is None:
+            return self.magnitude.rele()
         else:
-            self.magnitude = Magnitude(self.magnitude, rele=error)
-        return self
+            self.magnitude.rele(error)
+            return self
             
     def rebase(self):
         factor = 1

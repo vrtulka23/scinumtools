@@ -189,3 +189,17 @@ class Magnitude:
         
     def __neg__(self):
         return Magnitude(-self.value, self.error)
+        
+    def abse(self, abse=None):
+        if abse is None:
+            return self.error
+        else:
+            self.error = abse
+            return self
+        
+    def rele(self, rele=None):
+        if rele is None:
+            return self._abs_to_rel()
+        else:
+            self.error = self._rel_to_abs(rele)
+            return self

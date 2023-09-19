@@ -13,6 +13,14 @@ def test_initialization():
     assert str(Magnitude(32, 3e-6))    == "3.20000000(30)e+01"    
     assert str(Magnitude(32, rele=10)) == "3.20(32)e+01"        # relative error
     
+def test_values():
+    
+    m = Magnitude(30, 0.3)
+    assert m.abse()  == 0.3
+    assert m.rele()  == 1.0
+    assert str(m.abse(0.5)) == "3.000(50)e+01"
+    assert str(m.rele(30))  == "3.00(90)e+01"
+
 def test_arithmetics():
     a = Magnitude(4, 0.01)
     b = Magnitude(1, 0.005)
@@ -81,3 +89,9 @@ def test_quantities():
     assert str(q1*2)   == "Quantity(2.400(40)e+01 cm)"
     assert str(q1*q2)  == "Quantity(4.80(20)e+01 cm2)"
     assert str(q1**2)  == "Quantity(1.4400(40)e+02 cm2)"
+    
+    q = Quantity(30, 'cm', abse=0.3)
+    assert q.abse()  == 0.3
+    assert q.rele()  == 1.0
+    assert str(q.abse(0.5)) == "Quantity(3.000(50)e+01 cm)"
+    assert str(q.rele(30))  == "Quantity(3.00(90)e+01 cm)"

@@ -1,5 +1,6 @@
 # scinumtools files
 tests/cached_data.npy
+docs/source/api/*
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
