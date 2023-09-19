@@ -10,9 +10,10 @@ from scinumtools.units import *
 def test_initialization():
 
     # Test initialization
-    assert str(Fraction(2))   == "2"
-    assert str(Fraction(0,3)) == "0"
-    assert str(Fraction(1,3)) == "1:3"
+    assert str(Fraction(2))     == "2"
+    assert str(Fraction(0,3))   == "0"
+    assert str(Fraction(1,3))   == "1:3"
+    assert str(Fraction((1,2))) == "1:2"
 
 def test_arithmetics():
     f1 = Fraction(1,3)

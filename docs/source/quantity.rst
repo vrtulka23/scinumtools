@@ -76,7 +76,7 @@ Units and constants can be used directly in operations with scalar values or ``n
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
    
 In the above example classes ``Unit`` and ``Constant`` are called as functions that return correspondent quantities. 
-They can be also initialized as objects, and one can access corresponding quantities as parameters.
+They can be also initialized as objects, and one can access individual qantities via its parameters.
 
 .. code-block::
 
@@ -88,17 +88,7 @@ They can be also initialized as objects, and one can access corresponding quanti
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
 
 In the rest of this documentation we will give only examples that use the direct quantity initialization using ``Quantity`` class.
-Every quantity contains following data:
-
-``magnitude``
-
-  numerical value of a quantity in base units
-
-``baseunits`` 
-
-  unit base of a quantity.
-
-Both data can be accessed in a following way:
+Every quantity contains ``magnitude`` and ``baseunits`` part, that can be accessed in a following way:
 
 .. code-block::
 
@@ -108,23 +98,19 @@ Both data can be accessed in a following way:
    >>> distance.baseunits             # exponents of base units
    BaseUnits(km=1)
 
-Further on, numerical value of quantity in base units, dimension and baseunits can be accessed using ``value()`` methods:
+Further on, numerical value of quantity in any base units can be accessed using ``value()`` method:
 
 .. code-block::
 
    >>> distance.value()               # numerical value in base units (kilometers)
    2.0
-   >>> distance.value('cm')
+   >>> distance.value('cm')           # numerical value in other units (centimeters)
    200000.0
-   >>> distance.baseunits.value()     # dictionary of base units exponents
-   {'k:m': 1}
-   
-Note that value of the quantity is given in units of ``baseunits``. Value of ``basunits`` object are expressed as a Python dictionary, where dictionary keys are individual unit symbols and dictionary values are corresponding exponents. For conveinence, unit prefixes are separated from unit symbols with a colon.
-   
+
 Magnitude
 """""""""
 
-Numerical value of ``Quantity`` are encapsuled by a special class ``Magnitude`` that is initialized by some numerical value and optionally an error.
+Numerical value of ``Quantity`` is managed by class ``Magnitude`` that can be initialized with a numerical value and optionally a measurement error.
 
 Values
 ------
@@ -169,6 +155,13 @@ Corresponding quantities can be initiallized in the following way:
    Quantity(3.000e+0 cm)
    >>> Quantity([1.3, 4.53455, 23.3], 'cm')
    Quantity([ 1.3    4.535 23.3  ] cm)
+   
+Numerical values of quantities are retrieved as:
+
+.. code-block::
+
+   >>> Quantity(1, 'cm').value()
+   1.0
 
 Errors
 ------
@@ -219,8 +212,129 @@ Errors can be additionally get from and set to ``Magnitude`` and ``Quantity`` ob
 Base units
 """"""""""
 
+``baseunits`` determine units of the quantity magnitude. If no base units are provided, the quantity is dimensionless.
+Base units and their corresponding exponents are managed by ``BaseUnits`` class.
+This can be initialized using:
+
+* String expressions
+
+  .. code-block::
+  
+     >>> BaseUnits('kg*m2/s2')
+     BaseUnits(kg=1 m=2 s=-2)
+     
+* Dictionary with pairs of ``unitid`` and exponents.
+  Note that unit prefixes in ``unitid`` need to be separated from the unit symbol by a colon sign.
+     
+  .. code-block::
+  
+     >>> BaseUnits({'k:g':1, 'm':2, 's':-2})
+     BaseUnits(kg=1 m=2 s=-2)
+     
+* List/array of dimension exponents.
+  Note that this type of initialization can be used only on units that consist of basic dimenssions.
+  More complex units and their derivates need to be initialized by the other two methods.
+
+  .. code-block::
+  
+     >>> BaseUnits([2,1,-2,0,0,0,0,0])
+     BaseUnits(m=2 g=1 s=-2)
+     
+Values of ``BaseUnits`` can be obtained in three different forms:
+
+* String expression
+
+  .. code-block::
+
+     >>> bu = BaseUnits('kg*m2/s2')     
+     >>> bu.expression()
+     'kg*m2*s-2'
+
+* Dictionary with pairs of ``unitid`` and exponents
+
+  .. code-block::
+  
+     >>> bu.value()
+     {'k:g': 1, 'm': 2, 's': -2}
+
+* Base object with dimensions.
+  Note that in order to express arbitrary ``BaseUnits`` in terms of unit dimensions, one has to also express its corresponding numerical magnitude.
+
+  .. code-block::
+  
+     >>> base = bu.base()
+     >>> base
+     Base(magnitude=1000.0, dimensions=Dimensions(m=2 g=1 s=-2))
+     >>> base.dimensions
+     Dimensions(m=2 g=1 s=-2)
+     >>> base.magnitude
+     1000.0
+     
+Corresponding initialization of ``Quantity`` class is:
+
+.. code-block::
+
+   >>> Quantity(23, 'km*m2/s2')
+   Quantity(2.300e+01 km*m2*s-2)
+   >>> Quantity(23, [2,1,-2,0,0,0,0,0])
+   Quantity(2.300e+01 m2*g*s-2)
+   >>> Quantity(23, {'k:g':1, 'm':2, 's':-2})
+   Quantity(2.300e+01 kg*m2*s-2)
+
+One can also get values of base units directly from the ``Quantity`` object:
+
+.. code-block::
+
+   >>> q = Quantity(23, 'km*m2/s2') 
+   >>> q.baseunits.expression()
+   'km*m2*s-2'
+   >>> q.baseunits.value()
+   {'k:m': 1, 'm': 2, 's': -2}
+   >>> q.baseunits.base()
+   Base(magnitude=1000.0, dimensions=Dimensions(m=3 s=-2))
+
+Dimensions
+----------
+
+Class ``Dimensions`` used above stores exponents of the unit dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``).
+Manimpulation with this class is straightforward:
+
+.. code-block::
+
+   >>> d = Dimensions(m=2, g=1, s=-2)
+   >>> d.value()
+   [2, 1, -2, 0, 0, 0, 0, 0]
+
 Fractional exponents
 --------------------
+
+Exponents stored both in ``BaseUnits`` and ``Dimensions`` classes do not need to be only integers.
+In fact, all exponents are converted automatically into a fractional form using class ``Fraction``.
+Fraction objects store nominator and denominator and are automatically reduced to the most basic form at the initialization:
+
+.. code-block::
+
+   >>> Fraction(1)      # setting only numerator   
+   1
+   >>> Fraction(4,8)    # setting both numerator and denominator
+   1:2
+   >>> Fraction((0,3))  # setting as a tuple
+   0
+
+As seen above, values of fractions are printed in a textual form, where colon sign divides nominator and denominator part of the fraction value.
+Fractions with a unit denominator display only their nominator.
+Fractions with a zero nominator are displayied as zero and their denominator is set automatically to unity.
+
+Tuple notation of fractions is used as a shorthand during ``Quantity``, ``BaseUnits``, or ``Dimensions`` initialization.
+
+.. code-block::
+
+   >>> Quantity(3, {'k:g':(1,2)})
+   Quantity(3.000e+00 kg1:2)
+   >>> BaseUnits([(2,3),1,-2,0,0,0,0,0])
+   BaseUnits(m=2:3 g=1 s=-2)
+   >>> Dimensions(m=(2,3))
+   Dimensions(m=2:3)
 
 Unit conversions
 ^^^^^^^^^^^^^^^^

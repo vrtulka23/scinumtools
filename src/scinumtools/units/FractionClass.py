@@ -65,7 +65,7 @@ class Fraction:
         if self.num==0 or self.den==1:
             return str(self.num)
         else:
-            return f"Fraction({self.num},{self.den})"        
+            return f"{self.num}{SYMBOL_FRACTION}{self.den}"        
         
     def __add__(self, other):
         if not isinstance(other, Fraction):
