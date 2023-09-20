@@ -182,12 +182,9 @@ class Quantity:
         return HANDLED_FUNCTIONS[func](*args, **kwargs)
     
     def _convert(self, magnitude1, baseunits1, baseunits2):
-        if c := TemperatureConverter(magnitude1, baseunits1, baseunits2):
-            return c.magnitude
-        elif c := LogarithmicConverter(magnitude1, baseunits1, baseunits2):
-            return c.magnitude
-        elif c := StandardConverter(magnitude1, baseunits1, baseunits2):
-            return c.magnitude
+        for converter in UNIT_CONVERTERS:
+            if c := converter(magnitude1, baseunits1, baseunits2):
+                return c.magnitude
         else:
             raise Exception("Unsupported conversion between units:", baseunits1.expression(), baseunits2.expression())
 

@@ -16,24 +16,38 @@ def test_unit_list():
     #print(Constant())
     #exit(1)
     
-def test_unique_names():
+def test_unique_unique():
     
-    units = list(UNIT_STANDARD.keys())
-    for symbol, unit in UNIT_STANDARD.items():
-        if isinstance(unit.prefixes, list):
-            for prefix in unit.prefixes:
-                assert prefix in UNIT_PREFIXES
-                units.append(f"{prefix}{symbol}")
-        elif unit.prefixes is True:
-            for prefix in UNIT_PREFIXES.keys():
-                units.append(f"{prefix}{symbol}")
-    #print(units)
-    #exit(1)
-    units.sort()
-    seen = set()
-    dupes = [x for x in units if x in seen or seen.add(x)]    
-    assert len(dupes)==0
+    assert check_unique_symbols()
+
+def test_custom_units():
     
+    # register custom unit
+    register_custom_unit('x', 3, [3,2,-1,0,0,1,0,0])
+    
+    q = Quantity(1, 'x')
+    assert str(q) == "Quantity(1.000e+00 x)"
+    assert q.baseunits.base().magnitude          == 3.0
+    assert q.baseunits.base().dimensions.value() == [3,2,-1,0,0,1,0,0]
+
+    with pytest.raises(Exception) as excinfo:
+        Quantity(1, 'kx')
+    assert excinfo.value.args[0]=="Unit cannot have any prefixes:"
+    assert excinfo.value.args[1]=="x"
+
+    # try to register new unit with already existing symbol
+    with pytest.raises(Exception) as excinfo:
+        register_custom_unit('x', 3, [3,2,-1,0,0,1,0,0])
+    assert excinfo.value.args[0]=="Unit with this symbol already exists:"
+    assert excinfo.value.args[1]=="x"
+    
+    # register new unit with a custom converter 
+    class CustomConverter(Converter):
+        def method(self, baseunits1, baseunits2):
+            return False
+    register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomConverter)
+    assert CustomConverter in UNIT_CONVERTERS
+
 def test_prefixes():
     
     # unit can have any prefix

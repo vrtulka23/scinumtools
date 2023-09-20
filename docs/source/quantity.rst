@@ -115,6 +115,8 @@ Numerical value of ``Quantity`` is managed by class ``Magnitude`` that can be in
 Values
 ------
 
+Magnitude values can be initialized from the following three inputs:
+
 * Scalar values (integers or floats).
   Note that all calculations in this case are converted to float precision
 
@@ -238,6 +240,8 @@ This can be initialized using:
   .. code-block::
   
      >>> BaseUnits([2,1,-2,0,0,0,0,0])
+     BaseUnits(m=2 g=1 s=-2)
+     >>> BaseUnits(Dimensions(m=2,g=1,s=-2))
      BaseUnits(m=2 g=1 s=-2)
      
 Values of ``BaseUnits`` can be obtained in three different forms:

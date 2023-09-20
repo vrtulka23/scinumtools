@@ -9,6 +9,12 @@ SYMBOL_UNITID   = ":"
 SYMBOL_FRACTION = ":"
 SYMBOL_MULTIPLY = "*"
 
+UNIT_CONVERTERS = [
+    TemperatureConverter,
+    LogarithmicConverter,
+    StandardConverter,
+]
+
 UNIT_PREFIXES = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
 'Y':        (1.0e24,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e24',                   'yotta'            ), 
 'Z':        (1.0e21,         [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e21',                   'zetta'            ), 
@@ -151,3 +157,31 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 '[N_A]':    (6.0221367e23,   [ 0, 0, 0, 0, 0, 0, 0, 0],  '6.022137e23',            "Avogadro's num.",   False              ),
 '[alpha]':  (7.29735256e-3,  [ 0, 0, 0, 0, 0, 0, 0, 0],  '7.29735256e-3',          "fine str. const.",  False              ),
 }, keys=True)
+
+def register_custom_unit(symbol, magnitude, dimensions, definition=None, name=None, prefixes=False):
+    if symbol in UNIT_STANDARD:
+        raise Exception("Unit with this symbol already exists:", symbol)
+    if name is None:
+        name = symbol
+    if definition is not None:
+        if not isinstance(definition, str) and definition not in UNIT_CONVERTERS:
+            UNIT_CONVERTERS.insert(0, definition)
+    UNIT_STANDARD.append(symbol, (magnitude, dimensions, definition, name, prefixes))
+    
+def check_unique_symbols():   
+    units = list(UNIT_STANDARD.keys())
+    for symbol, unit in UNIT_STANDARD.items():
+        if isinstance(unit.prefixes, list):
+            for prefix in unit.prefixes:
+                assert prefix in UNIT_PREFIXES
+                units.append(f"{prefix}{symbol}")
+        elif unit.prefixes is True:
+            for prefix in UNIT_PREFIXES.keys():
+                units.append(f"{prefix}{symbol}")
+    #print(units)
+    #exit(1)
+    units.sort()
+    seen = set()
+    dupes = [x for x in units if x in seen or seen.add(x)]    
+    return len(dupes)==0
+    
