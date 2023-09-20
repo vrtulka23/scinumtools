@@ -129,7 +129,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'BV':       (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicConverter,     'bel-volt',          ['d']              ),
 'BuV':      (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicConverter,     'bel-microvolt',     ['d']              ),
 'BuA':      (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicConverter,     'bel-microamps',     ['d']              ),
-'Bohm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicConverter,     'bel-ohms',          ['d']              ),
+'BOhm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicConverter,     'bel-ohms',          ['d']              ),
 'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SPL (Pa)',      ['d']              ),
 'BSIL':     (1,              [ 0, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SIL (W/m2)',    ['d']              ), 
 'BSWL':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SWL (W)',       ['d']              ),
@@ -183,5 +183,8 @@ def check_unique_symbols():
     units.sort()
     seen = set()
     dupes = [x for x in units if x in seen or seen.add(x)]    
-    return len(dupes)==0
+    if len(dupes)==0:
+        return True
+    else:
+        raise Exception("Following unit symbols are duplicated:", dupes)
     

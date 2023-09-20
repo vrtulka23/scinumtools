@@ -213,9 +213,9 @@ def test_logarithmic():
     assert str(Quantity(-40, 'dBuA').to('uA'))   == "Quantity(1.000e-02 uA)"
     assert str(Quantity(1000, 'uA').to('dBuA'))  == "Quantity(6.000e+01 dBuA)"
     
-    # Decibel-ohm (dBohm)
-    assert str(Quantity(10, 'dBohm').to('Ohm'))   == "Quantity(3.162e+00 Ohm)"
-    assert str(Quantity(100, 'Ohm').to('dBohm'))  == "Quantity(4.000e+01 dBohm)"
+    # Decibel-ohm (dBOhm)
+    assert str(Quantity(10, 'dBOhm').to('Ohm'))   == "Quantity(3.162e+00 Ohm)"
+    assert str(Quantity(100, 'Ohm').to('dBOhm'))  == "Quantity(4.000e+01 dBOhm)"
     
     # Sound pressure level (dBSPL)
     assert str(Quantity(110, 'Pa').to('dBSPL'))  == "Quantity(1.348e+02 dBSPL)"

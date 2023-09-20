@@ -97,7 +97,7 @@ class TemperatureConverter(Converter):
         
 class LogarithmicConverter(Converter):
 
-    process: list = ['Np','B','Bm','BmW','BW','BV','BuV','BuA','Bohm','BSPL','BSIL','BSWL']
+    process: list = ['Np','B','Bm','BmW','BW','BV','BuV','BuA','BOhm','BSPL','BSIL','BSWL']
     conversions: dict = {
         # power ratios
         'convert_PR_Np':    ("convert_Ratio_Np",  0.5, 1),    # Nepers
@@ -125,8 +125,8 @@ class LogarithmicConverter(Converter):
         'convert_BuV_V':    ("convert_B_Ratio",   2,   1e-3),
         'convert_A_BuA':    ("convert_Ratio_B",   2,   1e6),
         'convert_BuA_A':    ("convert_B_Ratio",   2,   1e-6),
-        'convert_Ohm_Bohm': ("convert_Ratio_B",   2,   1e-3),
-        'convert_Bohm_Ohm': ("convert_B_Ratio",   2,   1e3),
+        'convert_Ohm_BOhm': ("convert_Ratio_B",   2,   1e-3),
+        'convert_BOhm_Ohm': ("convert_B_Ratio",   2,   1e3),
         'convert_Pa_BSPL':  ("convert_Ratio_B",   2,   50),
         'convert_BSPL_Pa':  ("convert_B_Ratio",   2,   0.02),
         # decibel conversions
