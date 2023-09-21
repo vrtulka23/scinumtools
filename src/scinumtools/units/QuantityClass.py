@@ -53,6 +53,18 @@ class Quantity:
             self.baseunits = baseunits.baseunits
         else:
             raise Exception("Insufficient quantity definition", magnitude, baseunits)
+        # rebase if dimensions are zero
+        zerodim = Dimensions()
+        if self.baseunits.dimensions == zerodim:
+            baseunits = {}
+            for unitid, exp in self.baseunits.baseunits.items():
+                base = get_unit_base(unitid, exp)
+                if base.dimensions == zerodim:
+                    baseunits[unitid] = exp
+                    continue
+                else:
+                    self.magnitude *= base.magnitude
+            self.baseunits = BaseUnits(baseunits)
 
     def _add(self, left, right):
         for utype in UNIT_TYPES:

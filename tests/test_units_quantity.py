@@ -131,6 +131,9 @@ def test_scalar_unit_conversion():
     # reset base units if dimensions are all zero
     assert str(Quantity(3, 'kg*m2/s2')/Quantity(2, 'J')) == "Quantity(1.500e+00)"
 
+    # reset base units, but take into account prefixes
+    assert str(Quantity(10, 'm')/Quantity(5, 'cm'))      == "Quantity(2.000e+02)"
+
 def test_operation_sides():
     
     p = Quantity(2, 'm')

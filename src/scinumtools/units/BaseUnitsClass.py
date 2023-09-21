@@ -70,15 +70,6 @@ class BaseUnits:
             self.dimensions += ubase.dimensions
             self.units.append(ubase.units)
             self.expression.append(ubase.expression)
-        # remove units with nonzero dimensions if total dimension is zero
-        if self.dimensions == Dimensions():
-            zerodim = Dimensions().value()
-            for u, unitid in enumerate(list(self.baseunits.keys())):
-                symbol = self.units[u]
-                if UNIT_STANDARD[symbol].dimensions != zerodim:
-                    del self.baseunits[unitid]
-                    self.expression[u] = None
-            self.expression = [expr for expr in self.expression if expr is not None]
         self.expression = SYMBOL_MULTIPLY.join(self.expression) if self.expression else None
 
     def __str__(self):
