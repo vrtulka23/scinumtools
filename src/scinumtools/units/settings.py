@@ -128,6 +128,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'BW':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-watt',          ['d']              ),
 'BV':       (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicUnitType,      'bel-volt',          ['d']              ),
 'BuV':      (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicUnitType,      'bel-microvolt',     ['d']              ),
+'BA':       (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicUnitType,      'bel-amps',          ['d']              ),
 'BuA':      (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicUnitType,      'bel-microamps',     ['d']              ),
 'BOhm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicUnitType,      'bel-ohms',          ['d']              ),
 'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-SPL (Pa)',      ['d']              ),

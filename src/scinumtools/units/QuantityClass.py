@@ -56,12 +56,12 @@ class Quantity:
 
     def _add(self, left, right):
         for utype in UNIT_TYPES:
-            if c := utype(left.baseunits.base, right.baseunits.base):
+            if c := utype(left.baseunits, right.baseunits):
                 magnitude = c.add(left, right)
                 baseunits = left.baseunits
                 return Quantity(magnitude, baseunits)
         else:
-            raise Exception("Unsupported addition between units:", left.base.expression, right.base.expression)
+            raise Exception("Unsupported addition between units:", left.expression, right.expression)
 
     def __add__(self, other):
         if not isinstance(other, Quantity):
@@ -75,12 +75,12 @@ class Quantity:
 
     def _sub(self, left, right):
         for utype in UNIT_TYPES: 
-            if c := utype(left.baseunits.base, right.baseunits.base):
-                magnitude = c.substract(left, right)
+            if c := utype(left.baseunits, right.baseunits):
+                magnitude = c.sub(left, right)
                 baseunits = left.baseunits
                 return Quantity(magnitude, baseunits)
         else:
-            raise Exception("Unsupported substraction between units:", left.base.expression, right.base.expression)
+            raise Exception("Unsupported substraction between units:", left.expression, right.expression)
 
     def __sub__(self, other):
         if not isinstance(other, Quantity):
@@ -145,7 +145,7 @@ class Quantity:
     
     def __str__(self):
         magnitude = str(self.magnitude)
-        baseunits = self.baseunits.base.expression
+        baseunits = self.baseunits.expression
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
         else:
@@ -153,7 +153,7 @@ class Quantity:
             
     def __repr__(self):
         magnitude = str(self.magnitude)
-        baseunits = self.baseunits.base.expression
+        baseunits = self.baseunits.expression
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
         else:
@@ -183,10 +183,10 @@ class Quantity:
     
     def _convert(self, magnitude1, baseunits1, baseunits2):
         for utype in UNIT_TYPES:
-            if c := utype(baseunits1.base, baseunits2.base):
+            if c := utype(baseunits1, baseunits2):
                 return c.convert(magnitude1)
         else:
-            raise Exception("Unsupported conversion between units:", baseunits1.base.expression, baseunits2.base.expression)
+            raise Exception("Unsupported conversion between units:", baseunits1.expression, baseunits2.expression)
 
     def value(self, expression=None, dtype=None):
         if expression:
@@ -199,7 +199,7 @@ class Quantity:
             return value
 
     def units(self):
-        return self.baseunits.base.expression
+        return self.baseunits.expression
 
     def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
         if isinstance(units, Quantity):
@@ -224,7 +224,7 @@ class Quantity:
         else:
             self.magnitude.rele(error)
             return self
-            
+    
     def rebase(self):
         factor = 1
         baseunits = {}

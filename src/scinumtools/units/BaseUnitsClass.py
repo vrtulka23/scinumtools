@@ -12,8 +12,8 @@ class Base:
     
     magnitude: float
     dimensions: Dimensions
-    units: Union[str,list]
-    expression: Union[str,list]
+    units: str
+    expression: str
 
 def get_unit_base(unitid: str, exp: Fraction = None):
     if exp is None:
@@ -34,7 +34,10 @@ def get_unit_base(unitid: str, exp: Fraction = None):
 class BaseUnits:
 
     baseunits: dict
-    base: Base
+    magnitude: float
+    dimensions: Dimensions
+    units: Union[str,list]
+    expression: Union[str,list]
 
     def __init__(self, baseunits: Union[str,list,dict,Dimensions]=None):
         if baseunits is None:
@@ -52,7 +55,10 @@ class BaseUnits:
         else:
             raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
         # calculate total base
-        base = Base(1,Dimensions(),[],[])
+        self.magnitude = 1
+        self.dimensions = Dimensions()
+        self.units = []
+        self.expression = []
         for unitid in list(self.baseunits.keys()):
             if not isinstance(self.baseunits[unitid], Fraction):
                 self.baseunits[unitid] = Fraction(self.baseunits[unitid])
@@ -60,22 +66,20 @@ class BaseUnits:
                 del self.baseunits[unitid]
                 continue
             ubase = get_unit_base(unitid, self.baseunits[unitid])
-            base.magnitude *= ubase.magnitude
-            base.dimensions += ubase.dimensions
-            base.units.append(ubase.units)
-            base.expression.append(ubase.expression)
+            self.magnitude *= ubase.magnitude
+            self.dimensions += ubase.dimensions
+            self.units.append(ubase.units)
+            self.expression.append(ubase.expression)
         # remove units with nonzero dimensions if total dimension is zero
-        if base.dimensions == Dimensions():
+        if self.dimensions == Dimensions():
             zerodim = Dimensions().value()
             for u, unitid in enumerate(list(self.baseunits.keys())):
-                symbol = base.units[u]
+                symbol = self.units[u]
                 if UNIT_STANDARD[symbol].dimensions != zerodim:
                     del self.baseunits[unitid]
-                    base.expression[u] = None
-            base.expression = [expr for expr in base.expression if expr is not None]
-        base.expression = SYMBOL_MULTIPLY.join(base.expression) if base.expression else None
-        # set the total base
-        self.base = base
+                    self.expression[u] = None
+            self.expression = [expr for expr in self.expression if expr is not None]
+        self.expression = SYMBOL_MULTIPLY.join(self.expression) if self.expression else None
 
     def __str__(self):
         baseunits = []

@@ -155,7 +155,7 @@ def test_inversion():
     assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"      # Ohm to Siemens
     assert str(Quantity(102, 'J').to('erg-1'))    == "Quantity(9.804e-10 erg-1)"
 
-def test_logarithmic():
+def test_logarithmic_conversions():
 
     # Bels, Nepers and Amplitude/Power Ratios
     assert str(Quantity(1, 'B').to('dB'))     == "Quantity(1.000e+01 dB)"
@@ -209,7 +209,9 @@ def test_logarithmic():
     assert str(Quantity(10, 'dBV').to('dBuV'))   == "Quantity(1.300e+02 dBuV)"
     assert str(Quantity(-20, 'dBuV').to('dBV'))  == "Quantity(-1.400e+02 dBV)"
     
-    # Decibel-microamps (dBuA)
+    # Decibel-microamps (dBA, dBuA)
+    assert str(Quantity(10, 'dBA').to('A'))      == "Quantity(3.162e+00 A)"
+    assert str(Quantity(0.1, 'A').to('dBA'))    == "Quantity(-2.000e+01 dBA)"
     assert str(Quantity(-40, 'dBuA').to('uA'))   == "Quantity(1.000e-02 uA)"
     assert str(Quantity(1000, 'uA').to('dBuA'))  == "Quantity(6.000e+01 dBuA)"
     
@@ -227,7 +229,7 @@ def test_logarithmic():
     assert str(Quantity(100, 'W').to('dBSWL'))  == "Quantity(1.400e+02 dBSWL)"
     assert str(Quantity(100, 'dBSWL').to('W'))   == "Quantity(1.000e-02 W)"
     
-    # Compound logarithmic units (e.g.: dBx/y)
+    # Units with for of: dBx/y
     q = Quantity(10, 'dBmW/Hz')
     assert str(q)                == "Quantity(1.000e+01 dBmW*Hz-1)"
     q.to('W/Hz')
@@ -236,6 +238,20 @@ def test_logarithmic():
     assert str(q)                == "Quantity(1.000e+00 W)"
     q.to('dBm')
     assert str(q)                == "Quantity(3.000e+01 dBm)"
+    
+def test_logarithmic_arithmetics():
+    
+    a = Quantity(1, 'dB')
+    b = Quantity(2, 'dB')
+    assert str(a+b)     == "Quantity(4.539e+00 dB)"
+    
+    a = Quantity(87, 'dBA')
+    b = Quantity(83, 'dBA')
+    assert str(a-b)     == "Quantity(8.480e+01 dBA)"
+    
+    a = Quantity(20, 'dBm')
+    b = Quantity(23, 'dBm')
+    assert str(a+b)     == "Quantity(2.476e+01 dBm)"
     
 def test_rebase():
     

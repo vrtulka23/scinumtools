@@ -251,7 +251,7 @@ Values of ``BaseUnits`` can be obtained in three different forms:
   .. code-block::
 
      >>> bu = BaseUnits('kg*m2/s2')     
-     >>> bu.base.expression
+     >>> bu.expression
      'kg*m2*s-2'
 
 * Dictionary with pairs of ``unitid`` and exponents
@@ -268,9 +268,9 @@ Values of ``BaseUnits`` can be obtained in three different forms:
   
      >>> bu.base
      Base(magnitude=1000.0, dimensions=Dimensions(m=2 g=1 s=-2))
-     >>> bu.base.dimensions
+     >>> bu.dimensions
      Dimensions(m=2 g=1 s=-2)
-     >>> bu.base.magnitude
+     >>> bu.magnitude
      1000.0
      
 Corresponding initialization of ``Quantity`` class is:
@@ -289,7 +289,7 @@ One can also get values of base units directly from the ``Quantity`` object:
 .. code-block::
 
    >>> q = Quantity(23, 'km*m2/s2') 
-   >>> q.baseunits.base.expression
+   >>> q.baseunits.expression
    'km*m2*s-2'
    >>> q.baseunits.value()
    {'k:m': 1, 'm': 2, 's': -2}
