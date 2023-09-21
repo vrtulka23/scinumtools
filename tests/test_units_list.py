@@ -27,8 +27,8 @@ def test_custom_units():
     
     q = Quantity(1, 'x')
     assert str(q) == "Quantity(1.000e+00 x)"
-    assert q.baseunits.base().magnitude          == 3.0
-    assert q.baseunits.base().dimensions.value() == [3,2,-1,0,0,1,0,0]
+    assert q.baseunits.base.magnitude          == 3.0
+    assert q.baseunits.base.dimensions.value() == [3,2,-1,0,0,1,0,0]
 
     with pytest.raises(Exception) as excinfo:
         Quantity(1, 'kx')
@@ -42,11 +42,11 @@ def test_custom_units():
     assert excinfo.value.args[1]=="x"
     
     # register new unit with a custom converter 
-    class CustomConverter(Converter):
-        def method(self, baseunits1, baseunits2):
+    class CustomUnitType(UnitType):
+        def _istype(self):
             return False
-    register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomConverter)
-    assert CustomConverter in UNIT_CONVERTERS
+    register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomUnitType)
+    assert CustomUnitType in UNIT_TYPES
 
 def test_prefixes():
     
@@ -72,7 +72,7 @@ def test_definitions():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)
-        base = q.baseunits.base()
+        base = q.baseunits.base
         magnitude = q.magnitude.value*base.magnitude
         if base.dimensions.value(dtype=list) != unit.dimensions or not isclose(magnitude,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION):
             print(q, symbol, unit.definition, unit.magnitude)
@@ -83,7 +83,7 @@ def test_definitions():
         if not isinstance(unit.definition,str):
             continue
         q = Quantity(1, unit.definition)
-        base = q.baseunits.base()
+        base = q.baseunits.base
         assert isclose(q.magnitude.value,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         

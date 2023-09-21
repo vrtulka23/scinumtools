@@ -251,7 +251,7 @@ Values of ``BaseUnits`` can be obtained in three different forms:
   .. code-block::
 
      >>> bu = BaseUnits('kg*m2/s2')     
-     >>> bu.expression()
+     >>> bu.base.expression
      'kg*m2*s-2'
 
 * Dictionary with pairs of ``unitid`` and exponents
@@ -266,12 +266,11 @@ Values of ``BaseUnits`` can be obtained in three different forms:
 
   .. code-block::
   
-     >>> base = bu.base()
-     >>> base
+     >>> bu.base
      Base(magnitude=1000.0, dimensions=Dimensions(m=2 g=1 s=-2))
-     >>> base.dimensions
+     >>> bu.base.dimensions
      Dimensions(m=2 g=1 s=-2)
-     >>> base.magnitude
+     >>> bu.base.magnitude
      1000.0
      
 Corresponding initialization of ``Quantity`` class is:
@@ -290,11 +289,11 @@ One can also get values of base units directly from the ``Quantity`` object:
 .. code-block::
 
    >>> q = Quantity(23, 'km*m2/s2') 
-   >>> q.baseunits.expression()
+   >>> q.baseunits.base.expression
    'km*m2*s-2'
    >>> q.baseunits.value()
    {'k:m': 1, 'm': 2, 's': -2}
-   >>> q.baseunits.base()
+   >>> q.baseunits.base
    Base(magnitude=1000.0, dimensions=Dimensions(m=3 s=-2))
 
 Dimensions
@@ -375,20 +374,20 @@ Logarithmic units make an independent cathegory of units, because their logarith
 Into this cathegory belong formost Bel (B, dB) and Nepers (Np) units, together with all their derived units and conversions to corresponding amplitude, or power ratios and standard units.
 List of available conversions is given in the table below.
 
- .. csv-table:: Base units
-   :widths: 30 30
+ .. csv-table:: Logarithmic unit conversions
+   :widths: 40 40
    :header-rows: 1
 
-   Logarithmic,         Standard
-   Np,                  "PR,AR"       
-   B,                   "PR,AR"
-   "Bm,BmW,BW,BSWL",    W
-   "BV,BuV",            V
-   BuA,                 A
-   BOhm,                Ohm
-   BSPL,                Pa
-   BSIL,                W/m2
-   
+   Logarithmic,          Standard
+   Np,                   "PR, AR"       
+   B,                    "PR, AR"
+   "Bm, BmW, BW, BSWL",  W
+   "BV, BuV",            V
+   BuA,                  A
+   BOhm,                 Ohm
+   BSPL,                 Pa
+   BSIL,                 W/m2
+
 Temperature units
 """""""""""""""""
 
@@ -411,10 +410,10 @@ In such case the conversion class needs to be first defined and registered toget
 
 .. code-block::
 
-   >>> class CustomConverter(Converter):
-   >>>      def method(self, baseunits1, baseunits2):
+   >>> class CustomUnitType(UnitType):
+   >>>      def convert(self, baseunits1, baseunits2):
    >>>          return # False, or tuple('function_name', argument)
-   >>> register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomConverter)
+   >>> register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomUnitType)
    
 It is strongly advised to check if symbols of new units do not collide with some already existing units.
 

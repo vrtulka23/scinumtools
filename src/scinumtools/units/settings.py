@@ -1,7 +1,7 @@
 import numpy as np
 
 from ..ParameterTableClass import ParameterTable
-from .UnitConverters import *
+from .UnitTypes import *
 
 MAGNITUDE_PRECISION = 1e-7
 
@@ -9,10 +9,10 @@ SYMBOL_UNITID   = ":"
 SYMBOL_FRACTION = ":"
 SYMBOL_MULTIPLY = "*"
 
-UNIT_CONVERTERS = [
-    TemperatureConverter,
-    LogarithmicConverter,
-    StandardConverter,
+UNIT_TYPES = [
+    TemperatureUnitType,
+    LogarithmicUnitType,
+    StandardUnitType,
 ]
 
 UNIT_PREFIXES = ParameterTable(['magnitude','dimensions','definition','name','prefixes'], {
@@ -72,8 +72,8 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'yr':       (3.155760e7,     [ 0, 0, 1, 0, 0, 0, 0, 0],  'yr_j',                   'year',              ['k','m','G']      ),
 # units of temperature
 'degR':     (5/9,            [ 0, 0, 0, 1, 0, 0, 0, 0],  '5/9*K',                  'degree Rankine',    False              ),
-'Cel':      (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureConverter,     'degree Celsius',    False              ),
-'degF':     (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureConverter,     'degree Fahrenheit', False              ),
+'Cel':      (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureUnitType,      'degree Celsius',    False              ),
+'degF':     (1,              [ 0, 0, 0, 1, 0, 0, 0, 0],  TemperatureUnitType,      'degree Fahrenheit', False              ),
 # angular units
 'deg':      (1.7453292e-2,   [ 0, 0, 0, 0, 0, 0, 0, 1],  '2*[pi]*rad/360',         'angle degree',      False              ),
 "'":        (2.908882e-4,    [ 0, 0, 0, 0, 0, 0, 0, 1],  'deg/60',                 'angle minute',      False              ),
@@ -121,18 +121,18 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 # logarithmic units and ratios
 'PR':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Power ratio',       False              ), 
 'AR':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  '1',                      'Amplitude ratio',   False              ),
-'Np':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Nepers',            ['c','d']          ),
-'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicConverter,     'Bel',               ['d']              ),
-'Bm':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-milliwatt',     ['d']              ),
-'BmW':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-milliwatt',     ['d']              ),
-'BW':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-watt',          ['d']              ),
-'BV':       (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicConverter,     'bel-volt',          ['d']              ),
-'BuV':      (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicConverter,     'bel-microvolt',     ['d']              ),
-'BuA':      (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicConverter,     'bel-microamps',     ['d']              ),
-'BOhm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicConverter,     'bel-ohms',          ['d']              ),
-'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SPL (Pa)',      ['d']              ),
-'BSIL':     (1,              [ 0, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SIL (W/m2)',    ['d']              ), 
-'BSWL':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicConverter,     'bel-SWL (W)',       ['d']              ),
+'Np':       (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'Nepers',            ['c','d']          ),
+'B':        (1,              [ 0, 0, 0, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'Bel',               ['d']              ),
+'Bm':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-milliwatt',     ['d']              ),
+'BmW':      (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-milliwatt',     ['d']              ),
+'BW':       (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-watt',          ['d']              ),
+'BV':       (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicUnitType,      'bel-volt',          ['d']              ),
+'BuV':      (1,              [ 2, 1,-2, 0,-1, 0, 0, 0],  LogarithmicUnitType,      'bel-microvolt',     ['d']              ),
+'BuA':      (1,              [ 0, 0,-1, 0, 1, 0, 0, 0],  LogarithmicUnitType,      'bel-microamps',     ['d']              ),
+'BOhm':     (1,              [ 2, 1,-1, 0,-2, 0, 0, 0],  LogarithmicUnitType,      'bel-ohms',          ['d']              ),
+'BSPL':     (1,              [-1, 1,-2, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-SPL (Pa)',      ['d']              ),
+'BSIL':     (1,              [ 0, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-SIL (W/m2)',    ['d']              ), 
+'BSWL':     (1,              [ 2, 1,-3, 0, 0, 0, 0, 0],  LogarithmicUnitType,      'bel-SWL (W)',       ['d']              ),
 # percentages
 '%':        (1e-2,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-2',                   'percent',           False              ),
 'ppth':     (1e-3,           [ 0, 0, 0, 0, 0, 0, 0, 0],  '1e-3',                   'promile',           False              ),
@@ -164,8 +164,8 @@ def register_custom_unit(symbol, magnitude, dimensions, definition=None, name=No
     if name is None:
         name = symbol
     if definition is not None:
-        if not isinstance(definition, str) and definition not in UNIT_CONVERTERS:
-            UNIT_CONVERTERS.insert(0, definition)
+        if not isinstance(definition, str) and definition not in UNIT_TYPES:
+            UNIT_TYPES.insert(0, definition)
     UNIT_STANDARD.append(symbol, (magnitude, dimensions, definition, name, prefixes))
     
 def check_unique_symbols():   

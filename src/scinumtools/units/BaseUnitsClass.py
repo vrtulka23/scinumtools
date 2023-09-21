@@ -12,10 +12,29 @@ class Base:
     
     magnitude: float
     dimensions: Dimensions
+    units: Union[str,list]
+    expression: Union[str,list]
+
+def get_unit_base(unitid: str, exp: Fraction = None):
+    if exp is None:
+        exp = Fraction(1)
+    if SYMBOL_UNITID in unitid:
+        prefix, base = unitid.split(SYMBOL_UNITID)
+        magnitude  = (UNIT_PREFIXES[prefix].magnitude*UNIT_STANDARD[base].magnitude) ** exp.value(dtype=float)
+    else:
+        prefix, base = '', unitid
+        magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
+    dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
+    if exp.num==1 and exp.den==1:
+        expression = f"{prefix}{base}"
+    else:
+        expression = f"{prefix}{base}{exp}"
+    return Base(magnitude, dimensions, base, expression)
 
 class BaseUnits:
 
     baseunits: dict
+    base: Base
 
     def __init__(self, baseunits: Union[str,list,dict,Dimensions]=None):
         if baseunits is None:
@@ -32,22 +51,31 @@ class BaseUnits:
             self.baseunits = UnitSolver(baseunits).baseunits
         else:
             raise Exception("Cannot initialize BaseUnits with given argument:", baseunits)
-        # convert units exponents to fractions
-        for unit,exp in self.baseunits.items():
-            if not isinstance(exp, Fraction):
-                self.baseunits[unit] = Fraction(exp)
-        # remove units with zero exponents
-        for unit in list(self.baseunits.keys()):
-            if self.baseunits[unit].num==0:
-                del self.baseunits[unit]
+        # calculate total base
+        base = Base(1,Dimensions(),[],[])
+        for unitid in list(self.baseunits.keys()):
+            if not isinstance(self.baseunits[unitid], Fraction):
+                self.baseunits[unitid] = Fraction(self.baseunits[unitid])
+            if self.baseunits[unitid].num==0:
+                del self.baseunits[unitid]
+                continue
+            ubase = get_unit_base(unitid, self.baseunits[unitid])
+            base.magnitude *= ubase.magnitude
+            base.dimensions += ubase.dimensions
+            base.units.append(ubase.units)
+            base.expression.append(ubase.expression)
         # remove units with nonzero dimensions if total dimension is zero
-        base = self.base()
         if base.dimensions == Dimensions():
             zerodim = Dimensions().value()
-            for unitid in list(self.baseunits.keys()):
-                symbol = unitid.split(SYMBOL_UNITID)[-1] if SYMBOL_UNITID in unitid else unitid
+            for u, unitid in enumerate(list(self.baseunits.keys())):
+                symbol = base.units[u]
                 if UNIT_STANDARD[symbol].dimensions != zerodim:
                     del self.baseunits[unitid]
+                    base.expression[u] = None
+            base.expression = [expr for expr in base.expression if expr is not None]
+        base.expression = SYMBOL_MULTIPLY.join(base.expression) if base.expression else None
+        # set the total base
+        self.base = base
 
     def __str__(self):
         baseunits = []
@@ -101,43 +129,10 @@ class BaseUnits:
                 return False
         return True
     
-    def base(self, unitid=None):
-        def unit_base(unitid):
-            exp = self.baseunits[unitid]
-            if SYMBOL_UNITID in unitid:
-                prefix, base = unitid.split(SYMBOL_UNITID)
-                magnitude  = (UNIT_PREFIXES[prefix].magnitude*UNIT_STANDARD[base].magnitude) ** exp.value(dtype=float)
-            else:
-                prefix, base = '', unitid
-                magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
-            dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
-            return magnitude, dimensions
-        if unitid:
-            magnitude, dimensions = unit_base(unitid)
-        else:
-            magnitude = 1
-            dimensions = Dimensions()
-            for unitid in self.baseunits.keys():
-                mag, dim = unit_base(unitid)
-                magnitude *= mag
-                dimensions += dim
-        return Base(magnitude, dimensions)
-    
-    def expression(self):
-        units = []
-        for unitid,exp in self.baseunits.items():
-            symbol = unitid.replace(SYMBOL_UNITID,'')
-            if exp.num==1 and exp.den==1:
-                units.append(symbol)
-            else:
-                units.append(f"{symbol}{exp}")
-        if units:
-            return SYMBOL_MULTIPLY.join(units)
-        else:
-            return None
-        
     def value(self):
+        """ Return base units as a plain dictionary
+        """
         baseunits = {}
-        for unit,exp in self.baseunits.items():
-            baseunits[unit] = exp.value()
+        for unitid,exp in self.baseunits.items():
+            baseunits[unitid] = exp.value()
         return baseunits

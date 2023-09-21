@@ -5,10 +5,10 @@ import re
 from typing import Union
 
 from .settings import *
-from .UnitConverters import *
+from .UnitTypes import *
 from .MagnitudeClass import Magnitude
 from .DimensionsClass import Dimensions
-from .BaseUnitsClass import BaseUnits
+from .BaseUnitsClass import BaseUnits, get_unit_base
 from .FractionClass import Fraction
 from .UnitSolver import UnitSolver
 
@@ -55,13 +55,13 @@ class Quantity:
             raise Exception("Insufficient quantity definition", magnitude, baseunits)
 
     def _add(self, left, right):
-        left_dim = left.baseunits.base().dimensions
-        right_dim = right.baseunits.base().dimensions
-        if not left_dim == right_dim:
-            raise Exception('Dimension does not match:', left_dim, right_dim)
-        magnitude = left.magnitude + right.to(left.baseunits).magnitude 
-        baseunits = left.baseunits
-        return Quantity(magnitude, baseunits)
+        for utype in UNIT_TYPES:
+            if c := utype(left.baseunits.base, right.baseunits.base):
+                magnitude = c.add(left, right)
+                baseunits = left.baseunits
+                return Quantity(magnitude, baseunits)
+        else:
+            raise Exception("Unsupported addition between units:", left.base.expression, right.base.expression)
 
     def __add__(self, other):
         if not isinstance(other, Quantity):
@@ -74,13 +74,13 @@ class Quantity:
         return self._add(other, self)
 
     def _sub(self, left, right):
-        left_dim = left.baseunits.base().dimensions
-        right_dim = right.baseunits.base().dimensions
-        if not left_dim == right_dim:
-            raise Exception('Dimension does not match:', left_dim, right_dim)
-        magnitude = left.magnitude - right.to(left.baseunits).magnitude
-        baseunits = left.baseunits
-        return Quantity(magnitude, baseunits)
+        for utype in UNIT_TYPES: 
+            if c := utype(left.baseunits.base, right.baseunits.base):
+                magnitude = c.substract(left, right)
+                baseunits = left.baseunits
+                return Quantity(magnitude, baseunits)
+        else:
+            raise Exception("Unsupported substraction between units:", left.base.expression, right.base.expression)
 
     def __sub__(self, other):
         if not isinstance(other, Quantity):
@@ -145,7 +145,7 @@ class Quantity:
     
     def __str__(self):
         magnitude = str(self.magnitude)
-        baseunits = self.baseunits.expression()
+        baseunits = self.baseunits.base.expression
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
         else:
@@ -153,7 +153,7 @@ class Quantity:
             
     def __repr__(self):
         magnitude = str(self.magnitude)
-        baseunits = self.baseunits.expression()
+        baseunits = self.baseunits.base.expression
         if baseunits:
             return f"Quantity({magnitude:s} {baseunits})"
         else:
@@ -182,11 +182,11 @@ class Quantity:
         return HANDLED_FUNCTIONS[func](*args, **kwargs)
     
     def _convert(self, magnitude1, baseunits1, baseunits2):
-        for converter in UNIT_CONVERTERS:
-            if c := converter(magnitude1, baseunits1, baseunits2):
-                return c.magnitude
+        for utype in UNIT_TYPES:
+            if c := utype(baseunits1.base, baseunits2.base):
+                return c.convert(magnitude1)
         else:
-            raise Exception("Unsupported conversion between units:", baseunits1.expression(), baseunits2.expression())
+            raise Exception("Unsupported conversion between units:", baseunits1.base.expression, baseunits2.base.expression)
 
     def value(self, expression=None, dtype=None):
         if expression:
@@ -199,7 +199,7 @@ class Quantity:
             return value
 
     def units(self):
-        return self.baseunits.expression()
+        return self.baseunits.base.expression
 
     def to(self, units: Union[str,list,np.ndarray,Dimensions,dict,BaseUnits]):
         if isinstance(units, Quantity):
@@ -230,11 +230,11 @@ class Quantity:
         baseunits = {}
         for unitid1,exp1 in self.baseunits.baseunits.items():
             # find base units
-            base1 = self.baseunits.base(unitid1)
+            base1 = get_unit_base(unitid1)
             dim1 = str(base1.dimensions.value(dtype=tuple))
             if dim1 in baseunits:
                 # exists: convert units
-                base0 = self.baseunits.base(baseunits[dim1][0])
+                base0 = get_unit_base(baseunits[dim1][0])
                 factor *= (base1.magnitude/base0.magnitude)**exp1.value(dtype=float)
                 baseunits[dim1][1] += exp1
             else:

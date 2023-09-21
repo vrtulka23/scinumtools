@@ -39,13 +39,13 @@ def test_values():
     
 def test_base():
     
-    base = BaseUnits({'k:m':3,'g':2}).base()
+    base = BaseUnits({'k:m':3,'g':2}).base
     assert base.magnitude       == 1.0e9
     assert str(base.dimensions) == "Dimensions(m=3 g=2)"
-    base = BaseUnits({'J':1,'s':-1}).base()
+    base = BaseUnits({'J':1,'s':-1}).base
     assert base.magnitude       == 1000.0
     assert str(base.dimensions) == "Dimensions(m=2 g=1 s=-3)"
-    base = BaseUnits({'W':(3,2),'s':(9,2)}).base()
+    base = BaseUnits({'W':(3,2),'s':(9,2)}).base
     assert base.magnitude       == 31622.776601683792
     assert str(base.dimensions) == "Dimensions(m=3 g=3:2)"
     
