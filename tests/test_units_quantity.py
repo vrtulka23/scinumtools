@@ -73,6 +73,14 @@ def test_scalar_arithmetics():
     assert str(Quantity(1.1, 'km')-Quantity(100, 'm')) == "Quantity(1.000e+00 km)"
     assert str(Quantity(1.0, 'km')+Quantity(100, 'm')) == "Quantity(1.100e+00 km)"
 
+    with pytest.raises(Exception) as e_info:
+        Quantity(10, 'm') + Quantity(1, 'J')
+    assert e_info.value.args[0] == "Unsupported addition between units:"
+
+    with pytest.raises(Exception) as e_info:
+        Quantity(10, 'm') - Quantity(1, 'J')
+    assert e_info.value.args[0] == "Unsupported subtraction between units:"
+    
     # multiplication, division and power
     q = Quantity(123e2, [3,3,0,0,1,0,0,0])
     assert str(q) == "Quantity(1.230e+04 m3*g3*C)"    

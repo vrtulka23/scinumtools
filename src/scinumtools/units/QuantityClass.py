@@ -61,7 +61,7 @@ class Quantity:
                 baseunits = left.baseunits
                 return Quantity(magnitude, baseunits)
         else:
-            raise Exception("Unsupported addition between units:", left.expression, right.expression)
+            raise Exception("Unsupported addition between units:", left, right)
 
     def __add__(self, other):
         if not isinstance(other, Quantity):
@@ -80,7 +80,7 @@ class Quantity:
                 baseunits = left.baseunits
                 return Quantity(magnitude, baseunits)
         else:
-            raise Exception("Unsupported substraction between units:", left.expression, right.expression)
+            raise Exception("Unsupported subtraction between units:", left, right)
 
     def __sub__(self, other):
         if not isinstance(other, Quantity):
