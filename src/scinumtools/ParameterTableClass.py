@@ -61,6 +61,16 @@ class ParameterTable:
         else:
             self.append(key, values)
 
+    def __delitem__(self, index):
+        if self._keys is None:
+            del self._data[index]
+        else:
+            self._keys.remove(index)
+            del self._data[index]
+        
+    def __len__(self):
+        return len(self._data)
+        
     def __contains__(self, item):
         if self._keys is None:
             raise Exception("Parameter table does not have string keys")

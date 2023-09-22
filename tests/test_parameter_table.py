@@ -45,3 +45,27 @@ def test_parameter_dict():
         'e': [4, 5, 6]
     }, keys=True)
     test(params)
+
+def test_delete_item():
+    
+    with snt.ParameterTable(['a','b','c']) as params:
+        params.append([1, 2, 3])
+        params.append([4, 5, 6])
+        
+        assert len(params) == 2
+        del params[0]
+        assert len(params) == 1
+        assert params[0].a == 4
+        assert params[0].b == 5
+        assert params[0].c == 6
+        
+    with snt.ParameterTable(['a','b','c'], keys=True) as params:
+        params['d'] = [1, 2, 3]
+        params.append( 'e', [4, 5, 6] )
+        
+        del params['d']
+        assert params._keys == ['e']
+        assert 'd' not in params._data
+        assert params['e'].a == 4
+        assert params['e'].b == 5
+        assert params['e'].c == 6

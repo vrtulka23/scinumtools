@@ -159,16 +159,6 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 '[alpha]':  (7.29735256e-3,  [ 0, 0, 0, 0, 0, 0, 0, 0],  '7.29735256e-3',          "fine str. const.",  False              ),
 }, keys=True)
 
-def register_custom_unit(symbol, magnitude, dimensions, definition=None, name=None, prefixes=False):
-    if symbol in UNIT_STANDARD:
-        raise Exception("Unit with this symbol already exists:", symbol)
-    if name is None:
-        name = symbol
-    if definition is not None:
-        if not isinstance(definition, str) and definition not in UNIT_TYPES:
-            UNIT_TYPES.insert(0, definition)
-    UNIT_STANDARD.append(symbol, (magnitude, dimensions, definition, name, prefixes))
-    
 def check_unique_symbols():   
     units = list(UNIT_STANDARD.keys())
     for symbol, unit in UNIT_STANDARD.items():
@@ -188,4 +178,43 @@ def check_unique_symbols():
         return True
     else:
         raise Exception("Following unit symbols are duplicated:", dupes)
+    
+class UnitEnvironment:
+    
+    new_units: list
+    new_types: list
+    
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        self.close()
+    
+    def __init__(self, units):
+        self.new_units = []
+        self.new_types = []
+        for symbol, unit in units.items():
+            if symbol in UNIT_STANDARD:
+                raise Exception("Unit with this symbol already exists:", symbol)
+            if 'name' not in unit:
+                unit['name'] = symbol
+            if 'definition' not in unit:
+                unit['definition']=None
+            elif unit['definition'] is not None:
+                if not isinstance(unit['definition'], str) and unit['definition'] not in UNIT_TYPES:
+                    UNIT_TYPES.insert(0, unit['definition'])
+                    self.new_types.append(unit['definition'])
+            if 'prefixes' not in unit:
+                unit['prefixes'] = False
+            UNIT_STANDARD.append(symbol, (unit['magnitude'], unit['dimensions'], unit['definition'], unit['name'], unit['prefixes']))
+            self.new_units.append(symbol)
+        check_unique_symbols()
+        
+    def close(self):
+        for unit in self.new_units:
+            del UNIT_STANDARD[unit]
+        for utype in self.new_types:
+            UNIT_TYPES.remove(utype)
+        
+        
     
