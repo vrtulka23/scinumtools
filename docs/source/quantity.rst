@@ -416,8 +416,8 @@ In such case the conversion class needs to be first defined and registered toget
    >>>          #... your implementation
    >>> units = {'x': {'magnitude':3, 'dimensions':[3,2,-1,0,0,1,0,0],'definition':CustomUnitType}}
    >>> env = UnitEnvironment(units)
-   >>> Quantity(1, 'kx')
-   Quantity(1.000e+00 kx)
+   >>> Quantity(1, 'x')
+   Quantity(1.000e+00 x)
    >>> env.close()
 
 Integration with 3rd party libraries
