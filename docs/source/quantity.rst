@@ -395,15 +395,16 @@ Custom units
 """"""""""""
 
 Standardized units that are still not included in the default unit list should be requested in a GitHub issue and subsequently integrated into the core of this module.
-Custom, or temporary units can be registered into current code release using helper function ``register_custom_unit`` defined in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
+Custom, or temporary units can be registered into current code release using helper class ``UnitEnvironment`` defined in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
 
 .. code-block::
 
    >>> from scinumtools.units import *
-   >>> from scinumtools.units.settings import register_custom_unit
-   >>> register_custom_unit('x', 3, [3,2,-1,0,0,1,0,0], prefixes=['k','M','G'])
-   >>> Quantity(1, 'x')
-   Quantity(1.000e+00 x)
+   >>> from scinumtools.units.settings import UnitEnvironment
+   >>> units = {'x': {'magnitude':3, 'dimensions':[3,2,-1,0,0,1,0,0],'prefixes':['k','M','G']}}
+   >>> with UnitEnvironment(units):
+   >>>    Quantity(1, 'kx')
+   Quantity(1.000e+00 kx)
 
 It is also possible to define a custom conversion class for the new units.
 In such case the conversion class needs to be first defined and registered together with the new quantity.
@@ -412,15 +413,12 @@ In such case the conversion class needs to be first defined and registered toget
 
    >>> class CustomUnitType(UnitType):
    >>>      def convert(self, baseunits1, baseunits2):
-   >>>          return # False, or tuple('function_name', argument)
-   >>> register_custom_unit('y', 3, [3,2,-1,0,0,1,0,0], CustomUnitType)
-   
-It is strongly advised to check if symbols of new units do not collide with some already existing units.
-
-.. code-block::
-
-   >>> check_unique_symbols()
-   True
+   >>>          #... your implementation
+   >>> units = {'x': {'magnitude':3, 'dimensions':[3,2,-1,0,0,1,0,0],'definition':CustomUnitType}}
+   >>> env = UnitEnvironment(units)
+   >>> Quantity(1, 'kx')
+   Quantity(1.000e+00 kx)
+   >>> env.close()
 
 Integration with 3rd party libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
