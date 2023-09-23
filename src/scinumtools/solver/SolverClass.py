@@ -7,7 +7,7 @@ from .TokensClass import Tokens
 class ExpressionSolver:
 
     tokens: list
-    operators: list
+    operators: dict
     expr: Expression
     
     def __enter__(self):
@@ -16,29 +16,29 @@ class ExpressionSolver:
     def __exit__(self, type, value, tb):
         pass
     
-    def __init__(self, atom, operators:list = None):
+    def __init__(self, atom, operators:dict = None):
         self.tokens = Tokens(atom)
-        self.operators = operators if operators else [
-            OperatorLog, OperatorLog10, OperatorLogb,
-            OperatorExp, OperatorSqrt, OperatorPowb,
-            OperatorSin, OperatorCos, OperatorTan,
-            OperatorPar,  # should be the last of parenthesis operators
-            OperatorPow,
-            OperatorMul, OperatorTruediv,
-            OperatorAdd, OperatorSub,
-            OperatorEq, OperatorNe,
-            OperatorNot,  # needs to be after OperatorNe
-            OperatorLe, OperatorGe,
-            OperatorLt, OperatorGt,
-            OperatorAnd, OperatorOr, 
-        ]
+        self.operators = operators if operators else {
+            'log':OperatorLog, 'log10':OperatorLog10, 'logb':OperatorLogb,
+            'exp':OperatorExp, 'sqrt':OperatorSqrt,   'powb':OperatorPowb,
+            'sin':OperatorSin, 'cos':OperatorCos,     'tan':OperatorTan,
+            'par':OperatorPar,  # should be the last of parenthesis operators
+            'pow':OperatorPow,
+            'mul':OperatorMul, 'truediv':OperatorTruediv,
+            'add':OperatorAdd, 'sub':OperatorSub,
+            'eq':OperatorEq,   'ne':OperatorNe,
+            'not':OperatorNot,  # needs to be after OperatorNe
+            'le':OperatorLe,   'ge':OperatorGe,
+            'lt':OperatorLt,   'gt':OperatorGt,
+            'and':OperatorAnd, 'or':OperatorOr, 
+        }
 
-    def solve(self, expr:Union[str,Expression]):
+    def solve(self, expr:Union[str,Expression], osteps:list = None):
         self.expr = Expression(expr) if isinstance(expr, str) else expr
         
         # Tokenize expression
         while self.expr.right:
-            for operator in self.operators:
+            for operator in self.operators.values():
                 if self.expr.right.startswith(operator.symbol):
                     # Create atom from the left side and append it to tokens
                     if left:=self.expr.pop_left():
@@ -59,30 +59,20 @@ class ExpressionSolver:
         if left:=self.expr.pop_left():
             self.tokens.append(self.tokens.atom(left))
 
-            
         # Perform operation steps
-        osteps = [
-            dict(operators=[
-                OperatorLog, OperatorLog10, OperatorLogb,
-                OperatorExp, OperatorSqrt, OperatorPowb,
-                OperatorSin, OperatorCos, OperatorTan,
-                OperatorPar
-            ], otype=Otype.ARGS),
-            dict(operators=[OperatorAdd, OperatorSub],     otype=Otype.UNARY),
-            dict(operators=[OperatorPow],                  otype=Otype.BINARY),
-            dict(operators=[OperatorMul, OperatorTruediv], otype=Otype.BINARY),
-            dict(operators=[OperatorAdd, OperatorSub],     otype=Otype.BINARY),
-            dict(operators=[
-                OperatorEq, OperatorNe,
-                OperatorLe, OperatorGe,
-                OperatorLt, OperatorGt,
-            ], otype=Otype.BINARY),
-            dict(operators=[OperatorNot],                  otype=Otype.UNARY),
-            dict(operators=[OperatorAnd],                  otype=Otype.BINARY),
-            dict(operators=[OperatorOr],                   otype=Otype.BINARY),
+        osteps = osteps if osteps else [
+            dict(operators=['log', 'log10', 'logb', 'exp', 'sqrt', 'powb', 'sin', 'cos', 'tan', 'par'], otype=Otype.ARGS),
+            dict(operators=['add', 'sub'],     otype=Otype.UNARY),
+            dict(operators=['pow'],            otype=Otype.BINARY),
+            dict(operators=['mul', 'truediv'], otype=Otype.BINARY),
+            dict(operators=['add', 'sub'],     otype=Otype.BINARY),
+            dict(operators=['eq', 'ne', 'le', 'ge', 'lt', 'gt'], otype=Otype.BINARY),
+            dict(operators=['not'],            otype=Otype.UNARY),
+            dict(operators=['and'],            otype=Otype.BINARY),
+            dict(operators=['or'],             otype=Otype.BINARY),
         ]
         for o,ostep in enumerate(osteps):
-            ostep['operators'] = tuple([o for o in ostep['operators'] if o in self.operators])
+            ostep['operators'] = tuple([self.operators[o] for o in ostep['operators'] if o in self.operators.keys()])
             if ostep['operators']:
                 self.tokens.operate(**ostep)
 

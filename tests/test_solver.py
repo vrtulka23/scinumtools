@@ -118,17 +118,62 @@ def test_solver_operators():
 
     expressions = {
         '23 > 4':    23 > 4,
+        '20 == 20':  20. == 20.,
     }
     
-    operators = {OperatorGt}
+    # specify operators
+    operators = {'gt':OperatorGt,'eq':OperatorEq}
     with ExpressionSolver(AtomBase, operators) as es:
         for expr, value in expressions.items():
             result = es.solve(expr)
             assert result.value == value
 
-    operators = {OperatorEq}
+    # throw error if operator is not specified
+    operators = {'log':OperatorLog}
     with ExpressionSolver(AtomBase, operators) as es:
         for expr, value in expressions.items():
             with pytest.raises(ValueError) as excinfo:
                 result = es.solve(expr)
-            assert str(excinfo.value)=="could not convert string to float: '23 > 4'"
+            assert str(excinfo.value)==f"could not convert string to float: '{expr}'"
+
+    # modify existing operators
+    class CustomOperatorNot(OperatorNot):
+        symbol: str = 'not'
+    operators = {'not':CustomOperatorNot}
+    with ExpressionSolver(AtomBase, operators) as es:
+        result = es.solve('not 1')
+        assert result.value == False
+    
+    # create a new operator
+    class OperatorSquare(OperatorBase):   # operate from left side
+        symbol: str = '~'
+        def operate_unary(self, tokens):
+            right = tokens.get_right()
+            tokens.put_left(right*right)
+    class OperatorCube(OperatorBase):     # operate from right side
+        symbol: str = '^'
+        def operate_unary(self, tokens):
+            left = tokens.get_left()
+            tokens.put_left(left*left*left)
+    operators = {'square':OperatorSquare,'cube':OperatorCube,'add':OperatorAdd}
+    with ExpressionSolver(AtomBase, operators) as es:
+        osteps = [
+            dict(operators=['square','cube'], otype=Otype.UNARY),
+            dict(operators=['add'],           otype=Otype.BINARY),
+        ]
+        result = es.solve('~3 + 2^', osteps)
+        assert result.value == 17
+        
+def test_solver_atom():
+    
+    # modify atom to operate with strings
+    class AtomCustom(AtomBase):
+        value: str
+        def __init__(self, value:str):
+            self.value = str(value)
+        def __add__(self, other):
+            return AtomCustom(self.value + other.value)
+    operators = {'add':OperatorAdd}
+    with ExpressionSolver(AtomCustom, operators) as es:
+        result = es.solve('foo + bar')
+        assert result.value == 'foobar'

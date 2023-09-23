@@ -92,5 +92,6 @@ def AtomParser(string=None):
     return Atom(1.0, {unitid: exp})
         
 def UnitSolver(expression):
-    with ExpressionSolver(AtomParser, [OperatorPar,OperatorMul,OperatorTruediv]) as es:
+    operators = {'par':OperatorPar,'mul':OperatorMul,'truediv':OperatorTruediv}
+    with ExpressionSolver(AtomParser, operators) as es:
         return es.solve(expression)

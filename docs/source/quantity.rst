@@ -261,13 +261,10 @@ Values of ``BaseUnits`` can be obtained in three different forms:
      >>> bu.value()
      {'k:g': 1, 'm': 2, 's': -2}
 
-* Base object with dimensions.
-  Note that in order to express arbitrary ``BaseUnits`` in terms of unit dimensions, one has to also express its corresponding numerical magnitude.
+* Combination of total dimension and magnitude
 
   .. code-block::
   
-     >>> bu.base
-     Base(magnitude=1000.0, dimensions=Dimensions(m=2 g=1 s=-2))
      >>> bu.dimensions
      Dimensions(m=2 g=1 s=-2)
      >>> bu.magnitude
@@ -293,8 +290,10 @@ One can also get values of base units directly from the ``Quantity`` object:
    'km*m2*s-2'
    >>> q.baseunits.value()
    {'k:m': 1, 'm': 2, 's': -2}
-   >>> q.baseunits.base
-   Base(magnitude=1000.0, dimensions=Dimensions(m=3 s=-2))
+   >>> q.baseunits.magnitude
+   1000.0
+   >>> q.baseunits.dimensions
+   Dimensions(m=3 s=-2)
 
 Dimensions
 ----------
