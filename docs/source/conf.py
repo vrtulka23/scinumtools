@@ -22,7 +22,11 @@ version = data['project']['version']
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", 'sphinx_rtd_theme']
+extensions = [
+    'scinumtools.dip.docs.SphinxDocsClass',
+    "sphinx.ext.autodoc", 
+    'sphinx_rtd_theme'
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -34,3 +38,21 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_logo = "_static/logo/dip_logo_64.png"
+html_theme_options = {
+    'logo_only': False,
+    'display_version': True,
+}
+html_css_files = [
+    'css/sphinxdoc.css'
+]
+
+# DIP Syntax Highlighter
+from sphinx.highlighting import lexers
+from scinumtools.dip.pygments.SyntaxLexerClass import SyntaxLexer
+from scinumtools.dip.pygments.SchemaLexerClass import SchemaLexer
+from scinumtools.dip.pygments.StyleLexerClass import StyleLexer, pygments_monkeypatch_style
+pygments_monkeypatch_style("StyleLexer", StyleLexer)
+pygments_style = 'StyleLexer'
+lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)
+lexers['DIPSchema'] = SchemaLexer(startinline=True, style=StyleLexer)

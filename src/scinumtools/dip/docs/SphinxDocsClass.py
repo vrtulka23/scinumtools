@@ -6,8 +6,8 @@ from docutils.parsers.rst import Directive, directives
 from inspect import getframeinfo, stack
 import collections
 
-from ..DIP_Main import DIP
-from ..DIP_Source import Source
+from ..DIPClass import DIP
+from ..SourceClass import Source
 from ..settings import Format
 from ..datatypes import NumberType
 from ..nodes import IntegerNode, StringNode, FloatNode
@@ -77,9 +77,9 @@ class SphinxDocs(Directive):
             deflist = nodes.definition_list()
             for name, unit in units.items():
                 props = nodes.field_list()
-                props += add_field('Definition', f"{unit.num} {unit.expr}")
+                props += add_field('Definition', f"{unit['magnitude']} {unit['name']}")
                 defitem = nodes.definition_list_item()
-                defitem += nodes.term('', '', nodes.strong(text=unit.unit.symbol))
+                defitem += nodes.term('', '', nodes.strong(text=unit['name']))
                 defitem += nodes.definition('', props)
                 deflist += defitem
             section += deflist

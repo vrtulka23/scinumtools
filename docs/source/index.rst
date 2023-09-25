@@ -13,7 +13,8 @@ Welcome to scinumtools's documentation!
    introduction
    cached_function
    image_thumbnails
-   quantity
+   units/quantity
+   dip/index
    api/modules
    
 Indices and tables

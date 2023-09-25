@@ -1,0 +1,15 @@
+div.twocol {
+    height: 150px;
+}
+div.leftside {
+    width: 128px;
+    height: 128px;
+    float: left;
+}
+
+div.rightside {
+    width: 400px;
+    height: 88px;
+    float: left;
+    padding: 40px;
+}
