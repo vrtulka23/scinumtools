@@ -166,6 +166,10 @@ def test_inversion():
     assert str(Quantity(34, 'Ohm').to('S'))       == "Quantity(2.941e-02 S)"      # Ohm to Siemens
     assert str(Quantity(102, 'J').to('erg-1'))    == "Quantity(9.804e-10 erg-1)"
 
+def test_nodim_to_radians():
+    
+    assert str(Quantity(23).to('rad'))            == "Quantity(2.300e+01 rad)"
+
 def test_logarithmic_conversions():
 
     # Bels, Nepers and Amplitude/Power Ratios

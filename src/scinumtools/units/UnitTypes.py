@@ -38,6 +38,8 @@ class StandardUnitType(UnitType):
             self.conversion = (f"_convert_linear",)
         elif -self.baseunits1.dimensions==self.baseunits2.dimensions:
             self.conversion = (f"_convert_inversed",)
+        elif self.baseunits1.expression is None and self.baseunits2.units==['rad']:
+            self.conversion = (f"_convert_linear",)
         else:
             return False
         return True
