@@ -1,20 +1,20 @@
 from typing import Union, List
 import numpy as np
 
-from .DIP_Type_Number import NumberType
+from .NumberTypeClass import NumberType
 
-class FloatType(NumberType):
-    value: Union[float,list]
-    dtype = float
- 
+class IntegerType(NumberType):
+    value: Union[int,list]
+    dtype = int
+
     def __str__(self):
         if self.unit:
-            return f"FloatType({self.value} {self.unit})"
+            return f"IntegerType({self.value} {self.unit})"
         else:
-            return f"FloatType({self.value})"
-
+            return f"IntegerType({self.value})"
+        
     def __init__(self, value, unit=None, **kwargs):
-        if isinstance(value, FloatType):
+        if isinstance(value, IntegerType):
             kwargs['value'] = value.value
             kwargs['unit'] = value.unit
         else:

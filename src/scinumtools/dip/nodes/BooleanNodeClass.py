@@ -1,4 +1,4 @@
-from .DIP_Node import Node
+from .NodeClass import Node
 from ..solvers import LogicalSolver, FunctionSolver
 from ..datatypes import BooleanType
 

@@ -1,6 +1,6 @@
 import copy
 
-from ..DIP_Environment import Environment
+from ..EnvironmentClass import Environment
 from ..settings import Format
 from ..datatypes import Type
 

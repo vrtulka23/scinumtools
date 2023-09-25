@@ -1,7 +1,7 @@
 import csv
 
-from .DIP_Node import Node
-from .DIP_Parser import Parser
+from .NodeClass import Node
+from .ParserClass import Parser
 from . import BooleanNode, IntegerNode, FloatNode, StringNode
 from ..settings import Sign
 

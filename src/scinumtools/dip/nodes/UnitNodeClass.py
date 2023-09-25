@@ -1,7 +1,7 @@
-from ...units import Quantity, UnitEnvironment
 from . import Node
 from . import Parser
 from ..settings import Namespace
+from ...units import Quantity, UnitEnvironment
 
 class UnitNode(Node):
     keyword: str = 'unit'

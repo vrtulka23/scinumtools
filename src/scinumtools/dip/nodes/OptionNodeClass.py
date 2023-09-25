@@ -1,7 +1,7 @@
-from .DIP_Node import Node
-from .DIP_Node_Integer import IntegerNode
-from .DIP_Node_Float import FloatNode
-from .DIP_Node_String import StringNode
+from .NodeClass import Node
+from .IntegerNodeClass import IntegerNode
+from .FloatNodeClass import FloatNode
+from .StringNodeClass import StringNode
 
 class OptionNode(Node):
     keyword: str = 'option'

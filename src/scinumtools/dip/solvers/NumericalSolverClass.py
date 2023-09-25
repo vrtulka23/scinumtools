@@ -2,8 +2,8 @@ import numpy as np
 
 from ...units import Quantity, Dimensions, UnitEnvironment
 from ...solver import *
-from ..nodes.DIP_Parser import Parser
-from ..DIP_Environment import Environment
+from ..nodes.ParserClass import Parser
+from ..EnvironmentClass import Environment
 
 class NumericalSolver:
 

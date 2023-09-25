@@ -1,4 +1,4 @@
-from .DIP_Node import Node
+from .NodeClass import Node
 
 class ModNode(Node):
     keyword: str = 'mod'

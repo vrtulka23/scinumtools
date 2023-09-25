@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import List, Callable, Tuple
 from inspect import getframeinfo, stack
 
-from .DIP_Environment import Environment
-from .DIP_Source import Source
+from .EnvironmentClass import Environment
+from .SourceClass import Source
 from .settings import Keyword, Sign
-from .nodes.DIP_Parser import Parser
+from .nodes.ParserClass import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
 from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode
 from .nodes import ModNode, GroupNode

@@ -2,8 +2,8 @@ import numpy as np
 from math import isclose
 
 from ...units import Quantity, UnitEnvironment
-from .DIP_Type import Type
-from .DIP_Type_Boolean import BooleanType
+from .TypeClass import Type
+from .BooleanTypeClass import BooleanType
 from ..settings import Numeric
 
 class NumberType(Type):

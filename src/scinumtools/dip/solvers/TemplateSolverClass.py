@@ -3,9 +3,9 @@ from pathlib import Path
 import numpy as np
 from inspect import getframeinfo, stack
 
-from ..DIP_Environment import Environment
-from ..DIP_Source import Source
-from ..nodes.DIP_Parser import Parser
+from ..EnvironmentClass import Environment
+from ..SourceClass import Source
+from ..nodes.ParserClass import Parser
 from ..datatypes import Type
 
 class TemplateSolver:

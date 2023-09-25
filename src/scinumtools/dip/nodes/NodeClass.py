@@ -1,9 +1,9 @@
 import numpy as np
 import json
 
-from .DIP_NodeBase import NodeBase
+from .NodeBaseClass import NodeBase
 from ..datatypes import Type, IntegerType, FloatType, StringType, BooleanType
-from ..DIP_Environment import Environment
+from ..EnvironmentClass import Environment
 from ..settings import Keyword
 
 class Node(NodeBase):

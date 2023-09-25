@@ -1,8 +1,8 @@
 from typing import List
 
 from ...units import Unit, UnitEnvironment
-from .DIP_Node import Node
-from .DIP_NodeSelect import NodeSelect
+from .NodeClass import Node
+from .NodeSelectClass import NodeSelect
 from ..solvers import NumericalSolver, FunctionSolver
 from ..datatypes import FloatType, IntegerType
 

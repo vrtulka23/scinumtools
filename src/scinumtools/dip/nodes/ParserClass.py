@@ -2,7 +2,7 @@ from typing import List
 import re
 
 from ..settings import Keyword, Sign
-from .DIP_NodeBase import NodeBase
+from .NodeBaseClass import NodeBase
 
 class Parser(NodeBase):
     ccode: str

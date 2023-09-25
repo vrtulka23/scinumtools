@@ -2,8 +2,8 @@ from typing import List
 import numpy as np
 
 from ...units import Unit, UnitEnvironment
-from .DIP_Node import Node
-from .DIP_NodeSelect import NodeSelect
+from .NodeClass import Node
+from .NodeSelectClass import NodeSelect
 from ..datatypes import IntegerType,FloatType
 from ..solvers import NumericalSolver, FunctionSolver
 

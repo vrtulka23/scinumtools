@@ -1,5 +1,5 @@
-from .DIP_Node import Node
-from .DIP_NodeSelect import NodeSelect
+from .NodeClass import Node
+from .NodeSelectClass import NodeSelect
 from ..solvers import TemplateSolver, FunctionSolver
 from ..datatypes import StringType
 

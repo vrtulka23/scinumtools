@@ -1,5 +1,5 @@
-from .DIP_Node import Node
-from ..DIP_Environment import Environment
+from .NodeClass import Node
+from ..EnvironmentClass import Environment
 from ..settings import Sign
 
 class ImportNode(Node):

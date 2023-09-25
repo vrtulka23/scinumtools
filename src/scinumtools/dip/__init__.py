@@ -1,2 +1,2 @@
-from .DIP_Main import DIP
-from .DIP_Environment import Environment
+from .DIPClass import DIP
+from .EnvironmentClass import Environment

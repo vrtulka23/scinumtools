@@ -2,8 +2,8 @@ import numpy as np
 
 from ...solver import *
 from ...units import UnitEnvironment
-from ..DIP_Environment import Environment
-from ..nodes.DIP_Parser import Parser
+from ..EnvironmentClass import Environment
+from ..nodes.ParserClass import Parser
 from ..datatypes import NumberType, BooleanType
 from ..settings import Keyword, Sign
 

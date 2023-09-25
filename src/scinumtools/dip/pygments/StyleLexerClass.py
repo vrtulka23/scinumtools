@@ -1,7 +1,7 @@
 from pygments.style import Style
 from pygments.token import Token
 
-class DIP_Lexer_Style(Style):
+class StyleLexer(Style):
 
     styles = {
         # node components

@@ -5,7 +5,7 @@ import scinumtools.dip as dipsl
 from . import Node
 from . import Parser
 from ..settings import Namespace
-from ..DIP_Source import Source
+from ..SourceClass import Source
 
 class SourceNode(Node):
     keyword: str = 'source'

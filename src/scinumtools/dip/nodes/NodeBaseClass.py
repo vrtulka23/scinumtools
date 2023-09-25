@@ -1,7 +1,7 @@
 from typing import List
 import copy
 
-from ..DIP_Source import Source
+from ..SourceClass import Source
 
 class NodeBase:
     code: str 

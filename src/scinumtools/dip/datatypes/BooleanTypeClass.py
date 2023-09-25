@@ -1,7 +1,7 @@
 from typing import Union, List
 import numpy as np
 
-from .DIP_Type import Type
+from .TypeClass import Type
 
 class BooleanType(Type):
     value: Union[bool,list]

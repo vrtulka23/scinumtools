@@ -1,7 +1,7 @@
 from pygments.lexer import RegexLexer, include, bygroups
 from pygments.token import Token
     
-class DIP_Lexer_Syntax(RegexLexer):
+class SyntaxLexer(RegexLexer):
     name = 'DIP'
     tokens = {
         'root': [
