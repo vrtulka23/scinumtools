@@ -1,4 +1,5 @@
 from typing import Union
+import copy
 
 from .OperatorClass import *
 from .ExpressionClass import Expression
@@ -46,10 +47,11 @@ class ExpressionSolver:
                     # Initialize an operator
                     op = operator(self.expr)
                     if op.args:
+                        #print(op.args, osteps)
                         # Solve operator arguments
-                        with ExpressionSolver(self.tokens.atom) as es:
+                        with ExpressionSolver(self.tokens.atom, self.operators) as es:
                             for a in range(len(op.args)):
-                                op.args[a] = es.solve(op.args[a])
+                                op.args[a] = es.solve(op.args[a], osteps)
                     # Append operator to tokens
                     self.tokens.append(op)
                     break
@@ -60,7 +62,7 @@ class ExpressionSolver:
             self.tokens.append(self.tokens.atom(left))
 
         # Perform operation steps
-        osteps = osteps if osteps else [
+        operator_steps = osteps if osteps else [
             dict(operators=['log', 'log10', 'logb', 'exp', 'sqrt', 'powb', 'sin', 'cos', 'tan', 'par'], otype=Otype.ARGS),
             dict(operators=['add', 'sub'],     otype=Otype.UNARY),
             dict(operators=['pow'],            otype=Otype.BINARY),
@@ -71,10 +73,10 @@ class ExpressionSolver:
             dict(operators=['and'],            otype=Otype.BINARY),
             dict(operators=['or'],             otype=Otype.BINARY),
         ]
-        for o,ostep in enumerate(osteps):
-            ostep['operators'] = tuple([self.operators[o] for o in ostep['operators'] if o in self.operators.keys()])
-            if ostep['operators']:
-                self.tokens.operate(**ostep)
+        for o,ostep in enumerate(operator_steps):
+            operators = tuple([self.operators[o] for o in ostep['operators'] if o in self.operators.keys()])
+            if operators:
+                self.tokens.operate(operators, ostep['otype'])
 
         # Return the final atom
         if len(self.tokens.left)>0 or len(self.tokens.right)>1:

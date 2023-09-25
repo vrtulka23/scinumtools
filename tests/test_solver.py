@@ -114,7 +114,7 @@ def test_solver_atom():
             result = es.solve(expr)
             assert result.value == value
     
-def test_solver_operators():
+def test_operator_selection():
 
     expressions = {
         '23 > 4':    23 > 4,
@@ -136,6 +136,8 @@ def test_solver_operators():
                 result = es.solve(expr)
             assert str(excinfo.value)==f"could not convert string to float: '{expr}'"
 
+def test_operator_modification():
+
     # modify existing operators
     class CustomOperatorNot(OperatorNot):
         symbol: str = 'not'
@@ -143,6 +145,8 @@ def test_solver_operators():
     with ExpressionSolver(AtomBase, operators) as es:
         result = es.solve('not 1')
         assert result.value == False
+    
+def test_custom_operator():
     
     # create a new operator
     class OperatorSquare(OperatorBase):   # operate from left side
@@ -164,7 +168,7 @@ def test_solver_operators():
         result = es.solve('~3 + 2^', osteps)
         assert result.value == 17
         
-def test_solver_atom():
+def test_custom_atom():
     
     # modify atom to operate with strings
     class AtomCustom(AtomBase):
@@ -173,7 +177,40 @@ def test_solver_atom():
             self.value = str(value)
         def __add__(self, other):
             return AtomCustom(self.value + other.value)
-    operators = {'add':OperatorAdd}
+        def __gt__(self, other):
+            return AtomCustom(len(self.value) > len(other.value))
+    operators = {'add':OperatorAdd,'gt':OperatorGt}
     with ExpressionSolver(AtomCustom, operators) as es:
+        # test simpple functions
         result = es.solve('foo + bar')
         assert result.value == 'foobar'
+        
+        # test multiple functions
+        osteps = [
+            dict(operators=['add'],  otype=Otype.BINARY),
+            dict(operators=['gt'],   otype=Otype.BINARY),
+        ]
+        result = es.solve("limit + 100 km/s > limit + 50000000000 km/s", osteps)
+        assert result.value == 'False' # AtomCustom returns strings
+        
+def test_customisation_in_parentheses():
+    
+    # modify atom to operate with strings
+    class AtomCustom(AtomBase):
+        value: str
+        def __init__(self, value:str):
+            self.value = str(value)
+        def __add__(self, other):
+            return AtomCustom(self.value + other.value)
+        def __gt__(self, other):
+            return AtomCustom(len(self.value) > len(other.value))
+    operators = {'add':OperatorAdd,'gt':OperatorGt,'par':OperatorPar}
+    with ExpressionSolver(AtomCustom, operators) as es:
+        # test multiple functions
+        osteps = [
+            dict(operators=['par'],  otype=Otype.ARGS),
+            dict(operators=['add'],  otype=Otype.BINARY),
+            dict(operators=['gt'],   otype=Otype.BINARY),
+        ]
+        result = es.solve("(limit + 100 km/s) > (limit + 50000000000 km/s)", osteps)
+        assert result.value == 'False' # AtomCustom returns strings
