@@ -1,5 +1,5 @@
-DIP
-=======
+Dimensional Input Parameters
+============================
 
 .. image:: ../_static/logo/dip_logo_128.png
 
@@ -129,10 +129,3 @@ The most notable features of this language are:
 and many others...
 
 DIP was created as a side project and does not have any particular development team. Any kind of help or support is highly appreciated.
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

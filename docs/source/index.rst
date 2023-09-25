@@ -11,10 +11,10 @@ Welcome to scinumtools's documentation!
    :caption: Contents:
 
    introduction
-   cached_function
-   image_thumbnails
-   units/quantity
+   solver/index
+   units/index
    dip/index
+   misc/index
    api/modules
    
 Indices and tables
