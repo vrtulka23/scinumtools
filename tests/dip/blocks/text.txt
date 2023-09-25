@@ -1,0 +1,4 @@
+This is a block text
+with multiple lines
+that will be loaded to a
+string node.

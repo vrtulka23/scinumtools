@@ -1,0 +1,5 @@
+$source blocks = query.dip
+$unit energy = 1 erg
+fruits int = 0
+vegies int = 1
+   potato float = 200 g

@@ -1,0 +1,178 @@
+from pygments.lexer import RegexLexer, include, bygroups
+from pygments.token import Token
+    
+class DIP_Lexer_Syntax(RegexLexer):
+    name = 'DIP'
+    tokens = {
+        'root': [
+            (r'([ ]*)(#[^\n]*|)(\n)', 
+             bygroups(Token.Text, Token.Comment, Token.Text)),
+            (r'([ ]*)(\$source|\$unit)([ ]+)({)',
+             bygroups(Token.Text, Token.Keyword, Token.Text,
+                      Token.Reference),'reference'),
+            (r'([ ]*)(\$source|\$unit)([ ]+)([a-zA-Z0-9-_]+)([ ]+=)',
+             bygroups(Token.Text, Token.Keyword, Token.Text,
+                      Token.Name, Token.Text),'node_value'),
+            (r'[ ]*\@case', Token.Keyword, 'node_value'),
+            (r'[ ]*\@(else|end)', Token.Keyword),
+            (r'[ ]*!(options|format|condition|constant)', Token.Keyword, 'node_value'),
+            (r'^([ ]*)(=)',
+             bygroups(Token.Text, Token.Keyword), 'node_value'),
+            (r'^([ ]*)([a-zA-Z0-9-_.]+)([ ]+=)',
+             bygroups(Token.Text, Token.Name, Token.Text), 'node_value'),
+            (r'^([ ]*)([a-zA-Z0-9-_.]+)',
+             bygroups(Token.Text, Token.Name), 'node_type'),
+            (r'([ ]*)({)',
+             bygroups(Token.Text, Token.Reference), 'reference'),
+        ],
+        'node_type': [
+            (r'([ ]*)({)',
+             bygroups(Token.Text, Token.Reference), 'reference'),
+            (r'([ ]*)(bool|int|float|str|table)(\[)',
+             bygroups(Token.Text, Token.Type, Token.Type), 'type_dim'),
+            (r'([ ]*)(bool|int|float|str|table)([ ]+=)',
+             bygroups(Token.Text, Token.Type, Token.Text), 'node_value'),
+            (r'([ ]*)(bool|int|float|str|table)', 
+             bygroups(Token.Text, Token.Type), 'unit'), 
+            (r'([ ]*)(bool|int|float|str|table)',
+             bygroups(Token.Text, Token.Type), '#pop'),
+            (r' ', Token.Text, '#pop'),
+        ],
+        'type_dim': [
+            (f'[0-9.:]+',              Token.Dimension),
+            (f',',                     Token.Type),
+            (r'(\])([ ]+=)',
+             bygroups(Token.Type, Token.Text), 'node_value'),
+            (r'\]',                    Token.Type, 'unit'),
+            (r' ', Token.Text, '#pop:2'),
+        ],
+        'node_value': [
+            # booleans
+            (r"([ ]*)(true|false)",
+             bygroups(Token.Text, Token.Boolean)),
+            # numbers
+            (r"([ ]*)(-[0-9.]+|[0-9.]+)(e-[0-9]+|e[0-9]+|)([ ]+[^#\n ]+|)",
+             bygroups(Token.Text, Token.Number, Token.Number, Token.Unit)),
+            # strings
+            (r"([ ]*)(')",
+             bygroups(Token.Text, Token.String),   'str_single'),
+            (r'([ ]*)(""")',
+             bygroups(Token.Text, Token.String),   'str_triple'),            
+            (r'([ ]*)(")',
+             bygroups(Token.Text, Token.String),   'str_double'),
+            # function
+            (r"([ ]*\()([a-zA-Z0-9_-]+)(\))",
+             bygroups(Token.Text, Token.Expression, Token.Text), 'unit'),
+            # expressions
+            (r"([ ]*\()(')",
+             bygroups(Token.Text, Token.Expression),   'expr_single'),
+            (r'([ ]*\()(""")',
+             bygroups(Token.Text, Token.Expression),   'expr_triple'),            
+            (r'([ ]*\()(")',
+             bygroups(Token.Text, Token.Expression),   'expr_double'),
+            # references
+            (r'([ ]*)({)',
+             bygroups(Token.Text, Token.Reference), 'reference'),
+            # arrays
+            (r"([ ]*)(\[)",
+             bygroups(Token.Text, Token.Text), '#push'),
+            (r"(,)", Token.Text),
+            (r"(\])([ ]+[^#\n ]*)",
+             bygroups(Token.Text,  Token.Unit), '#pop:4'),
+            (r"(\])", Token.Text, '#pop'),
+            # units
+            (r"([ ]*)([^#\n ]+)",
+             bygroups(Token.Text, Token.String)),
+            # end of definition
+            (r'[ ]', Token.Text, '#pop:4'),
+        ],
+        'str_single' : [
+            (r"[^'\\]+",               Token.String),
+            (r"\\'",                   Token.String),
+            (r"\\[^']",                Token.String),
+            ("(')(,)",
+             bygroups(Token.String, Token.Text), "#pop"),
+            ("(')(\])",
+             bygroups(Token.String, Token.Text), "#pop:2"),  # pop if in array
+            ("(')", Token.String, "unit"),
+        ],
+        'str_double' : [
+            (r'[^"\\]+',               Token.String),
+            (r'\\"',                   Token.String),
+            (r'\\[^"]',                Token.String),
+            ('(")(,)',
+             bygroups(Token.String, Token.Text), "#pop"),
+            ('(")(\])',
+             bygroups(Token.String, Token.Text), "#pop:2"),  # pop if in array
+            ('"', Token.String, "unit"),
+        ],
+        'str_triple' : [
+            (r'[^"\\]+',               Token.String),
+            (r'\\"',                   Token.String),
+            (r'\\[^"]',                Token.String),
+            (r'"[^"]',                 Token.String),
+            (r'""[^"]',                Token.String),
+            (r'(""")(,)',
+             bygroups(Token.String, Token.Text), "#pop"),
+            (r'(""")(\])',
+             bygroups(Token.String, Token.Text), "#pop:2"),  # pop if in array
+            (r'"""', Token.String, "unit"),
+        ],
+        'expr_single' : [
+            (r"\\({)",
+             bygroups(Token.Expression)),
+            (r'{',                     Token.Reference, 'reference_expr'),
+            (r"[^'\\{]+",              Token.Expression),
+            (r"\\'",                   Token.Expression),
+            (r"\\[^']",                Token.Expression),
+            ("(')(\))",
+             bygroups(Token.Expression, Token.Text), "unit"),
+        ],
+        'expr_double' : [
+            (r"\\({)",
+             bygroups(Token.Expression)),
+            (r'{',                     Token.Reference, 'reference_expr'),
+            (r'[^"\\{]+',              Token.Expression),
+            (r'\\"',                   Token.Expression),
+            (r'\\[^"]',                Token.Expression),
+            ('(")(\))',
+             bygroups(Token.Expression, Token.Text), "unit"),
+        ],
+        'expr_triple' : [
+            (r"\\({)",
+             bygroups(Token.Expression)),
+            (r'{',                     Token.Reference, 'reference_expr'),
+            (r'[^"\\{]+',              Token.Expression),
+            (r'\\"',                   Token.Expression),
+            (r'\\[^"]',                Token.Expression),
+            (r'"[^"]',                 Token.Expression),
+            (r'""[^"]',                Token.Expression),
+            (r'(""")(\))',
+             bygroups(Token.Expression, Token.Text), "unit"),
+        ],
+        'reference' : [
+            (r"{",                     Token.Reference, "#push"),
+            (r"[^{}]+",                Token.Reference),
+            (r"}\[",                   Token.Reference, "reference_slice"),
+            (r"}",                     Token.Reference, "unit"),
+        ],
+        'reference_expr' : [
+            (r"{",                     Token.Reference, "#push"),
+            (r"[^{}]+",                Token.Reference),
+            (r"}\[",                   Token.Reference, "reference_slice"),
+            (r"(}:)([0-9sdef.]+)",
+             bygroups(Token.Reference, Token.Slice), "#pop"),
+            (r"}",                     Token.Reference, "#pop"),
+        ],
+        'reference_slice': [
+            (r'[0-9.:]+',              Token.Slice),
+            (r',',                     Token.Reference),
+            (r'\]}',                   Token.Reference, '#pop:3'),
+            (r'(\]:)([0-9sdef.]+)',
+             bygroups(Token.Reference, Token.Slice), '#pop:2'),
+            (r'\]',                    Token.Reference, 'unit'),
+        ],
+        'unit': [
+            (r'([ ]+[^=#\n ]+|)',      Token.Unit, "#pop:6")
+        ],
+    }

@@ -1,0 +1,2 @@
+Geometry: {{?box.geometry}}
+Box size: [{{?box.size.x}}, {{?box.size.y}}, {{?box.size.z}}]

@@ -1,0 +1,22 @@
+energy float = 13 J
+matrix str = """
+[[4234,34,35,34],
+[234,34,644,43],
+[353,2356,234,3]]
+"""
+table str = """
+x float m
+y float m
+
+0.234 0.234
+1.355 1.43
+2.535 2.423
+3.255 3.2355
+4.455 4.2356
+"""
+text str = """
+This is a block text
+with multiple lines
+that will be loaded to a
+string node.
+"""

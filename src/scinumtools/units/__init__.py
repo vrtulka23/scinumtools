@@ -11,3 +11,4 @@ from .DimensionsClass import Dimensions
 from .FractionClass import Fraction
 from .BaseUnitsClass import BaseUnits
 from .UnitSolver import UnitSolver
+from .settings import UnitEnvironment

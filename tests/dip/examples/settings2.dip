@@ -1,0 +1,13 @@
+runtime
+  t_max float = 10 ns
+  timestep float = 0.01 ns
+
+box
+  geometry int = 3
+  size
+    x float = 10 nm
+    y float = 3e7 nm
+
+modules
+  heating bool = false
+  radiation bool = true
