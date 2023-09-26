@@ -1,1 +1,1 @@
-from .SphinxDocsClass import SphinxDocs
+from .sphinx_docs import SphinxDocs

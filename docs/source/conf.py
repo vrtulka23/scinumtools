@@ -23,7 +23,7 @@ version = data['project']['version']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'scinumtools.dip.docs.SphinxDocsClass',
+    'scinumtools.dip.docs.sphinx_docs',
     "sphinx.ext.autodoc", 
     'sphinx_rtd_theme'
 ]
@@ -49,9 +49,9 @@ html_css_files = [
 
 # DIP Syntax Highlighter
 from sphinx.highlighting import lexers
-from scinumtools.dip.pygments.SyntaxLexerClass import SyntaxLexer
-from scinumtools.dip.pygments.SchemaLexerClass import SchemaLexer
-from scinumtools.dip.pygments.StyleLexerClass import StyleLexer, pygments_monkeypatch_style
+from scinumtools.dip.pygments.syntax_lexer import SyntaxLexer
+from scinumtools.dip.pygments.schema_lexer import SchemaLexer
+from scinumtools.dip.pygments.style_lexer import StyleLexer, pygments_monkeypatch_style
 pygments_monkeypatch_style("StyleLexer", StyleLexer)
 pygments_style = 'StyleLexer'
 lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)

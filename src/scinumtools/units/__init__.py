@@ -1,14 +1,14 @@
-from .QuantityClass import Quantity
-from .QuantityClass  import Quantity as quant
-from .UnitClass import Unit
-from .UnitClass import Unit as unit
-from .ConstantClass import Constant
-from .ConstantClass import Constant as const
-from .NaNClass import NaN
-from .NaNClass import NaN as nan
-from .MagnitudeClass import Magnitude
-from .DimensionsClass import Dimensions
-from .FractionClass import Fraction
-from .BaseUnitsClass import BaseUnits
-from .UnitSolver import UnitSolver
+from .quantity import Quantity
+from .quantity  import Quantity as quant
+from .unit import Unit
+from .unit import Unit as unit
+from .constant import Constant
+from .constant import Constant as const
+from .nan import NaN
+from .nan import NaN as nan
+from .magnitude import Magnitude
+from .dimensions import Dimensions
+from .fraction import Fraction
+from .base_units import BaseUnits
+from .unit_solver import UnitSolver
 from .settings import UnitEnvironment

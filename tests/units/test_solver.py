@@ -6,8 +6,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools.units import *
-from scinumtools.units.UnitSolver import AtomParser, Atom
-from scinumtools.units.FractionClass import Fraction
+from scinumtools.units.unit_solver import AtomParser, Atom
 
 def test_atom():
     

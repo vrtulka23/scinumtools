@@ -1,7 +1,7 @@
 import numpy as np
 
-from ..ParameterTableClass import ParameterTable
-from .UnitTypes import *
+from ..parameter_table import ParameterTable
+from .unit_types import *
 
 MAGNITUDE_PRECISION = 1e-7
 
