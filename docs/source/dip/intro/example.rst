@@ -8,8 +8,7 @@ A first step to parse a DIP code is to import its main class ``DIP``.
 
 .. code-block:: python
 
-   from dipsl import DIP
-   from dipsl.settings import Format
+   from dipsl import DIP, Format
    
 Multiple code sources (from strings, or files) can be loaded and combined into one parameter list.
 Files containing DIP code should have an extension ``.dip``, otherwise they will be interpreted as normal text files.

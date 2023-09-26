@@ -208,7 +208,7 @@ class Environment:
                 raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
         return nodes
 
-    def data(self, verbose=False, format=Format.VALUE):
+    def data(self, format=Format.VALUE, verbose=False):
         """ Return parsed values as a dictionary
 
         :param bool verbose: Display node values
