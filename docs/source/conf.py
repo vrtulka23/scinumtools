@@ -38,7 +38,7 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
-html_logo = "_static/logo/dip_logo_64.png"
+html_logo = "_static/snt/snt.svg"
 html_theme_options = {
     'logo_only': False,
     'display_version': True,
