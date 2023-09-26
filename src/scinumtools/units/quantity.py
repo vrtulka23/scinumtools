@@ -15,8 +15,6 @@ from .unit_solver import UnitSolver
 HANDLED_FUNCTIONS = {}
 
 class Quantity:
-    prefixes: dict            # list of prefixes 
-    unitlist: dict            # list of units
     
     magnitude: Magnitude      # magnitude
     baseunits: BaseUnits      # base units
@@ -54,12 +52,11 @@ class Quantity:
         else:
             raise Exception("Insufficient quantity definition", magnitude, baseunits)
         # rebase if dimensions are zero
-        zerodim = Dimensions()
-        if self.baseunits.dimensions == zerodim:
+        if self.baseunits.dimensions.nodim:
             baseunits = {}
             for unitid, exp in self.baseunits.baseunits.items():
                 base = get_unit_base(unitid, exp)
-                if base.dimensions == zerodim:
+                if base.dimensions.nodim:
                     baseunits[unitid] = exp
                     continue
                 else:

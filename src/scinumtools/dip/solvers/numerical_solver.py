@@ -1,6 +1,6 @@
 import numpy as np
 
-from ...units import Quantity, Dimensions, UnitEnvironment
+from ...units import Quantity, UnitEnvironment
 from ...solver import *
 from ..nodes.parser import Parser
 from ..environment import Environment
@@ -68,7 +68,7 @@ class NumericalSolver:
     def equal(self, expr1, expr2):
         unit1 = self.solve(expr1)
         unit2 = self.solve(expr2)
-        if unit1.baseunits.dimensions != Dimensions():
+        if not unit1.baseunits.nodim:
             unit2.to(unit1.baseunits)
         if unit1 == unit2:
             return True
@@ -96,7 +96,7 @@ class CustomOperatorAdd(OperatorAdd):
             tokens.put_right(right)
     def operate_binary(self, tokens):
         left, right = tokens.get_left(), tokens.get_right()
-        if left.baseunits.dimensions != Dimensions():
+        if not left.baseunits.nodim:
             right.to(left.baseunits)
         tokens.put_left(left + right)
 
@@ -121,7 +121,7 @@ class CustomOperatorSub(OperatorSub):
             tokens.put_right(right)
     def operate_binary(self, tokens):
         left, right = tokens.get_left(), tokens.get_right()
-        if left.baseunits.dimensions != Dimensions():
+        if not left.baseunits.nodim:
             right.to(left.baseunits)
         tokens.put_left(left - right)
 

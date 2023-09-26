@@ -1,5 +1,5 @@
 import numpy as np
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field #, fields
 from typing import Union
 
 from .fraction import Fraction
@@ -15,64 +15,69 @@ class Dimensions:
     cd: Union[int,Fraction] = field(default=0)
     mol: Union[int,Fraction] = field(default=0)
     rad: Union[int,Fraction] = field(default=0)
+    _fields: list = field(default_factory=list)
+    nodim: bool = field(default=True)
     
     def __post_init__(self):
-        for f in fields(self):
-            value = getattr(self, f.name)
+        self._fields = ['m','g','s','K','C','cd','mol','rad']
+        for name in self._fields:
+            value = getattr(self, name)
             if not isinstance(value, Fraction):
-                setattr(self, f.name, Fraction(value))
+                setattr(self, name, Fraction(value))
+            if getattr(self, name).num!=0:
+                self.nodim = False
 
     def __str__(self):
         dimensions = []
-        for f in fields(self):
-            value = getattr(self, f.name)
+        for name in self._fields:
+            value = getattr(self, name)
             if value.num not in [0, -0]:
-                dimensions.append(f"{f.name}={str(value)}")
+                dimensions.append(f"{name}={str(value)}")
         dimensions = " ".join(dimensions)
         return f"Dimensions({dimensions})"
 
     def __repr__(self):
         dimensions = []
-        for f in fields(self):
-            value = getattr(self, f.name)
+        for name in self._fields:
+            value = getattr(self, name)
             if value.num not in [0, -0]:
-                dimensions.append(f"{f.name}={str(value)}")
+                dimensions.append(f"{name}={str(value)}")
         dimensions = " ".join(dimensions)
         return f"Dimensions({dimensions})"
                             
     def __add__(self, other):
         dimensions = {}
-        for f in fields(self):
+        for name in self._fields:
             if isinstance(other, Dimensions):
-                dimensions[f.name] = getattr(self, f.name) + getattr(other, f.name)
+                dimensions[name] = getattr(self, name) + getattr(other, name)
             else:
-                dimensions[f.name] = getattr(self, f.name) + other
+                dimensions[name] = getattr(self, name) + other
         return Dimensions(**dimensions)
             
     def __sub__(self, other):
         dimensions = {}
-        for f in fields(self):
+        for name in self._fields:
             if isinstance(other, Dimensions):
-                dimensions[f.name] = getattr(self, f.name) - getattr(other, f.name)
+                dimensions[name] = getattr(self, name) - getattr(other, name)
             else:
-                dimensions[f.name] = getattr(self, f.name) - other
+                dimensions[name] = getattr(self, name) - other
         return Dimensions(**dimensions)
 
     def __mul__(self, other):
         dimensions = {}
-        for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) * other
+        for name in self._fields:
+            dimensions[name] = getattr(self, name) * other
         return Dimensions(**dimensions)
 
     def __truediv__(self, other):
         dimensions = {}
-        for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) / other
+        for name in self._fields:
+            dimensions[name] = getattr(self, name) / other
         return Dimensions(**dimensions)
     
     def __eq__(self, other):
-        for f in fields(self):
-            if not getattr(self, f.name) == getattr(other, f.name):
+        for name in self._fields:
+            if not getattr(self, name) == getattr(other, name):
                 return False
         return True
 
@@ -80,26 +85,27 @@ class Dimensions:
         """ Inverse dimensions
         """
         dimensions = {}
-        for f in fields(self):
-            dimensions[f.name] = getattr(self, f.name) * -1
+        for name in self._fields:
+            dimensions[name] = getattr(self, name) * -1
         return Dimensions(**dimensions)
 
     def value(self, dtype=list):
         if dtype==list:
             dimensions = []
-            for f in fields(self):
-                dimensions.append( getattr(self, f.name).value() )
+            for name in self._fields:
+                dimensions.append( getattr(self, name).value() )
         elif dtype==dict:
             dimensions = {}
-            for f in fields(self):
-                fraction = getattr(self, f.name)
+            for name in self._fields:
+                fraction = getattr(self, name)
                 if fraction.num not in [0, -0]:
-                    dimensions[f.name] = fraction.value()
+                    dimensions[name] = fraction.value()
         elif dtype==tuple:
             dimensions = []
-            for f in fields(self):
-                fraction = getattr(self, f.name)
+            for name in self._fields:
+                fraction = getattr(self, name)
                 if fraction.num not in [0, -0]:
-                    dimensions.append(f.name)
+                    dimensions.append(name)
             dimensions = tuple(dimensions)
         return dimensions
+        

@@ -36,8 +36,10 @@ class BaseUnits:
     baseunits: dict
     magnitude: float
     dimensions: Dimensions
-    units: Union[str,list]
+    units: list
     expression: Union[str,list]
+    nodim: bool
+    nobase: bool
 
     def __init__(self, baseunits: Union[str,list,dict,Dimensions]=None):
         if baseunits is None:
@@ -59,18 +61,21 @@ class BaseUnits:
         self.dimensions = Dimensions()
         self.units = []
         self.expression = []
+        self.nobase = True
         for unitid in list(self.baseunits.keys()):
             if not isinstance(self.baseunits[unitid], Fraction):
                 self.baseunits[unitid] = Fraction(self.baseunits[unitid])
             if self.baseunits[unitid].num==0:
                 del self.baseunits[unitid]
                 continue
+            self.nobase = False
             ubase = get_unit_base(unitid, self.baseunits[unitid])
             self.magnitude *= ubase.magnitude
             self.dimensions += ubase.dimensions
             self.units.append(ubase.units)
             self.expression.append(ubase.expression)
         self.expression = SYMBOL_MULTIPLY.join(self.expression) if self.expression else None
+        self.nodim = self.dimensions.nodim
 
     def __str__(self):
         baseunits = []
