@@ -6,7 +6,7 @@ Python package `scinumtools` contains essential tools for scientific and numeric
 
 ## Quick start
 
-Newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
+The newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
 
 ``` python
 pip3 install scinumtools
@@ -16,7 +16,7 @@ Besides several useful tools, package `scinumtools` consist of three main submod
 
 ### Expression Solver
 
-Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. 
+Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of both, physical units and DIP modules.
 
 ``` python
 >>> from scinumtools.solver import *
@@ -29,19 +29,19 @@ Using `expression solver` one can quickly build a custom parser that can process
 >>>     def __gt__(self, other):
 >>>         return AtomCustom(len(self.value) > len(other.value))
 >>> operators = {'add':OperatorAdd,'gt':OperatorGt,'par':OperatorPar}
->>> with ExpressionSolver(AtomCustom, operators) as es:
->>>     osteps = [
->>>         dict(operators=['par'],  otype=Otype.ARGS),
->>>         dict(operators=['add'],  otype=Otype.BINARY),
->>>         dict(operators=['gt'],   otype=Otype.BINARY),
->>>     ]
->>>     es.solve("(limit + 100 km/s) > (limit + 50000000000 km/s)", osteps)
+>>> steps = [
+>>>     dict(operators=['par'],  otype=Otype.ARGS),
+>>>     dict(operators=['add'],  otype=Otype.BINARY),
+>>>     dict(operators=['gt'],   otype=Otype.BINARY),
+>>> ]
+>>> with ExpressionSolver(AtomCustom, operators, steps) as es:
+>>>     es.solve("(limit + 100 km/s) > (limit + 50000000000 km/s)")
 'False'
 ```
 
 ### Physical Units
 
-This submodule has an aim to make calculations with physical units quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainities and can be used in combination with third party libraries like NumPy, or Decimal.
+This submodule has an aim to make calculations with physical units quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
 
 ``` python
 >>> import numpy as np
@@ -61,7 +61,7 @@ Quantity([4.796 7.681 4.472 3.162] m)
 
 ### Dimensional Input Parameters
 
-DIP is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. DIP should serve as quick tool that makes user interface with the code clear and straightforward. 
+DIP is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. DIP should serve as a quick tool that makes user interface with the code clear and straightforward. 
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
@@ -82,4 +82,4 @@ DIP is a serialization language that was designed to collect, manage, convert, d
 
 ## Documentation
 
-For more information see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
+For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
