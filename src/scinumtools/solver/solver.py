@@ -17,7 +17,7 @@ class ExpressionSolver:
     def __exit__(self, type, value, tb):
         pass
     
-    def __init__(self, atom, operators:dict = None):
+    def __init__(self, atom, operators:dict = None, steps:list = None):
         self.tokens = Tokens(atom)
         self.operators = operators if operators else {
             'log':OperatorLog, 'log10':OperatorLog10, 'logb':OperatorLogb,
@@ -33,8 +33,19 @@ class ExpressionSolver:
             'lt':OperatorLt,   'gt':OperatorGt,
             'and':OperatorAnd, 'or':OperatorOr, 
         }
+        self.steps = steps if steps else [
+            dict(operators=['log', 'log10', 'logb', 'exp', 'sqrt', 'powb', 'sin', 'cos', 'tan', 'par'], otype=Otype.ARGS),
+            dict(operators=['add', 'sub'],     otype=Otype.UNARY),
+            dict(operators=['pow'],            otype=Otype.BINARY),
+            dict(operators=['mul', 'truediv'], otype=Otype.BINARY),
+            dict(operators=['add', 'sub'],     otype=Otype.BINARY),
+            dict(operators=['eq', 'ne', 'le', 'ge', 'lt', 'gt'], otype=Otype.BINARY),
+            dict(operators=['not'],            otype=Otype.UNARY),
+            dict(operators=['and'],            otype=Otype.BINARY),
+            dict(operators=['or'],             otype=Otype.BINARY),
+        ]
 
-    def solve(self, expr:Union[str,Expression], osteps:list = None):
+    def solve(self, expr:Union[str,Expression]):
         self.expr = Expression(expr) if isinstance(expr, str) else expr
         
         # Tokenize expression
@@ -47,11 +58,11 @@ class ExpressionSolver:
                     # Initialize an operator
                     op = operator(self.expr)
                     if op.args:
-                        #print(op.args, osteps)
+                        #print(op.args, steps)
                         # Solve operator arguments
-                        with ExpressionSolver(self.tokens.atom, self.operators) as es:
+                        with ExpressionSolver(self.tokens.atom, self.operators, self.steps) as es:
                             for a in range(len(op.args)):
-                                op.args[a] = es.solve(op.args[a], osteps)
+                                op.args[a] = es.solve(op.args[a])
                     # Append operator to tokens
                     self.tokens.append(op)
                     break
@@ -62,18 +73,7 @@ class ExpressionSolver:
             self.tokens.append(self.tokens.atom(left))
 
         # Perform operation steps
-        operator_steps = osteps if osteps else [
-            dict(operators=['log', 'log10', 'logb', 'exp', 'sqrt', 'powb', 'sin', 'cos', 'tan', 'par'], otype=Otype.ARGS),
-            dict(operators=['add', 'sub'],     otype=Otype.UNARY),
-            dict(operators=['pow'],            otype=Otype.BINARY),
-            dict(operators=['mul', 'truediv'], otype=Otype.BINARY),
-            dict(operators=['add', 'sub'],     otype=Otype.BINARY),
-            dict(operators=['eq', 'ne', 'le', 'ge', 'lt', 'gt'], otype=Otype.BINARY),
-            dict(operators=['not'],            otype=Otype.UNARY),
-            dict(operators=['and'],            otype=Otype.BINARY),
-            dict(operators=['or'],             otype=Otype.BINARY),
-        ]
-        for o,ostep in enumerate(operator_steps):
+        for o,ostep in enumerate(list(self.steps)):
             operators = tuple([self.operators[o] for o in ostep['operators'] if o in self.operators.keys()])
             if operators:
                 self.tokens.operate(operators, ostep['otype'])

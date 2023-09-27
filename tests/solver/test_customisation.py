@@ -44,17 +44,18 @@ def test_custom_atom2():
         def __gt__(self, other):
             return AtomCustom(len(self.value) > len(other.value))
     operators = {'add':OperatorAdd,'gt':OperatorGt}
+    # test simpple functions
     with ExpressionSolver(AtomCustom, operators) as es:
-        # test simpple functions
         result = es.solve('foo + bar')
         assert result.value == 'foobar'
         
-        # test multiple functions
-        osteps = [
-            dict(operators=['add'],  otype=Otype.BINARY),
-            dict(operators=['gt'],   otype=Otype.BINARY),
-        ]
-        result = es.solve("limit + 100 km/s > limit + 50000000000 km/s", osteps)
+    steps = [
+        dict(operators=['add'],  otype=Otype.BINARY),
+        dict(operators=['gt'],   otype=Otype.BINARY),
+    ]
+    # test multiple functions
+    with ExpressionSolver(AtomCustom, operators, steps) as es:
+        result = es.solve("limit + 100 km/s > limit + 50000000000 km/s")
         assert result.value == 'False' # AtomCustom returns strings
     
 def test_operator_selection():
@@ -103,12 +104,12 @@ def test_custom_operator():
             left = tokens.get_left()
             tokens.put_left(left*left*left)
     operators = {'square':OperatorSquare,'cube':OperatorCube,'add':OperatorAdd}
-    with ExpressionSolver(AtomBase, operators) as es:
-        osteps = [
-            dict(operators=['square','cube'], otype=Otype.UNARY),
-            dict(operators=['add'],           otype=Otype.BINARY),
-        ]
-        result = es.solve('~3 + 2^', osteps)
+    steps = [
+        dict(operators=['square','cube'], otype=Otype.UNARY),
+        dict(operators=['add'],           otype=Otype.BINARY),
+    ]
+    with ExpressionSolver(AtomBase, operators, steps) as es:
+        result = es.solve('~3 + 2^')
         assert result.value == 17
         
 def test_customisation_in_parentheses():
@@ -123,12 +124,12 @@ def test_customisation_in_parentheses():
         def __gt__(self, other):
             return AtomCustom(len(self.value) > len(other.value))
     operators = {'add':OperatorAdd,'gt':OperatorGt,'par':OperatorPar}
-    with ExpressionSolver(AtomCustom, operators) as es:
+    steps = [
+        dict(operators=['par'],  otype=Otype.ARGS),
+        dict(operators=['add'],  otype=Otype.BINARY),
+        dict(operators=['gt'],   otype=Otype.BINARY),
+    ]
+    with ExpressionSolver(AtomCustom, operators, steps) as es:
         # test multiple functions
-        osteps = [
-            dict(operators=['par'],  otype=Otype.ARGS),
-            dict(operators=['add'],  otype=Otype.BINARY),
-            dict(operators=['gt'],   otype=Otype.BINARY),
-        ]
-        result = es.solve("(limit + 100 km/s) > (limit + 50000000000 km/s)", osteps)
+        result = es.solve("(limit + 100 km/s) > (limit + 50000000000 km/s)")
         assert result.value == 'False' # AtomCustom returns strings
