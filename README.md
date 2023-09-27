@@ -41,7 +41,7 @@ Using `expression solver` one can quickly build a custom parser that can process
 
 ### Physical Units
 
-This submodule has an aim to make calculations with physical units quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
+This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
 
 ``` python
 >>> import numpy as np
@@ -61,7 +61,7 @@ Quantity([4.796 7.681 4.472 3.162] m)
 
 ### Dimensional Input Parameters
 
-DIP is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. DIP should serve as a quick tool that makes user interface with the code clear and straightforward. 
+`DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes user interface with the code clear and straightforward. 
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
