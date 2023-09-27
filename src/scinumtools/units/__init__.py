@@ -11,4 +11,4 @@ from .dimensions import Dimensions
 from .fraction import Fraction
 from .base_units import BaseUnits
 from .unit_solver import UnitSolver
-from .settings import UnitEnvironment
+from .unit_environment import UnitEnvironment

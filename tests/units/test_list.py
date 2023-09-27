@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools.units import *
-from scinumtools.units.settings import *
+from scinumtools.units.unit_environment import *
     
 def test_unit_list():
     
@@ -23,14 +23,22 @@ def test_unique_unique():
 def test_custom_units():
     
     # register custom unit
-    units = {'x': {'magnitude':3, 'dimensions':[3,2,-1,0,0,1,0,0]}}
+    units = {
+        'x': {'magnitude':3, 'dimensions':[3,2,-1,0,0,1,0,0]},   # defined as a dictionary
+        'y': Quantity(2, 'cm/g2')                                # defined as a quantity
+    }
     with UnitEnvironment(units):
     
         q = Quantity(1, 'x')
         assert str(q) == "Quantity(1.000e+00 x)"
         assert q.baseunits.magnitude          == 3.0
         assert q.baseunits.dimensions.value() == [3,2,-1,0,0,1,0,0]
-    
+        
+        q = Quantity(1, 'y')
+        assert str(q) == "Quantity(1.000e+00 y)"
+        assert q.baseunits.magnitude          == 0.02
+        assert q.baseunits.dimensions.value() == [1,-2,0,0,0,0,0,0]
+
         with pytest.raises(Exception) as excinfo:
             Quantity(1, 'kx')
         assert excinfo.value.args[0]=="Unit cannot have any prefixes:"
