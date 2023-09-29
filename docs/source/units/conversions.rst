@@ -88,8 +88,8 @@ Unit symbols have a generic format ``#<sytem><abbreviation>``, where ``<system>`
    Quantity(1.000e+00 #CENE)
    >>> Quantity(1,AU.Length).to('m')
    Quantity(5.292e-11 m)
-   >>> Quantity(23, '#ALEN/s').to('m/s')
-   Quantity(1.217e-09 m*s-1)
+   >>> Quantity(23, '#ALEN/s').to(SI.Velocity)
+   Quantity(1.217e-09 #SVEL)
 
 Custom units
 """"""""""""
