@@ -1,3 +1,7 @@
+[![PyPI](https://img.shields.io/pypi/v/scinumtools)](https://pypi.org/project/scinumtools)
+[![Supported Python Versions](https://img.shields.io/pypi/pyversions/scinumtools)](https://pypi.org/project/scinumtools/)
+[![PyTest](https://github.com/vrtulka23/scinumtools/actions/workflows/pytest.yml/badge.svg)](https://github.com/vrtulka23/scinumtools/actions/workflows/pytest.yml)
+
 # scinumtools
 
 ![scinumtools](https://raw.githubusercontent.com/vrtulka23/scinumtools/main/docs/source/_static/snt/snt_128.png)
