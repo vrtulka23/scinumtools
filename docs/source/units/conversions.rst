@@ -105,6 +105,16 @@ Custom, or temporary units can be registered into current code release using hel
    >>>    Quantity(1, 'kx')
    Quantity(1.000e+00 kx)
 
+Quantity objects can be also registered by ``UnitEnvironment`` as new units.
+However, if one wants to specify also prefixes, the format above has to be used.
+
+.. code-block::
+
+   >>> units = {'x': Quantity(2, 'cm/g2')}
+   >>> with UnitEnvironment(units):
+   >>>     Quantity(1, 'x')
+   Quantity(1.000e+00 x)
+
 It is also possible to define a custom conversion class for the new units.
 In such case the conversion class needs to be first defined and registered together with the new quantity.
 
@@ -118,3 +128,4 @@ In such case the conversion class needs to be first defined and registered toget
    >>> Quantity(1, 'x')
    Quantity(1.000e+00 x)
    >>> env.close()
+   
