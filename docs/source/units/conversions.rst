@@ -77,7 +77,7 @@ System of units
 Quantities in this module are defined in the custom unit base (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela, ``mol`` mole, ``rad`` radian) discussed earlier.
 Nevertheless, it is also possible to calculate in another standard systems of units.
 Since not all units have a dedicated name (e.g. atomic units) we cathegorize them according to their corresponding physical quantities.
-Units of three major unit systems are available in following lists: International System ``SI``, Centimeter-Gram-Second system ``CGS`` and Hartreee Atomic Units ``AU``.
+Units of three major unit systems are available in following lists: International System ``SI``, Centimeter-Gram-Second system ``CGS`` and Hartree Atomic Units ``AU``.
 Names and definitions of quantities are available in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
 Unit symbols have a generic format ``#<sytem><abbreviation>``, where ``<system>`` specifies one of the unit systems (``S``\I, ``C``\GS, ``A``\U) and ``<abbreviation>`` is formed from corresponding quantity name.
 
