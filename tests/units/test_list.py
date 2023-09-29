@@ -127,22 +127,21 @@ def test_quantities():
     ]
     symbols = []
     for q in range(len(QUANTITY_LIST)):
+        name = QUANTITY_LIST.name[q]
+        text.append(f"  # {name}")
         for system in ['SI','CGS','AU']:
             definition = getattr(QUANTITY_LIST,system)[q]
             if definition is None:
                 continue
             else:
-                name = QUANTITY_LIST.name[q]
                 symbol = QUANTITY_LIST.symbol[q]
                 unitid = f"#{system[0]}{symbol}"
                 atom = UnitSolver(definition)
                 base = BaseUnits(atom.baseunits)
                 c1 = f"{atom.magnitude*base.magnitude},"
-                c2 = f"{base.dimensions.value()},"
-                c3 = f"\"{definition}\""
-                c4 = f"\"{name}\""
+                c2 = f"{base.dimensions.value()}"
                 symbols.append(unitid)
-                text.append(f"  '{unitid}': ({c1:25s}{c2:30s}),") #{c3:30s}{c4:30s}),")
+                text.append(f"  '{unitid}': ({c1:25s}{c2:27s}), # {definition}") 
     text.append("}")
     text = "\n".join(text)
     
