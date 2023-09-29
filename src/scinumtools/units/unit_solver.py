@@ -66,6 +66,9 @@ def AtomParser(string=None):
         exp = Fraction(exp)
     else:
         exp = Fraction(1)
+    if string.startswith(f" {SYMBOL_SYSTEM_UNIT}"):
+        unitid = string[1:]
+        return Atom(1.0, {unitid: exp})
     # parse unit symbol
     bases = [u for u in UNIT_STANDARD.keys() if string.endswith(u)]
     if bases:

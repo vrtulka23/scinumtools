@@ -8,9 +8,10 @@ from .unit_list import *
 
 MAGNITUDE_PRECISION = 1e-7
 
-SYMBOL_UNITID   = ":"
-SYMBOL_FRACTION = ":"
-SYMBOL_MULTIPLY = "*"
+SYMBOL_UNITID      = ":"
+SYMBOL_FRACTION    = ":"
+SYMBOL_MULTIPLY    = "*"
+SYMBOL_SYSTEM_UNIT = "#"
 
 UNIT_TYPES = [
     TemperatureUnitType,
@@ -229,6 +230,6 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU'], [
 ('Weight',                'WEI',   'N',        None,       None),
 ('Work',                  'WOR',   'J',        None,       None),
 ])
-SI  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"#S{symbol}" for symbol in QUANTITY_LIST.symbol])))
-CGS = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"#C{symbol}" for symbol in QUANTITY_LIST.symbol])))
-AU  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"#A{symbol}" for symbol in QUANTITY_LIST.symbol])))
+SI  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}S{symbol}" for symbol in QUANTITY_LIST.symbol])))
+CGS = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}C{symbol}" for symbol in QUANTITY_LIST.symbol])))
+AU  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}A{symbol}" for symbol in QUANTITY_LIST.symbol])))

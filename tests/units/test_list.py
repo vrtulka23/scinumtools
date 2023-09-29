@@ -160,6 +160,8 @@ def test_quantities():
     assert str(Quantity(1, '[a_0]').to(AU.Length)) == 'Quantity(1.000e+00 #ALEN)'
     assert str(Unit(AU.Length))                    == "Quantity(1.000e+00 #ALEN)"
     assert str(Unit('[a_0]')/Unit(AU.Length))      == 'Quantity(1.000e+00)'
+    assert str(Unit(AU.Length)*Unit('s'))          == 'Quantity(1.000e+00 #ALEN*s)'
+    assert str(Quantity(1, '#ALEN/s').to('m/s'))   == 'Quantity(5.292e-11 m*s-1)'
     
     # save the new version of the code
     path_units = "src/scinumtools/units"

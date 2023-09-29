@@ -18,7 +18,7 @@ class Base:
 def get_unit_base(unitid: str, exp: Fraction = None):
     if exp is None:
         exp = Fraction(1)
-    if unitid.startswith('#'):
+    if unitid.startswith(SYMBOL_SYSTEM_UNIT):
         prefix, base = '', unitid
         qu = QUANTITY_UNITS[unitid]
         magnitude  = qu[0] ** exp.value(dtype=float)
