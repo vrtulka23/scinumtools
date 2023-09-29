@@ -13,7 +13,7 @@ class Unit:
         
     def __new__(cls, unit=None):
         if unit:
-            return Quantity(1,str(unit))
+            return Quantity(1, unit)
         else:
             return object.__new__(cls)
     

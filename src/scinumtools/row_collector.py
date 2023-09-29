@@ -54,6 +54,9 @@ class RowCollector:
     def __str__(self):
         return self.to_text()
     
+    def __len__(self):
+        return self.size()
+    
     def append(self, values: list):
         """ Append a single row
 

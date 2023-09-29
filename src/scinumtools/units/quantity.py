@@ -42,6 +42,8 @@ class Quantity:
             self.baseunits = BaseUnits(baseunits)
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits
+        elif isinstance(baseunits, (SI,CGS,AU)):
+            self.baseunits = BaseUnits(baseunits)
         elif isinstance(baseunits, str):
             atom = UnitSolver(baseunits)
             self.magnitude *= atom.magnitude
@@ -219,7 +221,7 @@ class Quantity:
             self.magnitude = self._convert(self.magnitude, self.baseunits, baseunits)
         self.baseunits = baseunits
         return self
-
+        
     def abse(self, error: Union[int,float] = None):
         if error is None:
             return self.magnitude.abse()

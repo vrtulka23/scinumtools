@@ -18,13 +18,19 @@ class Base:
 def get_unit_base(unitid: str, exp: Fraction = None):
     if exp is None:
         exp = Fraction(1)
-    if SYMBOL_UNITID in unitid:
+    if unitid.startswith('#'):
+        prefix, base = '', unitid
+        qu = QUANTITY_UNITS[unitid]
+        magnitude  = qu[0] ** exp.value(dtype=float)
+        dimensions = Dimensions(*qu[1])*exp
+    elif SYMBOL_UNITID in unitid:
         prefix, base = unitid.split(SYMBOL_UNITID)
         magnitude  = (UNIT_PREFIXES[prefix].magnitude*UNIT_STANDARD[base].magnitude) ** exp.value(dtype=float)
+        dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
     else:
         prefix, base = '', unitid
         magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
-    dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
+        dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
     if exp.num==1 and exp.den==1:
         expression = f"{prefix}{base}"
     else:
@@ -52,6 +58,8 @@ class BaseUnits:
             self.baseunits = Dimensions(*baseunits).value(dtype=dict)
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits.baseunits
+        elif isinstance(baseunits, (SI, CGS, AU)):
+            self.baseunits = {baseunits.value: 1}
         elif isinstance(baseunits, str):
             self.baseunits = UnitSolver(baseunits).baseunits
         else:

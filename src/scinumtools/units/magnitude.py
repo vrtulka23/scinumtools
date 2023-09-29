@@ -203,3 +203,4 @@ class Magnitude:
         else:
             self.error = self._rel_to_abs(rele)
             return self
+            

@@ -50,6 +50,18 @@ List of available conversions is given in the table below.
 Temperature units
 """""""""""""""""
 
+Currently, one can convert between following temperature units: Kelvin ``K``, Rankine ``degR``, Celsius ``Cel`` and Farenheit ``degF``.
+These units can be used in complex unit expressions (e.g. ``erg/K``), however, units of temperature can be converted only between each other.
+
+System of units
+"""""""""""""""
+
+Quantities in this module are defined in the custom unit base (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela, ``mol`` mole, ``rad`` radian) discussed earlier.
+Nevertheless, it is straightforward to use another standard unit systems.
+Since not all units have a dedicated name (e.g. atomic units) we cathegorize them according to their corresponding quantities.
+Units of three major unit systems are available in following lists: International System ``SI``, Centimeter-Gram-Second system ``CGS`` and atomic units ``AU``.
+Names and definitions of quantities are available in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
+
 Custom units
 """"""""""""
 
