@@ -190,8 +190,8 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU'], [
 ('ElectricPotential',     'EPO',   'V',        None,       '27.211386245988*V'),
 ('ElectricDipoleMoment',  'EDM',   'C*m',      'D',        '8.4783536255e-30*C*m'),
 ('ElectricField',         'EFI',   'V/m',      None,       '5.14220674763e11*V/m'),
-('ElectricFieldGradient', 'EFG',   None,       None,       '9.7173624292e21*V/m2'),
-('ElectricPolarizability','EPL',   None,       None,       '1.64877727436e-41*C2*m2/J'),
+('ElectricFieldGradient', 'EFG',   'V/m2',     None,       '9.7173624292e21*V/m2'),
+('ElectricPolarizability','EPL',   'm2/J',     None,       '1.64877727436e-41*C2*m2/J'),
 ('ElectromotiveForce',    'EFO',   'V',        None,       None),
 ('Energy',                'ENE',   'J',        'erg',      '4.3597447222071e-18*J'),
 ('EquivalentDose',        'EDO',   'Sv',       None,       None),
@@ -208,11 +208,11 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU'], [
 ('LuminousFlux',          'LFL',   'lm',       None,       None),
 ('MagneticFlux',          'MFL',   'Wb',       None,       None),
 ('MagneticFluxDensity',   'MFD',   'T',        'G',        '2.35051756758e5*T'),
-('MagneticDipoleMoment',  'MDM',   None,       None,       '1.85480201566e-23*J/T'),
-('Magnetizability',       'MAG',   None,       None,       '7.8910366008e-29*J/T2'),
+('MagneticDipoleMoment',  'MDM',   'J/T',      None,       '1.85480201566e-23*J/T'),
+('Magnetizability',       'MAG',   'J/T2',     None,       '7.8910366008e-29*J/T2'),
 ('Mass',                  'MAS',   'kg',       'g',        '9.1093837015e-31*kg'),
-('Momentum',              'MOM',   None,       None,       '1.99285191410e-24*kg*m/s'),
-('Permittivity',          'PER',   None,       None,       '1.11265005545e-10*F/m'),
+('Momentum',              'MOM',   'kg*m/s',   None,       '1.99285191410e-24*kg*m/s'),
+('Permittivity',          'PER',   'F/m',      None,       '1.11265005545e-10*F/m'),
 ('PlaneAngle',            'PAN',   'rad',      None,       None),
 ('Power',                 'POW',   'W',        'erg/s',    None),
 ('Pressure',              'PRE',   'Pa',       'Ba',       '2.9421015697e13*Pa'),
@@ -231,5 +231,5 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU'], [
 ('Work',                  'WOR',   'J',        None,       None),
 ])
 SI  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}S{symbol}" for symbol in QUANTITY_LIST.symbol])))
-CGS = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}C{symbol}" for symbol in QUANTITY_LIST.symbol])))
-AU  = Enum('SI', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}A{symbol}" for symbol in QUANTITY_LIST.symbol])))
+CGS = Enum('CGS', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}C{symbol}" for symbol in QUANTITY_LIST.symbol])))
+AU  = Enum('AU', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}A{symbol}" for symbol in QUANTITY_LIST.symbol])))
