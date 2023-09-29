@@ -66,8 +66,6 @@ def AtomParser(string=None):
         exp = Fraction(exp)
     else:
         exp = Fraction(1)
-    if m := re.match(r'^#(SI|CGS|AU)[A-Z]{3}$', str(string[1:])):
-        return Atom(1.0, {m.group(0): exp})
     # parse unit symbol
     bases = [u for u in UNIT_STANDARD.keys() if string.endswith(u)]
     if bases:

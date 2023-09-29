@@ -57,10 +57,19 @@ System of units
 """""""""""""""
 
 Quantities in this module are defined in the custom unit base (``m`` meter, ``g`` gramm, ``s`` second, ``K`` Kelvin, ``C`` Coulomb, ``cd`` candela, ``mol`` mole, ``rad`` radian) discussed earlier.
-Nevertheless, it is straightforward to use another standard unit systems.
-Since not all units have a dedicated name (e.g. atomic units) we cathegorize them according to their corresponding quantities.
+Nevertheless, it is also possible to calculate in another standard systems of units.
+Since not all units have a dedicated name (e.g. atomic units) we cathegorize them according to their corresponding physical quantities.
 Units of three major unit systems are available in following lists: International System ``SI``, Centimeter-Gram-Second system ``CGS`` and atomic units ``AU``.
 Names and definitions of quantities are available in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
+Unit names of quantities have a generic format ``#<sytem><abbreviation>``, where ``<system>`` specifies one of the unit systems (``S``\I, ``C``\GS, ``A``\U) and ``<abbreviation>`` is formed from corresponding quantity name.
+
+.. code-block::
+
+   >>> from scinumtools.units import *
+   >>> Unit(CGS.Energy)
+   Quantity(1.000e+00 #CENE)
+   >>> Quantity(1,AU.Length).to('m')
+   Quantity(5.292e-11 m)
 
 Custom units
 """"""""""""

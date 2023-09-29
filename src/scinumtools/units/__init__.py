@@ -12,3 +12,4 @@ from .fraction import Fraction
 from .base_units import BaseUnits
 from .unit_solver import UnitSolver
 from .unit_environment import UnitEnvironment
+from .settings import SI, CGS, AU
