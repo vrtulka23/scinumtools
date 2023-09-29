@@ -178,7 +178,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU'], [
 ('AbsorbedDose',          'ADO',   'Gy',       None,       None),
 ('Acceleration',          'ACC',   'm/s2',     'cm/s2',    None),
-('Action',                'ACT',   'J*s',      None,       '1.054571817e-34*J*s'),
+('Action',                'ACT',   'J*s',      None,       '[hbar]'),
 ('AmountOfSubstance',     'AOS',   'mol',      None,       None),
 ('AngularFrequency',      'AFR',   'rad/s',    None,       None),
 ('Capacitance',           'CAP',   'F',        None,       None),
