@@ -1,0 +1,16 @@
+Symbol,Name,Prefixes
+PR,Power ratio,
+AR,Amplitude ratio,
+Np,Nepers,"cNp, dNp"
+B,Bel,dB
+Bm,bel-milliwatt,dBm
+BmW,bel-milliwatt,dBmW
+BW,bel-watt,dBW
+BV,bel-volt,dBV
+BuV,bel-microvolt,dBuV
+BA,bel-amps,dBA
+BuA,bel-microamps,dBuA
+BOhm,bel-ohms,dBOhm
+BSPL,bel-SPL (Pa),dBSPL
+BSIL,bel-SIL (W/m2),dBSIL
+BSWL,bel-SWL (W),dBSWL

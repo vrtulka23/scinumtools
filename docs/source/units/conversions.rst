@@ -20,6 +20,13 @@ Values of quantities can be casted in different units as well, by specifying new
    >>> distance.value('cm')
    200000.0
 
+Prefixes
+""""""""
+
+Many of the units listed below that can be used in combination with unit prefixes.
+Information about allowed prefixes can be found in `settings <https://github.com/vrtulka23/scinumtools/blob/main/src/scinumtools/units/settings.py>`_.
+A general list of available prefixes is given in the following table:
+
 Standard units
 """"""""""""""
 
@@ -59,12 +66,25 @@ List of available conversions is given in the table below.
 Temperature units
 """""""""""""""""
 
-Currently, one can convert between following temperature units: Kelvin ``K``, Rankine ``degR``, Celsius ``Cel`` and Farenheit ``degF``.
-These units can be used in complex unit expressions (e.g. ``erg/K``), however, units of temperature can be converted only between each other.
+Currently, one can convert between following temperature units:
+
+.. csv-table:: Units of temperature
+  :widths: 40 40
+  :header-rows: 1
+
+  Unit,      Symbol
+  Kelvin,    ``K``
+  Celsius,   ``Cel``
+  Rankine,   ``degR`` 
+  Farenheit, ``degF``
+  
+These units can be used in combination with other units (e.g. ``erg/K``). However, temperatures can be converted only if there are no other units in an expression.
 
 .. code-block::
 
-   >>> from scinumtools.units import * 
+   >>> from scinumtools.units import *
+   >>> Quantity(5, 'erg/K/s')*Quantity(10, 's')
+   Quantity(5.000e+01 erg*K-1)
    >>> T = Quantity(1, 'eV')/Unit('[k_B]')
    >>> T.to('K')
    Quantity(1.160e+04 K)

@@ -1,0 +1,27 @@
+Symbol,Name,Definition
+[a_0],Bohr radius,5.29177210903e-11*m
+[c],speed of light,299792458*m/s
+[e],elem. charge,1.602176634e-19*C
+[eps_0],permit. of vac.,8.854187817e-12*F/m
+[G],grav. const.,6.67259e-11*m3/(kg*s2)
+[g],grav. accel.,9.80665*m/s2
+[h],Planck const.,6.6260755e-34*J*s
+[hbar],Reduced Pl. con.,[h]/(2*[pi])
+[H_0],Hubble const.,67.8*km/(s*Mpc)
+[k],Boltzmann const.,1.380658e-23*J/K
+[k_B],Boltzmann const.,[k]
+[k_e],Coulomb const.,8.9875517923e9*kg*m3/(s4*A2)
+[L_sol],Solar luminosity,3.826e33*erg/s
+[M_sol],Solar mass,1.98847e30*kg
+[mu_0],permeab. of vac.,4*[pi]*1e-7*N/A2
+[mu_B],Bohr magneton,1.67262e-24*g
+[m_e],electron mass,9.1093837015e-31*kg
+[m_p],proton mass,1.6726231e-24*g
+[m_n],neutron mass,1.6749286e-24*g
+[R_inf],Rydberg constant,1.09737e5/cm
+[R_sol],Solar radius,6.9558e10*cm
+[sigma],Stef.-Boltz. const.,5.67037e-8*W/(m2*K4)
+[alpha],fine str. const.,7.29735256e-3
+[euler],Euler's num.,2.718282
+[N_A],Avogadro's num.,6.022137e23
+[pi],pi,3.1415926

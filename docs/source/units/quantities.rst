@@ -24,8 +24,8 @@ Units and constants can be used directly in operations with scalar values or ``n
 
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
    
-In the above example classes ``Unit`` and ``Constant`` are called as functions that return correspondent quantities. 
-They can be also initialized as objects, and one can access individual qantities via its parameters.
+In the above example, classes ``Unit`` and ``Constant`` are called as functions that return correspondent quantities. 
+They can also be initialized as objects, and one can access individual quantities via its parameters.
 
 .. code-block::
 
@@ -36,7 +36,7 @@ They can be also initialized as objects, and one can access individual qantities
 
    (Quantity(1.200e+00 au), Quantity([1. 2. 3.] [c]))
 
-In the rest of this documentation we will give only examples that use the direct quantity initialization using ``Quantity`` class.
+In the rest of this documentation, we will give only examples that use the direct quantity initialization using ``Quantity`` class.
 Every quantity contains ``magnitude`` and ``baseunits`` part, that can be accessed in a following way:
 
 .. code-block::
@@ -59,7 +59,7 @@ Further on, numerical value of quantity in any base units can be accessed using 
 Magnitude
 """""""""
 
-Numerical value of ``Quantity`` is managed by class ``Magnitude`` that can be initialized with a numerical value and optionally a measurement error.
+Numerical value of ``Quantity`` is managed by a class ``Magnitude`` that can be initialized with a numerical value and optionally a measurement error.
 
 Values
 ------
@@ -96,7 +96,7 @@ Magnitude values can be initialized from the following three inputs:
      >>> Magnitude(np.array([1.3, 4.53455, 23.3]))     
      [ [ [ 1.3    4.535 23.3  ]
 
-Corresponding quantities can be initiallized in the following way:
+Corresponding quantities can be initialized in the following way:
 
 .. code-block::
 
@@ -117,9 +117,9 @@ Numerical values of quantities are retrieved as:
 Errors
 ------
 
-``Magnitude`` class can be initialized with both absolute and relative uncertainities.
-Relative uncertainities are converted into their absolute equivalents and errors are propagated in this form in all subsequent calculations.
-Currently, errors are propagated only during addition, substraction, multiplication, division and power operations.
+``Magnitude`` class can be initialized with both absolute and relative uncertainties.
+Relative uncertainties are converted into their absolute equivalents, and errors are propagated in this form in all subsequent calculations.
+Currently, errors are propagated only during addition, subtraction, multiplication, division and power operations.
 Propagation of errors in other mathematical functions may be implemented in the future versions of ``scinumtools``.
 
 * Absolute errors are given as numerical values
@@ -147,7 +147,7 @@ Corresponding quantities can be initialized in the following way:
    >>> Quantity(23, 'cm', rele=10)        
    Quantity(2.30(23)e+01 cm)
    
-Errors can be additionally get from and set to ``Magnitude`` and ``Quantity`` objects using ``rele()`` and ``abse()`` methods:
+Errors can be additionally obtained from and set to ``Magnitude`` and ``Quantity`` objects using ``rele()`` and ``abse()`` methods:
 
 .. code-block::
 
@@ -183,7 +183,7 @@ This can be initialized using:
      BaseUnits(kg=1 m=2 s=-2)
      
 * List/array of dimension exponents.
-  Note that this type of initialization can be used only on units that consist of basic dimenssions.
+  Note that this type of initialization can be used only on units that consist of basic dimensions.
   More complex units and their derivates need to be initialized by the other two methods.
 
   .. code-block::
@@ -248,7 +248,7 @@ Dimensions
 ----------
 
 Class ``Dimensions`` used above stores exponents of the unit dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``).
-Manimpulation with this class is straightforward:
+Manipulation with this class is straightforward:
 
 .. code-block::
 
@@ -272,9 +272,9 @@ Fraction objects store nominator and denominator and are automatically reduced t
    >>> Fraction((0,3))  # setting as a tuple
    0
 
-As seen above, values of fractions are printed in a textual form, where colon sign divides nominator and denominator part of the fraction value.
+As seen above, values of fractions are printed in a textual form, where the colon sign divides nominator and denominator part of the fraction value.
 Fractions with a unit denominator display only their nominator.
-Fractions with a zero nominator are displayied as zero and their denominator is set automatically to unity.
+Fractions with a zero nominator are displayed as zero and their denominator is set automatically to unity.
 
 Tuple notation of fractions is used as a shorthand during ``Quantity``, ``BaseUnits``, or ``Dimensions`` initialization.
 
