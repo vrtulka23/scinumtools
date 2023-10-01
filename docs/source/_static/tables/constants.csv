@@ -8,8 +8,7 @@ Symbol,Name,Definition
 [h],Planck const.,6.6260755e-34*J*s
 [hbar],Reduced Pl. con.,[h]/(2*[pi])
 [H_0],Hubble const.,67.8*km/(s*Mpc)
-[k],Boltzmann const.,1.380658e-23*J/K
-[k_B],Boltzmann const.,[k]
+"[k], [k_B]",Boltzmann const.,1.380658e-23*J/K
 [k_e],Coulomb const.,8.9875517923e9*kg*m3/(s4*A2)
 [L_sol],Solar luminosity,3.826e33*erg/s
 [M_sol],Solar mass,1.98847e30*kg

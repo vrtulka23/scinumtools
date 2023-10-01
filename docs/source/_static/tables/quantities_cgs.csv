@@ -1,0 +1,15 @@
+Symbol,Name,Definition
+#CACC,CGS.Acceleration,cm/s2
+#CDVI,CGS.DynamicViscosity,P
+#CEDM,CGS.ElectricDipoleMoment,D
+#CENE,CGS.Energy,erg
+#CFOR,CGS.Force,dyn
+#CKVI,CGS.KinematicViscosity,St
+#CLEN,CGS.Length,cm
+#CMFD,CGS.MagneticFluxDensity,G
+#CMAS,CGS.Mass,g
+#CPOW,CGS.Power,erg/s
+#CPRE,CGS.Pressure,Ba
+#CTIM,CGS.Time,s
+#CVEL,CGS.Velocity,cm/s
+#CWAV,CGS.Wavenumber,Ka

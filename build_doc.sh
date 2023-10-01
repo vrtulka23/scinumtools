@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 python3 build_tables.py
 cd docs
 if [[ "$1" != "-u" ]]; then

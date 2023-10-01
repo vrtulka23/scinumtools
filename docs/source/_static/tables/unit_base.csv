@@ -1,9 +1,9 @@
-Symbol,Name,Dimensions,Prefixes
-m,meter,"[1, 0, 0, 0, 0, 0, 0, 0]",all
-g,gram,"[0, 1, 0, 0, 0, 0, 0, 0]",all
-s,second,"[0, 0, 1, 0, 0, 0, 0, 0]",all
-K,kelvin,"[0, 0, 0, 1, 0, 0, 0, 0]",all
-C,coulomb,"[0, 0, 0, 0, 1, 0, 0, 0]",all
-cd,candela,"[0, 0, 0, 0, 0, 1, 0, 0]",all
-mol,mole,"[0, 0, 0, 0, 0, 0, 1, 0]",all
-rad,radian,"[0, 0, 0, 0, 0, 0, 0, 1]",mrad
+Symbol,Name,Prefixes
+m,meter,all
+g,gram,all
+s,second,all
+K,Kelvin,all
+C,Coulomb,all
+cd,candela,all
+mol,mole,all
+rad,radian,mrad
