@@ -57,6 +57,7 @@ mph,US miles per hour,0.44704*m/s,
 kn,knot,0.514444*m/s,
 St,Stokes,cm2/s,cSt
 Ka,Kayser,cm-1,
+D,Debye,3.33564e-30*C*m,all
 sr,steradian,rad2,
 lm,lumen,cd*sr,
 A,Ampere,C/s,all
@@ -68,6 +69,5 @@ lx,lux,lm/m2,
 F,Farad,C/V,all
 S,Siemens,Ohm-1,all
 kat,katal,mol/s,all
-D,Debye,3.33564e-30*C*m,all
 %,percent,1e-2,
 ppth,promile,1e-3,
