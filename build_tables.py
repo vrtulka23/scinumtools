@@ -81,7 +81,12 @@ for symbol, unit in UNIT_STANDARD.items():
         prefixes = ", ".join([f"{p}{symbol}" for p in unit.prefixes])
     else:
         prefixes = ''
-    rc.append([symbol, unit.name, prefixes])
+    if len(rc) and unit.name in rc.Name:
+        idx = rc.Name.index(unit.name)
+        rc.Symbol[idx] += ", "+symbol
+        rc.Prefixes[idx] += ", "+prefixes if rc.Prefixes[idx] else ""
+    else:
+        rc.append([symbol, unit.name, prefixes])
 df = rc.to_dataframe()
 df.to_csv(f"{path_docs_static}/unit_logarithmic.csv", index=False)
 

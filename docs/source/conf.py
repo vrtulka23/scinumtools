@@ -23,11 +23,13 @@ version = data['project']['version']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    "sphinx.ext.autosectionlabel",
     'scinumtools.dip.docs.sphinx_docs',
     "sphinx.ext.autodoc", 
     'sphinx_rtd_theme'
 ]
 
+autosectionlabel_prefix_document = True  # Make sure the target is unique
 templates_path = ['_templates']
 exclude_patterns = []
 
