@@ -42,7 +42,7 @@ Standard units
 Standard units can be defined using multiplication, division and powers of :ref:`units/tables:base units` (``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``) and some numerical value.
 Most of the units fall into this cathegory and implement all default operations (``+``, ``-``, ``*``, ``/`` and ``**``).
 Only quantities with same dimensionality can be added to, or subtracted from each other.
-Power of an exponent is should be dimensionless.
+Power of an exponent should be always dimensionless. More numerical functions are implemented via :ref:`units/other:numpy arrays`.
 A comprihensive list of all available named units and constants is in section :ref:`units/tables:tables and lists`.
 
 .. code-block::
