@@ -8,6 +8,11 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
+## Documentation
+
+For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
+The documentation is currently in a process of writing, so any comments and suggestions for improvement are heartily welcomed.
+
 ## Quick start
 
 The newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
@@ -21,6 +26,7 @@ Besides several useful tools, package `scinumtools` consist of three main submod
 ### Expression Solver
 
 Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of both, physical units and DIP modules.
+For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html) please refer to the documentation.
 
 ``` python
 >>> from scinumtools.solver import *
@@ -46,6 +52,7 @@ Using `expression solver` one can quickly build a custom parser that can process
 ### Physical Units
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
+For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html) please refer to the documentation.
 
 ``` python
 >>> import numpy as np
@@ -66,6 +73,7 @@ Quantity([4.796 7.681 4.472 3.162] m)
 ### Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes user interface with the code clear and straightforward. 
+For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html) please refer to the documentation.
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
@@ -83,7 +91,3 @@ Quantity([4.796 7.681 4.472 3.162] m)
 >>>     env.data(Format.TUPLE)
 {'box.width': (23.0, '[length]'), 'box.height': (11.5, 'cm'), 'sphere.radius': (34.2, 'mm')}
 ```
-
-## Documentation
-
-For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).

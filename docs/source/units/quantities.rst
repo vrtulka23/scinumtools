@@ -42,8 +42,8 @@ Every quantity contains ``magnitude`` and ``baseunits`` part, that can be access
 .. code-block::
 
    >>> distance = Quantity(2, 'km')
-   >>> distance.magnitude             # numerical value in base dimensions (meters)
-   2000.0 
+   >>> distance.magnitude             # magnitude in base dimensions (kilometers)
+   2.0 
    >>> distance.baseunits             # exponents of base units
    BaseUnits(km=1)
 
@@ -117,7 +117,7 @@ Numerical values of quantities are retrieved as:
 Errors
 ------
 
-``Magnitude`` class can be initialized with both absolute and relative uncertainties.
+``Magnitude`` class can be initialized with either absolute, or relative uncertainties.
 Relative uncertainties are converted into their absolute equivalents, and errors are propagated in this form in all subsequent calculations.
 Currently, errors are propagated only during addition, subtraction, multiplication, division and power operations.
 Propagation of errors in other mathematical functions may be implemented in the future versions of ``scinumtools``.
@@ -147,7 +147,7 @@ Corresponding quantities can be initialized in the following way:
    >>> Quantity(23, 'cm', rele=10)        
    Quantity(2.30(23)e+01 cm)
    
-Errors can be additionally obtained from and set to ``Magnitude`` and ``Quantity`` objects using ``rele()`` and ``abse()`` methods:
+Errors can be additionally obtained from, and set to ``Magnitude`` and ``Quantity`` objects using ``rele()`` and ``abse()`` methods:
 
 .. code-block::
 

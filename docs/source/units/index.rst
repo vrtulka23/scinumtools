@@ -1,5 +1,5 @@
-Physical quantities
-===================
+Physical Units
+==============
 
 Class ``Quantity`` and its derivates, ``Unit`` and ``Constant``, can be used in many scientific applications, because they enable easy manipulation and calculations with physical quantities. Among the most interesting features are:
 
