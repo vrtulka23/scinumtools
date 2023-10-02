@@ -291,9 +291,9 @@ def round(a, **kwargs):
     return Quantity(np.round(a.magnitude.value), a.baseunits)
 
 @implements(np.floor)
-def round(a, **kwargs):
+def floor(a, **kwargs):
     return Quantity(np.floor(a.magnitude.value), a.baseunits)
 
 @implements(np.ceil)
-def round(a, **kwargs):
+def ceil(a, **kwargs):
     return Quantity(np.ceil(a.magnitude.value), a.baseunits)

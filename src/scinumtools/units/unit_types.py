@@ -1,4 +1,5 @@
 import numpy as np
+from decimal import Decimal
 
 from .magnitude import Magnitude
 
@@ -16,6 +17,12 @@ class UnitType:
     def convert(self, magnitude1):
         if not hasattr(self, self.conversion[0]):
                 raise Exception('Conversion method is not implemented:', self.conversion[0])
+        if isinstance(magnitude1.value, Decimal) or \
+           isinstance(self.baseunits1.magnitude, Decimal) or \
+           isinstance(self.baseunits2.magnitude, Decimal):
+            magnitude1.value = Decimal(magnitude1.value)
+            self.baseunits1.magnitude = Decimal(self.baseunits1.magnitude)
+            self.baseunits2.magnitude = Decimal(self.baseunits2.magnitude)
         return Magnitude(
             getattr(self, self.conversion[0])(magnitude1.value * self.baseunits1.magnitude, *self.conversion[1:]) / self.baseunits2.magnitude,
             magnitude1.error

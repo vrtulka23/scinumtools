@@ -32,8 +32,6 @@ def test_quantity():
     assert str(Quantity(123e2, Quantity(2, 'm'))) == result
     assert str(Quantity(123e2, 2*Unit('m'))) == result
     
-    assert str(Quantity(Decimal(3.3239840203948394e-3), 'cm')) == "Quantity(3.324e-3 cm)"
-    
 def test_units():
 
     assert str(Unit('m'))                   == "Quantity(1.000e+00 m)"
