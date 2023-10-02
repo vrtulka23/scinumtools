@@ -8,6 +8,10 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
+## Documentation
+
+For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
+
 ## Quick start
 
 The newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
@@ -83,7 +87,3 @@ Quantity([4.796 7.681 4.472 3.162] m)
 >>>     env.data(Format.TUPLE)
 {'box.width': (23.0, '[length]'), 'box.height': (11.5, 'cm'), 'sphere.radius': (34.2, 'mm')}
 ```
-
-## Documentation
-
-For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
