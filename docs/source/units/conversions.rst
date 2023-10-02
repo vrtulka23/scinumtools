@@ -40,8 +40,10 @@ Standard units
 """"""""""""""
 
 Standard units can be defined using multiplication, division and powers of :ref:`units/tables:base units` (``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``) and some numerical value.
-Most of the units fall into this cathegory and implement all default operations.
-A comprihensive list of all available named units is in section :ref:`units/tables:standard units`.
+Most of the units fall into this cathegory and implement all default operations (``+``, ``-``, ``*``, ``/`` and ``**``).
+Only quantities with same dimensionality can be added to, or subtracted from each other.
+Power of an exponent is should be dimensionless.
+A comprihensive list of all available named units and constants is in section :ref:`units/tables:tables and lists`.
 
 .. code-block::
 
@@ -50,13 +52,18 @@ A comprihensive list of all available named units is in section :ref:`units/tabl
    >>> c = Quantity(29.2, 'J')
    >>> (a+b+c).to('erg')
    Quantity(3.354e+08 erg)
+   >>> (a*b).to('nJ2')
+   Quantity(2.385e+01 nJ2)
+   >>> c**3
+   Quantity(2.490e+04 J3)
 
+
+   
 Logarithmic units
 """""""""""""""""
 
-Logarithmic units make an independent cathegory of units, because their logarithmic nature require special conversion functions and modification of basic operators (addition, substraction, ...).
+:ref:`units/tables:logarithmic units` make an independent cathegory of units, because their logarithmic nature require special conversion functions and modification of basic operators (addition, substraction, ...).
 Into this cathegory belong formost Bel (B, dB) and Nepers (Np) units, together with all their derived units and conversions to corresponding amplitude (AR), or power (PR) ratios and standard units (A, W, Ohm, V...).
-List of available conversions is given in section :ref:`units/tables:logarithmic units`.
 Bel and Nepers units can be converted between each other and between power/amplitude ratios.
 Other logarithmic units support conversions between their corresponding standard units.
 

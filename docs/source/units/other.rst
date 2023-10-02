@@ -34,8 +34,8 @@ Basic arithmetic operations of array quantities with their modifications are sum
    
    Operation,   Notes
    "+, -",      "Only quantities with the same units can be added/subtracted. Units of the first quantity is preserved."
-   "*, /",      "Quantity units are multiplied/divided and form new units."
-   "**",        "Both magnitude and units are raised on the dimensionless power."   
+   "\*, /",     "Quantity units are multiplied/divided and form new units."
+   "\*\*",      "Both magnitude and units are raised on the dimensionless power."   
 
 .. code-block::
 
