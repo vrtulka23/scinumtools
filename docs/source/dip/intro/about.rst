@@ -32,7 +32,7 @@ The following features of DIP are already implemented in the current code versio
 * syntax highlighter using "Pygments" in Sphinx
 * parameter documentation extension for Sphinx
 
-The current version of DIP is still in a beta stage.
+The current version of DIP is continously developing.
 Goals listed below are not implemented yet and need help from potential codevelopers:
 
 * native implementation of DIP in C/C++ and Fortran
