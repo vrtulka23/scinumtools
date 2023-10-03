@@ -16,6 +16,7 @@ def test_decimal():
     b = Quantity(Decimal(9.9239000409020932894e6), 'cm')
     c = Quantity(9.9239000409020932894e6, 'cm')
 
+    # basic arithmetics
     assert str(a+b)      == "Quantity(9.924e+6 cm)"
     assert (a+b).value() == Decimal('9923900.044226077073258914050')
     assert str(a+c)      == "Quantity(9.924e+6 cm)"
@@ -33,5 +34,10 @@ def test_decimal():
     assert str(a**2)      == "Quantity(1.105e-5 cm2)"
     assert (a**2).value() == Decimal('0.00001104886976784023973209249265')
 
+    # NumPy functions
     assert str(np.sqrt(a*a))    == "Quantity(3.324e-3 cm)"
     assert np.sqrt(a*a).value() == Decimal('0.003323984020394839342810167081')
+
+    # unit conversion
+    assert str(a.to('nm')) == "Quantity(3.324e+4 nm)"
+    assert a.value()       == Decimal('33239.84020394839204981469679')
