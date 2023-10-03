@@ -6,10 +6,8 @@
 Welcome to scinumtools's documentation!
 =======================================
 
-Introduction
-============
-
-Python module ``scinumtools`` is a collection of various routines used in everyday programming and analysis of numerical simulations. 
+Python module ``scinumtools`` is an open source collection of various routines used in everyday programming and analysis of numerical simulations. 
+Source code and documentation of the ``scinumtools`` package is hosted on `GitHub <https://github.com/vrtulka23/scinumtools>`_ and Python package is available on `PyPi <https://pypi.org/project/scinumtools/>`_.
 
 The module is divided into following sections:
 
