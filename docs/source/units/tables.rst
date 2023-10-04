@@ -52,8 +52,8 @@ Temperature units
    :widths: 20 40 40
    :header-rows: 1
 
-Physical quantities
-^^^^^^^^^^^^^^^^^^^
+Unit systems
+^^^^^^^^^^^^
 
 .. csv-table:: Units of physical quantities in SI system
    :file: ../_static/tables/quantities_si.csv

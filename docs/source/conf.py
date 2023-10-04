@@ -28,7 +28,7 @@ extensions = [
     "sphinx.ext.autodoc", 
     'sphinx_rtd_theme'
 ]
-autosectionlabel_prefix_document = True
+autosectionlabel_prefix_document = True  # Make sure the target is unique
 templates_path = ['_templates']
 exclude_patterns = []
 

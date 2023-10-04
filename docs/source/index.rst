@@ -6,11 +6,31 @@
 Welcome to scinumtools's documentation!
 =======================================
 
+Python module ``scinumtools`` is an open source collection of various routines used in everyday programming and analysis of numerical simulations. 
+Source code and documentation of the ``scinumtools`` package is hosted on `GitHub <https://github.com/vrtulka23/scinumtools>`_ and Python package is available on `PyPi <https://pypi.org/project/scinumtools/>`_.
+
+The module is divided into following sections:
+
+:ref:`solver/index:expression solver`
+     
+  Universal expression solver that can be easily modified and adapted for other projects
+
+:ref:`units/index:physical units`
+     
+  Physical routines and manipulation with dimensional quantities
+
+:ref:`dip/index:dimensional input parameters`
+     
+  Parser of dimensional input parameters serialization language
+
+:ref:`misc/index:miscellaneous tools`
+
+  A collection of various usefull scripts and patterns for data analysis
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   introduction
    solver/index
    units/index
    dip/index
@@ -18,7 +38,7 @@ Welcome to scinumtools's documentation!
    api/modules
    
 Indices and tables
-==================
+^^^^^^^^^^^^^^^^^^
 
 * :ref:`genindex`
 * :ref:`modindex`

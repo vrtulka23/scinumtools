@@ -6,5 +6,4 @@ Introduction
    :caption: Contents:
 
    intro/about
-   intro/install
    intro/example

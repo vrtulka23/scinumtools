@@ -121,7 +121,6 @@ The most notable features of this language are:
          laser_settings = p.query('laser.*')
          radiation_pressure = p.query('radiation.pressure')
 	 
-- Native serialization in Python, C/C++ (TODO) and Fortran (TODO)
 - Template parsing (e.g. producing of pre-processor flag parameter files)
 - Support of tabular data input (e.g. CSV format or similar)
 

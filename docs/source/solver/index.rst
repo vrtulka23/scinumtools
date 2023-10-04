@@ -130,8 +130,8 @@ The table below summarizes evaluation steps, from first to last, that are implem
    
 Decomposition of a string expression into tokens and subsequent action of operators on atoms is depicted in the figure below.
 First, expressions in parentheses ``1)`` are solved in a sub-process ``2)``.
-In the second step, unary operations ``3`` are evaluated.
-After that, binary operations ``4`` and ``5`` bring the rest of the expression to the final solution.
+In the second step, unary operations ``3)`` are evaluated.
+After that, binary operations ``4)`` and ``5)`` bring the rest of the expression to the final solution.
 Logical and comparison operations are not included in the figure, but if used, they are evaluated in the order from the table discussed earlier.
 
 .. image:: ../_static/figures/operation_flow.png
