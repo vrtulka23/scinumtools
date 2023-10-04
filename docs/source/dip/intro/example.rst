@@ -50,8 +50,12 @@ Parsed nodes, sources and units are stored in an environment object of class ``E
 .. code-block:: python
 
    with DIP(env1) as dip:              # pass environment to a new DIP instance
-       dip.from_file("settings.dip")        # add new parameter
+       dip.from_file("settings.dip").  # add new parameter
        env2 = dip.parse()              # parse new parameters
+       
+.. note::
+
+   In the example above, we actually use DIP code from file `settings2.dip <https://github.com/vrtulka23/scinumtools/blob/main/tests/dip/examples/settings2.dip>`_ that includes datatypes.
 
 Getting parsed data
 -------------------
@@ -74,46 +78,62 @@ All environmental data can be parsed as a dictionary.
    data = env2.data()
 
    # data = {
-   #     'mpi.nodes': 36,
-   #     'mpi.cores': 96,
-   #     'runtime.t_max': 10,
-   #     'runtime.timestep': 0.01,
-   #     'box.geometry': 3,
-   #     'box.size.x': 10,
-   #     'box.size.y': 3e7,
-   #     'modules.heating': False,
+   #     'mpi.nodes':         36,
+   #     'mpi.cores':         96,
+   #     'runtime.t_max':     10,
+   #     'runtime.timestep':  0.01,
+   #     'box.geometry':      3,
+   #     'box.size.x':        10,
+   #     'box.size.y':        3e7,
+   #     'modules.heating':   False,
    #     'modules.radiation': True,
    # }
 
-   # Same as above, but umbers with units are returned as tuples
-   data = env2.data(format=Format.TUPLE)
+   # Numbers with units are returned as tuples
+   data = env2.data(Format.TUPLE)
 
    # data = {
-   #     'mpi.nodes': 36,
-   #     'mpi.cores': 96,
-   #     'runtime.t_max': (10, 'ns'),
-   #     'runtime.timestep': (0.01, 'ns'),
-   #     'box.geometry': 3,
-   #     'box.size.x': (10, 'nm'),
-   #     'box.size.y': (3e7,'nm'),
-   #     'modules.heating': False,
+   #     'mpi.nodes':         36,
+   #     'mpi.cores':         96,
+   #     'runtime.t_max':     (10, 'ns'),
+   #     'runtime.timestep':  (0.01, 'ns'),
+   #     'box.geometry':      3,
+   #     'box.size.x':        (10, 'nm'),
+   #     'box.size.y':        (3e7,'nm'),
+   #     'modules.heating':   False,
+   #     'modules.radiation': True,
+   # }
+   
+   # Numbers are returned as Quantity objects
+   data = env2.data(Format.QUANTITY)
+
+   # data ={
+   #     'mpi.nodes':         Quantity(36),
+   #     'mpi.cores':         Quantity(96),
+   #     'runtime.t_max':     Quantity(10, 'ns'),
+   #     'runtime.timestep':  Quantity(0.01, 'ns'),
+   #     'box.geometry':      Quantity(3),
+   #     'box.size.x':        Quantity(10, 'nm'),
+   #     'box.size.y':        Quantity(3e7, 'nm'),
+   #     'modules.heating':   False,
    #     'modules.radiation': True,
    # }
    
    # Values are returned as DIP datatypes
-   data = env2.data(format=Format.TYPE)
+   data = env2.data(Format.TYPE)
 
    # data = {
-   #     'mpi.nodes': IntegerType(36),
-   #     'mpi.cores': IntegerType(96),
-   #     'runtime.t_max': FloatType(10, 'ns'),
-   #     'runtime.timestep': FloatType(0.01, 'ns'),
-   #     'box.geometry': IntegerType(3),
-   #     'box.size.x': FloatType(10, 'nm'),
-   #     'box.size.y': FloatType(3e7, 'nm'),
-   #     'modules.heating': BooleanType(False),
+   #     'mpi.nodes':         IntegerType(36),
+   #     'mpi.cores':         IntegerType(96),
+   #     'runtime.t_max':     FloatType(10, 'ns'),
+   #     'runtime.timestep':  FloatType(0.01, 'ns'),
+   #     'box.geometry':      IntegerType(3),
+   #     'box.size.x':        FloatType(10, 'nm'),
+   #     'box.size.y':        FloatType(3e7, 'nm'),
+   #     'modules.heating':   BooleanType(False),
    #     'modules.radiation': BooleanType(True),
    # }
+   
 
 Definitions
 -----------

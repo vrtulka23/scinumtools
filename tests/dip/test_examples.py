@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 sys.path.insert(0, 'src')
 
+from scinumtools.units import Quantity
 from scinumtools.dip import DIP, Environment
 from scinumtools.dip.settings import Format
 from scinumtools.dip.datatypes import IntegerType, FloatType, StringType, BooleanType
@@ -46,7 +47,7 @@ def test_example_of_use(test_path):
         'modules.radiation': True,
     })
 
-    data = env2.data(verbose=True, format=Format.TUPLE)
+    data = env2.data(Format.TUPLE, verbose=True)
     np.testing.assert_equal(data,{
         'mpi.nodes': 36,
         'mpi.cores': 96,
@@ -59,7 +60,20 @@ def test_example_of_use(test_path):
         'modules.radiation': True,
     })
     
-    data = env2.data(verbose=True, format=Format.TYPE)
+    data = env2.data(Format.QUANTITY, verbose=True)
+    np.testing.assert_equal(data,{
+        'mpi.nodes':         Quantity(36),
+        'mpi.cores':         Quantity(96),
+        'runtime.t_max':     Quantity(10, 'ns'),
+        'runtime.timestep':  Quantity(0.01, 'ns'),
+        'box.geometry':      Quantity(3),
+        'box.size.x':        Quantity(10, 'nm'),
+        'box.size.y':        Quantity(3e7, 'nm'),
+        'modules.heating':   False,
+        'modules.radiation': True,
+    })
+    
+    data = env2.data(Format.TYPE, verbose=True)
     np.testing.assert_equal(data,{
         'mpi.nodes':         IntegerType(36),
         'mpi.cores':         IntegerType(96),
@@ -72,6 +86,7 @@ def test_example_of_use(test_path):
         'modules.radiation': BooleanType(True),
     })
     
+
 def test_definition_template(test_path):
     
     with DIP() as dip:

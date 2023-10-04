@@ -225,6 +225,11 @@ class Environment:
                     data[node.name] = (node.value.value, node.value.unit)
                 else:
                     data[node.name] = node.value.value
+            elif format==Format.QUANTITY:
+                if isinstance(node.value, NumberType):
+                    data[node.name] = Quantity(node.value.value, node.value.unit)
+                else:
+                    data[node.name] = node.value.value
             elif format==Format.NODE:
                 data[node.name] = node
             else:
