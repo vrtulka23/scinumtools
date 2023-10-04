@@ -108,8 +108,7 @@ The most notable features of this language are:
 
   .. code-block:: python
 
-     from DIP import DIP
-     from DIP_Environment import DIP_Environment
+     from scinumtools.dip import DIP, Environment
 		  
      with DIP() as p:
          p.from_string("""
