@@ -13,6 +13,7 @@ class Keyword:
     CONSTANT    = 'constant'
     FORMAT      = 'format'
     CONDITION   = 'condition'
+    TAGS        = 'tags'
 
 class Sign:
     QUERY       = '?'

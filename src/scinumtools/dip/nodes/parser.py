@@ -109,6 +109,15 @@ class Parser(Node):
             self.parsed.append('kwd_format')
             self._strip(m.group(1))
             
+    def kwd_tags(self):
+        m=re.match(
+            r'^(('+re.escape(Sign.VALIDATION)+Keyword.TAGS+r')\s*)',
+            self.ccode
+        )
+        if m:
+            self.parsed.append('kwd_tags')
+            self._strip(m.group(1))
+            
     def kwd_condition(self):
         m=re.match(
             r'^(('+re.escape(Sign.VALIDATION)+Keyword.CONDITION+r')\s*)',

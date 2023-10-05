@@ -106,3 +106,35 @@ size float = 23 cm
   !condition ('250 mm < {?} && {?} < 30 cm')
         """)
     assert e_info.value.args[0] == "Node does not fullfil a condition:"
+
+def test_tags():
+    with DIP() as p:
+        p.from_string('''
+        name str = John
+          !tags ["name","male"]
+        age int = 34
+        ''')
+        env = p.parse()
+
+    nodes = env.query("*", tags=['male'])
+    assert len(nodes)     == 1
+    assert nodes[0].tags  == ['name','male']
+    
+    data = env.data(verbose=True,format=Format.TYPE)
+    np.testing.assert_equal(data,{
+        'name': StringType('John'),
+        'age':  IntegerType(34)
+    })
+    
+    data = env.data(verbose=True,format=Format.TYPE,query="age")
+    np.testing.assert_equal(data,{
+        'age':  IntegerType(34)
+    })
+
+    data = env.data(verbose=True,format=Format.TYPE,query="age",tags=['name'])
+    np.testing.assert_equal(data,{})
+
+    data = env.data(verbose=True,format=Format.TYPE,tags=['name'])
+    np.testing.assert_equal(data,{
+      'name': StringType('John')
+    })

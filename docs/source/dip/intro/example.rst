@@ -64,11 +64,18 @@ Particular nodes can be selected using :doc:`references <../syntax/references>`.
 
 .. code-block:: python
        
-   nodes = env2.query("mpi.*")            # select nodes using a query method
-   geom = env2.request("?box.geometry")   # select a node using a request method
+   nodes = env2.query("mpi.*")                       # select nodes using a query method
+   nodes = env2.query("runtime.*", tags=['step'])    # refine selection using tags
+   geom = env2.request("?box.geometry")              # select a node using a request method
+   geom = env2.request("?runtime.*", tags=['step'])  # refine selection using tags
 
 In the example above, variable ``nodes`` is a list of two nodes: ``mpi.nodes`` and ``mpi.cores``.
 The variable ``geom`` is a list with only one node ``box.geometry`` that was loaded from a file ``settings.dip``.
+Additionally one can select nodes according to their tags.
+
+.. code-block:: 
+
+   nodes = env2.query("mpi.*", tags=['step'])
 
 All environmental data can be parsed as a dictionary.
 
@@ -134,6 +141,13 @@ All environmental data can be parsed as a dictionary.
    #     'modules.radiation': BooleanType(True),
    # }
    
+Besides specifying output format, it is also possible to select specific nodes using ``query`` or ``tag`` selectors:
+
+.. code-block::
+
+   env2.data(query="mpi.*")                # selects all nodes in the mpi group
+   env2.data(tags=['step'])                # selects all nodes with corresponding tags
+   env2.data(query="mpi.*", tags=['step']) # combination of a query and tag selectors
 
 Definitions
 -----------

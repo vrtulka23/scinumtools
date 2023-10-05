@@ -1,6 +1,7 @@
 runtime
   t_max float = 10 ns
   timestep float = 0.01 ns
+    !tags ["step"]
 
 box
   geometry int = 3

@@ -5,6 +5,7 @@ from ..datatypes import BooleanType
 class BooleanNode(BaseNode):
     keyword: str = 'bool'
     value: bool = None
+    tags: list = None
     dtype = bool
 
     @staticmethod

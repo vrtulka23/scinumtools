@@ -86,6 +86,50 @@ def test_example_of_use(test_path):
         'modules.radiation': BooleanType(True),
     })
     
+def test_query_request_tag(test_path):
+    
+    with DIP() as dip:
+        dip.from_string("""
+        mpi
+          nodes int = 36
+          cores int = 96
+        """)                               
+        dip.from_file(test_path+"settings2.dip") 
+        env = dip.parse()               
+    
+    nodes = env.query("mpi.*")
+    assert len(nodes) == 2
+    nodes = env.query("runtime.*", tags=['step'])  
+    assert len(nodes) == 1
+    geom = env.request("?box.geometry") 
+    assert len(nodes) == 1
+    geom = env.request("?runtime.*", tags=['step'])  
+    assert len(nodes) == 1
+
+    
+def test_data_tag(test_path):
+    
+    with DIP() as dip:
+        dip.from_string("""
+        mpi
+          nodes int = 36
+          cores int = 96
+        """)                               
+        dip.from_file(test_path+"settings2.dip") 
+        env = dip.parse()                 # parse the code
+    
+    data = env.data(query="mpi.*")
+    np.testing.assert_equal(data,{
+        'nodes': 36,
+        'cores': 96,
+    })
+    data = env.data(tags=['step'])       
+    np.testing.assert_equal(data,{
+        'runtime.timestep': 0.01,
+    })         
+    data = env.data(query="mpi.*", tags=['step']) 
+    np.testing.assert_equal(data,{})         
+
 
 def test_definition_template(test_path):
     

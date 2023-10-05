@@ -11,6 +11,7 @@ class FloatNode(BaseNode, SelectNode):
     value: float = None
     options: List = None
     value_expr: str = False
+    tags: list = None
     dtype = float
     bits = 64
 

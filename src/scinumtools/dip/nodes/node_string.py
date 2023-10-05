@@ -6,6 +6,7 @@ from ..datatypes import StringType
 class StringNode(BaseNode, SelectNode):
     keyword: str = 'str'
     format: str = None
+    tags: list = None
 
     @staticmethod
     def is_node(parser):
