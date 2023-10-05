@@ -19,7 +19,7 @@ class SchemaLexer(RegexLexer):
               bygroups(Token.Text, Token.Expression,  Token.Text)),
             (r'<[^ ]',        Token.Name.Tag, 'tag'),
             (r'{',            Token.Reference, 'reference'),
-            (r'!(options|format|condition|constant)',  Token.Keyword),
+            (r'!(options|format|condition|constant|tags)',  Token.Keyword),
             (r'\$(source|unit)',     Token.Keyword),
             (r'\@(case|else|end)',     Token.Keyword),
             (r'( |=|<|>|\.\*|\*)',    Token.Text),

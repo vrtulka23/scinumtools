@@ -12,6 +12,7 @@ class IntegerNode(BaseNode, SelectNode):
     value: int = None
     options: List = None
     value_expr: str = False
+    tags: list = None
     dtype = int
     bits = 32
 

@@ -10,7 +10,7 @@ from .source import Source
 from .settings import Keyword, Sign
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
-from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode
+from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode
 from .nodes import ModNode, GroupNode
 from .nodes import BooleanNode, IntegerNode, FloatNode, StringNode, TableNode
 from .solvers import LogicalSolver
@@ -142,7 +142,7 @@ class DIP:
                     continue
             # Create hierarchical name
             excluded = ['empty','unit','source',
-                        'option','constant','format','condition']
+                        'option','constant','format','condition','tags']
             self.env.update_hierarchy(node, excluded)
             # Add nodes to the list
             excluded += ['group']
@@ -216,6 +216,7 @@ class DIP:
             OptionNode.is_node,           # parse option setting
             ConstantNode.is_node,         # parse constant setting
             FormatNode.is_node,           # parse format setting
+            TagsNode.is_node,             # parse node tags
             ConditionNode.is_node,        # parse condition setting
             parser.part_name,             
             GroupNode.is_node,            # parse group node

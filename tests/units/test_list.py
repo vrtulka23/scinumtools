@@ -15,6 +15,7 @@ def test_unit_list():
     assert str(Constant())
 
     #print(Constant())
+    #print(Unit())
     #exit(1)
     
 def test_unique_unique():

@@ -80,7 +80,7 @@ Condition
 
 Numerical values can usually have values ranging in some intervals.
 In order to restrict node values to some particular interval, it is possible to set logical using ``!condition`` directive and logical expression.
-A given expression has to be evaluated as `true` after each definition or modification of a node.
+A given expression has to be evaluated as ``true`` after each definition or modification of a node.
 
 .. code-block:: DIPSchema
    :caption: Schema of a node condition requirement
@@ -91,8 +91,8 @@ A given expression has to be evaluated as `true` after each definition or modifi
    <expression>
    """)                                   
 
-In the example below, node `energy` can have values in a range of 23 and 26 erg.
-The actual value of node `energy` is matched using a special self-reference sign ``{?}``.
+In the example below, node ``energy`` can have values in a range of 23 and 26 erg.
+The actual value of node ``energy`` is matched using a special self-reference sign ``{?}``.
 
 .. code-block:: DIP
 
@@ -128,7 +128,7 @@ This can be achieved by a directive ``!constant``.
 
    <indent>!constant
 
-Node `name` in the following example cannot be further modified.
+Node ``name`` in the following example cannot be further modified.
      
 .. code-block:: DIP
 
@@ -136,3 +136,34 @@ Node `name` in the following example cannot be further modified.
      !constant
 
    name = 'Mary'   # this modification will raise an error exception
+
+Tags
+----
+
+Tags have proven to be a good way how to sort and categorize large number of information.
+Boolean, integer, float and string nodes support tagging using a dedicated property ``!tags`` that accept a list of tags.
+It is advised to use only string tags.
+
+.. code-block:: DIPSchema
+   :caption: Schema for node tags property
+   
+   <indent>!tags <value>
+   
+Tagged nodes can be later on selected from environment using a tag selector.
+
+.. code-block:: 
+
+   >>> with DIP() as p:
+   >>>     p.from_string('''
+   >>>     name str = John
+   >>>         !tags ["name","male"]
+   >>>     age int = 34
+   >>>     ''')
+   >>>     env = p.parse()
+   >>> env.query("*", tags=['male'])
+   [StringNode(John)]
+   >>> env.data(tags=['male'])
+   {'name': StringType('John')}
+   
+
+   

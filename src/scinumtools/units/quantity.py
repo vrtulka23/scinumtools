@@ -148,6 +148,8 @@ class Quantity:
         return Quantity(-self.magnitude, self.baseunits)
     
     def __eq__(self, other):
+        if isinstance(other, (int, float)):
+            other = Quantity(other)
         if not np.allclose(self.magnitude.value, other.magnitude.value, rtol=MAGNITUDE_PRECISION):
             return False
         if not self.baseunits==other.baseunits:
@@ -184,6 +186,8 @@ class Quantity:
             return Quantity(ufunc(inputs[0].to('rad').magnitude.value))
         elif ufunc in [np.arcsin, np.arccos, np.arctan]:
             return Quantity(ufunc(inputs[0].to(None).magnitude.value),'rad')
+        elif ufunc in [np.isnan, np.isnat]:
+            return ufunc(inputs[0].magnitude.value)
         else:
             return Quantity(ufunc(inputs[0].magnitude.value), inputs[0].baseunits)
     
@@ -297,3 +301,7 @@ def floor(a, **kwargs):
 @implements(np.ceil)
 def ceil(a, **kwargs):
     return Quantity(np.ceil(a.magnitude.value), a.baseunits)
+    
+@implements(np.iscomplexobj)
+def iscomplexobj(a, **kwargs):
+    return False

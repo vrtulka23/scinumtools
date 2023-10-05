@@ -32,6 +32,18 @@ class BaseNode(Node):
                 kwargs['value_expr'] = parser.value_expr
         super().__init__(*args, **kwargs)
     
+    def __str__(self):
+        if self.value.unit:
+            return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
+        else:
+            return f"{self.__class__.__name__}({self.value.value})"
+    
+    def __repr__(self):
+        if self.value.unit:
+            return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
+        else:
+            return f"{self.__class__.__name__}({self.value.value})"
+
     def parse(self, env):
         return False
 

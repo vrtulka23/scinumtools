@@ -36,6 +36,28 @@ class Unit:
             else:
                 return ''
         
+        def is_baseunit(symbol, unit):
+            if unit['definition'] is None:
+                return True
+            return False
+        
+        def is_logarithmic(symbol, unit):
+            if symbol in ['AR','PR']:
+                return True
+            if unit['definition'] == LogarithmicUnitType:
+                return True
+            return False
+        
+        def is_temperature(symbol, unit):
+            if symbol in ['K','Cel', 'degR', 'degF']:
+                return True
+            return False
+            
+        def is_constant(symbol, unit):
+            if symbol.startswith('['):
+                return True
+            return False
+        
         sw, uw, dw, pw = 8, 20, 20, 15
         text =  "Units\n"
         text += "\nPrefixes:\n\n"
@@ -47,33 +69,32 @@ class Unit:
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Prefixes':{pw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*pw+"\n"
         for symbol, unit in UNIT_STANDARD.items():
-            if not symbol.startswith('[') and unit['definition'] is None:
-                pref = get_pref(unit['prefixes'])
-                text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {pref:{pw}s}\n"         
+            if not is_baseunit(symbol, unit): continue
+            pref = get_pref(unit['prefixes'])
+            text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {pref:{pw}s}\n"         
         text += "\nDerived units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Prefixes':{pw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*pw+"-+-"+"-"*dw+"\n"
-        for symbol, unit in UNIT_STANDARD.items():
-            if symbol.startswith('['): continue
-            if not isinstance(unit['definition'], str): continue
-            if symbol=='degR': continue
+        for symbol, unit in UNIT_STANDARD.items():  
+            if is_baseunit(symbol, unit): continue
+            if is_constant(symbol, unit): continue
+            if is_logarithmic(symbol, unit): continue
+            if is_temperature(symbol, unit): continue
             pref = get_pref(unit['prefixes'])
             text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {pref:{pw}s} | {unit['definition']:{dw}s}\n"
         text += "\nTemperature units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
         for symbol, unit in UNIT_STANDARD.items():
-            if symbol not in ['Cel', 'degR', 'degF']:
-                continue
-            defn = unit['definition'] if isinstance(unit['definition'],str) else 'fn(K)'
+            if not is_temperature(symbol, unit): continue
+            defn = unit['definition'] if isinstance(unit['definition'],str) else 'temp()'
             text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {defn:{dw}s}\n"
         text += "\nLogarithmic units:\n\n"
         text += f"{'Symbol':{sw}s} | {'Unit':{uw}s} | {'Definition':{dw}s}\n"
         text += "-"*sw+"-+-"+"-"*uw+"-+-"+"-"*dw+"\n"
         for symbol, unit in UNIT_STANDARD.items():
-            if symbol not in ['Np','B','Bm','BmW','BW','BV','BuV']:
-                continue
-            defn = unit['definition'] if isinstance(unit['definition'],str) else 'fn(K)'
+            if not is_logarithmic(symbol, unit): continue
+            defn = unit['definition'] if isinstance(unit['definition'],str) else 'log()'
             text += f"{symbol:{sw}s} | {unit['name']:{uw}s} | {defn:{dw}s}\n"
         return text
     

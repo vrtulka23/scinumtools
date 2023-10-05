@@ -138,16 +138,17 @@ class Environment:
             raise Exception("Reference source alread exists:", name)
         self.sources[name] = EnvSource(source=source, path=str(path), name=name)
         
-    def query(self, query:str, namespace:int=Namespace.NODES):
+    def query(self, query:str, namespace:int=Namespace.NODES, tags:list=None):
         """ Select local nodes according to a query
 
         :param str query: Node selection query
         :param str namespace: Query namespace (nodes, sources, or units)
+        :param list tags: List of tags
         """
         if namespace==Namespace.NODES:
             nodes = []
             if query==Sign.WILDCARD:
-                return [node.copy() for node in self.nodes]
+                nodes = [node.copy() for node in self.nodes]
             elif query[-2:]==Sign.SEPARATOR + Sign.WILDCARD:
                 for node in self.nodes:
                     if node.name.startswith(query[:-1]):
@@ -160,6 +161,12 @@ class Environment:
                         node = node.copy()
                         node.name = node.name.split(Sign.SEPARATOR)[-1]
                         nodes.append(node.copy())
+            if tags:
+                tagged = []
+                for n in range(len(nodes)):
+                    if nodes[n].tags and np.in1d(tags, nodes[n].tags):
+                        tagged.append(nodes[n])
+                nodes = tagged
             return nodes
         elif namespace==Namespace.SOURCES:
             if query==Sign.WILDCARD:   # return all sources
@@ -178,12 +185,13 @@ class Environment:
         else:
             raise Exception("Invalid query namespace selected:", namespace)
         
-    def request(self, path:str, count:int=None, namespace:str=Namespace.NODES):
+    def request(self, path:str, count:int=None, namespace:str=Namespace.NODES, tags:list=None):
         """ Request nodes from a path
 
         :param str path: Request path
         :param int count: Number of nodes that should be selected
         :param str namespace: Query namespace (nodes, sources, or units)
+        :param list tags: List of tags
         """
         if self.autoref and path == Sign.QUERY: # reference type {?}
             filename,query = '', self.autoref
@@ -196,11 +204,11 @@ class Environment:
             if isinstance(source, str):
                 return source
             else:
-                nodes = source.env.query(query, namespace)
+                nodes = source.env.query(query, namespace, tags=tags)
         else:         # use values parsed in the current file
             if not self.nodes:
                 raise Exception(f"Local nodes are not available for DIP import:", path)
-            nodes = self.query(query, namespace)
+            nodes = self.query(query, namespace, tags=tags)
         if count:
             if isinstance(count, list) and len(nodes) not in count:
                 raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
@@ -208,14 +216,22 @@ class Environment:
                 raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
         return nodes
 
-    def data(self, format=Format.VALUE, verbose=False):
+    def data(self, format:Format=Format.VALUE, verbose:bool=False, query:str=None, tags:list=None):
         """ Return parsed values as a dictionary
 
         :param bool verbose: Display node values
         :param str format: Return data as values only, DIP datatypes, or tuples
+        :param str query: Node selection query
+        :param list tags: List of tags
         """
         data = {}
-        for node in self.nodes:
+        if query is not None:
+            nodes = self.query(query, tags=tags)
+        elif tags is not None:
+            nodes = self.query("*", tags=tags)
+        else:
+            nodes = self.nodes
+        for node in nodes:
             if format==Format.VALUE:
                 data[node.name] = node.value.value
             elif format==Format.TYPE:
@@ -223,6 +239,11 @@ class Environment:
             elif format==Format.TUPLE:
                 if isinstance(node.value, NumberType) and node.value.unit is not None:
                     data[node.name] = (node.value.value, node.value.unit)
+                else:
+                    data[node.name] = node.value.value
+            elif format==Format.QUANTITY:
+                if isinstance(node.value, NumberType):
+                    data[node.name] = Quantity(node.value.value, node.value.unit)
                 else:
                     data[node.name] = node.value.value
             elif format==Format.NODE:

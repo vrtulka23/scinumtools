@@ -17,3 +17,4 @@ from .node_integer import IntegerNode
 from .node_float import FloatNode
 from .node_string import StringNode
 from .node_table import TableNode
+from .node_tags import TagsNode

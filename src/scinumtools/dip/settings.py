@@ -13,6 +13,7 @@ class Keyword:
     CONSTANT    = 'constant'
     FORMAT      = 'format'
     CONDITION   = 'condition'
+    TAGS        = 'tags'
 
 class Sign:
     QUERY       = '?'
@@ -34,3 +35,4 @@ class Format:
     TUPLE       = 2
     TYPE        = 3
     NODE        = 4
+    QUANTITY    = 5
