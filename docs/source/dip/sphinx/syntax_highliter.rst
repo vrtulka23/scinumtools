@@ -171,6 +171,8 @@ Below is an overview of all its highlighting capabilities:
      !condition ("""
      23 < {?} && {?} < 26
      """)
+     !tags ["foo","bar"]
+     !description "Node description"
      
    # special nodes
 

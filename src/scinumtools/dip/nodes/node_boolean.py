@@ -6,6 +6,7 @@ class BooleanNode(BaseNode):
     keyword: str = 'bool'
     value: bool = None
     tags: list = None
+    description: str = None
     dtype = bool
 
     @staticmethod

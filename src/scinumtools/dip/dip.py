@@ -10,7 +10,7 @@ from .source import Source
 from .settings import Keyword, Sign
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
-from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode
+from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode, DescriptionNode
 from .nodes import ModNode, GroupNode
 from .nodes import BooleanNode, IntegerNode, FloatNode, StringNode, TableNode
 from .solvers import LogicalSolver
@@ -217,6 +217,7 @@ class DIP:
             ConstantNode.is_node,         # parse constant setting
             FormatNode.is_node,           # parse format setting
             TagsNode.is_node,             # parse node tags
+            DescriptionNode.is_node,      # parse description node
             ConditionNode.is_node,        # parse condition setting
             parser.part_name,             
             GroupNode.is_node,            # parse group node

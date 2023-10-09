@@ -14,6 +14,7 @@ class Keyword:
     FORMAT      = 'format'
     CONDITION   = 'condition'
     TAGS        = 'tags'
+    DESCRIPTION = 'description'
 
 class Sign:
     QUERY       = '?'

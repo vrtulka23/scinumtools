@@ -18,3 +18,4 @@ from .node_float import FloatNode
 from .node_string import StringNode
 from .node_table import TableNode
 from .node_tags import TagsNode
+from .node_description import DescriptionNode

@@ -138,3 +138,15 @@ def test_tags():
     np.testing.assert_equal(data,{
       'name': StringType('John')
     })
+
+def test_description():
+    with DIP() as p:
+        p.from_string('''
+        name str = John
+          !description "Name of a person"
+        age int = 34
+        ''')
+        env = p.parse()
+
+    nodes = env.query("*")
+    assert nodes[0].description == "Name of a person"
