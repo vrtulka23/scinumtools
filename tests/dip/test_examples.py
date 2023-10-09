@@ -85,6 +85,19 @@ def test_example_of_use(test_path):
         'modules.heating':   BooleanType(False),
         'modules.radiation': BooleanType(True),
     })
+
+    
+def test_invalid_code():
+    
+    with DIP() as dip:
+        dip.from_string("""
+        mpi
+          nodes int = 36 23 5
+        """)                               
+        with pytest.raises(Exception) as e_info:
+            env = dip.parse()               
+        assert e_info.value.args[0] == "Code cannot be parsed:"
+        assert e_info.value.args[1] == " 5"
     
 def test_query_request_tag(test_path):
     

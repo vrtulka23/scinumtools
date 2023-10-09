@@ -240,7 +240,7 @@ class DIP:
             if node and parser.is_empty():
                 break
         else:
-            raise Exception(f"Incorrect format: {code}")
+            raise Exception(f"Code cannot be parsed:",parser.ccode)
         
         # Convert symbols to original letters
         def decode_symbols(value):
