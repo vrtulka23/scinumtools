@@ -12,6 +12,12 @@ class EnvSource:
     source: Union[str] # can be also DIP
     path: str
     name: str
+
+@dataclass
+class Case:
+    name: str
+    value: bool
+    count: int = 0
     
 @dataclass
 class Environment:
@@ -32,13 +38,10 @@ class Environment:
     parent_names: List[str]   = field(default_factory = list)    # list of parent names
 
     # Case list
-    case_counts: List[int]  = field(default_factory = list)     # case number in a current condition
-    case_names: List[str]   = field(default_factory = list)    # condition case name
+    cases: List[Case]       = field(default_factory = list)
     
     def __post_init__(self):
         self.parent_indents.append(-1)
-        self.case_counts.append(0)
-        self.case_names.append('')
     
     def copy(self):
         """ Copy a new object from self
@@ -69,31 +72,39 @@ class Environment:
             self.parent_indents.append(node.indent)
             node.name = Sign.SEPARATOR.join(self.parent_names)
 
-    def is_case(self):
+    def in_branch(self):
         """ Checks if outside or inside of a valid case clause
         """
-        return not self.case_names[-1] or self.case_counts[-1]<2
+        if self.cases:
+            return self.cases[-1].count<2 
+        else:
+            return True
 
-    def _end_case(self):
-        self.case_names.pop()
-        self.case_counts.pop()
-    
+    def false_case(self):
+        """ Checks if case value is false
+        """
+        return self.cases and self.cases[-1].value is False
+        
     def solve_case(self, node):
         """ Manage condition nodes
 
         :param node: Condition node
         """
-        casename = self.case_names[-1]
+        casename = self.cases[-1].name if self.cases else ''
         if node.name.endswith(Sign.CONDITION + Keyword.CASE):
             if casename+Keyword.CASE!=node.name:   # register new case
-                self.case_names.append(node.name[:-4])
-                self.case_counts.append(0)
-            if node.value or self.case_counts[-1]==1:
-                self.case_counts[-1] += 1
+                self.cases.append(Case(
+                    name = node.name[:-4],
+                    value = node.value
+                ))
+            if node.value or (self.cases and self.cases[-1].count==1):
+                self.cases[-1].count += 1
+                self.cases[-1].value = node.value
         elif node.name==casename + Keyword.ELSE:
-            self.case_counts[-1] += 1
+            self.cases[-1].count += 1
+            self.cases[-1].value = True
         elif node.name==casename + Keyword.END:    # end case using a keyword
-            self._end_case()
+            self.cases.pop()
         else:
             raise Exception(f"Invalid condition:", node.name)
 
@@ -102,10 +113,10 @@ class Environment:
 
         :param node: Parameter node
         """
-        if not self.case_names[-1]: # outside of any condition
+        if not self.cases: # outside of any condition
             return        
-        if not node.name.startswith(self.case_names[-1]): # ending case at lower indent
-            self._end_case()
+        if not node.name.startswith(self.cases[-1].name): # ending case at lower indent
+            self.cases.pop()
         node.name = node.name.replace(
             Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,''
         )

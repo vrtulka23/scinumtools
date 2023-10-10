@@ -133,7 +133,7 @@ class DIP:
         while len(env.nodes):
             node = env.pop_node()
             # Perform specific node parsing only outside of case or inside of valid case
-            if self.env.is_case():
+            if self.env.in_branch():
                 node.inject_value(self.env)
                 parsed = node.parse(self.env)
                 if parsed: 
@@ -151,7 +151,9 @@ class DIP:
             elif node.keyword=='case':   # Parse cases
                 self.env.solve_case(node)
             else:
-                if not self.env.is_case():
+                if not self.env.in_branch():
+                    continue
+                if self.env.false_case():
                     continue
                 self.env.prepare_node(node)
                 # Set the node value

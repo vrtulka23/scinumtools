@@ -75,7 +75,7 @@ def test_modifications():
         'nebula': StringType('Eagle'),
     })
     
-def test_case():
+def test_indent_end():
     data = parse('''
     climate
       @case true                  # true condition
@@ -83,21 +83,41 @@ def test_case():
           increase float = 2 Cel  # subnodes also belong to the above case
 
       temperature float = 10.2 Cel   # case ends if indent of a new node is lower
+    ''')
+    np.testing.assert_equal(data,{
+        'climate.warming':          BooleanType(True),
+        'climate.warming.increase': FloatType(2, 'Cel'),
+        'climate.temperature':      FloatType(10.2, 'Cel'),
+    })
 
+def test_first_true():
+    data = parse('''
     plant
       @case true                # first condition is true
         leaves int = 1302       
       @case false
         leaves int = 12304
       @end                      # case ends when explicitely terminated
+    ''')
+    np.testing.assert_equal(data,{
+        'plant.leaves':             IntegerType(1302),
+    })
 
+def test_second_true():
+    data = parse('''
     plant.@case false           # using compact node names
         flower str = 'green'
     plant.@case true            # second condition is true
         flower str = 'yellow'   
     plant.@else                 # else is not triggered
         flower str = 'red'
+    ''')
+    np.testing.assert_equal(data,{
+        'plant.flower':             StringType('yellow'),
+    })
 
+def test_else():
+    data = parse('''
     animal
       @case false
         cat str = 'lion'
@@ -107,11 +127,6 @@ def test_case():
         cat str = 'gepard'        
     ''')
     np.testing.assert_equal(data,{
-        'climate.warming':          BooleanType(True),
-        'climate.warming.increase': FloatType(2, 'Cel'),
-        'climate.temperature':      FloatType(10.2, 'Cel'),
-        'plant.leaves':             IntegerType(1302),
-        'plant.flower':             StringType('yellow'),
         'animal.cat':               StringType('gepard'),
     })
 
@@ -148,7 +163,21 @@ trafic
         'trafic.road':  StringType('town'),
         'trafic.cars':  IntegerType(12),
     })
-  
+
+def test_only_false_case():
+
+    data = parse('''
+sim
+  gravity bool = false      
+
+  @case ("{?sim.gravity}")
+    stars int = 30
+  @end
+    ''')
+    np.testing.assert_equal(data,{
+        'sim.gravity': BooleanType(False),
+    })
+    
 if __name__ == "__main__":
     # Specify wich test to run
     test = sys.argv[1] if len(sys.argv)>1 else True

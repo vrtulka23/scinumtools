@@ -2,7 +2,7 @@ import numpy as np
 import json
 
 from .node import Node
-from ..datatypes import Type, IntegerType, FloatType, StringType, BooleanType
+from ..datatypes import Type, NumberType, IntegerType, FloatType, StringType, BooleanType
 from ..environment import Environment
 from ..settings import Keyword
 
@@ -34,16 +34,20 @@ class BaseNode(Node):
         super().__init__(*args, **kwargs)
     
     def __str__(self):
-        if self.value.unit:
+        if isinstance(self.value, NumberType) and self.value.unit:
             return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
-        else:
+        elif isinstance(self.value, Type):
             return f"{self.__class__.__name__}({self.value.value})"
+        else:
+            return f"{self.__class__.__name__}({self.value})"
     
     def __repr__(self):
-        if self.value.unit:
+        if isinstance(self.value, NumberType) and self.value.unit:
             return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
-        else:
+        elif isinstance(self.value, Type):
             return f"{self.__class__.__name__}({self.value.value})"
+        else:
+            return f"{self.__class__.__name__}({self.value})"
 
     def parse(self, env):
         return False
