@@ -36,8 +36,11 @@ class NumberType(Type):
         left, right = self._prepare(other)
         if isinstance(left,str) and isinstance(right,str):
             return BooleanType(left==right)
-        else:
+        if isinstance(left,(list,np.ndarray)) and isinstance(right,(list,np.ndarray)):
             return BooleanType(np.isclose(left, right, rtol=Numeric.PRECISION))
+        else:
+            # isclose does not work with integers
+            return BooleanType(np.isclose(float(left), float(right), rtol=Numeric.PRECISION)) 
         
     def __ne__(self, other):
         left, right = self._prepare(other)

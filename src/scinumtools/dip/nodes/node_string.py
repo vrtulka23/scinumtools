@@ -8,6 +8,7 @@ class StringNode(BaseNode, SelectNode):
     format: str = None
     tags: list = None
     description: str = None
+    dtype = str
 
     @staticmethod
     def is_node(parser):

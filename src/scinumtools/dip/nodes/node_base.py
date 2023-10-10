@@ -18,6 +18,7 @@ class BaseNode(Node):
             kwargs['source'] = parser.source
             kwargs['indent'] = parser.indent
             kwargs['name'] = parser.name
+            kwargs['dtype_prop'] = parser.dtype_prop
             kwargs['value_raw'] = parser.value_raw
             kwargs['value_ref'] = parser.value_ref
             kwargs['value_slice'] = parser.value_slice

@@ -5,6 +5,7 @@ from .type_number import NumberType
 
 class FloatType(NumberType):
     value: Union[float,list]
+    precision: int = 64
     dtype = float
  
     def __str__(self):
@@ -22,4 +23,7 @@ class FloatType(NumberType):
             kwargs['unit'] = unit
         if isinstance(kwargs['value'], np.ndarray):
             kwargs['value'] = kwargs['value'].tolist()
+        if 'precision' in kwargs:
+            self.precision = int(kwargs['precision'])
+            del kwargs['precision']
         super().__init__(**kwargs)

@@ -37,10 +37,13 @@ class IntegerNode(BaseNode, SelectNode):
     def set_value(self, value=None):
         """ Set value using value_raw or arbitrary value
         """
+        unsigned, precision = self.dtype_prop
+        unsigned = True if unsigned else IntegerType.unsigned
+        precision = precision if precision else IntegerType.precision
         if value is None and self.value_raw:
-            self.value = IntegerType(self.cast_value(), self.units_raw)
+            self.value = IntegerType(self.cast_value(), self.units_raw, precision=precision, unsigned=unsigned)
         elif value:
-            self.value = IntegerType(value, self.units_raw)
+            self.value = IntegerType(value, self.units_raw, precision=precision, unsigned=unsigned)
         else:
             self.value = None
             

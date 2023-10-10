@@ -36,10 +36,11 @@ class FloatNode(BaseNode, SelectNode):
     def set_value(self, value=None):
         """ Set value using value_raw or arbitrary value
         """
+        precision = self.dtype_prop[0] if self.dtype_prop[0] else FloatType.precision
         if value is None and self.value_raw:
-            self.value = FloatType(self.cast_value(), self.units_raw)
+            self.value = FloatType(self.cast_value(), self.units_raw, precision=precision)
         elif value:
-            self.value = FloatType(value, self.units_raw)
+            self.value = FloatType(value, self.units_raw, precision=precision)
         else:
             self.value = None
             

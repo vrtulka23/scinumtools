@@ -13,6 +13,7 @@ def parse(code):
         return p.parse().data(verbose=True,format=Format.TYPE)
 
 def test_name():
+    
     data = parse('''
 very-long.node23_NAME int = 1
     ''')
@@ -24,6 +25,7 @@ very-long.node23_NAME int = 1
     assert e_info.value.args[0] == "Name has an invalid format: wrong$name int = 3"
     
 def test_types():
+    
     data = parse('''
 adult bool = true
 age int = 20 yr
@@ -46,6 +48,7 @@ name str = 'Laura'
     assert e_info.value.args[1] == "age str = 23 a"
 
 def test_dimensions():
+    
     data = parse('''
 counts int[3] = [4234,34,2]
 lengths float[2:,2] = [[4234,34],[234,34]] cm
@@ -76,7 +79,9 @@ logic bool[2] = [true,false]
     with pytest.raises(Exception) as e_info:
         parse('counts int = [[234,4234],[234,34]]')
     assert e_info.value.args[0] == "Could not convert raw value to type:"
+    
 def test_declarations():
+    
     data = parse('''
 cash bool
 cash = true
@@ -92,6 +97,7 @@ weight = 77
     assert e_info.value.args[0] == "Node value must be defined:"
 
 def test_strings():
+    
     data = parse('''
 country str = Canada              # strings without whitespace
 name str = "Johannes Brahms"      # strings with a whitespace
@@ -128,3 +134,42 @@ if __name__ == "__main__":
         if fn[:5]=='test_' and (test is True or test==fn[5:]):
             print(f"\nTesting: {fn}\n")
             locals()[fn]()
+
+def test_integer_subtypes():
+    
+    data = parse('''
+    integer int = -34
+    unsignedInteger uint = 235
+    unsignedLongInteger uint64 = 29349850209348495020394849
+    longInteger int64 = -239490304
+    ''')
+    np.testing.assert_equal(data,{
+        'integer':              IntegerType(-34),
+        'unsignedInteger':      IntegerType(235),
+        'unsignedLongInteger':  IntegerType(29349850209348495020394849),
+        'longInteger':          IntegerType(-239490304),
+    })
+    # test unsigned property
+    assert  data['integer'].unsigned              == False
+    assert  data['unsignedInteger'].unsigned      == True
+    assert  data['unsignedLongInteger'].unsigned  == True
+    assert  data['longInteger'].unsigned          == False
+    # test precision
+    assert  data['integer'].precision             == 32
+    assert  data['unsignedInteger'].precision     == 32
+    assert  data['unsignedLongInteger'].precision == 64
+    assert  data['longInteger'].precision         == 64
+
+def test_float_subtypes():
+    
+    data = parse('''
+    float float = -34
+    longFloat float128 = -239490304
+    ''')
+    np.testing.assert_equal(data,{
+        'float':              FloatType(-34),
+        'longFloat':          FloatType(-239490304),
+    })
+    # test precision
+    assert  data['float'].precision             == 64
+    assert  data['longFloat'].precision         == 128

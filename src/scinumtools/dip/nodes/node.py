@@ -7,7 +7,8 @@ class Node:
     code: str 
     source: Source = None
     keyword: str = None
-    dtype = str
+    dtype = str                     # datatype
+    dtype_prop = list               # datatype properties (e.g.: unsigned, precision)
     indent: int = 0
     name: str = None
     value_raw: str = None           # Raw value
@@ -21,6 +22,7 @@ class Node:
 
     def __init__(self, code, **kwargs):
         self.code = code
+        self.dtype_prop = []
         for key,val in kwargs.items():
             setattr(self, key, val)
 
