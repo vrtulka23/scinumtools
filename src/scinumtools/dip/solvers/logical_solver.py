@@ -46,7 +46,7 @@ class LogicalSolver:
                 if 'defined' in flags:
                     node = BooleanType(False)
                 else:
-                    node = None
+                    raise Exception('Missing reference:', expr)
         elif p.value_raw==Keyword.TRUE:
             node = BooleanType(True)
         elif p.value_raw==Keyword.FALSE:
@@ -67,7 +67,8 @@ class LogicalSolver:
                 'and': OperatorAnd, 'or': OperatorOr, 
             }
             with ExpressionSolver(self._eval_node, operators) as es:
-                return es.solve(expr).value
+                return es.solve(expr).value    
+                
 
 class CustomOperatorNot(OperatorNot):
     symbol: str = Sign.NEGATE

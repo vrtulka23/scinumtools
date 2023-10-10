@@ -32,10 +32,10 @@ def test_compare_nodes():
     with DIP() as dip:
         dip.from_string("""
         dogs int = 23
-    cats int = 44
-    birds int = 23
-    fish int = 12
-    animal bool = true
+        cats int = 44
+        birds int = 23
+        fish int = 12
+        animal bool = true
         """)
         env = dip.parse()
     with LogicalSolver(env) as p:
