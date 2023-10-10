@@ -11,7 +11,7 @@ Dimensional Input Parameters
 
    intro/index
    syntax/index
-   sphinx/index
+   tools/index
 
 Welcome to DIP documentation!
 

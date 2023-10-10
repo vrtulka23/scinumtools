@@ -8,6 +8,7 @@
 
 import sys
 sys.path.insert(0,"../../src")
+sys.path.insert(1,"../../highlighters/pygments")
 import scinumtools
 
 import toml
@@ -50,9 +51,9 @@ html_css_files = [
 
 # DIP Syntax Highlighter
 from sphinx.highlighting import lexers
-from scinumtools.dip.pygments.syntax_lexer import SyntaxLexer
-from scinumtools.dip.pygments.schema_lexer import SchemaLexer
-from scinumtools.dip.pygments.style_lexer import StyleLexer, pygments_monkeypatch_style
+from syntax_lexer import SyntaxLexer
+from schema_lexer import SchemaLexer
+from style_lexer import StyleLexer, pygments_monkeypatch_style
 pygments_monkeypatch_style("StyleLexer", StyleLexer)
 pygments_style = 'StyleLexer'
 lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)
