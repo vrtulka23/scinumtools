@@ -6,36 +6,7 @@ Scalars
 
 Nodes with a single boolean, number or string value are called scalar nodes.
 If a node is scalar at its definition, it can be modified only with one value.
-Below is an overview of possible scalar values for each data type:
-
-**Boolean** (``bool``)
-
-.. code-block:: DIP 
-
-   day bool = true
-   night bool = false
-
-**Integer** (``int``, signed 32-bit)
-
-.. code-block:: DIP
-
- year int = 2023
-     
-**Float** (``float``, signed 64-bit)
-
-.. code-block:: DIP
-
-   duration float = 10              # integer form
-   weight float = 23.3              # floating form
-   distance float = 2.3e20          # scientific form
-  
-**String** (``str``)
-
-.. code-block:: DIP
-
-   name str = John                  # single word
-   city str = 'New York'            # multiple words
-   country str = "United Kingdoms"  # multiple words
+Example of scalar node values were already shown in section about :ref:`dip/syntax/datatypes:standard data types`.
 
 Arrays
 ------

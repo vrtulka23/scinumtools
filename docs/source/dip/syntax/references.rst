@@ -55,7 +55,7 @@ An asterix at the end of the query selects children nodes:
    
 .. note::
    
-   The last reference type ``{?}`` is used only in :doc:`validation conditions <validation>` to reference the node's own value.  
+   The last reference type ``{?}`` is used only in :doc:`condition properties <properties>` to reference the node's own value.  
    
 References have two main applications.
 One can either import some already parsed DIP nodes into a new location, or inject other node values or contents of text files into a new node.

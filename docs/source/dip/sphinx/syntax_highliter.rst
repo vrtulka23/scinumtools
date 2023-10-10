@@ -150,7 +150,7 @@ Below is an overview of all its highlighting capabilities:
    2 kg * pow({?const.c},2)
    """) kg
 
-   # validation
+   # properties
    
    weight float = 23.3 kg
      = 28 g

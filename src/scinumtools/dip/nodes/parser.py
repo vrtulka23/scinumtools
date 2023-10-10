@@ -163,18 +163,17 @@ class Parser(Node):
         
     def part_type(self):
         types = [
-            ('bool',    r'^(\s+bool)',                        False, False),
-            ('str',     r'^(\s+str)',                         False, False),
-            ('table',   r'^(\s+table)',                       False, False),
-            ('int',     r'^(\s+(u|)int(4|8|16|32|64|128|))',  True,  True),
-            ('float',   r'^(\s+float(4|8|16|32|64|128|))',    True,  False),
+            ('bool',    r'^(\s+bool)',                False, False),
+            ('str',     r'^(\s+str)',                 False, False),
+            ('table',   r'^(\s+table)',               False, False),
+            ('int',     r'^(\s+(u|)int(16|32|64|))',  True,  True),
+            ('float',   r'^(\s+float(32|64|128|))',   True,  False),
         ]
         for keyword, pattern, precision, unsigned in types:
             m=re.match(pattern, self.ccode)
             if m:
                 self.parsed.append('part_type')
                 self.keyword = keyword
-                print('parser', self.ccode)
                 if unsigned and precision:   # integer
                     self.dtype_prop.append(m.group(2))
                     self.dtype_prop.append(m.group(3))

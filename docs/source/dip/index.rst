@@ -9,9 +9,9 @@ Dimensional Input Parameters
    :maxdepth: 2
    :caption: Contents:
 
-   intro
-   syntax
-   sphinx
+   intro/index
+   syntax/index
+   sphinx/index
 
 Welcome to DIP documentation!
 
@@ -56,7 +56,7 @@ The most notable features of this language are:
 
      # energy = 4e-7 J
 
-- Explicit definition of parameter options and their validation
+- Explicit definition of parameter options and their properties
 
   .. code-block:: DIP
 

@@ -27,7 +27,7 @@ The following features of DIP are already implemented in the current code versio
   * support for standard SI, CGS and AU units
   * definition of custom units
   * automatic unit conversion during node modifications
-* parameter validation: options, conditions, format and constants
+* parameter properties: options, conditions, format, constants, tags and description
 * parameter branching using conditions
 * syntax highlighter using "Pygments" in Sphinx
 * parameter documentation extension for Sphinx

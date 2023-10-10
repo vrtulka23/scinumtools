@@ -5,7 +5,7 @@ Integration for Sphinx
    :maxdepth: 2
    :caption: Contents:
 
-   sphinx/dipdocs
-   sphinx/syntax_highliter
-   sphinx/schema_highliter
+   dipdocs
+   syntax_highliter
+   schema_highliter
    

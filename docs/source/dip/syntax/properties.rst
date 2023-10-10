@@ -1,13 +1,15 @@
-Validation
+Properties
 ==========
 
 Numerical codes usually require initial parameter values with a specific format.
-In this section, we summarize validation tools that can be used in DIP to restrict node values.
-Each node validation directive is given on a new line immediately after node definitions, declarations or modification.
-All validation directives must have consistent indent, higher than their parent node.
+In this section, we summarize properties that can be used in DIP to restrict node values and describe their format.
+Each node property directive is given on a new line immediately after node definitions, declarations or modification.
+All properties must have consistent indent, higher than their parent node.
 
 Options
 -------
+
+**Used by:** ``int``, ``float``, ``str``
 
 Initial code parameters often accept only a few discrete input values, also called options.
 These can be explicitly described during node definition or declaration.
@@ -78,6 +80,8 @@ They combine into a single array of options against which the node value is eval
 Condition
 ---------
 
+**Used by:** ``int``, ``float``, ``str``, ``bool``
+
 Numerical values can usually have values ranging in some intervals.
 In order to restrict node values to some particular interval, it is possible to set logical using ``!condition`` directive and logical expression.
 A given expression has to be evaluated as ``true`` after each definition or modification of a node.
@@ -102,6 +106,8 @@ The actual value of node ``energy`` is matched using a special self-reference si
 Format
 ------
 
+**Used by:** ``str``
+
 In general, string values wrapped into quote marks can contain all characters and can be arbitrary long.
 This can be restricted by defining their ``!format`` using standard (Python based) regular expressions.
 
@@ -119,6 +125,8 @@ In the following example, node 'name' can contain only small and capital letters
 
 Constants
 ---------
+
+**Used by:** ``int``, ``float``, ``str``, ``bool``
 
 Sometimes nodes have to stay constant and exclude all possible modifications.
 This can be achieved by a directive ``!constant``.
@@ -140,8 +148,10 @@ Node ``name`` in the following example cannot be further modified.
 Tags
 ----
 
+**Used by:** ``int``, ``float``, ``str``, ``bool``
+
 Tags have proven to be a good way how to sort and categorize large number of information.
-Boolean, integer, float and string nodes support tagging using a dedicated property ``!tags`` that accept a list of tags.
+Data types supporting tagging can use dedicated property ``!tags`` that accept a list of tags.
 It is advised to use only string tags.
 
 .. code-block:: DIPSchema
@@ -166,4 +176,29 @@ Tagged nodes can be later on selected from environment using a tag selector.
    {'name': StringType('John')}
    
 
+Description
+-----------
+
+**Used by:** ``int``, ``float``, ``str``, ``bool``
+
+Notes about parameters in ``.dip`` file can be written as comments, however, comments as such are not visible in automatically generated DIP documentation.
+For this purpouse, there is a dedicated node property ``!description``. 
+
+.. code-block:: DIPSchema
+   :caption: Schema for node description
    
+   <indent>!description <value>
+
+Descriptions are stored in nodes and are used mostly in documentation.
+
+.. code-block:: 
+
+   >>> with DIP() as p:
+   >>>     p.from_string('''
+   >>>     name str = "John Smith"
+   >>>         !description "Name of a person"
+   >>>     ''')
+   >>>     env = p.parse()
+   >>> nodes = env.query("*")
+   >>> nodes[0].description
+   Name of a person
