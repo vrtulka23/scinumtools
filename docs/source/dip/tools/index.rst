@@ -1,9 +1,11 @@
 Tools
 =====
 
+Sphinx documentation
+--------------------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Sphinx documentation
 
    dipdocs
    syntax_highliter
