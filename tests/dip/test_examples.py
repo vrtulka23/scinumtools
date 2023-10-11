@@ -157,7 +157,7 @@ def test_definition_template(test_path):
         'box.size.x':           FloatType(1e-06, 'cm'),
         'box.size.y':           FloatType(3.0, 'cm'),
         'box.size.z':           FloatType(23.0, 'cm'),
-        'modules.hydrdynamics': BooleanType(True),
+        'modules.hydrodynamics':BooleanType(True),
         'modules.heating':      BooleanType(False),
         'modules.radiation':    BooleanType(True)
     })
