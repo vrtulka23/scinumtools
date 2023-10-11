@@ -1,6 +1,7 @@
 import json
 
 from .node_base import BaseNode
+from ..datatypes import StringType
 
 class DescriptionNode(BaseNode):
     keyword: str = 'description'
@@ -12,7 +13,7 @@ class DescriptionNode(BaseNode):
             parser.part_value()
             parser.part_comment()
             return DescriptionNode(parser)
-            
+                     
     def parse(self, env):
         if env.nodes[-1].keyword not in ['str','int','float','bool']:
             raise Exception("Description can be set only to str, int, float and bool nodes:", env.nodes[-1].code)

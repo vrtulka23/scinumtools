@@ -142,7 +142,7 @@ class DIP:
                     continue
             # Create hierarchical name
             excluded = ['empty','unit','source',
-                        'option','constant','format','condition','tags']
+                        'option','constant','format','condition','tags','description']
             self.env.update_hierarchy(node, excluded)
             # Add nodes to the list
             excluded += ['group']

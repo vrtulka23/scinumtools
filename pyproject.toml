@@ -20,3 +20,8 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/vrtulka23/scinumtools"
 "Bug Tracker" = "https://github.com/vrtulka23/scinumtools/issues"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

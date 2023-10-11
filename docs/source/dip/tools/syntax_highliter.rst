@@ -3,7 +3,7 @@ Syntax highliter
 
 DIP language shares many common programming concepts with other languages like Python and C.
 It's syntax is, however, different enough to cause a problem for generic highliters.
-Therefore, DIP comes with its own `pygments <https://pygments.org>`_ lexer in `syntax_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/highlighters/pygments/syntax_lexer.py>`_ and styles in `style_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/highlighters/pygments/style_lexer.py>`_.
+Therefore, DIP comes with its own `pygments <https://pygments.org>`_ lexer in `syntax_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/syntax_lexer.py>`_ and styles in `style_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/style_lexer.py>`_.
 Below is an overview of all its highlighting capabilities:
 
 .. note::

@@ -2,7 +2,7 @@ Schema highliter
 ================
 
 DIP schema highliter is design to highlight only the most basic concepts of DIP language.
-Definition of the schema highlighter is in file `schema_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/highlighters/pygments/schema_lexer.py>`_. 
+Definition of the schema highlighter is in file `schema_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/schema_lexer.py>`_. 
 The following block summarizes all highliter possibilities.
 
 .. code-block:: DIPSchema

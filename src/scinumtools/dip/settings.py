@@ -37,3 +37,7 @@ class Format:
     TYPE        = 3
     NODE        = 4
     QUANTITY    = 5
+
+class Order:
+    NONE        = 0
+    NAME        = 1

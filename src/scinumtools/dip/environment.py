@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import copy
 
 from ..units import Quantity, UnitEnvironment
-from .settings import Format, Sign, Keyword, Namespace
+from .settings import *
 from .datatypes import NumberType
 
 @dataclass
@@ -20,11 +20,18 @@ class Case:
     count: int = 0
     
 @dataclass
+class NodeList:
+    nodes: List     = field(default_factory = list)  # list of nodes
+    
+    def append(self, node):
+        self.nodes.append(node)
+    
+@dataclass
 class Environment:
     # Environment variables
-    nodes: List     = field(default_factory = list)   # nodes
-    units: Dict     = field(default_factory = dict)   # custom units
-    sources: Dict   = field(default_factory = dict)   # custom reference sources
+    nodes: List     = field(default_factory = list)  # nodes
+    units: Dict     = field(default_factory = dict)  # custom units
+    sources: Dict   = field(default_factory = dict)  # custom reference sources
     functions: Dict = field(default_factory = dict)  # custom native functions
 
     # Reference on the current node
@@ -149,7 +156,7 @@ class Environment:
             raise Exception("Reference source alread exists:", name)
         self.sources[name] = EnvSource(source=source, path=str(path), name=name)
         
-    def query(self, query:str, namespace:int=Namespace.NODES, tags:list=None):
+    def query(self, query:str, namespace:int=Namespace.NODES, tags:list=None, order:Order=Order.NONE):
         """ Select local nodes according to a query
 
         :param str query: Node selection query
@@ -178,6 +185,8 @@ class Environment:
                     if nodes[n].tags and np.in1d(tags, nodes[n].tags):
                         tagged.append(nodes[n])
                 nodes = tagged
+            if order == Order.NAME:
+                nodes = list(dict(sorted({node.name:node for node in nodes}.items())).values())
             return nodes
         elif namespace==Namespace.SOURCES:
             if query==Sign.WILDCARD:   # return all sources
@@ -269,3 +278,10 @@ class Environment:
                          print(' |',node.options, end='') 
                  print()
         return data
+
+    def pdf(self, file_path:str):
+
+        nodes = self.query('*')
+        with ExportPDF(nodes) as exp:
+            exp.export(file_path)
+        

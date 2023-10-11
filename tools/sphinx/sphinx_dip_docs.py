@@ -6,11 +6,9 @@ from docutils.parsers.rst import Directive, directives
 from inspect import getframeinfo, stack
 import collections
 
-from ..dip import DIP
-from ..source import Source
-from ..settings import Format
-from ..datatypes import NumberType
-from ..nodes import IntegerNode, StringNode, FloatNode
+from scinumtools.dip import DIP, Source, Format
+from scinumtools.dip.datatypes import NumberType
+from scinumtools.dip.nodes import IntegerNode, StringNode, FloatNode
 
 class SphinxDocs(Directive):
 

@@ -7,8 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import sys
-sys.path.insert(0,"../../src")
-sys.path.insert(1,"../../highlighters/pygments")
+sys.path.insert(0,"../../src")              # import recent version of scinumtools
+sys.path.insert(1,"../../tools/sphinx")     # import sphinx documentation
+sys.path.insert(2,"../../tools/pygments")   # import pygments highlighter
 import scinumtools
 
 import toml
@@ -25,7 +26,7 @@ version = data['project']['version']
 
 extensions = [
     'sphinx.ext.autosectionlabel',
-    'scinumtools.dip.docs.sphinx_docs',
+    'sphinx_dip_docs',
     "sphinx.ext.autodoc", 
     'sphinx_rtd_theme'
 ]

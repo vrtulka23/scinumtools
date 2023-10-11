@@ -3,8 +3,10 @@ $source settings = settings.dip
 runtime
   t_max float s              # mandatory
     !condition ("{?} > 0")
+    !description "Maximum simulation time"
   timestep float s
     !condition ("{?} < {?runtime.t_max} && {?} > 0")  # mandatory
+    !description "Simulation time step"
   {settings?runtime.*}
 
 box
@@ -12,24 +14,31 @@ box
     = 1  # linear
     = 2  # cylindrical
     = 3  # spherical
+    !description "Type of grid geometry"
 
   size
     x float cm               # mandatory
       !condition ("{?} > 0")
+      !description "Box size in X direction"
     @case ("{?box.geometry} > 1")
       y float cm             # mandatory if geometry is non-linear
-	= 3 cm 
-	= 4 cm
+	      = 3 cm 
+	      = 4 cm
+	      !description "Box size in Y direction"
     @end
     @case ("{?box.geometry} == 3")
       z float = 23 cm        # constant
-	!constant
+        !description "Box size in Z direction"
+	      !constant
     @end
     {settings?box.size.*}
   
 modules
   hydrdynamics bool = true   # optional
+    !description "Switch on hydrodynamics module"
   heating bool               # mandatory
+    !description "Switch on heating module"
   radiation bool             # mandatory
+    !description "Switch on radiation module"
   
   {settings?modules.*}

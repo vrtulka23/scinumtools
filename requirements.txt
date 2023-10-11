@@ -5,3 +5,4 @@ h5py
 matplotlib
 sphinx-rtd-theme
 toml
+fpdf
