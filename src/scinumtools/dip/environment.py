@@ -6,12 +6,7 @@ import copy
 from ..units import Quantity, UnitEnvironment
 from .settings import *
 from .datatypes import NumberType
-
-@dataclass
-class EnvSource:
-    source: Union[str] # can be also DIP
-    path: str
-    name: str
+from .lists import NodeList, SourceList, UnitList
 
 @dataclass
 class Case:
@@ -20,18 +15,11 @@ class Case:
     count: int = 0
     
 @dataclass
-class NodeList:
-    nodes: List     = field(default_factory = list)  # list of nodes
-    
-    def append(self, node):
-        self.nodes.append(node)
-    
-@dataclass
 class Environment:
     # Environment variables
-    nodes: List     = field(default_factory = list)  # nodes
-    units: Dict     = field(default_factory = dict)  # custom units
-    sources: Dict   = field(default_factory = dict)  # custom reference sources
+    nodes: NodeList       = field(default_factory = NodeList)    # nodes
+    units: UnitList       = field(default_factory = UnitList)    # list of cutom units
+    sources: SourceList   = field(default_factory = SourceList)  # list of reference sources
     functions: Dict = field(default_factory = dict)  # custom native functions
 
     # Reference on the current node
@@ -55,16 +43,6 @@ class Environment:
         """
         return copy.copy(self)
         
-    def pop_node(self):
-        """ Pop first node out of the node list
-        """
-        return self.nodes.pop(0)
-
-    def prepend_nodes(self, nodes):
-        """ Prepend new nodes to the node list
-        """
-        self.nodes = nodes + self.nodes
-    
     def update_hierarchy(self, node, excluded):
         """ Register new node to the hierarchy
 
@@ -131,81 +109,7 @@ class Environment:
             Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,''
         )
 
-    
-    def add_unit(self, name:str, unit:Quantity):
-        """ Add a new source
-
-        :param str name: Name of a new unit
-        :param Quantity unit: Quantity object
-        :param float num: Numerical value
-        :param str expr: Unit expression
-        """
-        name = f"[{name}]"
-        if name in self.units:
-            raise Exception("Reference unit alread exists:", name)
-        self.units[name] = {'magnitude':unit.magnitude.value, 'dimensions':unit.baseunits.dimensions.value()} #,'prefixes':['k','M','G']}
-        
-    def add_source(self, name:str, source:str, path:str):
-        """ Add a new source
-
-        :param str name: Name of a new source
-        :param source: Source can be either a DIP object or a text
-        :param str path: Source path
-        """
-        if name in self.sources:
-            raise Exception("Reference source alread exists:", name)
-        self.sources[name] = EnvSource(source=source, path=str(path), name=name)
-        
-    def query(self, query:str, namespace:int=Namespace.NODES, tags:list=None, order:Order=Order.NONE):
-        """ Select local nodes according to a query
-
-        :param str query: Node selection query
-        :param str namespace: Query namespace (nodes, sources, or units)
-        :param list tags: List of tags
-        """
-        if namespace==Namespace.NODES:
-            nodes = []
-            if query==Sign.WILDCARD:
-                nodes = [node.copy() for node in self.nodes]
-            elif query[-2:]==Sign.SEPARATOR + Sign.WILDCARD:
-                for node in self.nodes:
-                    if node.name.startswith(query[:-1]):
-                        node = node.copy()
-                        node.name = node.name[len(query[:-1]):]
-                        nodes.append(node.copy())
-            else:
-                for node in self.nodes:
-                    if node.name==query:
-                        node = node.copy()
-                        node.name = node.name.split(Sign.SEPARATOR)[-1]
-                        nodes.append(node.copy())
-            if tags:
-                tagged = []
-                for n in range(len(nodes)):
-                    if nodes[n].tags and np.in1d(tags, nodes[n].tags):
-                        tagged.append(nodes[n])
-                nodes = tagged
-            if order == Order.NAME:
-                nodes = list(dict(sorted({node.name:node for node in nodes}.items())).values())
-            return nodes
-        elif namespace==Namespace.SOURCES:
-            if query==Sign.WILDCARD:   # return all sources
-                return self.sources
-            else:                     # return particular source
-                if query not in self.sources:
-                    raise Exception("Requested source does not exists:", query)
-                return {query: self.sources[query]}
-        elif namespace==Namespace.UNITS:
-            if query==Sign.WILDCARD:   # return all units
-                return self.units
-            else:                     # return particular unit
-                if query not in self.units:
-                    raise Exception("Requested unit does not exists:", query)
-                return {query: self.units[query]}
-        else:
-            raise Exception("Invalid query namespace selected:", namespace)
-        
-    def request(self, path:str, count:int=None, namespace:str=Namespace.NODES, tags:list=None):
+    def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
         """ Request nodes from a path
 
         :param str path: Request path
@@ -224,11 +128,18 @@ class Environment:
             if isinstance(source, str):
                 return source
             else:
-                nodes = source.env.query(query, namespace, tags=tags)
+                if namespace == Namespace.NODES:
+                    nodes = source.env.nodes.query(query, tags=tags)
+                elif namespace == Namespace.SOURCES:
+                    nodes = source.env.sources.query(query)
+                elif namespace == Namespace.UNITS:
+                    nodes = source.env.sources.query(query)
+                else:
+                    nodes = source.env.query(query, namespace, tags=tags)
         else:         # use values parsed in the current file
             if not self.nodes:
                 raise Exception(f"Local nodes are not available for DIP import:", path)
-            nodes = self.query(query, namespace, tags=tags)
+            nodes = self.nodes.query(query, tags=tags)
         if count:
             if isinstance(count, list) and len(nodes) not in count:
                 raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
@@ -246,9 +157,9 @@ class Environment:
         """
         data = {}
         if query is not None:
-            nodes = self.query(query, tags=tags)
+            nodes = self.nodes.query(query, tags=tags)
         elif tags is not None:
-            nodes = self.query("*", tags=tags)
+            nodes = self.nodes.query("*", tags=tags)
         else:
             nodes = self.nodes
         for node in nodes:
@@ -281,7 +192,7 @@ class Environment:
 
     def pdf(self, file_path:str):
 
-        nodes = self.query('*')
+        nodes = self.nodes.query('*')
         with ExportPDF(nodes) as exp:
             exp.export(file_path)
         

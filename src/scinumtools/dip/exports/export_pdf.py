@@ -25,7 +25,8 @@ class ExportPDF:
         styles = getSampleStyleSheet()
         title = "DIP Documentation"
         pageinfo = "DIP Documentation"
-        nodes = self.env.query("*", order=Order.NAME)
+        nodes = self.env.nodes.query("*")
+        nodes.order(Order.NAME)
         
         def myFirstPage(canvas, doc):
             canvas.saveState()
@@ -61,37 +62,3 @@ class ExportPDF:
             story.append(p)
             story.append(Spacer(1,0.2*inch))
         doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)     
-
-    def export2(self, file_path: str):
-        #self.pdf.output(file_path, 'F')
-        
-        # Create a PDF document
-        doc = SimpleDocTemplate(file_path, pagesize=letter)
-        
-        # Create a table with nested cells
-        data = [
-            ["Header 1", "Header 2", "Header 3"],
-            [1, "A", "X"],
-            [2, "B", "Y"],
-            [3, "C", "Z"],
-        ]
-        
-        table = Table(data)
-        
-        # Apply table styles, including nested cell styles
-        style = TableStyle([
-            ('BACKGROUND', (0, 0), (2, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (2, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ])
-        
-        table.setStyle(style)
-        
-        # Build and save the PDF document
-        story = []
-        story.append(table)
-        doc.build(story)

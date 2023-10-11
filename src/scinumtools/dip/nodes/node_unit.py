@@ -23,7 +23,7 @@ class UnitNode(BaseNode):
             # import a remote source
             units = env.request(parser.value_ref, namespace=Namespace.UNITS)
             for key,val in units.items():
-                env.add_unit(key, val.unit)
+                env.units.append(key, val.unit)
         else:
             parser.part_name(path=False) # parse name
             parser.part_equal()          # parse equal sign
@@ -36,5 +36,5 @@ class UnitNode(BaseNode):
                 unit = Quantity(float(parser.value_raw), parser.units_raw)
                 unit.symbol = '['+parser.name+']'
                 unit.dfn = f"{parser.value_raw}*{parser.units_raw}"
-                env.add_unit(parser.name, unit)
+                env.units.append(parser.name, unit)
         return None

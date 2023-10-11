@@ -27,7 +27,7 @@ class SourceNode(BaseNode):
         if parser.is_parsed('part_reference'):
             sources = env.request(parser.value_ref, namespace=Namespace.SOURCES)
             for key, val in sources.items():
-                env.add_source(key, val.source, val.path)
+                env.sources.append(key, val.source, val.path)
         else:
             # inject value of a node
             parser.part_name(path=False) # parse name
@@ -41,7 +41,7 @@ class SourceNode(BaseNode):
                 p = dipsl.DIP(source=source)
                 p.from_file(parser.value_raw)
                 p.parse()
-                env.add_source(parser.name, p, parser.value_raw)
+                env.sources.append(parser.name, p, parser.value_raw)
             else:
                 filepath = parser.value_raw
                 if not os.path.isabs(filepath):
@@ -49,5 +49,5 @@ class SourceNode(BaseNode):
                     parent = Path(self.source.filename).parent
                     filepath = parent / filepath
                 with open(filepath,'r') as f:
-                    env.add_source(parser.name, f.read(), filepath)
+                    env.sources.append(parser.name, f.read(), filepath)
         return None

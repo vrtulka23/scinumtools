@@ -170,7 +170,7 @@ Tagged nodes can be later on selected from environment using a tag selector.
    >>>     age int = 34
    >>>     ''')
    >>>     env = p.parse()
-   >>> env.query("*", tags=['male'])
+   >>> env.nodes.query("*", tags=['male'])
    [StringNode(John)]
    >>> env.data(tags=['male'])
    {'name': StringType('John')}
@@ -199,6 +199,6 @@ Descriptions are stored in nodes and are used mostly in documentation.
    >>>         !description "Name of a person"
    >>>     ''')
    >>>     env = p.parse()
-   >>> nodes = env.query("*")
+   >>> nodes = env.nodes.query("*")
    >>> nodes[0].description
    Name of a person

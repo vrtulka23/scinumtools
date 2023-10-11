@@ -131,14 +131,14 @@ class DIP:
             env.nodes.append(node)
         # Parse nodes
         while len(env.nodes):
-            node = env.pop_node()
+            node = env.nodes.pop()
             # Perform specific node parsing only outside of case or inside of valid case
             if self.env.in_branch():
                 node.inject_value(self.env)
                 parsed = node.parse(self.env)
                 if parsed: 
                     # Add parsed nodes to the queue and continue
-                    env.prepend_nodes(parsed)
+                    env.nodes.prepend(parsed)
                     continue
             # Create hierarchical name
             excluded = ['empty','unit','source',

@@ -116,7 +116,7 @@ def test_tags():
         ''')
         env = p.parse()
 
-    nodes = env.query("*", tags=['male'])
+    nodes = env.nodes.query("*", tags=['male'])
     assert len(nodes)     == 1
     assert nodes[0].tags  == ['name','male']
     
@@ -148,5 +148,5 @@ def test_description():
         ''')
         env = p.parse()
 
-    nodes = env.query("*")
+    nodes = env.nodes.query("*")
     assert nodes[0].description == "Name of a person"

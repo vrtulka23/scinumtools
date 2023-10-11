@@ -27,7 +27,7 @@ def test_example_of_use(test_path):
         dip.from_file(test_path+"settings2.dip") # add new parameter
         env2 = dip.parse()                 # parse new parameters
 
-    nodes = env2.query("mpi.*")            # select nodes using a query
+    nodes = env2.nodes.query("mpi.*")            # select nodes using a query
     geom = env2.request("?box.geometry")   # select a node using a request
     
     assert nodes[0].value == IntegerType(36)
@@ -110,9 +110,9 @@ def test_query_request_tag(test_path):
         dip.from_file(test_path+"settings2.dip") 
         env = dip.parse()               
     
-    nodes = env.query("mpi.*")
+    nodes = env.nodes.query("mpi.*")
     assert len(nodes) == 2
-    nodes = env.query("runtime.*", tags=['step'])  
+    nodes = env.nodes.query("runtime.*", tags=['step'])  
     assert len(nodes) == 1
     geom = env.request("?box.geometry") 
     assert len(nodes) == 1
