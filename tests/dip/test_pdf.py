@@ -13,4 +13,7 @@ def test_logical():
         p.from_file("examples/definitions.dip")
         env = p.parse()
     with ExportPDF(env) as exp:
-        exp.export("tests/dip/tmp/docs_test.pdf")
+        tmp_dir = "tests/dip/tmp"
+        if not os.path.exists(tmp_dir):
+            os.mkdir(tmp_dir)
+        exp.export(f"{tmp_dir}/docs_test.pdf")
