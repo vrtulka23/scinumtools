@@ -99,8 +99,8 @@ class ExportPDF:
             p = Paragraph(name, style)
             dtype, value, unit = prepare_values(node)
             data = [
-                [p, '', dtype, const, value, unit],
-                ['Description:', node.description, '', '', '', '']
+                ['', p, '', dtype, const, value, unit],
+                ['', 'Description:', node.description, '', '', '', '']
             ]
             if node.condition:
                 condition = node.condition
@@ -112,18 +112,20 @@ class ExportPDF:
                     parent=styles["Normal"],
                     fontSize=8,
                 ))
-                data.append(['Condition:', condition, '', '', '', ''])
-            colWidths = list(np.array([0.2, 0.2, 0.1, 0.1, 0.2, 0.2])*(PAGE_WIDTH-2*inch))
+                data.append(['','Condition:', condition, '', '', '', ''])
+            colWidths = list(np.array([0.01, 0.19, 0.2, 0.1, 0.1, 0.2, 0.2])*(PAGE_WIDTH-2*inch))
             t = Table(data,style=[
                 ('GRID',(0,0),(-1,-1),0.5,    colors.goldenrod),
-                ('TEXTCOLOR',(0,0),(-1,0),   colors.saddlebrown),
-                ('SPAN',(0,0),(1,0)),
-                ('SPAN',(1,1),(-1,1)),
-                ('SPAN',(1,2),(-1,2)),
-                ('BACKGROUND',(0,0),(-1,0),  colors.navajowhite),
-                ('BACKGROUND',(0,1),(0,-1),  colors.antiquewhite),
-                ('BACKGROUND',(1,1),(-1,-1), colors.floralwhite),
-                ('FONTSIZE',(0,1),(-1,-1),   8),
+                ('TEXTCOLOR',(1,0),(-1,0),   colors.saddlebrown),
+                ('SPAN',(0,0),(0,-1)),
+                ('SPAN',(1,0),(2,0)),
+                ('SPAN',(2,1),(-1,1)),
+                ('SPAN',(2,2),(-1,2)),
+                ('BACKGROUND',(0,0),(0,-1),  colors.navajowhite),
+                ('BACKGROUND',(1,0),(-1,0),  colors.navajowhite),
+                ('BACKGROUND',(1,1),(1,-1),  colors.antiquewhite),
+                ('BACKGROUND',(2,1),(-1,-1), colors.floralwhite),
+                ('FONTSIZE',(1,1),(-1,-1),   8),
                 #('SPAN',(-2,-2),(-1,-1)),
             ], hAlign='LEFT', colWidths=colWidths)
             return t
