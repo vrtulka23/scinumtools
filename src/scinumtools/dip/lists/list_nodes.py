@@ -11,8 +11,30 @@ class NodeList:
     def __len__(self):
         return len(self.nodes)
     
-    def __getitem__(self, key):
-        return self.nodes[key]
+    def __getitem__(self, key: Union[int, str]):
+        if isinstance(key, int):
+            return self.nodes[key]
+        elif isinstance(key, str):
+            nodes = NodeList()
+            for node in self.nodes:
+                if node.name == key:
+                    return node.copy()
+                elif node.name.startswith(key+Sign.SEPARATOR):
+                    node = node.copy()
+                    node.name = node.name[len(key)+1:]
+                    nodes.append(node)
+            return nodes
+        else:
+            raise Exception("Node list keys can be only integers or strings:", key)
+        
+    def keys(self):
+        keys = []
+        for node in self.nodes:
+            node_key = node.name.split(Sign.SEPARATOR)[0]
+            if node_key not in keys:
+                keys.append(node_key)
+        keys.sort()
+        return keys
         
     def pop(self):
         return self.nodes.pop(0)
@@ -23,14 +45,12 @@ class NodeList:
     def prepend(self, nodes):
         self.nodes = nodes + self.nodes
         
-    def order(self, order: Order):
-        self.nodes = list(dict(sorted({node.name:node for node in self.nodes}.items())).values())
-    
-    def query(self, query:str, tags:list=None):
+    def query(self, query:str, tags:list=None, order:Order=None):
         """ Select local nodes according to a query
 
-        :param str query: Node selection query
-        :param list tags: List of tags
+        :param str query:   Node selection query
+        :param list tags:   List of tags
+        :param Order order: List ordering
         """
         nodes = NodeList()
         if query==Sign.WILDCARD:
@@ -53,4 +73,6 @@ class NodeList:
                 if nodes[n].tags and np.in1d(tags, nodes[n].tags):
                     tagged.append(nodes[n])
             nodes = tagged
+        if order:
+            nodes = list(dict(sorted({node.name:node for node in nodes}.items())).values())
         return nodes

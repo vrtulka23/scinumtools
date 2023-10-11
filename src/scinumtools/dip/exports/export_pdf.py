@@ -4,7 +4,7 @@ from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 
 from ..environment import Environment
-from ..settings import Order
+from ..settings import Order, Sign
 
 class ExportPDF:
     
@@ -25,8 +25,8 @@ class ExportPDF:
         styles = getSampleStyleSheet()
         title = "DIP Documentation"
         pageinfo = "DIP Documentation"
-        nodes = self.env.nodes.query("*")
-        nodes.order(Order.NAME)
+        
+        nodes = self.env.nodes.query("*", order=Order.NAME)
         
         def myFirstPage(canvas, doc):
             canvas.saveState()
@@ -53,11 +53,11 @@ class ExportPDF:
         #story.append(title)
         
         for node in nodes:
-            node_parts = node.name.split(".")
-            node_path = ".".join(node_parts[:-1])
+            node_parts = node.name.split(Sign.SEPARATOR)
+            node_path = Sign.SEPARATOR.join(node_parts[:-1])
             node_name = node_parts[-1]
             if node_path:
-                node_path += "."
+                node_path += Sign.SEPARATOR
             p = Paragraph(f"{node_path}<font color='orange'>{node_name}</font>", style)
             story.append(p)
             story.append(Spacer(1,0.2*inch))
