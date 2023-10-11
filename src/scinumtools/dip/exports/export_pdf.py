@@ -1,10 +1,13 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 
 from ..environment import Environment
 from ..settings import Order, Sign
+from ..lists import NodeList
+from ..nodes import Node
 
 class ExportPDF:
     
@@ -26,7 +29,6 @@ class ExportPDF:
         title = "DIP Documentation"
         pageinfo = "DIP Documentation"
         
-        nodes = self.env.nodes.query("*", order=Order.NAME)
         
         def myFirstPage(canvas, doc):
             canvas.saveState()
@@ -43,15 +45,57 @@ class ExportPDF:
             canvas.restoreState()
             
         doc = SimpleDocTemplate(file_path)
-        story = [Spacer(1,2*inch)]
+        blocks = [Spacer(1,1*inch)]
         style = styles["Normal"]
         
         # Define a style for your title
         #title_style = getSampleStyleSheet()["Title"]
         #title_style.alignment = 1  # Center alignment
         #title = Paragraph('Title', style)
-        #story.append(title)
+        #blocks.append(title)
         
+        def print_node(node, parent_name:str=''):
+            if parent_name:
+                name = f"{parent_name}{Sign.SEPARATOR}<font color='orange'>{node.name}</font>"
+            else:
+                name = f"<font color='orange'>{node.name}</font>"
+            p = Paragraph(name, style)
+            
+            data = [[node.name, '', '02', '03', '04'],
+                ['', '', '12', '13', '14'],
+                ['20', '21', '22', node.description, ''],
+                ['30', '31', '32', '', '']]
+            t = Table(data,style=[
+                ('GRID',(0,0),(-1,-1),0.5,colors.grey),
+                ('TEXTCOLOR',(0,0),(1,1),colors.palegreen),
+                ('SPAN',(0,0),(1,1)),
+                ('BACKGROUND',(-2,-2),(-1,-1), colors.pink),
+                ('SPAN',(-2,-2),(-1,-1)),
+            ])
+            return t
+
+        def collect_blocks(nodes, parent_name:str=''):
+            blocks = []
+            for group_name in nodes.keys():
+                if parent_name:
+                    group_path = f"{parent_name}{Sign.SEPARATOR}{group_name}"
+                else:
+                    group_path = group_name
+                child = nodes[group_name]
+                if isinstance(child, NodeList) and len(child):
+                    blocks += collect_blocks(child, group_path)
+                elif isinstance(child, Node):
+                    blocks.append(print_node(child, parent_name))
+                #blocks.append(Spacer(1,0.2*inch))
+            if blocks:
+                p = Paragraph(parent_name, style)
+                blocks.insert(0, p)
+            return blocks
+            
+        for block in collect_blocks(self.env.nodes):
+            blocks.append(block)
+            
+        """
         for node in nodes:
             node_parts = node.name.split(Sign.SEPARATOR)
             node_path = Sign.SEPARATOR.join(node_parts[:-1])
@@ -59,6 +103,7 @@ class ExportPDF:
             if node_path:
                 node_path += Sign.SEPARATOR
             p = Paragraph(f"{node_path}<font color='orange'>{node_name}</font>", style)
-            story.append(p)
-            story.append(Spacer(1,0.2*inch))
-        doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)     
+            blocks.append(p)
+            blocks.append(Spacer(1,0.2*inch))
+        """
+        doc.build(blocks, onFirstPage=myFirstPage, onLaterPages=myLaterPages)    
