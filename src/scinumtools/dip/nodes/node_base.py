@@ -4,7 +4,7 @@ import json
 from .node import Node
 from ..datatypes import Type, NumberType, IntegerType, FloatType, StringType, BooleanType
 from ..environment import Environment
-from ..settings import Keyword
+from ..settings import Keyword, Sign
 
 class BaseNode(Node):
     
@@ -51,6 +51,15 @@ class BaseNode(Node):
 
     def parse(self, env):
         return False
+
+    def clean_name(self):
+        """ Strip @case and @else from the name
+        """
+        return self.name.replace(
+            Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,''
+        ).replace(
+            Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,''
+        )
 
     def cast_value(self, value=None):
         """ Cast (raw-)value as a datatype self, or another node

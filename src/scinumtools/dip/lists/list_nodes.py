@@ -11,6 +11,9 @@ class NodeList:
     def __len__(self):
         return len(self.nodes)
     
+    def __delitem__(self, key):
+        del self.nodes[key]
+    
     def __getitem__(self, key: Union[int, str]):
         if isinstance(key, int):
             return self.nodes[key]

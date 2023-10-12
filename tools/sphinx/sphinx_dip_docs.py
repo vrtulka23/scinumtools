@@ -1,4 +1,4 @@
-import os
+import os, sys
 import sphinx
 import pathlib
 from docutils import nodes
@@ -6,6 +6,7 @@ from docutils.parsers.rst import Directive, directives
 from inspect import getframeinfo, stack
 import collections
 
+sys.path.insert(0,"../src")              # import recent version of scinumtools
 from scinumtools.dip import DIP, Source, Format
 from scinumtools.dip.datatypes import NumberType
 from scinumtools.dip.nodes import IntegerNode, StringNode, FloatNode
@@ -27,7 +28,7 @@ class SphinxDocs(Directive):
         
         with DIP(source=source, docs=True) as dip:
             dip.from_file(file_dip)
-            env = dip.parse()
+            env = dip.parse_docs()
             sources = env.sources
             units = env.units
             data = env.data(format=Format.NODE)

@@ -26,7 +26,7 @@ box
     x float128 cm            # mandatory
       !condition ("{?} > 0")
       !description "Box size in X direction"
-    y float cm
+    y float cm               # first declared here
     @case ("{?box.geometry} > 1")
       y float cm             # mandatory if geometry is non-linear
         = 3 cm 
@@ -38,7 +38,6 @@ box
         !description "Box size in Z direction"
         !constant
     @end
-    y float cm
     {settings?box.size.*}
   
 modules

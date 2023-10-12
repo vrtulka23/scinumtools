@@ -25,6 +25,6 @@ def file_definitions():
 def test_export_pdf(file_pdf, file_definitions):
     with DIP(docs=True) as p:
         p.from_file(file_definitions)
-        env = p.parse()
+        env = p.parse_docs()
     with ExportPDF(env) as exp:
         exp.export(file_pdf)
