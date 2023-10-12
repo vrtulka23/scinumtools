@@ -28,6 +28,7 @@ box
       !description "Box size in X direction"
     y float cm
     @case ("{?box.geometry} > 1")
+      y float cm             # mandatory if geometry is non-linear
         = 3 cm 
         = 4 cm
         !description "Box size in Y direction"
