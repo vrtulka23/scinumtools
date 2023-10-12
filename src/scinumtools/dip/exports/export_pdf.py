@@ -128,16 +128,19 @@ class ExportPDF:
         
         def print_node(node, parent_name:str=''):
             name = f"<strong>{node.name}</strong>"
-            const = "const" if node.constant else ""
+            const = "constant" if node.constant else ""
             p = Paragraph(name, tableHeaderStyle)
             dtype, value, unit = prepare_values(node)
             data = [
-                ['', p, '', dtype, unit, const],
+                ['', p, '', dtype, const],
             ]
             tableStyle2 = tableStyle.copy()
             if value:
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-                data.append(['','Default value:', Paragraph(value, tableBodyStyle), '', '',''])
+                data.append(['','Default value:', Paragraph(value, tableBodyStyle)])
+            if unit:
+                tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
+                data.append(['','Default unit:', Paragraph(unit, tableBodyStyle)])
             if node.condition:
                 condition = node.condition
                 condition = condition.replace("{","<font color='orange'>{")
@@ -145,22 +148,23 @@ class ExportPDF:
                 #print(condition)
                 condition = Paragraph(condition, style=tableBodyStyle)
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-                data.append(['','Condition:', condition, '', '', ''])
+                data.append(['','Condition:', condition])
             if node.tags:
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-                data.append(['', 'Tags:', Paragraph(", ".join(node.tags), tableBodyStyle), '', '', ''])
+                data.append(['', 'Tags:', Paragraph(", ".join(node.tags), tableBodyStyle)])
             if node.keyword != BooleanNode.keyword and node.options:
                 options = [str(option.value.value) for option in node.options]
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-                data.append(['', 'Options:', Paragraph(", ".join(options), tableBodyStyle), '', '', ''])
+                data.append(['', 'Options:', Paragraph(", ".join(options), tableBodyStyle)])
             if node.keyword == StringNode.keyword and node.format:
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-                data.append(['', 'Format:', Paragraph(node.format, tableBodyStyle), '', '', ''])
+                data.append(['', 'Format:', Paragraph(node.format, tableBodyStyle)])
             if node.description:
                 tableStyle2.append(('SPAN', (1,-1), (-1,-1) ))
                 tableStyle2.append(('BACKGROUND', (1,-1), (-1,-1),  colors.floralwhite))
-                data.append(['', Paragraph(node.description, tableBodyStyle), '', '', '', ''])
-            colWidths = list(np.array([0.01, 0.19, 0.2, 0.12, 0.38, 0.1])*(PAGE_WIDTH-2*inch))
+                data.append(['', Paragraph(node.description, tableBodyStyle)])
+                
+            colWidths = list(np.array([0.01, 0.19, 0.5, 0.15, 0.15])*(PAGE_WIDTH-2*inch))
             t = Table(data,style=tableStyle2, hAlign='LEFT', colWidths=colWidths)
             return t
 

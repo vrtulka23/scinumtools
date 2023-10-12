@@ -170,8 +170,8 @@ class DIP:
                         raise Exception(f"Modifying undefined node:",node.name)
                     self.env.nodes.append(node)
         # Validate nodes
-        for node in self.env.nodes:
-            if not self.env.docs:
+        if not self.env.docs:
+            for node in self.env.nodes:
                 # Check if all declared nodes have assigned value
                 if node.defined and node.value is None:
                     raise Exception(f"Node value must be defined:", node.code)
