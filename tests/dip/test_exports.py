@@ -20,7 +20,7 @@ def file_pdf():
 
 @pytest.fixture
 def file_definitions():
-    return "examples/definitions.dip"
+    return "examples/pdf_definitions.dip"
 
 def test_export_pdf(file_pdf, file_definitions):
     with DIP(docs=True) as p:

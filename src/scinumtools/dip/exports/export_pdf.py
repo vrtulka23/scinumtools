@@ -63,8 +63,7 @@ class ExportPDF:
             ('TEXTCOLOR',  (1,0), (-1,0),   colors.saddlebrown),   
             ('BACKGROUND', (1,0), (-1,0),   colors.navajowhite),   
             # left case strip
-            ('SPAN',       (0,0), (0,-1)    ),                              
-            ('BACKGROUND', (0,0), (0,-1),   colors.navajowhite),
+            ('SPAN',       (0,0), (0,-1)    ),                    
             # property names
             ('BACKGROUND', (1,1), (1,-1),   colors.antiquewhite),  
             # property values
@@ -164,6 +163,11 @@ class ExportPDF:
                 tableStyle2.append(('BACKGROUND', (1,-1), (-1,-1),  colors.floralwhite))
                 data.append(['', Paragraph(node.description, tableBodyStyle)])
                 
+            if '@case' in parent_name:
+                tableStyle2.append(('BACKGROUND', (0,0), (0,-1),   colors.lightgreen))
+            else:
+                tableStyle2.append(('BACKGROUND', (0,0), (0,-1),   colors.navajowhite))
+                
             colWidths = list(np.array([0.01, 0.19, 0.5, 0.15, 0.15])*(PAGE_WIDTH-2*inch))
             t = Table(data,style=tableStyle2, hAlign='LEFT', colWidths=colWidths)
             return t
@@ -176,11 +180,17 @@ class ExportPDF:
                 else:
                     group_path = group_name
                 child = nodes[group_name]
-                if isinstance(child, NodeList) and len(child):
-                    blocks += collect_blocks(child, group_path)
-                elif isinstance(child, Node):
+                if isinstance(child, Node):
                     blocks.append(print_node(child, parent_name))
                     blocks.append(Spacer(inch, inch/12))
+            for group_name in nodes.keys():
+                if parent_name:
+                    group_path = f"{parent_name}{Sign.SEPARATOR}{group_name}"
+                else:
+                    group_path = group_name
+                child = nodes[group_name]
+                if isinstance(child, NodeList) and len(child):
+                    blocks += collect_blocks(child, group_path)
                 #blocks.append(Spacer(1,0.2*inch))
             if blocks:
                 p = Paragraph(f"<strong>{parent_name}</strong>", groupStyle)

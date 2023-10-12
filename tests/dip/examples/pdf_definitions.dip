@@ -1,0 +1,54 @@
+$source settings = pdf_settings.dip
+
+simulation
+  name str = "simulation"
+    !format "[a-zA-Z_-]+"
+  precision str = "double"
+    !options ["double","float"]
+
+runtime
+  t_max float s              # mandatory
+    !condition ("{?} > 0")
+    !description "Maximum simulation time"
+  timestep float s
+    !condition ("{?} < {?runtime.t_max} && {?} > 0")  # mandatory
+    !description "Simulation time step"
+  {settings?runtime.*}
+
+box
+  geometry uint16 = {settings?box.geometry}  # mandatory
+    = 1  # linear
+    = 2  # cylindrical
+    = 3  # spherical
+    !description "Type of grid geometry"
+
+  size
+    x float128 cm            # mandatory
+      !condition ("{?} > 0")
+      !description "Box size in X direction"
+    y float cm
+    @case ("{?box.geometry} > 1")
+        = 3 cm 
+        = 4 cm
+        !description "Box size in Y direction"
+    @end
+    @case ("{?box.geometry} == 3")
+      z float = 23 cm        # constant
+        !description "Box size in Z direction"
+        !constant
+    @end
+    y float cm
+    {settings?box.size.*}
+  
+modules
+  hydrodynamics bool = true  # optional
+    !description "Switch on hydrodynamics module"
+    !tags ["preprocessor"]
+  heating bool               # mandatory
+    !description "Switch on heating module"
+    !tags ["preprocessor"]
+  radiation bool             # mandatory
+    !description "Switch on radiation module"
+    !tags ["preprocessor"]
+  
+  {settings?modules.*}

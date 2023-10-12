@@ -158,12 +158,21 @@ class DIP:
                 node.set_value()
                 # If node was previously defined, modify its value
                 for n in range(len(self.env.nodes)):
-                    if self.env.nodes[n].name==node.name:
-                        if self.env.nodes[n].constant:
-                            raise Exception(f"Node '{self.env.nodes[n].name}' is constant and cannot be modified:",node.code)
-                        if not self.env.docs:
+                    if self.env.docs:
+                        name1 = self.env.nodes[n].name
+                        name1 = name1.replace(Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,'')
+                        name1 = name1.replace(Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,'')
+                        name2 = node.name
+                        name2 = name2.replace(Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,'')
+                        name2 = name2.replace(Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,'')
+                        if name1==name2:
+                            break
+                    else:
+                        if self.env.nodes[n].name==node.name:
+                            if self.env.nodes[n].constant:
+                                raise Exception(f"Node '{self.env.nodes[n].name}' is constant and cannot be modified:",node.code)
                             self.env.nodes[n].modify_value(node, self.env)
-                        break
+                            break
                 # If node wasn't defined, create a new node
                 else:
                     if node.keyword=='mod' and node.source.primary:

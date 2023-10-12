@@ -94,12 +94,9 @@ class Environment:
             return        
         if not node.name.startswith(self.cases[-1].name): # ending case at lower indent
             self.cases.pop()
-        node.name = node.name.replace(
-            Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,''
-        )
-        node.name = node.name.replace(
-            Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,''
-        )
+        if not self.docs:
+            node.name = node.name.replace(Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,'')
+            node.name = node.name.replace(Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,'')
 
     def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
         """ Request nodes from a path
