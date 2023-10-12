@@ -11,7 +11,7 @@ def test_node_list():
         p.from_file("examples/definitions.dip")
         env = p.parse()
         
-    assert env.nodes.keys()                       == ['box', 'modules', 'runtime']
+    assert env.nodes.keys()                       == ['box', 'modules', 'runtime', 'simulation']
     assert env.nodes['runtime'].keys()            == ['t_max', 'timestep']
     assert env.nodes['runtime']['timestep'].value == FloatType(1.0000000000000001e-11, 's')
     assert env.nodes['runtime.t_max'].value       == FloatType(1e-08, 's')

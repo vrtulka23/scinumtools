@@ -10,7 +10,7 @@ from scinumtools.dip.datatypes import FloatType, IntegerType, StringType, Boolea
 def parse(code):
     with DIP() as p:
         p.from_string(code)
-        return p.parse().data(verbose=True,format=Format.TYPE)
+        return p.parse().data(Format.TYPE,verbose=True)
 
 def test_invalid_start():
     with pytest.raises(Exception) as e_info:
@@ -167,12 +167,12 @@ trafic
 def test_only_false_case():
 
     data = parse('''
-sim
-  gravity bool = false      
-
-  @case ("{?sim.gravity}")
-    stars int = 30
-  @end
+    sim
+      gravity bool = false      
+  
+      @case ("{?sim.gravity}")
+        stars int = 30
+      @end
     ''')
     np.testing.assert_equal(data,{
         'sim.gravity': BooleanType(False),
@@ -187,3 +187,22 @@ if __name__ == "__main__":
         if fn[:5]=='test_' and (test is True or test==fn[5:]):
             print(f"\nTesting: {fn}\n")
             locals()[fn]()
+
+def test_leaking_node_properties():
+  
+    with DIP() as p:
+        p.from_string('''
+        gravity bool = false
+        
+        @case ("{?gravity}")
+          stars int = 30
+            !constant
+        @end
+        
+        radiation bool = true
+          !constant
+        ''')
+        env = p.parse()
+    assert env.nodes[0].constant == False
+    assert env.nodes[1].constant == True
+    assert len(env.nodes) == 2

@@ -7,9 +7,14 @@ class StringNode(BaseNode, SelectNode):
     keyword: str = 'str'
     format: str = None
     tags: list = None
+    options: list = None
     description: str = None
     dtype = str
 
+    def __init__(self, *args, **kwargs):
+        self.options = []
+        super().__init__(*args, **kwargs)
+        
     @staticmethod
     def is_node(parser):
         if parser.keyword=='str':

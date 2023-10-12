@@ -5,14 +5,14 @@ import copy
 
 from ..units import Quantity, UnitEnvironment
 from .settings import *
-from .datatypes import NumberType
+from .datatypes import NumberType, BooleanType
 from .lists import NodeList, SourceList, UnitList
 
 @dataclass
 class Case:
     name: str
     value: bool
-    count: int = 0
+    code: str
     
 @dataclass
 class Environment:
@@ -20,7 +20,7 @@ class Environment:
     nodes: NodeList       = field(default_factory = NodeList)    # nodes
     units: UnitList       = field(default_factory = UnitList)    # list of cutom units
     sources: SourceList   = field(default_factory = SourceList)  # list of reference sources
-    functions: Dict = field(default_factory = dict)  # custom native functions
+    functions: Dict       = field(default_factory = dict)        # custom native functions
 
     # Reference on the current node
     autoref: str = None
@@ -29,7 +29,7 @@ class Environment:
     docs: bool = False  
 
     # Hierarchy list
-    parent_indents: List[int] = field(default_factory = list)  # indent level
+    parent_indents: List[int] = field(default_factory = list)    # indent level
     parent_names: List[str]   = field(default_factory = list)    # list of parent names
 
     # Case list
@@ -57,18 +57,12 @@ class Environment:
             self.parent_indents.append(node.indent)
             node.name = Sign.SEPARATOR.join(self.parent_names)
 
-    def in_branch(self):
-        """ Checks if outside or inside of a valid case clause
-        """
-        if self.cases:
-            return self.cases[-1].count<2 
-        else:
-            return True
-
     def false_case(self):
         """ Checks if case value is false
         """
-        return self.cases and self.cases[-1].value is False
+        if not self.cases:
+            return False
+        return self.cases[-1].value.value == False
         
     def solve_case(self, node):
         """ Manage condition nodes
@@ -80,14 +74,12 @@ class Environment:
             if casename+Keyword.CASE!=node.name:   # register new case
                 self.cases.append(Case(
                     name = node.name[:-4],
-                    value = node.value
+                    value = node.value,
+                    code = node.code
                 ))
-            if node.value or (self.cases and self.cases[-1].count==1):
-                self.cases[-1].count += 1
-                self.cases[-1].value = node.value
         elif node.name==casename + Keyword.ELSE:
-            self.cases[-1].count += 1
-            self.cases[-1].value = True
+            self.cases[-1].value = BooleanType(True)
+            self.cases[-1].code = node.code
         elif node.name==casename + Keyword.END:    # end case using a keyword
             self.cases.pop()
         else:

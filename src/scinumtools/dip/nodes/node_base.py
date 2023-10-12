@@ -90,11 +90,15 @@ class BaseNode(Node):
                 # casting string as boolean returns true always if string is non-empty
                 # that's why we need to convert it expicitely
                 if self.keyword=='bool':
-                    if value==Keyword.TRUE:
-                        value = True
+                    if isinstance(value, BooleanType):
+                        pass
+                    elif isinstance(value, (bool,np.bool_)):
+                        value = BooleanType(value)
+                    elif value==Keyword.TRUE:
+                        value = BooleanType(True)
                     elif value==Keyword.FALSE:
-                        value = False
-                    elif not isinstance(value,(BooleanType,bool,np.bool_)):
+                        value = BooleanType(False)
+                    else:
                         raise Exception("Could not convert raw value to boolean type:",value)
                 else:
                     try:

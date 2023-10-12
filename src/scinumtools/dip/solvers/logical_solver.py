@@ -67,7 +67,7 @@ class LogicalSolver:
                 'and': OperatorAnd, 'or': OperatorOr, 
             }
             with ExpressionSolver(self._eval_node, operators) as es:
-                return es.solve(expr).value    
+                return es.solve(expr)
                 
 
 class CustomOperatorNot(OperatorNot):

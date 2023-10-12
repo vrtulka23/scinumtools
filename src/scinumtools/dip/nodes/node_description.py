@@ -20,5 +20,5 @@ class DescriptionNode(BaseNode):
         if env.nodes[-1].description == None:
             env.nodes[-1].description = str(self.value_raw)
         else:
-            env.nodes[-1].description += description
+            env.nodes[-1].description += str(self.value_raw)
         return None

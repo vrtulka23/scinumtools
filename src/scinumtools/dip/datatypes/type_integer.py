@@ -2,6 +2,7 @@ from typing import Union, List
 import numpy as np
 
 from .type_number import NumberType
+from .type_boolean import BooleanType
 
 class IntegerType(NumberType):
     value: Union[int,list]

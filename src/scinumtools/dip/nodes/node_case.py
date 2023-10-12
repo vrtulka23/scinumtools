@@ -1,6 +1,7 @@
 from .node_base import BaseNode
 from ..settings import Sign, Keyword
 from ..solvers import LogicalSolver
+from ..datatypes import BooleanType
 
 class CaseNode(BaseNode):
     keyword: str = 'case'
@@ -22,4 +23,8 @@ class CaseNode(BaseNode):
                     self.value = s.solve(self.value_expr)
                 else:
                     self.value = s.solve(self.value_raw)
+        elif self.name.endswith(Sign.CONDITION + Keyword.ELSE):
+            self.value = BooleanType(True)
+        elif self.name.endswith(Sign.CONDITION + Keyword.END):
+            self.value = BooleanType(False)
         return None

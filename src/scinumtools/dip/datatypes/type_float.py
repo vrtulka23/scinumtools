@@ -2,6 +2,7 @@ from typing import Union, List
 import numpy as np
 
 from .type_number import NumberType
+from .type_boolean import BooleanType
 
 class FloatType(NumberType):
     value: Union[float,list]
@@ -13,7 +14,7 @@ class FloatType(NumberType):
             return f"FloatType({self.value} {self.unit})"
         else:
             return f"FloatType({self.value})"
-
+        
     def __init__(self, value, unit=None, **kwargs):
         if isinstance(value, FloatType):
             kwargs['value'] = value.value

@@ -9,24 +9,24 @@ from scinumtools.dip.datatypes import BooleanType
 
 def test_or_and():
     with LogicalSolver() as p:
-        assert p.solve('true || true || true')    == True
-        assert p.solve('false || true || false')  == True
-        assert p.solve('false || false || false') == False
-        assert p.solve('true && true && true')    == True
-        assert p.solve('true && false && true')   == False
-        assert p.solve('false && false && false') == False
-        assert p.solve('true && true && true || false || false') == True
-        assert p.solve('false || true && false && true || true') == True
-        assert p.solve('false || false || true && false && true') == False
+        assert p.solve('true || true || true')    == BooleanType(True)
+        assert p.solve('false || true || false')  == BooleanType(True)
+        assert p.solve('false || false || false') == BooleanType(False)
+        assert p.solve('true && true && true')    == BooleanType(True)
+        assert p.solve('true && false && true')   == BooleanType(False)
+        assert p.solve('false && false && false') == BooleanType(False)
+        assert p.solve('true && true && true || false || false') == BooleanType(True)
+        assert p.solve('false || true && false && true || true') == BooleanType(True)
+        assert p.solve('false || false || true && false && true') == BooleanType(False)
 
 def test_parenthesis():
     with LogicalSolver() as p:
-        assert p.solve('(true || false) && true && true') == True
-        assert p.solve('true && (true && false) && true') == False
-        assert p.solve('false || false || (true || false)') == True
-        assert p.solve('false || (true || false) && true') == True
-        assert p.solve('false || true && (false || false)') == False
-        assert p.solve('false || ((false||true) || false) && (true||false)') == True
+        assert p.solve('(true || false) && true && true') == BooleanType(True)
+        assert p.solve('true && (true && false) && true') == BooleanType(False)
+        assert p.solve('false || false || (true || false)') == BooleanType(True)
+        assert p.solve('false || (true || false) && true') == BooleanType(True)
+        assert p.solve('false || true && (false || false)') == BooleanType(False)
+        assert p.solve('false || ((false||true) || false) && (true||false)') == BooleanType(True)
 
 def test_compare_nodes():
     with DIP() as dip:
@@ -40,28 +40,28 @@ def test_compare_nodes():
         env = dip.parse()
     with LogicalSolver(env) as p:
         # node pair comparison
-        assert p.solve('{?dogs} == {?cats}') == False
-        assert p.solve('{?dogs} == {?birds}') == True
-        assert p.solve('{?dogs} != {?cats}') == True
-        assert p.solve('{?dogs} != {?birds}') == False
-        assert p.solve('{?dogs} <= {?cats}') == True
-        assert p.solve('{?dogs} <= {?birds}') == True
-        assert p.solve('{?dogs} <= {?fish}') == False
-        assert p.solve('{?dogs} >= {?cats}') == False
-        assert p.solve('{?dogs} >= {?birds}') == True
-        assert p.solve('{?dogs} >= {?fish}') == True
-        assert p.solve('{?dogs} <  {?cats}') == True
-        assert p.solve('{?dogs} <  {?fish}') == False
-        assert p.solve('{?dogs} >  {?fish}') == True
-        assert p.solve('{?dogs} >  {?cats}') == False
+        assert p.solve('{?dogs} == {?cats}') == BooleanType(False)
+        assert p.solve('{?dogs} == {?birds}') == BooleanType(True)
+        assert p.solve('{?dogs} != {?cats}') == BooleanType(True)
+        assert p.solve('{?dogs} != {?birds}') == BooleanType(False)
+        assert p.solve('{?dogs} <= {?cats}') == BooleanType(True)
+        assert p.solve('{?dogs} <= {?birds}') == BooleanType(True)
+        assert p.solve('{?dogs} <= {?fish}') == BooleanType(False)
+        assert p.solve('{?dogs} >= {?cats}') == BooleanType(False)
+        assert p.solve('{?dogs} >= {?birds}') == BooleanType(True)
+        assert p.solve('{?dogs} >= {?fish}') == BooleanType(True)
+        assert p.solve('{?dogs} <  {?cats}') == BooleanType(True)
+        assert p.solve('{?dogs} <  {?fish}') == BooleanType(False)
+        assert p.solve('{?dogs} >  {?fish}') == BooleanType(True)
+        assert p.solve('{?dogs} >  {?cats}') == BooleanType(False)
         # single bool node
-        assert p.solve('{?animal}') == True
-        assert p.solve('~{?animal}') == False   # negated value
+        assert p.solve('{?animal}') == BooleanType(True)
+        assert p.solve('~{?animal}') == BooleanType(False)   # negated value
         # is node defined
-        assert p.solve('!{?dogs}') == True
-        assert p.solve('!{?elefant}') == False
-        assert p.solve('!{?elefant} == false') == True
-        assert p.solve('~!{?elefant}') == True  # negated value
+        assert p.solve('!{?dogs}') == BooleanType(True)
+        assert p.solve('!{?elefant}') == BooleanType(False)
+        assert p.solve('!{?elefant} == false') == BooleanType(True)
+        assert p.solve('~!{?elefant}') == BooleanType(True)  # negated value
 
 def test_compare_values():
     with DIP() as dip:
@@ -71,22 +71,22 @@ def test_compare_values():
         env = dip.parse()
     with LogicalSolver(env) as p:
         # comparison with the same units
-        assert p.solve('{?weight} == 57.30 kg') == True
-        assert p.solve('{?weight} == 57.31 kg') == False
-        assert p.solve('{?weight} != 57.30 kg') == False
-        assert p.solve('{?weight} != 57.31 kg') == True
-        assert p.solve('{?weight} <= 57.30 kg') == True
-        assert p.solve('{?weight} <= 60 kg') == True
-        assert p.solve('{?weight} <= 50 kg') == False
+        assert p.solve('{?weight} == 57.30 kg') == BooleanType(True)
+        assert p.solve('{?weight} == 57.31 kg') == BooleanType(False)
+        assert p.solve('{?weight} != 57.30 kg') == BooleanType(False)
+        assert p.solve('{?weight} != 57.31 kg') == BooleanType(True)
+        assert p.solve('{?weight} <= 57.30 kg') == BooleanType(True)
+        assert p.solve('{?weight} <= 60 kg') == BooleanType(True)
+        assert p.solve('{?weight} <= 50 kg') == BooleanType(False)
         # comparison with different units
-        assert p.solve('{?weight} >= 57300 g') == True
-        assert p.solve('{?weight} >= 50000 g') == True
-        assert p.solve('{?weight} >= 60000 g') == False
-        assert p.solve('{?weight} > 50000 g') == True
-        assert p.solve('{?weight} > 60000 g') == False
+        assert p.solve('{?weight} >= 57300 g') == BooleanType(True)
+        assert p.solve('{?weight} >= 50000 g') == BooleanType(True)
+        assert p.solve('{?weight} >= 60000 g') == BooleanType(False)
+        assert p.solve('{?weight} > 50000 g') == BooleanType(True)
+        assert p.solve('{?weight} > 60000 g') == BooleanType(False)
         # comparison without specifying units
-        assert p.solve('{?weight} < 50') == False
-        assert p.solve('{?weight} < 60') == True
+        assert p.solve('{?weight} < 50') == BooleanType(False)
+        assert p.solve('{?weight} < 60') == BooleanType(True)
 
 def test_combination():
     with DIP() as dip:
@@ -107,7 +107,7 @@ def test_combination():
         && ({?geometry} == 1 && {?geometry}<={?dimension})
         && {?filled}
         || ~!{?color}
-        """) == True
+        """) == BooleanType(True)
         
 if __name__ == "__main__":
     # Specify wich test to run

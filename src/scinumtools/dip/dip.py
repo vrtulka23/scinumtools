@@ -133,7 +133,7 @@ class DIP:
         while len(env.nodes):
             node = env.nodes.pop()
             # Perform specific node parsing only outside of case or inside of valid case
-            if self.env.in_branch():
+            if not self.env.false_case() or node.keyword=='case':
                 node.inject_value(self.env)
                 parsed = node.parse(self.env)
                 if parsed: 
@@ -151,8 +151,6 @@ class DIP:
             elif node.keyword=='case':   # Parse cases
                 self.env.solve_case(node)
             else:
-                if not self.env.in_branch():
-                    continue
                 if self.env.false_case():
                     continue
                 self.env.prepare_node(node)
@@ -185,7 +183,7 @@ class DIP:
                     env=self.env.copy()
                     env.autoref = node.name
                     with LogicalSolver(env) as s:
-                        if not s.solve(node.condition):
+                        if not s.solve(node.condition).value:
                             raise Exception("Node does not fullfil a condition:",
                                             node.name, node.condition)
                 # Check formats if set for strings

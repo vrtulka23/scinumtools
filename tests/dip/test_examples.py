@@ -149,8 +149,10 @@ def test_definition_template(test_path):
     with DIP() as dip:
         dip.from_file(test_path+'definitions.dip')
         env3 = dip.parse()
-        data = env3.data(format=Format.TYPE)
+        data = env3.data(Format.TYPE)
     np.testing.assert_equal(data,{
+        'simulation.name':      StringType('simulation'),
+        'simulation.precision': StringType('double'),
         'runtime.t_max':        FloatType(1e-08, 's'),
         'runtime.timestep':     FloatType(1.0000000000000001e-11, 's'),
         'box.geometry':         IntegerType(3),
