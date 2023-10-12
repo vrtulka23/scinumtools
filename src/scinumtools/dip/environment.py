@@ -25,6 +25,9 @@ class Environment:
     # Reference on the current node
     autoref: str = None
 
+    # Documentation environment
+    docs: bool = False
+    
     # Hierarchy list
     parent_indents: List[int] = field(default_factory = list)    # indent level
     parent_names: List[str]   = field(default_factory = list)    # list of parent names
@@ -91,7 +94,6 @@ class Environment:
             return        
         if not node.name.startswith(self.cases[-1].name): # ending case at lower indent
             self.cases.pop()
-        node.name = node.clean_name()
 
     def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
         """ Request nodes from a path

@@ -26,18 +26,22 @@ class DIP:
     lines: List[dict]
     source: Source
     
-    nodes_special: list    = ['empty','unit','source']
-    nodes_properties: list = ['option','constant','format','condition','tags','description']
-    nodes_hierarchy: list  = ['group']
+    nodes_special: list     = ['empty','unit','source']
+    nodes_properties: list  = ['option','constant','format','condition','tags','description']
+    nodes_hierarchy: list   = ['group']
+    nodes_nohierarchy: list = None
+    nodes_notypes: list     = None
 
     def __init__(self, env:Environment=None, **kwargs):
         self.lines = []
+        # create a new environment if not givenl
         if env:
             self.env = env
         elif 'env' not in kwargs:
             self.env = Environment()
         else:
             self.env = None
+        # find out source
         if 'source' not in kwargs:
             # determine which file instantiate this class
             caller = getframeinfo(stack()[1][0])
@@ -47,9 +51,9 @@ class DIP:
                 self.source = Source(lineno=caller.lineno, filename=caller.filename)
         else:
             self.source = kwargs['source']
-        if 'docs' in kwargs:
-            self.env.docs = kwargs['docs']
-            del kwargs['docs']
+        # create additional node groups
+        self.nodes_nohierarchy = self.nodes_special+self.nodes_properties
+        self.nodes_notypes = self.nodes_special+self.nodes_properties+self.nodes_hierarchy
 
     def __enter__(self):
         return self
@@ -112,9 +116,9 @@ class DIP:
     def add_function(self, name:str, fn:Callable):
         self.env.functions[name] = fn
 
-    def _extract_lines(self):
+    def _get_queue(self):
         # Convert code lines to nodes
-        env = Environment()
+        queue = Environment()
         while len(self.lines)>0:
             line = self.lines.pop(0)
             # Group block structures
@@ -130,119 +134,122 @@ class DIP:
                 else:
                     raise Exception("Block structure starting on line %d is not properly terminated."%l)
             node = self._determine_node(line)
-            env.nodes.append(node)
-        return env
+            queue.nodes.append(node)
+        return queue
+
+    def _get_node(self, queue, target):
+        node = queue.nodes.pop()
+        # Perform specific node parsing only outside of case or inside of valid case
+        if not target.false_case() or node.keyword=='case':
+            node.inject_value(target)
+            parsed = node.parse(target)
+            if parsed: 
+                # Add parsed nodes to the queue and continue
+                queue.nodes.prepend(parsed)
+                return None
+        return node
 
     def parse(self):
         """ Parse DIP nodes from code lines
         """
-        env = self._extract_lines()
+        # Create queue/target environment
+        queue = self._get_queue()
+        target = self.env.copy()
         # Parse nodes
-        while len(env.nodes):
-            node = env.nodes.pop()
-            # Perform specific node parsing only outside of case or inside of valid case
-            if not self.env.false_case() or node.keyword=='case':
-                node.inject_value(self.env)
-                parsed = node.parse(self.env)
-                if parsed: 
-                    # Add parsed nodes to the queue and continue
-                    env.nodes.prepend(parsed)
-                    continue
+        while len(queue.nodes):
+            node = self._get_node(queue, target)
+            if node is None:
+                continue
             # Create hierarchical name
-            excluded = self.nodes_special+self.nodes_properties
-            self.env.update_hierarchy(node, excluded)
-            # Add nodes to the list
-            excluded += self.nodes_hierarchy
-            if node.keyword in excluded:
+            target.update_hierarchy(node, self.nodes_nohierarchy)
+            # Add nodes to the node list
+            if node.keyword in self.nodes_notypes:
                 continue
             elif node.keyword=='case':   # Parse cases
-                self.env.solve_case(node)
+                target.solve_case(node)
+            elif target.false_case():
+                continue
             else:
-                if self.env.false_case():
-                    continue
-                self.env.prepare_node(node)
+                target.prepare_node(node)
+                # Clean node name from cases
+                node.name = node.clean_name()
                 # Set the node value
                 node.set_value()
                 # If node was previously defined, modify its value
-                for n in range(len(self.env.nodes)):
-                    if self.env.nodes[n].name==node.name:
-                        if self.env.nodes[n].constant:
-                            raise Exception(f"Node '{self.env.nodes[n].name}' is constant and cannot be modified:",node.code)
-                        self.env.nodes[n].modify_value(node, self.env)
+                for n in range(len(target.nodes)):
+                    if target.nodes[n].name==node.name:
+                        if target.nodes[n].constant:
+                            raise Exception(f"Node '{target.nodes[n].name}' is constant and cannot be modified:",node.code)
+                        target.nodes[n].modify_value(node, target)
                         break
                 # If node wasn't defined, create a new node
                 else:
                     if node.keyword=='mod' and node.source.primary:
                         raise Exception(f"Modifying undefined node:",node.name)
-                    self.env.nodes.append(node)
+                    target.nodes.append(node)
         # Validate nodes
-        for node in self.env.nodes:
+        for node in target.nodes:
             # Check if all declared nodes have assigned value
             if node.defined and node.value is None:
                 raise Exception(f"Node value must be defined:", node.code)
-            # check if node value is in options
+            # Check if node value is in options
             if isinstance(node,(IntegerNode, FloatNode, StringNode)):
                 node.validate_options()
             # Check conditions
             if node.keyword in ['float','int'] and node.condition:
-                env=self.env.copy()
-                env.autoref = node.name
-                with LogicalSolver(env) as s:
+                target.autoref = node.name
+                with LogicalSolver(target) as s:
                     if not s.solve(node.condition).value:
                         raise Exception("Node does not fullfil a condition:",
                                         node.name, node.condition)
+                target.autoref = None
             # Check formats if set for strings
             if node.keyword=='str' and node.format:
                 m = re.match(node.format, node.value.value)
                 if not m:
                     raise Exception("Node value does not match the format:",
                                     node.value.value, node.format)
-        return self.env
+        return target
         
     def parse_docs(self):
-        """ Parse DIP nodes from code lines
-        """        
-        env = self._extract_lines()
+        """ Parse DIP nodes from code lines for a documentation
+        """
+        # Create queue/target environment
+        queue = self._get_queue()
+        target = self.env.copy()
         # Parse nodes
-        while len(env.nodes):
-            node = env.nodes.pop()
-            # Perform specific node parsing only outside of case or inside of valid case
-            if not self.env.false_case() or node.keyword=='case':
-                node.inject_value(self.env)
-                parsed = node.parse(self.env)
-                if parsed: 
-                    # Add parsed nodes to the queue and continue
-                    env.nodes.prepend(parsed)
-                    continue
+        while len(queue.nodes):
+            node = self._get_node(queue, target)
+            if node is None:
+                continue
             # Create hierarchical name
-            excluded = self.nodes_special+self.nodes_properties
-            self.env.update_hierarchy(node, excluded)
-            # Add nodes to the list
-            excluded += ['group']
-            if node.keyword in excluded:
+            target.update_hierarchy(node, self.nodes_nohierarchy)
+            # Add nodes to the node list
+            if node.keyword in self.nodes_notypes:
                 continue
             elif node.keyword=='case':   # Parse cases
-                self.env.solve_case(node)
+                target.solve_case(node)
+            elif target.false_case():
+                continue
             else:
-                if self.env.false_case():
-                    continue
-                self.env.prepare_node(node)
+                target.prepare_node(node)
                 # Set the node value
                 node.set_value()
-                # If node was previously defined, modify its value
-                for n in range(len(self.env.nodes)):
-                    if self.env.nodes[n].clean_name()==node.clean_name():
-                        # remove all following node properties
-                        for i in range(len(env.nodes)):
-                            if env.nodes[0].keyword in self.nodes_properties:
-                                del env.nodes[0]
+                # If node was previously defined, ignore modification
+                for n in range(len(target.nodes)):
+                    if target.nodes[n].clean_name()==node.clean_name():
+                        # remove also all subsequent node properties
+                        for i in range(len(queue.nodes)):
+                            if queue.nodes[0].keyword in self.nodes_properties:
+                                del queue.nodes[0]
+                        # ignore the node
                         break
                 # If node wasn't defined, create a new node
                 else:
                     if node.keyword=='mod' and node.source.primary:
                         raise Exception(f"Modifying undefined node:",node.name)
-                    self.env.nodes.append(node)
-        return self.env
+                    target.nodes.append(node)
+        return target
         
     def _determine_node(self, line):
         # Add replacement marks

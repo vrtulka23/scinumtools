@@ -1,4 +1,4 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
@@ -194,6 +194,7 @@ class ExportPDF:
                 #blocks.append(Spacer(1,0.2*inch))
             if blocks:
                 p = Paragraph(f"<strong>{parent_name}</strong>", groupStyle)
+                p.keepWithNext = True
                 blocks.insert(0, p)
             return blocks
             
