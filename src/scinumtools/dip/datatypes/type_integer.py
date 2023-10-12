@@ -9,13 +9,19 @@ class IntegerType(NumberType):
     unsigned: bool = False
     precision: int = 32
     dtype = int
-
+        
     def __str__(self):
         if self.unit:
             return f"IntegerType({self.value} {self.unit})"
         else:
             return f"IntegerType({self.value})"
-        
+            
+    def __repr__(self):
+        if self.unit:
+            return f"IntegerType({self.value} {self.unit})"
+        else:
+            return f"IntegerType({self.value})"
+            
     def __init__(self, value, unit=None, **kwargs):
         if isinstance(value, IntegerType):
             kwargs['value'] = value.value

@@ -11,6 +11,9 @@ class StringType(Type):
     def __str__(self):
         return f"StringType({self.value})"
     
+    def __repr__(self):
+        return f"StringType({self.value})"
+        
     def __eq__(self, other):
         return BooleanType(self.value == other.value)
         

@@ -8,13 +8,19 @@ class FloatType(NumberType):
     value: Union[float,list]
     precision: int = 64
     dtype = float
- 
+        
     def __str__(self):
         if self.unit:
             return f"FloatType({self.value} {self.unit})"
         else:
             return f"FloatType({self.value})"
-        
+            
+    def __repr__(self):
+        if self.unit:
+            return f"FloatType({self.value} {self.unit})"
+        else:
+            return f"FloatType({self.value})"
+            
     def __init__(self, value, unit=None, **kwargs):
         if isinstance(value, FloatType):
             kwargs['value'] = value.value

@@ -10,6 +10,9 @@ class BooleanType(Type):
     def __str__(self):
         return f"BooleanType({self.value})"
     
+    def __repr__(self):
+        return f"BooleanType({self.value})"
+        
     def __init__(self, value, **kwargs):
         if isinstance(value, BooleanType):
             kwargs['value'] = value.value

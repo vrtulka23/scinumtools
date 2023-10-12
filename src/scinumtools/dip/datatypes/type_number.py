@@ -31,7 +31,7 @@ class NumberType(Type):
         else:                               # throw error if both datatypes are unknown
             raise Exception("Invalid comparison:", expr)
         return self.value, other.value
-    
+            
     def __eq__(self, other):
         left, right = self._prepare(other)
         if isinstance(left,str) and isinstance(right,str):
