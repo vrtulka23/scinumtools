@@ -23,16 +23,15 @@ class CaseNode(BaseNode):
     def parse(self, env):
         global case_id
         # Solve case
-        if self.name.endswith(Sign.CONDITION + Keyword.CASE):
+        if m := re.match(fr"(.*{Sign.CONDITION})({Keyword.CASE}|{Keyword.ELSE})$", self.name):
             case_id += 1
-            self.name += str(case_id)
-            with LogicalSolver(env) as s:
-                if self.value_expr:
-                    self.value = s.solve(self.value_expr)
-                else:
-                    self.value = s.solve(self.value_raw)
-        elif self.name.endswith(Sign.CONDITION + Keyword.ELSE):
-            case_id += 1
-            self.name += str(case_id)
-            self.value = BooleanType(True)
+            self.name = f"{m.group(1)}{str(case_id)}{m.group(2)}"
+            if m.group(2) == Keyword.CASE:
+                with LogicalSolver(env) as s:
+                    if self.value_expr:
+                        self.value = s.solve(self.value_expr)
+                    else:
+                        self.value = s.solve(self.value_raw)
+            elif m.group(2) == Keyword.ELSE:
+                self.value = BooleanType(True)
         return None

@@ -35,14 +35,14 @@ class BranchingList:
             path_old = self.cases[id_old].path
         else:
             path_old = ''
-        if m := re.match(f"(.*{Sign.CONDITION})(({Keyword.CASE}|{Keyword.ELSE})[0-9]*)$", node.name):
+        if m := re.match(f"(.*{Sign.CONDITION})([0-9]+({Keyword.CASE}|{Keyword.ELSE}))$", node.name):
             path_new = m.group(1)
             id_new = fr"{Sign.CONDITION}{m.group(2)}"
             case_new = m.group(3)
             if case_new==Keyword.CASE:
                 value = node.value
             elif case_new==Keyword.ELSE and self.cases:
-                value = BooleanType(True)
+                value = node.value #BooleanType(True)
             else:
                 raise Exception(f"Invalid condition:", node.code)
             self.cases[id_new] = Case(

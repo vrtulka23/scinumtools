@@ -154,7 +154,6 @@ class ExportPDF:
                 condition = node.condition
                 condition = condition.replace("{","<font color='orange'>{")
                 condition = condition.replace("}","}</font>")
-                #print(condition)
                 condition = Paragraph(condition, style=tableBodyStyle)
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
                 data.append(['','Condition:', condition])
@@ -172,7 +171,7 @@ class ExportPDF:
                 tableStyle2.append(('BACKGROUND', (1,-1), (-1,-1),  colors.floralwhite))
                 data.append(['', Paragraph(node.description, tableBodyStyle)])
                 
-            if '@case' in parent_name:
+            if 'case' in parent_name or 'else' in parent_name:
                 tableStyle2.append(('BACKGROUND', (0,0), (0,-1),   colors.lightgreen))
             else:
                 tableStyle2.append(('BACKGROUND', (0,0), (0,-1),   colors.navajowhite))
@@ -206,8 +205,6 @@ class ExportPDF:
                 p.keepWithNext = True
                 blocks.insert(0, p)
             return blocks
-            
-        print([node.name for node in self.env.nodes])
             
         for block in collect_blocks(self.env.nodes):
             blocks.append(block)

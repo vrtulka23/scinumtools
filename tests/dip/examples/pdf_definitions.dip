@@ -34,6 +34,7 @@ box
         !description "Box size in Y direction"
     @case ("1==1")
       y float = 34 au
+      vy float = 23 km/s
     @else
       y float = 3 m
     @end
