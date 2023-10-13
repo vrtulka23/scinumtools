@@ -74,7 +74,7 @@ class DIP:
             else:
                 filepath = parent / filepath
         with open(filepath,'r') as f:           
-            lines = f.read().split('\n')
+            lines = f.read().split(Sign.NEWLINE)
         for line,code in enumerate(lines):
             self.lines.append(dict(
                 code = code,
@@ -90,7 +90,7 @@ class DIP:
 
         :param str code: DIP code
         """
-        lines = code.split('\n')
+        lines = code.split(Sign.NEWLINE)
         for line,code in enumerate(lines):
             self.lines.append(dict(
                 code = code,
@@ -114,7 +114,7 @@ class DIP:
         ))
 
     def add_function(self, name:str, fn:Callable):
-        self.env.functions[name] = fn
+        self.env.functions.append(name, fn)
 
     def _get_queue(self):
         # Convert code lines to nodes
@@ -127,12 +127,12 @@ class DIP:
                 while len(self.lines)>0:
                     subline = self.lines.pop(0)
                     if '"""' in subline['code']:
-                        line['code'] += "\n".join(block) + subline['code'].lstrip()
+                        line['code'] += Sign.NEWLINE.join(block) + subline['code'].lstrip()
                         break
                     else:
                         block.append( subline['code'] )
                 else:
-                    raise Exception("Block structure starting on line %d is not properly terminated."%l)
+                    raise Exception("Block structure is not properly terminated.", line['code'])
             node = self._determine_node(line)
             queue.nodes.append(node)
         return queue
@@ -140,7 +140,7 @@ class DIP:
     def _get_node(self, queue, target):
         node = queue.nodes.pop()
         # Perform specific node parsing only outside of case or inside of valid case
-        if not target.false_case() or node.keyword=='case':
+        if not target.branching.false_case() or node.keyword=='case':
             node.inject_value(target)
             parsed = node.parse(target)
             if parsed: 
@@ -161,16 +161,16 @@ class DIP:
             if node is None:
                 continue
             # Create hierarchical name
-            target.update_hierarchy(node, self.nodes_nohierarchy)
+            target.hierarchy.register(node, self.nodes_nohierarchy)
             # Add nodes to the node list
             if node.keyword in self.nodes_notypes:
                 continue
             elif node.keyword=='case':   # Parse cases
-                target.solve_case(node)
-            elif target.false_case():
+                target.branching.solve_case(node)
+            elif target.branching.false_case():
                 continue
             else:
-                target.prepare_node(node)
+                target.branching.prepare_node(node)
                 # Clean node name from cases
                 node.name = node.clean_name()
                 # Set the node value
@@ -217,22 +217,23 @@ class DIP:
         # Create queue/target environment
         queue = self._get_queue()
         target = self.env.copy()
+        target.docs = True
         # Parse nodes
         while len(queue.nodes):
             node = self._get_node(queue, target)
             if node is None:
                 continue
             # Create hierarchical name
-            target.update_hierarchy(node, self.nodes_nohierarchy)
+            target.hierarchy.register(node, self.nodes_nohierarchy)
             # Add nodes to the node list
             if node.keyword in self.nodes_notypes:
                 continue
             elif node.keyword=='case':   # Parse cases
-                target.solve_case(node)
-            elif target.false_case():
+                target.branching.solve_case(node)
+            elif target.branching.false_case():
                 continue
             else:
-                target.prepare_node(node)
+                target.branching.prepare_node(node)
                 # Set the node value
                 node.set_value()
                 # If node was previously defined, ignore modification

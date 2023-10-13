@@ -25,6 +25,7 @@ class Sign:
     CONDITION   = '@'
     VARIABLE    = '$'
     VALIDATION  = '!'
+    NEWLINE     = "\n"
 
 class Namespace:
     NODES       = 1

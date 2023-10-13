@@ -34,10 +34,12 @@ class SelectNode:
         """
         if self.keyword=='int':
             value = IntegerType(self.cast_value(node.value_raw), node.units_raw)
-            value.convert(self.units_raw, env)
+            if not env.docs:
+                value.convert(self.units_raw, env)
         elif self.keyword=='float':
             value = FloatType(self.cast_value(node.value_raw), node.units_raw)
-            value.convert(self.units_raw, env)
+            if not env.docs:
+                value.convert(self.units_raw, env)
         elif self.keyword=='str':
             value = StringType(self.cast_value(node.value_raw))
         self.options.append(Option(

@@ -22,7 +22,7 @@ class TableNode(BaseNode):
              return TableNode(parser)
          
     def parse(self, env):
-        lines = self.value_raw.split("\n")
+        lines = self.value_raw.split(Sign.NEWLINE)
         # Parse nodes from table header
         table = []
         while len(lines)>0:

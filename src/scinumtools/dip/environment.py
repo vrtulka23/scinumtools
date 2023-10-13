@@ -5,95 +5,29 @@ import copy
 
 from ..units import Quantity, UnitEnvironment
 from .settings import *
-from .datatypes import NumberType, BooleanType
-from .lists import NodeList, SourceList, UnitList
-
-@dataclass
-class Case:
-    name: str
-    value: bool
-    code: str
+from .datatypes import NumberType
+from .lists import *
     
 @dataclass
 class Environment:
-    # Environment variables
-    nodes: NodeList       = field(default_factory = NodeList)    # nodes
-    units: UnitList       = field(default_factory = UnitList)    # list of cutom units
-    sources: SourceList   = field(default_factory = SourceList)  # list of reference sources
-    functions: Dict       = field(default_factory = dict)        # custom native functions
+    # Environment variables lists
+    nodes: NodeList          = field(default_factory = NodeList)       # nodes
+    units: UnitList          = field(default_factory = UnitList)       # list of cutom units
+    sources: SourceList      = field(default_factory = SourceList)     # list of reference sources
+    functions: FunctionList  = field(default_factory = FunctionList)   # custom native functions
 
-    # Reference on the current node
-    autoref: str = None
+    # State variable lists
+    hierarchy: HierarchyList = field(default_factory = HierarchyList)  # node name hierarchy
+    branching: BranchingList = field(default_factory = BranchingList)  # code branching
 
-    # Documentation environment
-    docs: bool = False
-    
-    # Hierarchy list
-    parent_indents: List[int] = field(default_factory = list)    # indent level
-    parent_names: List[str]   = field(default_factory = list)    # list of parent names
+    # Special mode flags
+    autoref: str = None   # Reference on the current node
+    docs: bool = False    # Documentation mode
 
-    # Case list
-    cases: List[Case]       = field(default_factory = list)
-    
-    def __post_init__(self):
-        self.parent_indents.append(-1)
-    
     def copy(self):
         """ Copy a new object from self
         """
         return copy.copy(self)
-        
-    def update_hierarchy(self, node, excluded):
-        """ Register new node to the hierarchy
-
-        :param node: Node that should be added
-        :param list excluded: List of node keywords that should be excluded from the hierarchy
-        """
-        if node.name is not None and node.keyword not in excluded:
-            while node.indent<=self.parent_indents[-1]:
-                self.parent_indents.pop()
-                self.parent_names.pop()
-            self.parent_names.append(node.name)
-            self.parent_indents.append(node.indent)
-            node.name = Sign.SEPARATOR.join(self.parent_names)
-
-    def false_case(self):
-        """ Checks if case value is false
-        """
-        if not self.cases:
-            return False
-        return self.cases[-1].value.value == False
-        
-    def solve_case(self, node):
-        """ Manage condition nodes
-
-        :param node: Condition node
-        """
-        casename = self.cases[-1].name if self.cases else ''
-        if node.name.endswith(Sign.CONDITION + Keyword.CASE):
-            if casename+Keyword.CASE!=node.name:   # register new case
-                self.cases.append(Case(
-                    name = node.name[:-4],
-                    value = node.value,
-                    code = node.code
-                ))
-        elif node.name==casename + Keyword.ELSE:
-            self.cases[-1].value = BooleanType(True)
-            self.cases[-1].code = node.code
-        elif node.name==casename + Keyword.END:    # end case using a keyword
-            self.cases.pop()
-        else:
-            raise Exception(f"Invalid condition:", node.name)
-
-    def prepare_node(self, node):
-        """ Manage parameter nodes in a condition
-
-        :param node: Parameter node
-        """
-        if not self.cases: # outside of any condition
-            return        
-        if not node.name.startswith(self.cases[-1].name): # ending case at lower indent
-            self.cases.pop()
 
     def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
         """ Request nodes from a path

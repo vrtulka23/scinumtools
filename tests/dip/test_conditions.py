@@ -116,6 +116,21 @@ def test_second_true():
         'plant.flower':             StringType('yellow'),
     })
 
+def test_third_true():
+    data = parse('''
+    plant.@case false           # using compact node names
+        flower str = 'green'
+    plant.@case true            # second condition is false
+        flower str = 'yellow'   
+    plant.@case true            # third condition is true
+        flower str = 'red'   
+    plant.@else                 # else is not triggered
+        flower str = 'blue'
+    ''')
+    np.testing.assert_equal(data,{
+        'plant.flower':             StringType('red'),
+    })
+    
 def test_else():
     data = parse('''
     animal
