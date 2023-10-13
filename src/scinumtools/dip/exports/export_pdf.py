@@ -207,6 +207,8 @@ class ExportPDF:
                 blocks.insert(0, p)
             return blocks
             
+        print([node.name for node in self.env.nodes])
+            
         for block in collect_blocks(self.env.nodes):
             blocks.append(block)
             

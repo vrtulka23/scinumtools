@@ -137,10 +137,14 @@ class DIP:
             queue.nodes.append(node)
         return queue
 
-    def _get_node(self, queue, target):
+    def _get_node(self, queue, target, true_case_only=False):
         node = queue.nodes.pop()
         # Perform specific node parsing only outside of case or inside of valid case
-        if not target.branching.false_case() or node.keyword=='case':
+        if true_case_only:
+            true_case = not target.branching.false_case()
+        else:
+            true_case = True
+        if true_case or node.keyword=='case':
             node.inject_value(target)
             parsed = node.parse(target)
             if parsed: 
@@ -157,7 +161,7 @@ class DIP:
         target = self.env.copy()
         # Parse nodes
         while len(queue.nodes):
-            node = self._get_node(queue, target)
+            node = self._get_node(queue, target, True)
             if node is None:
                 continue
             # Create hierarchical name
@@ -220,7 +224,7 @@ class DIP:
         target.docs = True
         # Parse nodes
         while len(queue.nodes):
-            node = self._get_node(queue, target)
+            node = self._get_node(queue, target, False)
             if node is None:
                 continue
             # Create hierarchical name
@@ -230,23 +234,27 @@ class DIP:
                 continue
             elif node.keyword=='case':   # Parse cases
                 target.branching.solve_case(node)
-            elif target.branching.false_case():
-                continue
             else:
                 target.branching.prepare_node(node)
                 # Set the node value
                 node.set_value()
-                # If node was previously defined, ignore modification
+                # Loop through all nodes and find modifications
                 for n in range(len(target.nodes)):
-                    if target.nodes[n].clean_name()==node.clean_name():
-                        # remove also all subsequent node properties
-                        for i in range(len(queue.nodes)):
-                            if queue.nodes[0].keyword in self.nodes_properties:
-                                del queue.nodes[0]
-                        # ignore the node
-                        break
-                # If node wasn't defined, create a new node
+                    # Continue if names do not match
+                    if target.nodes[n].clean_name() != node.clean_name():
+                        continue
+                    # Continue if nodes are not in the same case and part
+                    if target.nodes[n].case[0]==node.case[0]:
+                        if target.nodes[n].case[1]!=node.case[1]:
+                            continue
+                    # Remove all following node properties
+                    for i in range(len(queue.nodes)):
+                        if queue.nodes[0].keyword in self.nodes_properties:
+                            del queue.nodes[0]
+                    # ignore this node
+                    break
                 else:
+                    # If node wasn't defined, create a new node
                     if node.keyword=='mod' and node.source.primary:
                         raise Exception(f"Modifying undefined node:",node.name)
                     target.nodes.append(node)

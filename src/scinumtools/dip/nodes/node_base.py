@@ -1,5 +1,6 @@
 import numpy as np
 import json
+import re
 
 from .node import Node
 from ..datatypes import Type, NumberType, IntegerType, FloatType, StringType, BooleanType
@@ -11,6 +12,7 @@ class BaseNode(Node):
     value: str = None       # Value
     constant: bool = False
     condition: str = None
+    case: str = (None, None)
     
     def __init__(self, parser=None, *args, **kwargs):
         if parser:
@@ -55,11 +57,8 @@ class BaseNode(Node):
     def clean_name(self):
         """ Strip @case and @else from the name
         """
-        return self.name.replace(
-            Sign.CONDITION + Keyword.CASE + Sign.SEPARATOR,''
-        ).replace(
-            Sign.CONDITION + Keyword.ELSE + Sign.SEPARATOR,''
-        )
+        pattern = f"{Sign.CONDITION}({Keyword.CASE}|{Keyword.ELSE})[0-9]+{Sign.SEPARATOR}"
+        return re.sub(pattern, '', self.name)
 
     def cast_value(self, value=None):
         """ Cast (raw-)value as a datatype self, or another node

@@ -18,21 +18,21 @@ def test_invalid_start():
         @end
         ''')
     assert e_info.value.args[0] == "Invalid condition:"
-    assert e_info.value.args[1] == "@end"
+    assert e_info.value.args[1] == "        @end"
     with pytest.raises(Exception) as e_info:
         parse('''
         @else
            car str = 'BMW'
         ''')
     assert e_info.value.args[0] == "Invalid condition:"
-    assert e_info.value.args[1] == "@else"
+    assert e_info.value.args[1] == "        @else"
     with pytest.raises(Exception) as e_info:
         parse('''
         @case true
           @end
         ''')
     assert e_info.value.args[0] == "Invalid condition:"
-    assert e_info.value.args[1] == "@case.@end"
+    assert e_info.value.args[1] == "          @end"
     
 def test_nested_condition():
     data = parse('''
