@@ -35,6 +35,8 @@ box
     @end
     @case ("{?box.geometry} == 3")
       z float = 23 cm        # constant
+        = 10 m
+        !options [20,23,26] cm
         !description "Box size in Z direction"
         !constant
     @end

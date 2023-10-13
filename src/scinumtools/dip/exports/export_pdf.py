@@ -96,7 +96,16 @@ class ExportPDF:
             elif node.units_raw:
                 unit = node.units_raw
             value = None
-            if node.keyword == IntegerNode.keyword:
+            options = None
+            if node.keyword == BooleanNode.keyword:
+                dtype = node.keyword
+                if node.value:
+                    value = Keyword.TRUE if node.value.value else Keyword.FALSE
+            elif node.keyword == IntegerNode.keyword:
+                if node.units_raw:
+                    options = [f"{option.value.value} {option.value.unit}" for option in node.options]
+                else:
+                    options = [f"{option.value.value}" for option in node.options]
                 dtype = node.keyword
                 if node.value:
                     value = str(int(node.value.value))
@@ -105,6 +114,10 @@ class ExportPDF:
                     if node.value.precision:
                         dtype = f"{dtype}{node.value.precision}"
             elif node.keyword == FloatNode.keyword:
+                if node.units_raw:
+                    options = [f"{option.value.value} {option.value.unit}" for option in node.options]
+                else:
+                    options = [f"{option.value.value}" for option in node.options]
                 dtype = node.keyword
                 if node.value:
                     exp = np.log10(node.value.value)
@@ -114,22 +127,19 @@ class ExportPDF:
                         value = f"{node.value.value:.03e}"
                     if node.value.precision:
                         dtype = f"{dtype}{node.value.precision}"
-            elif node.keyword == BooleanNode.keyword:
-                dtype = node.keyword
-                if node.value:
-                    value = Keyword.TRUE if node.value.value else Keyword.FALSE
             elif node.keyword == StringNode.keyword:
+                options = [str(option.value.value) for option in node.options]
                 dtype = node.keyword
                 if node.value:
                     value = str(node.value.value)
                 
-            return dtype, value, unit
+            return dtype, value, unit, options
         
         def print_node(node, parent_name:str=''):
             name = f"<strong>{node.name}</strong>"
             const = "constant" if node.constant else ""
             p = Paragraph(name, tableHeaderStyle)
-            dtype, value, unit = prepare_values(node)
+            dtype, value, unit, options = prepare_values(node)
             data = [
                 ['', p, '', dtype, const],
             ]
@@ -151,8 +161,7 @@ class ExportPDF:
             if node.tags:
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
                 data.append(['', 'Tags:', Paragraph(", ".join(node.tags), tableBodyStyle)])
-            if node.keyword != BooleanNode.keyword and node.options:
-                options = [str(option.value.value) for option in node.options]
+            if options: 
                 tableStyle2.append(('SPAN', (2,len(data)), (-1,len(data)) ))
                 data.append(['', 'Options:', Paragraph(", ".join(options), tableBodyStyle)])
             if node.keyword == StringNode.keyword and node.format:
