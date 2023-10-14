@@ -23,7 +23,7 @@ class Environment:
     # Special mode flags
     autoref: str = None   # Reference on the current node
     docs: bool = False    # Documentation mode
-
+    
     def copy(self):
         """ Copy a new object from self
         """

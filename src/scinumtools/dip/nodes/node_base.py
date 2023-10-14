@@ -57,7 +57,7 @@ class BaseNode(Node):
     def clean_name(self):
         """ Strip @case and @else from the name
         """
-        pattern = f"{Sign.CONDITION}[0-9]+({Keyword.CASE}|{Keyword.ELSE}){Sign.SEPARATOR}"
+        pattern = f"{Sign.CONDITION}[0-9]+{Sign.SEPARATOR}"
         return re.sub(pattern, '', self.name)
 
     def cast_value(self, value=None):

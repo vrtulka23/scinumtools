@@ -5,11 +5,10 @@ from ..settings import Sign, Keyword
 from ..solvers import LogicalSolver
 from ..datatypes import BooleanType
 
-global case_id
-case_id = 0
-
 class CaseNode(BaseNode):
     keyword: str = 'case'
+    case_id: int = 0
+    case_type: str = None
 
     @staticmethod
     def is_node(parser):
@@ -21,11 +20,11 @@ class CaseNode(BaseNode):
             return CaseNode(parser)
             
     def parse(self, env):
-        global case_id
-        # Solve case
-        if m := re.match(fr"(.*{Sign.CONDITION})({Keyword.CASE}|{Keyword.ELSE})$", self.name):
-            case_id += 1
-            self.name = f"{m.group(1)}{str(case_id)}{m.group(2)}"
+        if m := re.match(fr"(.*{Sign.CONDITION})({Keyword.CASE}|{Keyword.ELSE}|{Keyword.END})$", self.name):
+            env.branching.case_id += 1             # increment branching case ID
+            self.case_id = env.branching.case_id   # set node case ID
+            self.case_type = m.group(2)
+            self.name = f"{m.group(1)}{str(self.case_id)}" 
             if m.group(2) == Keyword.CASE:
                 with LogicalSolver(env) as s:
                     if self.value_expr:
