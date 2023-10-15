@@ -27,6 +27,10 @@ class Sign:
     VALIDATION  = '!'
     NEWLINE     = "\n"
 
+class EnvType:
+    DATA        = 1   # parse parameter data 
+    DOCS        = 2   # parse documentation information
+    
 class Namespace:
     NODES       = 1
     UNITS       = 2

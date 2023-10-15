@@ -7,7 +7,7 @@ from inspect import getframeinfo, stack
 
 from .environment import Environment
 from .source import Source
-from .settings import Keyword, Sign
+from .settings import Keyword, Sign, EnvType
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
 from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode, DescriptionNode
@@ -137,22 +137,6 @@ class DIP:
             queue.nodes.append(node)
         return queue
 
-    def _get_node(self, queue, target, true_case_only=False):
-        node = queue.nodes.pop()
-        # Perform specific node parsing only outside of case or inside of valid case
-        if true_case_only:
-            true_case = not target.branching.false_case()
-        else:
-            true_case = True
-        if true_case or node.keyword=='case':
-            node.inject_value(target)
-            parsed = node.parse(target)
-            if parsed: 
-                # Add parsed nodes to the queue and continue
-                queue.nodes.prepend(parsed)
-                return None
-        return node
-
     def parse(self):
         """ Parse DIP nodes from code lines
         """
@@ -161,9 +145,15 @@ class DIP:
         target = self.env.copy()
         # Parse nodes
         while len(queue.nodes):
-            node = self._get_node(queue, target, True)
-            if node is None:
-                continue
+            node = queue.nodes.pop()
+            # Perform specific node parsing only outside of case or inside of valid case
+            if not target.branching.false_case() or node.keyword=='case':
+                node.inject_value(target)
+                parsed = node.parse(target)
+                if parsed: 
+                    # Add parsed nodes to the queue and continue
+                    queue.nodes.prepend(parsed)
+                    continue
             # Create hierarchical name
             target.hierarchy.register(node, self.nodes_nohierarchy)
             # Add nodes to the node list
@@ -216,16 +206,21 @@ class DIP:
         return target
         
     def parse_docs(self):
-        """ Parse DIP nodes from code lines for a documentation
+        """ Parse DIP node definitions
         """
         # Create queue/target environment
         queue = self._get_queue()
         target = self.env.copy()
-        target.docs = True
+        target.envtype = EnvType.DOCS
         # Parse nodes
         while len(queue.nodes):
-            node = self._get_node(queue, target, False)
-            if node is None:
+            node = queue.nodes.pop()
+            # Perform specific node parsing
+            node.inject_value(target)
+            parsed = node.parse(target)
+            if parsed: 
+                # Add parsed nodes to the queue and continue
+                queue.nodes.prepend(parsed)
                 continue
             # Create hierarchical name
             target.hierarchy.register(node, self.nodes_nohierarchy)

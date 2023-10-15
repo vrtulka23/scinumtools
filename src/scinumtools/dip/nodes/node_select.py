@@ -2,6 +2,7 @@ from typing import List, Union
 from dataclasses import dataclass
 
 from ..datatypes import IntegerType, FloatType, StringType
+from ..settings import EnvType
 
 @dataclass
 class Option:
@@ -34,11 +35,11 @@ class SelectNode:
         """
         if self.keyword=='int':
             value = IntegerType(self.cast_value(node.value_raw), node.units_raw)
-            if not env.docs:
+            if env.envtype == EnvType.DOCS:
                 value.convert(self.units_raw, env)
         elif self.keyword=='float':
             value = FloatType(self.cast_value(node.value_raw), node.units_raw)
-            if not env.docs:
+            if not env.envtype == EnvType.DOCS:
                 value.convert(self.units_raw, env)
         elif self.keyword=='str':
             value = StringType(self.cast_value(node.value_raw))

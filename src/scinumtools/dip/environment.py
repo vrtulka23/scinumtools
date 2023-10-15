@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 import copy
 
 from ..units import Quantity, UnitEnvironment
-from .settings import *
 from .datatypes import NumberType
+from .settings import *
 from .lists import *
     
 @dataclass
@@ -21,8 +21,8 @@ class Environment:
     branching: BranchingList = field(default_factory = BranchingList)  # code branching
 
     # Special mode flags
-    autoref: str = None   # Reference on the current node
-    docs: bool = False    # Documentation mode
+    autoref: str     = None          # Reference on the current node
+    envtype: EnvType = EnvType.DATA  # Documentation mode
     
     def copy(self):
         """ Copy a new object from self
@@ -109,10 +109,4 @@ class Environment:
                          print(' |',node.options, end='') 
                  print()
         return data
-
-    def pdf(self, file_path:str):
-
-        nodes = self.nodes.query('*')
-        with ExportPDF(nodes) as exp:
-            exp.export(file_path)
         

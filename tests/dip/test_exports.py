@@ -4,8 +4,6 @@ import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.dip import DIP
-from scinumtools.dip.settings import Format
-from scinumtools.dip.datatypes import FloatType, IntegerType, StringType, BooleanType
 from scinumtools.dip.exports import ExportPDF
 
 @pytest.fixture
@@ -27,4 +25,7 @@ def test_export_pdf(file_pdf, file_definitions):
         p.from_file(file_definitions)
         env = p.parse_docs()
     with ExportPDF(env) as exp:
-        exp.export(file_pdf)
+        title = "Example documentation"
+        pageinfo = "DIP Documentation"
+        exp.build(file_pdf, title, pageinfo)
+

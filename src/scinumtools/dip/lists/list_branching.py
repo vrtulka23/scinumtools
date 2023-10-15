@@ -12,23 +12,28 @@ class Case:
     value: bool # final value of the case
     code: str   # code line with the case
     expr: str   # case expression
-    case_id: str     # one of the types: case/else/end
+    branch_id: str   # branch ID
+    case_id: str     # case ID
     case_type: str   # one of the types: case/else/end
 
 @dataclass
 class BranchingList:
     state: List[List[str]]  = field(default_factory = list)  # current state
-    cases: Dict[str,Case]   = field(default_factory = dict)  # list of all state
+    cases: Dict[str,Case]   = field(default_factory = dict)  # list of cases
+    branches: Dict[str,int] = field(default_factory = dict)  # list of branches
     case_id: int = 0
     branch_id: int = 0
-
+    
+    def _close_branch(self):
+        self.state.pop()
+    
     def false_case(self):
         """ Checks if case value is false
         """
         if not self.state:
             return False
-        state = self.state[-1][-1]
-        return self.cases[state].value.value == False
+        case = self.state[-1][-1]
+        return self.cases[case].value.value == False
         
     def solve_case(self, node):
         """ Manage condition nodes
@@ -47,23 +52,25 @@ class BranchingList:
             elif node.case_type==Keyword.ELSE and self.cases:
                 value = node.value 
             elif node.case_type==Keyword.END and self.cases and path_old==path_new:
-                self.state.pop()
+                self._close_branch()
                 return
             else:
                 raise Exception(f"Invalid condition:", node.code)
-            id_new = fr"{Sign.CONDITION}{m.group(2)}"
+            case_id = fr"{Sign.CONDITION}{m.group(2)}"
             if path_new==path_old:
-                self.state[-1].append(id_new)
+                self.state[-1].append(case_id)
             else:
                 self.branch_id += 1
-                self.state.append([id_new])
-            part = chr(ord('a')-1+len(self.state[-1]))
-            self.cases[id_new] = Case(
+                self.state.append([case_id])
+            part = chr(ord('a')+len(self.state[-1])-1)
+            branch_id = f"{Sign.CONDITION}{self.branch_id}{part}"
+            self.cases[case_id] = Case(
                 path = path_new,
                 value = value,
                 code = node.code,
                 expr = node.value_expr,
-                case_id = f"{path_new[:-1]}{self.state[-1][0]}{part}",
+                branch_id = branch_id,
+                case_id = case_id,
                 case_type = node.case_type,
             )
         else:
@@ -76,10 +83,8 @@ class BranchingList:
         """
         if not self.state: # outside of any condition
             return        
-        state = self.state[-1][-1]
-        if not node.name.startswith(self.cases[state].path): # ending case at lower indent
-            self.state.pop()
+        case = self.state[-1][-1]
+        if not node.name.startswith(self.cases[case].path): # ending case at lower indent
+            self._close_branch()
         if self.state:
             node.case = ({self.state[-1][0]}, {self.state[-1][-1]})
-
-            
