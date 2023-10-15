@@ -54,8 +54,8 @@ def test_incomplete_case_definition():
         a float = 3      # definition, or modification
         """)
         env = p.parse_docs()
+        #assert len(env.nodes) == 2
         """
-        assert len(env.nodes) == 2
         assert env.nodes[0].name == '@1.a'
         assert env.nodes[0].keyword == 'float'
         assert env.nodes[0].value.value == 4.0

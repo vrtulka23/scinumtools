@@ -13,19 +13,32 @@ class Case:
     code: str   # code line with the case
     expr: str   # case expression
     branch_id: str   # branch ID
+    branch_part: str # branch part
     case_id: str     # case ID
     case_type: str   # one of the types: case/else/end
 
 @dataclass
+class Branch:
+    cases: list  # list of cases
+    
+@dataclass
 class BranchingList:
-    state: List[List[str]]  = field(default_factory = list)  # current state
-    cases: Dict[str,Case]   = field(default_factory = dict)  # list of cases
-    branches: Dict[str,int] = field(default_factory = dict)  # list of branches
-    case_id: int = 0
+    state: List[List[str]]     = field(default_factory = list)  # current state
+    cases: Dict[str,Case]      = field(default_factory = dict)  # list of cases
+    branches: Dict[str,Branch] = field(default_factory = dict)  # list of branches
+    num_cases: int = 0
     branch_id: int = 0
+
+    def _open_branch(self):
+        self.branch_id += 1        
     
     def _close_branch(self):
-        self.state.pop()
+        branch_id = f"{Sign.CONDITION}{self.branch_id}"
+        self.branches[branch_id] = Branch(cases = self.state.pop())
+    
+    def new_case(self):
+        self.num_cases += 1
+        return self.num_cases
     
     def false_case(self):
         """ Checks if case value is false
@@ -60,16 +73,17 @@ class BranchingList:
             if path_new==path_old:
                 self.state[-1].append(case_id)
             else:
-                self.branch_id += 1
+                self._open_branch()
                 self.state.append([case_id])
-            part = chr(ord('a')+len(self.state[-1])-1)
-            branch_id = f"{Sign.CONDITION}{self.branch_id}{part}"
+            branch_part = chr(ord('a')+len(self.state[-1])-1)
+            branch_id = f"{Sign.CONDITION}{self.branch_id}"
             self.cases[case_id] = Case(
                 path = path_new,
                 value = value,
                 code = node.code,
                 expr = node.value_expr,
                 branch_id = branch_id,
+                branch_part = branch_part,
                 case_id = case_id,
                 case_type = node.case_type,
             )

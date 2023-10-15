@@ -21,8 +21,7 @@ class CaseNode(BaseNode):
             
     def parse(self, env):
         if m := re.match(fr"(.*{Sign.CONDITION})({Keyword.CASE}|{Keyword.ELSE}|{Keyword.END})$", self.name):
-            env.branching.case_id += 1             # increment branching case ID
-            self.case_id = env.branching.case_id   # set node case ID
+            self.case_id = env.branching.new_case()  # set node case ID
             self.case_type = m.group(2)
             self.name = f"{m.group(1)}{str(self.case_id)}" 
             if m.group(2) == Keyword.CASE:
