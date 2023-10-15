@@ -226,7 +226,7 @@ class ExportPDF:
             
             def my_replace(m):
                 case = self.env.branching.cases[m.group(1)]
-                return f"{case.branch_id}{case.branch_type}"
+                return f"{case.branch_id}{case.branch_part}"
             parent_name = re.sub(r'\.(@[0-9]+)', my_replace, parent_name)
         # add a title block
         if blocks:
