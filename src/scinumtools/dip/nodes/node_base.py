@@ -12,7 +12,8 @@ class BaseNode(Node):
     value: str = None       # Value
     constant: bool = False
     condition: str = None
-    case: str = (None, None)
+    branch_id: int = None
+    case_id: int = None
     
     def __init__(self, parser=None, *args, **kwargs):
         if parser:

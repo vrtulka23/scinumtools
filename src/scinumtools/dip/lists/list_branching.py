@@ -24,31 +24,54 @@ class Branch:
     
 @dataclass
 class BranchingList:
-    state: List[List[str]]     = field(default_factory = list)  # current state
-    branches: Dict[str,Branch] = field(default_factory = dict)  # list of branches
-    cases: Dict[str,Case]      = field(default_factory = dict)  # list of cases
+    # branch structure
+    state: List[str]           = field(default_factory = list)  # list of openned branches
+    branches: Dict[str,Branch] = field(default_factory = dict)  # all branches
+    cases: Dict[str,Case]      = field(default_factory = dict)  # all cases
+
+    # counters
     num_cases: int = 0
-    branch_id: int = 0
+    num_branches: int = 0
 
-    def _branch_id(self):
-        return f"{Sign.CONDITION}{self.branch_id}"
+    def _get_branch_id(self):
+        """ Get ID of a current branch
+        """
+        if self.state:
+            return self.state[-1]
+        else:
+            return None
 
+    def _get_case_id(self):
+        """ Get ID of a current case
+        """
+        branch_id = self._get_branch_id()
+        return self.branches[branch_id].cases[-1]
+        
     def _open_branch(self, case_id):
-        self.branch_id += 1        
-        self.state.append([case_id])
-        branch_id = self._branch_id()
+        """ Start a new branch
+        """
+        self.num_branches += 1        
+        branch_id = f"{Sign.CONDITION}{self.num_branches}"
+        self.state.append(branch_id)
         self.branches[branch_id] = Branch([case_id], [Keyword.CASE])
+        return 0  # branch_part
     
-    def _continue_branch(self, case_id, case_type):
-        self.state[-1].append(case_id)
-        branch_id = self._branch_id()
+    def _switch_case(self, case_id, case_type):
+        """ Go to a new case withing a branch
+        """
+        branch_id = self._get_branch_id()
         self.branches[branch_id].cases.append(case_id)
         self.branches[branch_id].types.append(case_type)
+        return len(self.branches[branch_id].cases)-1  # branch_part
 
     def _close_branch(self):
+        """ Close current branch
+        """
         self.state.pop()
-
+       
     def register_case(self):
+        """ Add a new case
+        """
         self.num_cases += 1
         return self.num_cases
     
@@ -57,7 +80,7 @@ class BranchingList:
         """
         if not self.state:
             return False
-        case = self.state[-1][-1]
+        case = self._get_case_id()
         return self.cases[case].value.value == False
         
     def solve_case(self, node):
@@ -66,7 +89,7 @@ class BranchingList:
         :param node: Condition node
         """
         if self.state:
-            id_old = self.state[-1][-1]
+            id_old = self._get_case_id()
             path_old = self.cases[id_old].path
         else:
             path_old = ''
@@ -83,18 +106,19 @@ class BranchingList:
                 raise Exception(f"Invalid condition:", node.code)
             case_id = fr"{Sign.CONDITION}{m.group(2)}"
             if path_new==path_old:
-                self._continue_branch(case_id, node.case_type)
+                branch_part = self._switch_case(case_id, node.case_type)
             else:
-                self._open_branch(case_id)
+                branch_part = self._open_branch(case_id)
+            branch_id = self._get_branch_id()
             self.cases[case_id] = Case(
-                path        = path_new,
-                value       = value,
-                code        = node.code,
-                expr        = node.value_expr,
-                branch_id   = self._branch_id(),
-                branch_part = chr(ord('a')+len(self.state[-1])-1),
-                case_id     = case_id,
-                case_type   = node.case_type,
+                path        = path_new,          # path of a new case
+                code        = node.code,         # code line
+                expr        = node.value_expr,   # case logical expression
+                value       = value,             # boolean value true/false
+                branch_id   = branch_id,         # branch ID
+                branch_part = branch_part,       # part on the branch
+                case_id     = case_id,           # case ID
+                case_type   = node.case_type,    # case type CASE/ELSE/END
             )
         else:
             raise Exception(f"Invalid condition:", node.code)
@@ -105,9 +129,10 @@ class BranchingList:
         :param node: Parameter node
         """
         if not self.state: # outside of any condition
-            return        
-        case = self.state[-1][-1]
+            return
+        case = self._get_case_id()
         if not node.name.startswith(self.cases[case].path): # ending case at lower indent
             self._close_branch()
         if self.state:
-            node.case = (self.state[-1][0], self.state[-1][-1])
+            node.branch_id = self._get_branch_id()
+            node.case_id   = self._get_case_id()

@@ -239,8 +239,8 @@ class DIP:
                     if target.nodes[n].clean_name() != node.clean_name():
                         continue
                     # Continue if nodes are not in the same case and part
-                    if target.nodes[n].case[0]==node.case[0]:
-                        if target.nodes[n].case[1]!=node.case[1]:
+                    if target.nodes[n].branch_id==node.branch_id:
+                        if target.nodes[n].case_id!=node.case_id:
                             continue
                     # Remove all following node properties
                     for i in range(len(queue.nodes)):
