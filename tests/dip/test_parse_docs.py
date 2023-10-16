@@ -54,6 +54,7 @@ def test_incomplete_case_definition():
         a float = 3      # definition, or modification
         """)
         env = p.parse_docs()
+        #print(env.branching.branches)
         #assert len(env.nodes) == 2
         """
         assert env.nodes[0].name == '@1.a'
