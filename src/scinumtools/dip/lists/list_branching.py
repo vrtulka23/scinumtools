@@ -37,7 +37,7 @@ class BranchingList:
         self.branch_id += 1        
         self.state.append([case_id])
         branch_id = self._branch_id()
-        self.branches[branch_id] = Branch([case_id], [Keyword.ELSE])
+        self.branches[branch_id] = Branch([case_id], [Keyword.CASE])
     
     def _continue_branch(self, case_id, case_type):
         self.state[-1].append(case_id)
@@ -47,7 +47,7 @@ class BranchingList:
 
     def _close_branch(self):
         self.state.pop()
-    
+
     def register_case(self):
         self.num_cases += 1
         return self.num_cases
@@ -86,17 +86,15 @@ class BranchingList:
                 self._continue_branch(case_id, node.case_type)
             else:
                 self._open_branch(case_id)
-            branch_part = chr(ord('a')+len(self.state[-1])-1)
-            branch_id = self._branch_id()   
             self.cases[case_id] = Case(
-                path = path_new,
-                value = value,
-                code = node.code,
-                expr = node.value_expr,
-                branch_id = branch_id,
-                branch_part = branch_part,
-                case_id = case_id,
-                case_type = node.case_type,
+                path        = path_new,
+                value       = value,
+                code        = node.code,
+                expr        = node.value_expr,
+                branch_id   = self._branch_id(),
+                branch_part = chr(ord('a')+len(self.state[-1])-1),
+                case_id     = case_id,
+                case_type   = node.case_type,
             )
         else:
             raise Exception(f"Invalid condition:", node.code)
@@ -112,4 +110,4 @@ class BranchingList:
         if not node.name.startswith(self.cases[case].path): # ending case at lower indent
             self._close_branch()
         if self.state:
-            node.case = ({self.state[-1][0]}, {self.state[-1][-1]})
+            node.case = (self.state[-1][0], self.state[-1][-1])
