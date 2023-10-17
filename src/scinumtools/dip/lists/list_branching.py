@@ -21,6 +21,7 @@ class Case:
 class Branch:
     cases: list   = field(default_factory = list)  # list of case IDs
     types: list   = field(default_factory = list)  # list of case types
+    nodes: dict   = field(default_factory = dict)  # number of node definitions
     
 @dataclass
 class BranchingList:
@@ -67,6 +68,9 @@ class BranchingList:
     def _close_branch(self):
         """ Close current branch
         """
+        #if len(self.state)>1:
+        #    print(self.state[-1])
+        # remove current branch from the state list
         self.state.pop()
        
     def register_case(self):
@@ -88,33 +92,43 @@ class BranchingList:
 
         :param node: Condition node
         """
-        if self.state:
-            id_old = self._get_case_id()
-            path_old = self.cases[id_old].path
-        else:
-            path_old = ''
         if m := re.match(f"(.*{Sign.CONDITION})([0-9]+)$", node.name):
             path_new = m.group(1)
+            path_old = ''
+            if self.state:
+                id_old = self._get_case_id()
+                path_old = self.cases[id_old].path
             if node.case_type==Keyword.CASE:
-                value = node.value
+                pass
             elif node.case_type==Keyword.ELSE and self.cases:
-                value = node.value 
+                pass
             elif node.case_type==Keyword.END and self.cases and path_old==path_new:
+                print('close', 'a')
                 self._close_branch()
                 return
             else:
                 raise Exception(f"Invalid condition:", node.code)
             case_id = fr"{Sign.CONDITION}{m.group(2)}"
-            if path_new==path_old:
+            if path_new==path_old:  # same branch
                 branch_part = self._switch_case(case_id, node.case_type)
-            else:
+            elif path_new<path_old: # lower branch
+                # close openned branches unitil the same branch is reached
+                while path_new!=path_old:
+                    self._close_branch()
+                    if self.state:
+                        id_old = self._get_case_id()
+                        path_old = self.cases[id_old].path
+                    else:
+                        path_old = ''
+                branch_part = self._switch_case(case_id, node.case_type)
+            else:                   # new branch
                 branch_part = self._open_branch(case_id)
             branch_id = self._get_branch_id()
             self.cases[case_id] = Case(
                 path        = path_new,          # path of a new case
                 code        = node.code,         # code line
                 expr        = node.value_expr,   # case logical expression
-                value       = value,             # boolean value true/false
+                value       = node.value,        # boolean value true/false
                 branch_id   = branch_id,         # branch ID
                 branch_part = branch_part,       # part on the branch
                 case_id     = case_id,           # case ID
@@ -136,3 +150,10 @@ class BranchingList:
         if self.state:
             node.branch_id = self._get_branch_id()
             node.case_id   = self._get_case_id()
+            # Register node to the branch
+            branch_id = self._get_branch_id()
+            node_name = node.clean_name()
+            if node_name in self.branches[branch_id].nodes:
+                self.branches[branch_id].nodes[node_name] += 1
+            else:
+                self.branches[branch_id].nodes[node_name] = 1 
