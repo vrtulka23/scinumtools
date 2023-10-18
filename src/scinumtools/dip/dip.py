@@ -330,6 +330,6 @@ class DIP:
                 else:
                     # If node wasn't defined, create a new node
                     if node.keyword=='mod' and node.source.primary:
-                        raise Exception(f"Modifying undefined node:",node.name)
+                        raise Exception(f"Modifying undefined node:",node.name, node.source)
                     target.nodes.append(node)
         return target
