@@ -234,3 +234,16 @@ if __name__ == "__main__":
         if fn[:5]=='test_' and (test is True or test==fn[5:]):
             print(f"\nTesting: {fn}\n")
             locals()[fn]()
+
+def test_missing_reference():
+    with pytest.raises(Exception) as e_info:
+        data = parse('''
+        sim
+          gravity bool = false  
+        @case ("{?gravity}")
+          stars int = 30
+        @end
+        ''')
+    assert e_info.value.args[0] == "Missing reference:"
+    assert e_info.value.args[1] == "{?gravity}"
+  
