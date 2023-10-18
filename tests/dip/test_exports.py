@@ -8,10 +8,10 @@ from scinumtools.dip.exports import ExportPDF
 
 @pytest.fixture
 def file_pdf():
-    dir_tmp = "tmp"
+    dir_tmp = "docs/source/_static/pdf"
     if not os.path.isdir(dir_tmp):
         os.mkdir(dir_tmp)
-    file_pdf  = f"{dir_tmp}/docs_test.pdf"
+    file_pdf  = f"{dir_tmp}/documentation.pdf"
     if os.path.isfile(file_pdf):
         os.remove(file_pdf)
     return file_pdf

@@ -1,5 +1,5 @@
-DIP documentation
-=================
+Sphinx documentation
+====================
 
 One of the main goles of DIP is to help developers to rapidly write their code.
 Description and validation of input parameters is often tedious and automatic approach to this proces can save a lot of time.

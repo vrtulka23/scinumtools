@@ -1,8 +1,11 @@
-Syntax highliter
-================
+Pygments highlighter
+====================
+
+Syntax highlighter
+------------------
 
 DIP language shares many common programming concepts with other languages like Python and C.
-It's syntax is, however, different enough to cause a problem for generic highliters.
+It's syntax is, however, different enough to cause a problem for generic highlighters.
 Therefore, DIP comes with its own `pygments <https://pygments.org>`_ lexer in `syntax_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/syntax_lexer.py>`_ and styles in `style_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/style_lexer.py>`_.
 Below is an overview of all its highlighting capabilities:
 
@@ -193,3 +196,37 @@ Below is an overview of all its highlighting capabilities:
      children int = 1
        infant bool = true  # comment
        weight float = 9 kg 
+
+
+Schema highlighter
+------------------
+
+DIP schema highlighter is design to highlight only the most basic concepts of DIP language.
+Definition of the schema highlighter is in file `schema_lexer.py <https://github.com/vrtulka23/scinumtools/tree/main/tools/pygments/schema_lexer.py>`_. 
+The following block summarizes all highlighter possibilities.
+
+.. code-block:: DIPSchema
+
+   <indent><name> <type> = <value> <unit> # comment
+   
+   <indent>= <value> <unit>               # comment
+   <indent>!options <value> <unit>        # comment
+   <indent>!condition ('<expression>')      
+   <indent>!condition ("<expression>")    # comment
+   <indent>!condition ("""
+   <expression>
+   """)
+   <indent>!format <value>
+   <indent>!constant
+   
+   $source <name> = <path>
+
+   {<source>?<query>}
+   {<source>?<query>}[<slice>] 
+
+   (<function>)
+   ("<expression>")
+   ('<expression>')
+   ("""
+   <expression>
+   """)

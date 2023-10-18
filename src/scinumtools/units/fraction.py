@@ -27,44 +27,19 @@ class Fraction:
         return Fraction(value.num, value.den)
 
     def __post_init__(self):
-        # ensure correct type
-        if isinstance(self.num, (int,float)) and isinstance(self.den, (int,float)):
-            self.num = int(self.num)
-            self.den = int(self.den)
-        else:
-            raise Exception("Incorrect numerator, or denominator:", self.num, self.den)
-        # enforce whole numbers
-        if np.mod(self.num,1)!=0 or np.mod(self.den,1)!=0:
-            raise Exception("Fraction excepts only whole numbers:", self.num, self.den)
-        else:
-            self.num = int(self.num)
-            self.den = int(self.den)
-        # reset zero values
-        if self.num in [0, -0]:
-            self.num = 0
-            self.den = 1
-        # keep minus sign always on the top
-        if self.num>=0 and self.den<0:
-            self.num = -self.num
-            self.den = -self.den
-        elif self.num<0 and self.den<0:
-            self.num = -self.num
-            self.den = -self.den
-        # remove common divisors
-        def reduce(num: int, den:int):
-            gcd=np.gcd(num, den)
-            if gcd>1:
-                return reduce(int(num/gcd), int(den/gcd))
-            return int(num), int(den)
-        self.num, self.den = reduce(self.num, self.den)
-    
+        # ensure whole numbers
+        self.num = int(self.num)
+        self.den = int(self.den)
+
     def __str__(self):
+        self.rebase()
         if self.num==0 or self.den==1:
             return str(self.num)
         else:
             return f"{self.num}{SYMBOL_FRACTION}{self.den}"
 
     def __repr__(self):
+        self.rebase()
         if self.num==0 or self.den==1:
             return str(self.num)
         else:
@@ -102,6 +77,26 @@ class Fraction:
     
     def __neg__(self):
         return Fraction(-self.num, self.den)
+
+    def rebase(self):
+        # reset zero values
+        if self.num in [0, -0]:
+            self.num = 0
+            self.den = 1
+        # keep minus sign always on the top
+        if self.num>=0 and self.den<0:
+            self.num = -self.num
+            self.den = -self.den
+        elif self.num<0 and self.den<0:
+            self.num = -self.num
+            self.den = -self.den
+        # remove common divisors
+        def reduce(num: int, den:int):
+            gcd=np.gcd(num, den)
+            if gcd>1:
+                return reduce(int(num/gcd), int(den/gcd))
+            return int(num), int(den)
+        self.num, self.den = reduce(self.num, self.den)
     
     def value(self, dtype=tuple):
         if self.num==0 or self.den==1:

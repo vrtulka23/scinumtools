@@ -31,6 +31,7 @@ def get_unit_base(unitid: str, exp: Fraction = None):
         prefix, base = '', unitid
         magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
         dimensions = Dimensions.from_list(UNIT_STANDARD[base].dimensions)*exp
+    exp.rebase()
     if exp.num==1 and exp.den==1:
         expression = f"{prefix}{base}"
     else:

@@ -1,17 +1,20 @@
 Tools
 =====
 
-Sphinx documentation
---------------------
+Parameter exports
+-----------------
 
 .. toctree::
    :maxdepth: 2
 
-   dipdocs
-   syntax_highliter
-   schema_highliter
-   
-Emacs highlighter
------------------
+   sphinx_docs
+   pdf_docs
 
-Preliminary DIP syntax highliter for Emacs based on the Python mode is available in the main source code repository:  `dip-mode.el <https://github.com/vrtulka23/scinumtools/tree/main/tools/emacs/dip-mode.el>`_.
+Syntax highlighters
+-------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   pygments_highlighter
+   emacs_highlighter

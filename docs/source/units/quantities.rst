@@ -190,7 +190,7 @@ This can be initialized using:
   
      >>> BaseUnits([2,1,-2,0,0,0,0,0])
      BaseUnits(m=2 g=1 s=-2)
-     >>> BaseUnits(Dimensions(m=2,g=1,s=-2))
+     >>> BaseUnits(Dimensions(m=Fraction(2),g=Fraction(1),s=Fraction(-2)))
      BaseUnits(m=2 g=1 s=-2)
      
 Values of ``BaseUnits`` can be obtained in three different forms:
@@ -215,7 +215,7 @@ Values of ``BaseUnits`` can be obtained in three different forms:
   .. code-block::
   
      >>> bu.dimensions
-     Dimensions(m=2 g=1 s=-2)
+     Dimensions(m=Fraction(2) g=Fraction(1) s=Fraction(-2))
      >>> bu.magnitude
      1000.0
      
@@ -242,26 +242,14 @@ One can also get values of base units directly from the ``Quantity`` object:
    >>> q.baseunits.magnitude
    1000.0
    >>> q.baseunits.dimensions
-   Dimensions(m=3 s=-2)
-
-Dimensions
-----------
-
-Class ``Dimensions`` used above stores exponents of the unit dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``).
-Manipulation with this class is straightforward:
-
-.. code-block::
-
-   >>> d = Dimensions(m=2, g=1, s=-2)
-   >>> d.value()
-   [2, 1, -2, 0, 0, 0, 0, 0]
+   Dimensions(m=Fraction(3) s=Fraction(-2))
 
 Fractional exponents
 --------------------
 
 Exponents stored both in ``BaseUnits`` and ``Dimensions`` classes do not need to be only integers.
 In fact, all exponents are converted automatically into a fractional form using class ``Fraction``.
-Fraction objects store nominator and denominator and are automatically reduced to the most basic form at the initialization:
+Fraction objects store nominator and denominator and the expressions are automatically displayed in the most basic form:
 
 .. code-block::
 
@@ -269,8 +257,10 @@ Fraction objects store nominator and denominator and are automatically reduced t
    1
    >>> Fraction(4,8)    # setting both numerator and denominator
    1:2
-   >>> Fraction((0,3))  # setting as a tuple
+   >>> Fraction.from_tuple((0,3))   # setting as a tuple
    0
+   >>> Fraction.from_string('2:3')  # setting as a string
+   2:3
 
 As seen above, values of fractions are printed in a textual form, where the colon sign divides nominator and denominator part of the fraction value.
 Fractions with a unit denominator display only their nominator.
@@ -284,5 +274,20 @@ Tuple notation of fractions is used as a shorthand during ``Quantity``, ``BaseUn
    Quantity(3.000e+00 kg1:2)
    >>> BaseUnits([(2,3),1,-2,0,0,0,0,0])
    BaseUnits(m=2:3 g=1 s=-2)
-   >>> Dimensions(m=(2,3))
+   >>> Dimensions(m=Fraction(2,3))
    Dimensions(m=2:3)
+
+Dimensions
+----------
+
+Class ``Dimensions`` used above stores exponents of the unit dimensions (i.e. ``m``, ``g``, ``s``, ``K``, ``C``, ``cd``, ``mol`` and ``rad``).
+Manipulation with this class is straightforward:
+
+.. code-block::
+
+   >>> d = Dimensions(m=Fraction(2), g=Fraction(1,2), s=Fraction(-2))
+   >>> d.value()
+   [2, (1,2), -2, 0, 0, 0, 0, 0]
+   >>> Dimensions.from_list([3, (3,2), 0, 0, 0, 0, 0, 0])
+   Dimensions(m=3 g=3:2)
+   
