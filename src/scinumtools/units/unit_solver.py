@@ -63,7 +63,7 @@ def AtomParser(string=None):
     if m := re.search(r"[0-9"+SYMBOL_FRACTION+r"+-]+$", string):
         exp = m.group() 
         string = string[:-len(exp)]
-        exp = Fraction(exp)
+        exp = Fraction.from_string(exp)
     else:
         exp = Fraction(1)
     if string.startswith(f" {SYMBOL_SYSTEM_UNIT}"):

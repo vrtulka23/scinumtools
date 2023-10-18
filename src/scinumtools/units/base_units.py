@@ -22,15 +22,15 @@ def get_unit_base(unitid: str, exp: Fraction = None):
         prefix, base = '', unitid
         qu = QUANTITY_UNITS[unitid]
         magnitude  = qu[0] ** exp.value(dtype=float)
-        dimensions = Dimensions(*qu[1])*exp
+        dimensions = Dimensions.from_list(qu[1])*exp
     elif SYMBOL_UNITID in unitid:
         prefix, base = unitid.split(SYMBOL_UNITID)
         magnitude  = (UNIT_PREFIXES[prefix].magnitude*UNIT_STANDARD[base].magnitude) ** exp.value(dtype=float)
-        dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
+        dimensions = Dimensions.from_list(UNIT_STANDARD[base].dimensions)*exp
     else:
         prefix, base = '', unitid
         magnitude  = UNIT_STANDARD[base].magnitude ** exp.value(dtype=float)
-        dimensions = Dimensions(*UNIT_STANDARD[base].dimensions)*exp
+        dimensions = Dimensions.from_list(UNIT_STANDARD[base].dimensions)*exp
     if exp.num==1 and exp.den==1:
         expression = f"{prefix}{base}"
     else:
@@ -55,7 +55,7 @@ class BaseUnits:
         elif isinstance(baseunits, Dimensions):
             self.baseunits = baseunits.value(dtype=dict)
         elif isinstance(baseunits, (list, np.ndarray)):
-            self.baseunits = Dimensions(*baseunits).value(dtype=dict)
+            self.baseunits = Dimensions.from_list(baseunits).value(dtype=dict)
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits.baseunits
         elif isinstance(baseunits, (SI, CGS, AU)):
@@ -72,7 +72,8 @@ class BaseUnits:
         self.nobase = True
         for unitid in list(self.baseunits.keys()):
             if not isinstance(self.baseunits[unitid], Fraction):
-                self.baseunits[unitid] = Fraction(self.baseunits[unitid])
+                frac = self.baseunits[unitid]
+                self.baseunits[unitid] = Fraction.from_tuple(frac) if isinstance(frac, tuple) else Fraction(frac)
             if self.baseunits[unitid].num==0:
                 del self.baseunits[unitid]
                 continue

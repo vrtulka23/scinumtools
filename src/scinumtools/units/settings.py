@@ -13,6 +13,8 @@ SYMBOL_FRACTION    = ":"
 SYMBOL_MULTIPLY    = "*"
 SYMBOL_SYSTEM_UNIT = "#"
 
+DIMENSION_LIST     = ['m','g','s','K','C','cd','mol','rad']
+
 UNIT_TYPES = [
     TemperatureUnitType,
     LogarithmicUnitType,

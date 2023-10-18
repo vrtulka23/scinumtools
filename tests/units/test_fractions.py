@@ -13,7 +13,7 @@ def test_initialization():
     assert str(Fraction(2))     == "2"
     assert str(Fraction(0,3))   == "0"
     assert str(Fraction(1,3))   == "1:3"
-    assert str(Fraction((1,2))) == "1:2"
+    assert str(Fraction.from_tuple((1,2))) == "1:2"
 
 def test_arithmetics():
     f1 = Fraction(1,3)

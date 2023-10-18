@@ -9,12 +9,12 @@ from scinumtools.units import *
 
 def test_initialization():
     
-    assert str(BaseUnits())                 == "BaseUnits()"
+    assert str(BaseUnits())                          == "BaseUnits()"
     dim = [0,2,3,-2,(3,2),0,0,0]
-    assert str(BaseUnits(dim))              == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
-    assert str(BaseUnits(Dimensions(*dim))) == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
-    assert str(BaseUnits("kg*m2/s2"))       == "BaseUnits(kg=1 m=2 s=-2)"
-    assert str(BaseUnits(BaseUnits("kg")))  == "BaseUnits(kg=1)"
+    assert str(BaseUnits(dim))                       == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
+    assert str(BaseUnits(Dimensions.from_list(dim))) == "BaseUnits(g=2 s=3 K=-2 C=3:2)"
+    assert str(BaseUnits("kg*m2/s2"))                == "BaseUnits(kg=1 m=2 s=-2)"
+    assert str(BaseUnits(BaseUnits("kg")))           == "BaseUnits(kg=1)"
 
 def test_arithmetics():
     

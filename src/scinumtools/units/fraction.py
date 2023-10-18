@@ -7,23 +7,26 @@ from .settings import *
 @dataclass
 class Fraction:
 
-    num: Union[int, tuple, str]   # numerator
+    num: int = field(default=0)   # numerator
     den: int = field(default=1)   # denominator
+    
+    @staticmethod
+    def from_string(value: str):
+        if SYMBOL_FRACTION in value:
+            num, den = value.split(SYMBOL_FRACTION)
+            return Fraction(int(num), int(den))
+        else:
+            return Fraction(int(value), 1)
+
+    @staticmethod
+    def from_tuple(value: tuple):
+        return Fraction(value[0],value[1])
+
+    @staticmethod
+    def from_fraction(value: 'Fraction'):
+        return Fraction(value.num, value.den)
 
     def __post_init__(self):
-        # initialize from a tuple
-        if isinstance(self.num, str):
-            if SYMBOL_FRACTION in self.num:
-                num, den = self.num.split(SYMBOL_FRACTION)
-                self.num, self.den = int(num), int(den)
-            else:
-                self.num, self.den = int(self.num), 1
-        elif isinstance(self.num, tuple):
-            self.num, self.den = self.num
-        elif isinstance(self.num, Fraction):
-            value = self.num
-            self.num = value.num
-            self.den = value.den
         # ensure correct type
         if isinstance(self.num, (int,float)) and isinstance(self.den, (int,float)):
             self.num = int(self.num)
@@ -68,12 +71,16 @@ class Fraction:
             return f"{self.num}{SYMBOL_FRACTION}{self.den}"        
         
     def __add__(self, other):
-        if not isinstance(other, Fraction):
+        if isinstance(other, tuple):
+            other = Fraction.from_tuple(other) 
+        elif isinstance(other, int):
             other = Fraction(other)
         return Fraction(self.num*other.den+other.num*self.den, self.den*other.den)
             
     def __sub__(self, other):
-        if not isinstance(other, Fraction):
+        if isinstance(other, tuple):
+            other = Fraction.from_tuple(other) 
+        elif isinstance(other, int):
             other = Fraction(other)
         return Fraction(self.num*other.den-other.num*self.den, self.den*other.den)
 

@@ -47,3 +47,4 @@ def test_profiling():
     stats.sort_stats(pstats.SortKey.TIME)
     stats.print_stats()
     
+    #exit(1)

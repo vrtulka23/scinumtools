@@ -22,7 +22,7 @@ def test_quantity():
     
     result = "Quantity(1.230e+04 m*s2:3)"
     assert str(Quantity(123e2, [1,0,(2,3),0,0,0,0,0] ))    == result
-    assert str(Quantity(123e2, Dimensions(m=1, s=(2,3)) )) == result
+    assert str(Quantity(123e2, Dimensions(m=Fraction(1), s=Fraction(2,3)) )) == result
 
     result = "Quantity(1.230e+04 J2*kg2:3)"
     assert str(Quantity(123e2, {'J': 2, 'k:g':(2,3)} )) == result
@@ -121,7 +121,7 @@ def test_scalar_unit_conversion():
     result = "Quantity(3.000e+03 m)"
     assert str(Quantity(3, 'km').to('m'))                 == result
     assert str(Quantity(3, 'km').to([1,0,0,0,0,0,0,0]))   == result
-    assert str(Quantity(3, 'km').to(Dimensions(m=1)))     == result
+    assert str(Quantity(3, 'km').to(Dimensions(m=Fraction(1))))     == result
     assert str(Quantity(3, 'km').to({'m':1}))             == result
     assert str(Quantity(3, 'km').to(BaseUnits({'m':1})))  == result
     assert str(Quantity(3, 'km').to(Unit().m))            == result
