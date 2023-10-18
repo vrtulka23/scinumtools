@@ -2,7 +2,7 @@ PDF documentation
 =================
 
 DIP package comes with an automatized PDF export of parameters.
-As an example, we will parse following the files:
+As an example, we will parse following files:
 
 *  `pdf_definitions.dip <https://github.com/vrtulka23/scinumtools/blob/main/tests/dip/examples/pdf_definitions.dip>`_
 *  `pdf_settings.dip <https://github.com/vrtulka23/scinumtools/blob/main/tests/dip/examples/pdf_settings.dip>`_
