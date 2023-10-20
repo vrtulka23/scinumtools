@@ -6,12 +6,13 @@ from docutils.parsers.rst import Directive, directives
 from inspect import getframeinfo, stack
 import collections
 
-sys.path.insert(0,"../src")              # import recent version of scinumtools
-from scinumtools.dip import DIP, Source, Format
-from scinumtools.dip.datatypes import NumberType
-from scinumtools.dip.nodes import IntegerNode, StringNode, FloatNode
+from ..dip import DIP
+from ..source import Source
+from ..settings import Format
+from ..datatypes import NumberType
+from ..nodes import IntegerNode, StringNode, FloatNode
 
-class SphinxDocs(Directive):
+class ExportSphinx(Directive):
 
     has_content = True
 
@@ -133,7 +134,7 @@ class SphinxDocs(Directive):
 
 
 def setup(app):
-    app.add_directive("dipdocs", SphinxDocs)
+    app.add_directive("dipdocs", ExportSphinx)
 
     return {
         'version': '0.1',
