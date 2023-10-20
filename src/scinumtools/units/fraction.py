@@ -4,11 +4,11 @@ from typing import Union
 
 from .settings import *
 
-@dataclass
 class Fraction:
+    __slots__ = ("num","den")
 
-    num: int = field(default=0)   # numerator
-    den: int = field(default=1)   # denominator
+    num: int    # numerator
+    den: int    # denominator
     
     @staticmethod
     def from_string(value: str):
@@ -26,10 +26,13 @@ class Fraction:
     def from_fraction(value: 'Fraction'):
         return Fraction(value.num, value.den)
 
-    def __post_init__(self):
+    def __init__(self, num: int = 0, den: int = 1):
         # ensure whole numbers
-        self.num = int(self.num)
-        self.den = int(self.den)
+        self.num = int(num)
+        self.den = int(den)
+
+    def __eq__(self, other):
+        return self.num==other.num and self.den==other.den
 
     def __str__(self):
         self.rebase()
