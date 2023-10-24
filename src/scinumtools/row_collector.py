@@ -56,7 +56,13 @@ class RowCollector:
     
     def __len__(self):
         return self.size()
-    
+        
+    def __getitem__(self, key: Union[int, str]):
+        return getattr(self, key)
+        
+    def shape(self):
+        return (len(self._columns), self.size())
+
     def append(self, values: list):
         """ Append a single row
 

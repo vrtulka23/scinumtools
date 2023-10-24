@@ -32,6 +32,21 @@ def test_append_list(columns, rows):
     with snt.RowCollector(columns,rows) as rc:
         check_values(rc)
 
+def test_column_selector(columns, rows):
+
+    with snt.RowCollector(columns) as rc:
+        for row in rows:
+            rc.append(row)
+        assert rc['col1'] == [1,4,7]
+        
+def test_shape(columns, rows):
+    
+    with snt.RowCollector(columns) as rc:
+        for row in rows:
+            rc.append(row)
+        rc.append(row)
+        assert rc.shape() == (3,4)
+
 def test_conversions_list(columns,rows):
     
     with snt.RowCollector(columns,rows) as rc:

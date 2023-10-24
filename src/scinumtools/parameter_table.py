@@ -1,10 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Union
 
-@dataclass
 class ParameterSettings:
     """ ParameterSettings class contain all settings of a parameter
     """
+    
+    _keys: list
     
     def __enter__(self):
         return self
@@ -16,8 +17,22 @@ class ParameterSettings:
         return getattr(self,key)
     
     def __init__(self, settings):
+        self._keys = []
         for key,value in settings.items():
+            self._keys.append(key)
             setattr(self,key,value)
+            
+    def _to_string(self):
+        settings = []
+        for key in self._keys:
+            value = str(getattr(self, key))
+            settings.append(f"{key}={value}")
+        settings = " ".join(settings)
+        return f"ParameterSettings({settings})"
+    def __str__(self):
+        return self._to_string()
+    def __repr__(self):
+        return self._to_string()
 
 @dataclass
 class ParameterTable:
@@ -61,6 +76,12 @@ class ParameterTable:
         else:
             self.append(key, values)
 
+    def __getattr__(self, key):
+        if self._keys is None:
+            raise Exception("Cannot access parameters using a parameter key.")
+        else:   
+            return self._data[key]
+
     def __delitem__(self, index):
         if self._keys is None:
             del self._data[index]
@@ -77,6 +98,9 @@ class ParameterTable:
         else:
             return item in self._keys
 
+    def shape(self):
+        return (len(self._data), len(self._settings))
+    
     def keys(self):
         if self._keys is None:
             raise Exception("Parameters do not have keys.")

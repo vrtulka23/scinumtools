@@ -45,7 +45,23 @@ def test_parameter_dict():
         'e': [4, 5, 6]
     }, keys=True)
     test(params)
-
+    
+def test_shape():
+    
+    with snt.ParameterTable(['a','b','c']) as params:
+        params.append([1, 2, 3])
+        params.append([4, 5, 6])
+        assert params.shape() == (2, 3)
+        
+def test_rows_attributes():
+    
+    with snt.ParameterTable(['a','b','c'], keys=True) as params:
+        params['d'] = [1, 2, 3]
+        params.append( 'e', [4, 5, 6] )
+        
+        assert str(params.d)   == "ParameterSettings(a=1 b=2 c=3)"
+        assert params.d.a      == 1
+        
 def test_delete_item():
     
     with snt.ParameterTable(['a','b','c']) as params:
