@@ -1,7 +1,7 @@
 #############################################
 # Do not modify this file!                  #
 # It is generated automatically in:         #
-# tests/units/test_list.py::test_quantities #
+# tools/generator/build_units.py            #
 #############################################
 QUANTITY_UNITS = {
   # AbsorbedDose

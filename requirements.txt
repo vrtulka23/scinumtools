@@ -6,3 +6,4 @@ matplotlib
 sphinx-rtd-theme
 toml
 reportlab
+beautifulsoup4

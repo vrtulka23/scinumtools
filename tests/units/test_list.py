@@ -110,48 +110,12 @@ def test_definitions():
         assert isclose(q.magnitude.value,  unit.magnitude, rel_tol=MAGNITUDE_PRECISION)
         assert base.dimensions.value(dtype=list) == unit.dimensions
         
-def test_quantities():
+def test_unit_systems():
     
     assert SI.Pressure.value       == '#SPRE'
     assert CGS.Energy.value        == '#CENE'
     assert AU.ElectricCharge.value == '#AECH'
     assert type(SI.Pressure)       == SI
-
-    text = [
-        "#############################################",
-        "# Do not modify this file!                  #",
-        "# It is generated automatically in:         #",
-        "# tests/units/test_list.py::test_quantities #",
-        "#############################################",
-        ""
-        "QUANTITY_UNITS = {",
-    ]
-    symbols = []
-    for q in range(len(QUANTITY_LIST)):
-        name = QUANTITY_LIST.name[q]
-        text.append(f"  # {name}")
-        for system in ['SI','CGS','AU']:
-            definition = getattr(QUANTITY_LIST,system)[q]
-            if definition is None:
-                continue
-            else:
-                symbol = QUANTITY_LIST.symbol[q]
-                unitid = f"#{system[0]}{symbol}"
-                atom = UnitSolver(definition)
-                base = BaseUnits(atom.baseunits)
-                c1 = f"{atom.magnitude*base.magnitude},"
-                c2 = f"{base.dimensions.value()}"
-                symbols.append(unitid)
-                text.append(f"  '{unitid}': ({c1:25s}{c2:27s}), # {definition}") 
-    text.append("}")
-    text = "\n".join(text)
-    
-    # test if new symbols are unique
-    assert len(np.unique(symbols)) == len(symbols)
-    
-    # test if we produced a valid Python code
-    exec(text)
-    assert QUANTITY_UNITS
 
     # test if quantity lists work
     assert str(Quantity(23, SI.Pressure))          == 'Quantity(2.300e+01 #SPRE)'
@@ -162,9 +126,3 @@ def test_quantities():
     assert str(Unit('[a_0]')/Unit(AU.Length))      == 'Quantity(1.000e+00)'
     assert str(Unit(AU.Length)*Unit('s'))          == 'Quantity(1.000e+00 #ALEN*s)'
     assert str(Quantity(1, '#ALEN/s').to('m/s'))   == 'Quantity(5.292e-11 m*s-1)'
-    
-    # save the new version of the code
-    path_units = "src/scinumtools/units"
-    assert os.path.isdir(path_units)
-    with open(f'{path_units}/unit_list.py','w') as f:
-        f.write(text)

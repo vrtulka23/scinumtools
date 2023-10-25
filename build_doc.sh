@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-python3 build_tables.py
+python3 tools/generator/generator.py build_docs
 cd docs
 if [[ "$1" != "-u" ]]; then
     make clean
