@@ -7,8 +7,30 @@ from scinumtools import RowCollector
 from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
+from scinumtools.dip import DIP
+from scinumtools.dip.exports import ExportPDF
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
+
+def build_export_pdf():
+    
+    # Generate a PDF documentation from a DIP file
+    file_definitions = os.environ['DIR_TESTS']+"/dip/examples/pdf_definitions.dip"
+    dir_pdf = os.environ['DIR_DOCS']+"/source/_static/pdf"
+    file_pdf = f"{dir_pdf}/documentation.pdf"
+    # Create directory if missing
+    if not os.path.isdir(dir_pdf):
+        os.mkdir(dir_pdf)
+    # Create a DIP environment
+    with DIP(docs=True) as p:
+        p.from_file(file_definitions)
+        env = p.parse_docs()
+    # Export parameters as a PDF
+    with ExportPDF(env) as exp:
+        title = "Example documentation"
+        pageinfo = "DIP Documentation"
+        exp.build(file_pdf, title, pageinfo)
+    print(file_pdf)
 
 def build_prefixes():
     

@@ -103,7 +103,6 @@ class BranchingList:
             elif node.case_type==Keyword.ELSE and self.cases:
                 pass
             elif node.case_type==Keyword.END and self.cases and path_old==path_new:
-                print('close', 'a')
                 self._close_branch()
                 return
             else:

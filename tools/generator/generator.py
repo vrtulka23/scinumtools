@@ -39,6 +39,7 @@ dname = os.path.dirname(abspath)
 os.chdir(dname)
 
 # set environmental variables
+os.environ["DIR_TESTS"] = "../../tests"
 os.environ["DIR_SOURCE"] = "../../src"
 os.environ["DIR_DOCS"] = "../../docs"
 os.environ["DIR_TMP"] = "../../tmp"
