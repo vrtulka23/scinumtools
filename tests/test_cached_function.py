@@ -15,6 +15,8 @@ def file_cache():
         for item in os.listdir(dir_cache):
             if item.startswith(name_cache):
                 os.remove(f"{dir_cache}/{item}")
+    else:
+        os.mkdir(dir_cache)
     return f"{dir_cache}/{name_cache}.npy"
 
 def cache_exists(file_cache, *args, **kwargs):
