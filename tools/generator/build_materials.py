@@ -78,8 +78,8 @@ def build_elements():
                 value = dformat.format(value=value) if isinstance(dformat,str) else dformat(value, unit)
                 value = rf"{value:{length}s}"
                 values[name] = value
-            if 'None' in values['abundance'] and density is None:
-                return None
+            #if 'None' in values['abundance'] and density is None:
+            #    return None
             symbol = f"'{id_isotope:d}':"
             values['N']   = r"{value:5s}".format(value=f"{id_isotope-id_element:d},")
             values['rho'] = r"{value:16s}".format(value=f"{density:.04e}," if density else "None,")
