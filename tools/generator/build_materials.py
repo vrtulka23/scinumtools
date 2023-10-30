@@ -23,8 +23,9 @@ def build_elements():
     ]
 
     isotope_data = [
-        (r'Weight',   'A',         float, 16,  r"{value},", 'Da' ),
-        ('Abundance', 'abundance', float, 10,   r"{value},", '%'  ),
+        (r'Weight',   'A',         float, 16,  r"{value},", 'Da'   ),
+        ('Abundance', 'abundance', float, 10,  r"{value},", '%'    ),
+        ('Binding',   'E_bind',    float, 10,  r"{value},", 'MeV'  ),
     ]
     
     def dformat_rho(table):
@@ -74,7 +75,7 @@ def build_elements():
                     value = 'None,'
                     values[name] = rf"{value:{length}s}"
                     continue
-                value = str(dtype(value.replace('%','').replace('×10','e')))  
+                value = str(dtype(value.replace('%','').replace('×10','e').replace('MeV','')))  
                 value = dformat.format(value=value) if isinstance(dformat,str) else dformat(value, unit)
                 value = rf"{value:{length}s}"
                 values[name] = value
@@ -151,8 +152,14 @@ def build_elements():
         "# tools/generator/build_materials.py.       #",
         "#############################################",
         ""
-        f"ELEMENT_COLUMNS = {element_columns}\n"
-        f"ISOTOPE_COLUMNS = {isotope_columns}\n"
+        "NUCLEON_COLUMNS = {'Z': '', 'N': '', 'E': '', 'A': 'Da', 'name': ''}",
+        "NUCLEONS = {",
+        "'[e]':   (0, 0, 1, 5.48579909065e-4, 'Electron',  ),",
+        "'[n]':   (0, 1, 0, 1.00866491588,    'Neutron',   ),",
+        "'[p]':   (1, 0, 0, 1.007276466621,   'Proton',    ),",
+        "}",
+        f"ELEMENT_COLUMNS = {element_columns}",
+        f"ISOTOPE_COLUMNS = {isotope_columns}",
         "ELEMENTS = {",
     ]
       

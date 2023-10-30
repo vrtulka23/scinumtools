@@ -35,14 +35,11 @@ class MaterialBase:
             else:
                 I = 0
             # parse mass
-            M = ELEMENTS[S][2][str(A)][0] + I * 5.48579909065e-4
+            M = ELEMENTS[S][2][str(A)][0] + I * NUCLEONS['[e]'][3]
             return MaterialBase(Z, M, A-Z, Z+I)
-        elif expr=='e-':
-            return MaterialBase(0, 5.48579909065e-4, 0, 1)
-        elif expr=='n0':
-            return MaterialBase(0, 1.00866491588, 1, 0)
-        elif expr=='p+':
-            return MaterialBase(1, 1.007276466621, 0, 0)
+        elif expr in NUCLEONS:
+            Z, N, E, M, name = NUCLEONS[expr]
+            return MaterialBase(Z, M, N, E)
         else:
             raise Exception("Atom canot be parsed from given string:", expr)
 
@@ -53,10 +50,10 @@ class MaterialBase:
         self.electrons = int(protons if electrons is None else electrons)
 
     def __str__(self):
-        return f"MaterialBase(p={self.protons} n={self.neutrons} e={self.electrons} m={self.mass:.3f})"
+        return f"{self.__class__.__name__}(p={self.protons} n={self.neutrons} e={self.electrons} m={self.mass:.3f})"
             
     def __repr__(self):
-        return f"MaterialBase(p={self.protons} n={self.neutrons} e={self.electrons} m={self.mass:.3f})"
+        return f"{self.__class__.__name__}(p={self.protons} n={self.neutrons} e={self.electrons} m={self.mass:.3f})"
         
     def __add__(self, other):
         protons   = self.protons + other.protons

@@ -5,6 +5,7 @@ import os
 import sys
 sys.path.insert(0, 'src')
 
+from scinumtools.units import Quantity, Unit
 from scinumtools.materials import *
 
 def test_preprocessing():
@@ -37,11 +38,16 @@ def test_solver():
         assert str(ms.solve('C{10-}'))  == "MaterialBase(p=6 n=4 e=5 m=10.016)"
         assert str(ms.solve('C{13-2}')) == "MaterialBase(p=6 n=7 e=4 m=13.002)"
 
-        # exceptions
-        assert str(ms.solve('e-'))      == "MaterialBase(p=0 n=0 e=1 m=0.001)"
-        assert str(ms.solve('n0'))      == "MaterialBase(p=0 n=1 e=0 m=1.009)"
-        assert str(ms.solve('p+'))      == "MaterialBase(p=1 n=0 e=0 m=1.007)"
-        assert str(ms.solve('p+'))      == str(ms.solve('H{1-1}'))
+        # nucleons
+        assert str(ms.solve('[e]'))      == "MaterialBase(p=0 n=0 e=1 m=0.001)"
+        assert str(ms.solve('[n]'))      == "MaterialBase(p=0 n=1 e=0 m=1.009)"
+        assert str(ms.solve('[n]2'))     == "MaterialBase(p=0 n=2 e=0 m=2.017)"
+        assert str(ms.solve('[p]'))      == "MaterialBase(p=1 n=0 e=0 m=1.007)"
+        assert str(ms.solve('[p]2'))     == "MaterialBase(p=2 n=0 e=0 m=2.015)"
+        assert str(ms.solve('[p]'))      == str(ms.solve('H{1-1}'))
+        assert str(ms.solve('[p]B{11}')) == "MaterialBase(p=6 n=6 e=5 m=12.017)"
+        
+        # hydrogen isotopes
         assert str(ms.solve('H'))       == str(ms.solve('H{1}'))
         assert str(ms.solve('H{+}'))    == str(ms.solve('H{1+}'))
         assert str(ms.solve('D'))       == str(ms.solve('H{2}'))
@@ -61,3 +67,15 @@ def test_solver():
         assert str(ms.solve('H{1-1}2'))             == "MaterialBase(p=2 n=0 e=0 m=2.015)"
         assert str(ms.solve('(H{1-1} + B{11})2'))   == "MaterialBase(p=12 n=12 e=10 m=24.033)"
         
+def test_material():
+    
+    assert str(Material('C')) == "Material(p=6 n=6 e=6 m=12.000)"
+    
+    # binding energy
+    m1 = Quantity(Material('[p][n][e]').mass, 'Da')
+    m2 = Quantity(Material('H{2}').mass, 'Da')
+    mb = (Quantity(2224.52,'keV')/Unit('[c]2')).to('Da')
+    assert str(m1) != str(m2)
+    assert m1 == m2 + mb
+    #assert Material('He{2}').binding_energy()  == Quantity(2224.581351, 'keV')
+    #assert Material('C').binding_energy()/13 == Quantity(7.68, 'MeV')

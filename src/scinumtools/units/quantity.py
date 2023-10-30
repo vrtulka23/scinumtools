@@ -150,6 +150,8 @@ class Quantity:
     def __eq__(self, other):
         if isinstance(other, (int, float)):
             other = Quantity(other)
+        if np.all(other.magnitude.value!=0):
+            other.to(self.units())
         if not np.allclose(self.magnitude.value, other.magnitude.value, rtol=MAGNITUDE_PRECISION):
             return False
         if not self.baseunits==other.baseunits:

@@ -23,7 +23,7 @@ class MaterialSolver:
             return MaterialBase.from_string(expr)
             
     def preprocess(self, expr):
-        pattern = "(([A-Z]+[a-z]?)(\{[0-9+-]+\}|)([0-9]*))"
+        pattern = "(([A-Z]+[a-z]?|\[p\]|\[n\]|\[e\])(\{[0-9+-]+\}|)([0-9]*))"
         # insert implicit additions
         while True:
             expr_new = re.sub(pattern+"\s*"+pattern,"\g<1> + \g<5>",expr,count=1)

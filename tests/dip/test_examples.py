@@ -61,6 +61,7 @@ def test_example_of_use(test_path):
     })
     
     data = env2.data(Format.QUANTITY, verbose=True)
+    print(data)
     np.testing.assert_equal(data,{
         'mpi.nodes':         Quantity(36),
         'mpi.cores':         Quantity(96),
