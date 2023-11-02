@@ -12,6 +12,39 @@ from scinumtools.dip.exports import ExportPDF
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 
+def build_data_plot_grid():
+    
+    from scinumtools import DataPlotGrid
+    import matplotlib.pyplot as plt
+    
+    dpg = DataPlotGrid(['a','b','c','d','e'],ncols=3,axsize=(1,1))
+    
+    fig, axes = plt.subplots(dpg.nrows, dpg.ncols, figsize=dpg.figsize, tight_layout=True)
+    for i, m, n, v in dpg.items():
+        ax = axes[m,n]
+        ax.text(0.5, 0.5, v)
+    for i, m, n in dpg.items(missing=True):
+        ax = axes[m,n]
+        ax.set_axis_off()
+    dir_figures = os.environ['DIR_DOCS']+"/source/_static/figures"
+    file_figure = dir_figures+"/data_plot_grid1.png"
+    plt.savefig(file_figure)
+    print(file_figure)
+    
+    fig.clf()
+    
+    fig, axes = plt.subplots(dpg.nrows, dpg.ncols, figsize=dpg.figsize, tight_layout=True)
+    for i, m, n, v in dpg.items(transpose=True):
+        ax = axes[m,n]
+        ax.text(0.5, 0.5, v)
+    for i, m, n in dpg.items(transpose=True, missing=True):
+        ax = axes[m,n]
+        ax.set_axis_off()
+    dir_figures = os.environ['DIR_DOCS']+"/source/_static/figures"
+    file_figure = dir_figures+"/data_plot_grid2.png"
+    plt.savefig(file_figure)
+    print(file_figure)
+
 def build_export_pdf():
     
     # Generate a PDF documentation from a DIP file

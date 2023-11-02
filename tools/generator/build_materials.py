@@ -19,11 +19,12 @@ def build_elements():
     columns = [
         ('Symbol',        'symbol',   str,   8,  r"'{value}': ", ''      ),
         ('Atomic Number', 'Z',        int,   7,  r"{value},",    ''      ),
+        ('Atomic Weight', 'A',        int,   7,  r"{value},",    ''      ),
         ('Name',          'name',     str,   20, r"'{value}', ", ''      ),
     ]
 
     isotope_data = [
-        (r'Weight',   'A',         float, 16,  r"{value},", 'Da'   ),
+        (r'Weight',   'Ar',        float, 16,  r"{value},", 'Da'   ),
         ('Abundance', 'abundance', float, 10,  r"{value},", '%'    ),
         ('Binding',   'E_bind',    float, 10,  r"{value},", 'MeV'  ),
     ]

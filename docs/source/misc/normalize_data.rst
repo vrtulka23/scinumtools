@@ -1,20 +1,11 @@
-import numpy as np
-import os
-import pytest
-import sys
-sys.path.insert(0, 'src')
+NormalizeData
+=============
 
-import scinumtools as snt
+.. code-block:: python
 
-@pytest.fixture
-def mock_data():
     xlen = 10
     ylen = 20
     data = np.linspace(1,xlen*ylen,xlen*ylen).reshape(xlen,ylen) - 10
-    return xlen, ylen, data
-
-def test_data_only(mock_data):
-    xlen, ylen, data = mock_data
 
     # Test only data
     with snt.NormalizeData() as n:
@@ -32,8 +23,7 @@ def test_data_only(mock_data):
     assert zranges.min == -9
     assert zranges.max == 190.0
     
-def test_data_xaxis(mock_data):
-    xlen, ylen, data = mock_data
+.. code-block:: python
 
     # Test data and x-axis
     with snt.NormalizeData(xaxis=True) as n:
@@ -46,8 +36,7 @@ def test_data_xaxis(mock_data):
     assert xranges.min == -9
     assert xranges.max == 9
 
-def test_data_xyaxis(mock_data):
-    xlen, ylen, data = mock_data
+.. code-block:: python
 
     # Test data and both axes
     with snt.NormalizeData(xaxis=True, yaxis=True) as n:

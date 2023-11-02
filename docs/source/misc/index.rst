@@ -6,4 +6,11 @@ Miscellaneous tools
    :caption: Contents:
 
    cached_function
-   image_thumbnails
+   data_combination
+   data_plot_grid
+   normalize_data
+   parameter_table
+   progress_bar
+   row_collector
+   stopwatch
+   thumbnail_image
