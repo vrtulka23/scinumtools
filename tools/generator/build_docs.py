@@ -12,6 +12,39 @@ from scinumtools.dip.exports import ExportPDF
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 
+def build_normalize_data():
+    
+    from scinumtools import NormalizeData
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    with NormalizeData(xaxis='lin', yaxis='lin') as nd:
+        
+        for size in [np.pi*2, np.pi]:
+            xaxis = np.linspace(0,size,50)
+            yaxis = np.linspace(-size,size,50)
+            zdata = size*np.vectorize(lambda x,y: np.sin(x)*np.sin(y))(*np.meshgrid(xaxis,yaxis))
+            nd.append(zdata, xaxis, yaxis)
+        
+        xranges = nd.xranges()
+        yranges = nd.yranges()
+        norm = nd.linnorm()
+    
+        fig, axes = plt.subplots(1,2,figsize=(5,3))
+    
+        for i, (data, extent) in enumerate(nd.items()):
+            ax = axes[i]
+            im = ax.imshow(data, extent=extent, norm=norm)
+            ax.set_xlim(xranges.min, xranges.max)
+            ax.set_ylim(yranges.min, yranges.max)
+        
+        fig.colorbar(im, ax=axes.ravel().tolist())
+        
+        dir_figures = os.environ['DIR_DOCS']+"/source/_static/figures"
+        file_figure = dir_figures+"/normalize_data.png"
+        plt.savefig(file_figure)
+        print(file_figure)
+    
 def build_data_plot_grid():
     
     from scinumtools import DataPlotGrid
@@ -40,6 +73,7 @@ def build_data_plot_grid():
     for i, m, n in dpg.items(transpose=True, missing=True):
         ax = axes[m,n]
         ax.set_axis_off()
+        
     dir_figures = os.environ['DIR_DOCS']+"/source/_static/figures"
     file_figure = dir_figures+"/data_plot_grid2.png"
     plt.savefig(file_figure)

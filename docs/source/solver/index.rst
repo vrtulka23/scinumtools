@@ -137,7 +137,7 @@ Logical and comparison operations are not included in the figure, but if used, t
 .. image:: ../_static/figures/operation_flow.png
 
 Order of operations can be used as it is, but it can be also modified.
-In the following exampl, we introduce completely new operators and implement their order into a custom operation step sequence.
+In the following example, we introduce completely new operators and implement their order into a custom operation step sequence.
 
 .. code-block::
 

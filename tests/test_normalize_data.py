@@ -57,6 +57,7 @@ def test_data_xyaxis(mock_data):
             n.append(row, xdata, ydata)
         xranges = n.xranges()
         yranges = n.yranges()
+        extent = n.extent()
 
     assert xranges.minpos == 0.11111111111111116
     assert xranges.min == -9
@@ -64,3 +65,19 @@ def test_data_xyaxis(mock_data):
     assert yranges.minpos == 0.10526315789473673
     assert yranges.min == -18
     assert yranges.max == 18
+    
+def test_iterator(mock_data):
+    xlen, ylen, data = mock_data
+
+    with snt.NormalizeData(xaxis='lin', yaxis='lin') as n:
+        for r,row in enumerate(data):
+            xdata = np.linspace(-r,r,xlen)
+            ydata = np.linspace(-r*2,r*2,ylen)
+            n.append(row, xdata, ydata)
+
+        item, extent = n[0]
+        assert extent == (0,0,0,0)
+
+        for i, (item, extent) in enumerate(n.items()):
+            assert extent == (-i,i,-i*2,i*2)
+            assert np.all(data[i] == item)

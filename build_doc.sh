@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
-python3 tools/generator/generator.py build_docs
+if [[ "$1" == "-g" ]]; then
+    python3 tools/generator/generator.py build_docs
+    shift
+fi
 cd docs
 if [[ "$1" != "-u" ]]; then
     make clean

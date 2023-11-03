@@ -1,6 +1,11 @@
 Miscellaneous tools
 ===================
 
+In this section, we give an overview of various tools and patterns that can be used for minimalistic data analysis.
+The aim of these tools is not to reinvent standard Python functionality or extensive third-party plotting libraries.
+It's main purpouse is to bundle repeating initialization patterns and parameters into reusable units, and thus preserve simplicity and improve readability of scripts.
+Any more insights, and suggestion for best practices are welcomed.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

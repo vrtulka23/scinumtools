@@ -36,7 +36,7 @@ jobs:
       - name: Build documentation
         run: 
           pip3 install -r requirements.txt;
-          ./build_doc.sh
+          ./build_doc.sh -g
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
