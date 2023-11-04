@@ -1,132 +1,56 @@
 RowCollector
 ============
 
-.. code-block:: python
+Scripts can often produce tabulated data row by row, but the amount of data does not require usage of overcomplicated libraries like ``pandas``. ``RowCollector`` is a simple and quick tool that can collect such data and manipulate it with a minimalistic and clean approach.
 
-    rows = [[1,2,3],
-            [4,5,6],
-            [7,8,0]]
-            
-    columns = ['col1','col2','col3']
+In the example below, we create a table with three columns ``['col1','col2','col3']``. Rows can be appended at the initialization ``[[1,2,3],[4,5,6]]``, and/or appended later ``[7,8,0]``. Individual columns can be accessed using selectors, or as object attributes.
 
 .. code-block:: python
 
-    def check_values(rc):
-        assert rc.size() == len(rows)
-        assert rc.col1 == [1,4,7]
-        assert rc.col2 == [2,5,8]
-        assert rc.col3 == [3,6,0]
+    >>> from scinumtools import RowCollector
+    >>>
+    >>> columns = ['col1','col2','col3']
+    >>> rows = [[1,2,3],
+    >>>         [4,5,6]]
+    >>>
+    >>> with RowCollector(columns,rows) as rc:
+    >>>     rc.append([7,8,0])
+    >>>     rc.size()
+    3
+    >>>     rc.shape()
+    (3, 3)
+    >>>     rc.col1
+    [1, 4, 7]
+    >>>     rc['col2']
+    [2, 5, 8]
 
-    with snt.RowCollector(columns) as rc:
-        for row in rows:
-            rc.append(row)
-        check_values(rc)
-    with snt.RowCollector(columns,rows) as rc:
-        check_values(rc)
-
-.. code-block:: python
-
-    with snt.RowCollector(columns) as rc:
-        for row in rows:
-            rc.append(row)
-        assert rc['col1'] == [1,4,7]
-        
-.. code-block:: python
-
-    with snt.RowCollector(columns) as rc:
-        for row in rows:
-            rc.append(row)
-        rc.append(row)
-        assert rc.shape() == (3,4)
+``RowCollector`` object can also be quickly converted into a dictionary, ``pandas`` DataFrame, or text.
 
 .. code-block:: python
     
-    with snt.RowCollector(columns,rows) as rc:
-        assert rc.to_dict() == dict(
-            col1 = [1,4,7],
-            col2 = [2,5,8],
-            col3 = [3,6,0],
-        )
-        pd.testing.assert_frame_equal(
-            rc.to_dataframe(),
-            pd.DataFrame(dict(
-                col1 = [1,4,7],
-                col2 = [2,5,8],
-                col3 = [3,6,0],
-            ))
-        )
-        result = dedent("""\
-               col1  col2  col3
-            0     1     2     3
-            1     4     5     6
-            2     7     8     0
-        """.rstrip())
-        assert rc.to_text() == result
-        assert str(rc) == result
-
-.. code-block:: python
-    
-    def check_values(rc):
-        assert rc.size() == len(rows)
-        np.testing.assert_equal(rc.col1, [1,4,7])
-        np.testing.assert_equal(rc.col2, [2,5,8])
-        np.testing.assert_equal(rc.col3, [3,6,0])
+    >>> with RowCollector(columns,rows) as rc:
+    >>>     rc.to_dict()
+    {'col1': [1, 4], 'col2': [2, 5], 'col3': [3, 6]}
+    >>>     rc.to_dataframe()
+       col1  col2  col3
+    0     1     2     3
+    1     4     5     6
+    >>>     rc.to_text()
+    '   col1  col2  col3\n0     1     2     3\n1     4     5     6'
         
-    with snt.RowCollector(columns, array=True) as rc:
-        for row in rows:
-            rc.append(row)
-        check_values(rc)
-    with snt.RowCollector(columns, rows, array=True) as rc:
-        check_values(rc)
 
-.. code-block:: python
-    
-    with snt.RowCollector(columns, rows, array=True) as rc:
-        np.testing.assert_equal(rc.to_dict(), dict(
-            col1 = [1,4,7], 
-            col2 = [2,5,8],
-            col3 = [3,6,0],
-        ))
-        pd.testing.assert_frame_equal(
-            rc.to_dataframe(),
-            pd.DataFrame(dict(
-                col1 = [1.,4.,7.],
-                col2 = [2.,5.,8.],
-                col3 = [3.,6.,0.],
-            ))
-        )
-        result = dedent("""\
-               col1  col2  col3
-            0   1.0   2.0   3.0
-            1   4.0   5.0   6.0
-            2   7.0   8.0   0.0
-        """.rstrip())
-        assert rc.to_text() == result
-        assert str(rc) == result
-        
-    columns = {'col1':dict(dtype=str),'col2':dict(dtype=float),'col3':dict(dtype=bool)}
-    with snt.RowCollector(columns, rows, array=True) as rc:
-        np.testing.assert_equal(rc.col1, ['1','4','7'])
-        np.testing.assert_equal(rc.col2, [2,5,8])
-        np.testing.assert_equal(rc.col3, [True,True,False])
-        np.testing.assert_equal(rc.to_dict(), dict(
-            col1 = ['1','4','7'], 
-            col2 = [2,5,8],
-            col3 = [True,True,False],
-        ))
-        pd.testing.assert_frame_equal(
-            rc.to_dataframe(),
-            pd.DataFrame(dict(
-                col1 = ['1','4','7'],
-                col2 = [2.,5.,8.],
-                col3 = [True,True,False],
-            ))
-        )
-        result = dedent("""\
-              col1  col2   col3
-            0    1   2.0   True
-            1    4   5.0   True
-            2    7   8.0  False
-        """.rstrip())
-        assert rc.to_text() == result
-        assert str(rc) == result
+It is also possible to specify properties of individual columns using ``numpy`` arrays.
+
+.. code-block::        
+
+    >>> rows = [[0,1,2],[3,4,5]]
+    >>> columns = {
+    >>>     'col1':dict(dtype=str),
+    >>>     'col2':dict(dtype=float),
+    >>>     'col3':dict(dtype=bool)
+    >>> }
+    >>> with RowCollector(columns, rows, array=True) as rc:
+    >>>     rc.to_dict()
+    {'col3': array([False,  True]),
+     'col1': array(['1', '4'], dtype='<U1'),
+     'col2': array([2., 5.])}
