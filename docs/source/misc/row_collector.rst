@@ -45,12 +45,29 @@ It is also possible to specify properties of individual columns using ``numpy`` 
 
     >>> rows = [[0,1,2],[3,4,5]]
     >>> columns = {
-    >>>     'col1':dict(dtype=str),
-    >>>     'col2':dict(dtype=float),
-    >>>     'col3':dict(dtype=bool)
+    >>>     'col1':dict(dtype=bool),
+    >>>     'col2':dict(dtype=str),
+    >>>     'col3':dict(dtype=float),
     >>> }
     >>> with RowCollector(columns, rows, array=True) as rc:
     >>>     rc.to_dict()
-    {'col3': array([False,  True]),
-     'col1': array(['1', '4'], dtype='<U1'),
-     'col2': array([2., 5.])}
+    {'col1': array([False,  True]),
+     'col2': array(['1', '4'], dtype='<U1'),
+     'col3': array([2., 5.])}
+     
+One can also sort such table according to values in one of the columns.
+
+.. code-block::
+
+    >>> with RowCollector(columns, rows, array=True) as rc:
+    >>>     rc.to_text()
+        col1 col2  col3
+    0  False    1   2.0
+    1   True    4   5.0
+    >>>     rc.sort('col1', reverse=True)
+    >>>     rc.to_text()
+        col1 col2  col3
+    0   True    4   5.0
+    1  False    1   2.0
+
+    
