@@ -5,7 +5,7 @@ sys.path.insert(0, 'src')
 
 import scinumtools as snt
 
-def test_thumbnail():
+def test_grayscale():
 
     # Test grayscale case
     nx, ny = 300, 200
@@ -14,8 +14,8 @@ def test_thumbnail():
         for j in range(ny):
             data[i,j] = (i-nx/2)**2 + (j-ny/2)**2
     imold = snt.ThumbnailImage(
+        data = data,
         extent = (-30,30,-20,20),
-        data = data
     )
     np.testing.assert_equal(np.asarray(imold.im), data)
 
@@ -27,8 +27,10 @@ def test_thumbnail():
         [1.0238771e+04, 9.7449180e+03, 6.8944453e+03, 9.7642842e+03, 9.8572793e+03],
         [9.3407617e+03, 1.0838822e+04, 9.2195254e+03, 1.0855267e+04, 9.0168174e+03],
     ]    
-    imnew = imold.resize((-35,35,-25,25), (5,5))
+    imnew = imold.crop((-35,35,-25,25)).resize((5,5))   # input tuples
     np.testing.assert_almost_equal(np.asarray(imnew.im), data_resized, decimal=3)
+
+def test_rgb():
 
     # Test RGB case
     nx, ny = 300, 200
@@ -38,8 +40,8 @@ def test_thumbnail():
             data[i,j] = [(i-nx/2)**2 + (j-ny/2)**2]*3
     data = (255*data/data.max()).astype(np.uint8)
     imold = snt.ThumbnailImage(
-        extent = (-30,30,-20,20),
         data = data,
+        extent = (-30,30,-20,20),
         mode = 'RGB'
     )
     np.testing.assert_equal(np.asarray(imold.im), data)
@@ -72,6 +74,6 @@ def test_thumbnail():
          [85, 85, 85],
          [71, 71, 71]],
     ]
-    imnew = imold.resize((-35,35,-25,25), (5,5))
+    imnew = imold.crop(-35,35,-25,25).resize(5,5)     # input individual values
     np.testing.assert_equal(np.asarray(imnew.im), data_resized)
     

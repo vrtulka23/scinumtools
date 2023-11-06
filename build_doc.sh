@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 if [[ "$1" == "-g" ]]; then
-    python3 tools/generator/generator.py build_docs
+    ./generate.sh build_docs
+    ./generate.sh build_figures
     shift
 fi
 cd docs
