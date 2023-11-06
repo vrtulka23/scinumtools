@@ -87,7 +87,9 @@ Name paths of imported nodes are embedded into the current node hierarchy as sho
      {?icecream.scoops.*}      # select children nodes
    plate {?icecream.waffle}    # select specific node
 
-Code above will result in the following final nodes::
+Code above will result in the following final nodes
+
+.. code-block:: DIP
 
   icecream.waffle = 'standard'
   icecream.scoops.strawberry = 1
