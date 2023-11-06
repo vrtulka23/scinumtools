@@ -9,11 +9,11 @@ First we have to register DIP documentation class as an extension in Sphinx conf
 
 .. code-block:: python
 
-   import sys
-   sys.path.insert(0,"../../src")              # import recent version of scinumtools
-   import scinumtools
-
-   extensions = ['scinumtools.dip.exports.export_sphinx']
+   >>> import sys
+   >>> sys.path.insert(0,"../../src")              # import recent version of scinumtools
+   >>> import scinumtools
+   >>> 
+   >>> extensions = ['scinumtools.dip.exports.export_sphinx']
 
 Creating a documetation to this file is straightforward using ``.. dipdocs::`` directive in any restructured text file of a Sphinx documentation. Optional parameter ``:show-code`` will add a code block with the DIP code and link node description with corresponding code lines.
 

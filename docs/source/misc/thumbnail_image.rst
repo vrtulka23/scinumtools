@@ -2,7 +2,7 @@ ThumbnailImage
 ==============
 
 Series of photos, or 2D plots, have often different extents and cannot be plotted with uniform axes on the same figure.
-The class ``ThumbnailImage`` helps to address this issue and implements simple image transformations (cropping and resizing) using PIL module.
+Class ``ThumbnailImage`` helps to address this issue and implements simple image transformations (cropping and resizing) using PIL module.
 
 .. code-block:: python
 
@@ -41,7 +41,7 @@ The class ``ThumbnailImage`` helps to address this issue and implements simple i
    >>>   ax.set_yticks(ticks)
    >>>   ax.set_yticklabels(labels)
 
-In the code example , we create 4 different versions of the same plot:
+In the code example, we create 4 different versions of the same plot:
 
 a) Original function plot
 b) Reduced plot resolution from 100x100 to 20x20

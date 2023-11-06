@@ -53,9 +53,9 @@ Units can also be defined outside the code using ``DIP::add_unit()`` method befo
 
 .. code-block:: python
 
-   with DIP() as dip:
-       dip.add_unit("length", 1, "m")
-       dip.from_string("""
-       width float = 23 [length]
-       """)
-       env = dip.parse()
+   >>> with DIP() as dip:
+   >>>     dip.add_unit("length", 1, "m")
+   >>>     dip.from_string("""
+   >>>     width float = 23 [length]
+   >>>     """)
+   >>>     env = dip.parse()

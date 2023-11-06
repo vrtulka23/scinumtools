@@ -8,7 +8,7 @@ A first step to parse a DIP code is to import its main class ``DIP``.
 
 .. code-block:: python
 
-   from scinumtools.dip import DIP, Format
+   >>> from scinumtools.dip import DIP, Format
    
 Multiple code sources (from strings, or files) can be loaded and combined into one parameter list.
 Files containing DIP code should have an extension ``.dip``, otherwise they will be interpreted as normal text files.
@@ -37,21 +37,21 @@ It is recommended to create DIP objects using ``with`` statement.
 
 .. code-block:: python
 
-   with DIP() as dip:            # create DIP object
-       dip.from_string("""           
-       mpi
-	 nodes int = 36
-	 cores int = 96
-       """)                      # get code from a string
-       env1 = dip.parse()        # parse the code
+   >>> with DIP() as dip:            # create DIP object
+   >>>     dip.from_string("""           
+   >>>     mpi
+   >>>       nodes int = 36
+   >>>       cores int = 96
+   >>>     """)                      # get code from a string
+   >>>     env1 = dip.parse()        # parse the code
 
 Parsed nodes, sources and units are stored in an environment object of class ``Environment``. This object can be easily transferred into a new instance of ``DIP`` and immediately used without additional parsing. 
 
 .. code-block:: python
 
-   with DIP(env1) as dip:              # pass environment to a new DIP instance
-       dip.from_file("settings.dip").  # add new parameter
-       env2 = dip.parse()              # parse new parameters
+   >>> with DIP(env1) as dip:              # pass environment to a new DIP instance
+   >>>     dip.from_file("settings.dip").  # add new parameter
+   >>>     env2 = dip.parse()              # parse new parameters
        
 .. note::
 
@@ -64,10 +64,10 @@ Particular nodes can be selected using :doc:`references <../syntax/references>`.
 
 .. code-block:: python
        
-   nodes = env2.nodes.query("mpi.*")                       # select nodes using a query method
-   nodes = env2.nodes.query("runtime.*", tags=['step'])    # refine selection using tags
-   geom = env2.request("?box.geometry")                    # select a node using a request method
-   geom = env2.request("?runtime.*", tags=['step'])        # refine selection using tags
+   >>> nodes = env2.nodes.query("mpi.*")                       # select nodes using a query method
+   >>> nodes = env2.nodes.query("runtime.*", tags=['step'])    # refine selection using tags
+   >>> geom = env2.request("?box.geometry")                    # select a node using a request method
+   >>> geom = env2.request("?runtime.*", tags=['step'])        # refine selection using tags
 
 In the example above, variable ``nodes`` is a list of two nodes: ``mpi.nodes`` and ``mpi.cores``.
 The variable ``geom`` is a list with only one node ``box.geometry`` that was loaded from a file ``settings.dip``.
@@ -79,75 +79,68 @@ Additionally one can select nodes according to their tags.
 
 All environmental data can be parsed as a dictionary.
 
-.. code-block::
+.. code-block:: python
 
-   # Values are returned as Python datatypes
-   data = env2.data()
-
-   # data = {
-   #     'mpi.nodes':         36,
-   #     'mpi.cores':         96,
-   #     'runtime.t_max':     10,
-   #     'runtime.timestep':  0.01,
-   #     'box.geometry':      3,
-   #     'box.size.x':        10,
-   #     'box.size.y':        3e7,
-   #     'modules.heating':   False,
-   #     'modules.radiation': True,
-   # }
-
-   # Numbers with units are returned as tuples
-   data = env2.data(Format.TUPLE)
-
-   # data = {
-   #     'mpi.nodes':         36,
-   #     'mpi.cores':         96,
-   #     'runtime.t_max':     (10, 'ns'),
-   #     'runtime.timestep':  (0.01, 'ns'),
-   #     'box.geometry':      3,
-   #     'box.size.x':        (10, 'nm'),
-   #     'box.size.y':        (3e7,'nm'),
-   #     'modules.heating':   False,
-   #     'modules.radiation': True,
-   # }
-   
-   # Numbers are returned as Quantity objects
-   data = env2.data(Format.QUANTITY)
-
-   # data ={
-   #     'mpi.nodes':         Quantity(36),
-   #     'mpi.cores':         Quantity(96),
-   #     'runtime.t_max':     Quantity(10, 'ns'),
-   #     'runtime.timestep':  Quantity(0.01, 'ns'),
-   #     'box.geometry':      Quantity(3),
-   #     'box.size.x':        Quantity(10, 'nm'),
-   #     'box.size.y':        Quantity(3e7, 'nm'),
-   #     'modules.heating':   False,
-   #     'modules.radiation': True,
-   # }
-   
-   # Values are returned as DIP datatypes
-   data = env2.data(Format.TYPE)
-
-   # data = {
-   #     'mpi.nodes':         IntegerType(36),
-   #     'mpi.cores':         IntegerType(96),
-   #     'runtime.t_max':     FloatType(10, 'ns'),
-   #     'runtime.timestep':  FloatType(0.01, 'ns'),
-   #     'box.geometry':      IntegerType(3),
-   #     'box.size.x':        FloatType(10, 'nm'),
-   #     'box.size.y':        FloatType(3e7, 'nm'),
-   #     'modules.heating':   BooleanType(False),
-   #     'modules.radiation': BooleanType(True),
-   # }
+   >>> # Values are returned as Python datatypes
+   >>> env2.data()
+   {
+      'mpi.nodes':         36,
+      'mpi.cores':         96,
+      'runtime.t_max':     10,
+      'runtime.timestep':  0.01,
+      'box.geometry':      3,
+      'box.size.x':        10,
+      'box.size.y':        3e7,
+      'modules.heating':   False,
+      'modules.radiation': True,
+   }
+   >>> # Numbers with units are returned as tuples
+   >>> env2.data(Format.TUPLE)
+   {
+      'mpi.nodes':         36,
+      'mpi.cores':         96,
+      'runtime.t_max':     (10, 'ns'),
+      'runtime.timestep':  (0.01, 'ns'),
+      'box.geometry':      3,
+      'box.size.x':        (10, 'nm'),
+      'box.size.y':        (3e7,'nm'),
+      'modules.heating':   False,
+      'modules.radiation': True,
+   }
+   >>> # Numbers are returned as Quantity objects
+   >>> env2.data(Format.QUANTITY)
+   {
+      'mpi.nodes':         Quantity(36),
+      'mpi.cores':         Quantity(96),
+      'runtime.t_max':     Quantity(10, 'ns'),
+      'runtime.timestep':  Quantity(0.01, 'ns'),
+      'box.geometry':      Quantity(3),
+      'box.size.x':        Quantity(10, 'nm'),
+      'box.size.y':        Quantity(3e7, 'nm'),
+      'modules.heating':   False,
+      'modules.radiation': True,
+   }
+   >>> # Values are returned as DIP datatypes
+   >>> env2.data(Format.TYPE)
+   {
+      'mpi.nodes':         IntegerType(36),
+      'mpi.cores':         IntegerType(96),
+      'runtime.t_max':     FloatType(10, 'ns'),
+      'runtime.timestep':  FloatType(0.01, 'ns'),
+      'box.geometry':      IntegerType(3),
+      'box.size.x':        FloatType(10, 'nm'),
+      'box.size.y':        FloatType(3e7, 'nm'),
+      'modules.heating':   BooleanType(False),
+      'modules.radiation': BooleanType(True),
+   }
    
 Besides specifying output format, it is also possible to select specific nodes using ``query`` or ``tag`` selectors:
 
-.. code-block::
+.. code-block:: python
 
-   env2.data(query="mpi.*")                # selects all nodes in the mpi group
-   env2.data(tags=['step'])                # selects all nodes with corresponding tags
-   env2.data(query="mpi.*", tags=['step']) # combination of a query and tag selectors
+   >>> env2.data(query="mpi.*")                # selects all nodes in the mpi group
+   >>> env2.data(tags=['step'])                # selects all nodes with corresponding tags
+   >>> env2.data(query="mpi.*", tags=['step']) # combination of a query and tag selectors
 
 Definitions
 -----------
@@ -200,22 +193,21 @@ Parsing of such DIP code will result in the following:
 
 .. code-block::
    
-   with DIP() as dip:
-       dip.from_file('definitions.dip')
-       env3 = dip.parse()
-       data = env.data(format=Format.TYPE)
-
-   # data = {
-   #     'runtime.t_max':        FloatType(1e-08, 's'),
-   #     'runtime.timestep':     FloatType(1e-11, 's'),
-   #     'box.geometry':         IntegerType(3),
-   #     'box.size.x':           FloatType(1e-06, 'cm'),
-   #     'box.size.y':           FloatType(3.0, 'cm'),
-   #     'box.size.z':           FloatType(23.0, 'cm'),
-   #     'modules.hydrdynamics': BooleanType(True),
-   #     'modules.heating':      BooleanType(False),
-   #     'modules.radiation':    BooleanType(True)
-   # }
+   >>> with DIP() as dip:
+   >>>     dip.from_file('definitions.dip')
+   >>>     env3 = dip.parse()
+   >>>     env.data(format=Format.TYPE)
+   {
+      'runtime.t_max':        FloatType(1e-08, 's'),
+      'runtime.timestep':     FloatType(1e-11, 's'),
+      'box.geometry':         IntegerType(3),
+      'box.size.x':           FloatType(1e-06, 'cm'),
+      'box.size.y':           FloatType(3.0, 'cm'),
+      'box.size.z':           FloatType(23.0, 'cm'),
+      'modules.hydrdynamics': BooleanType(True),
+      'modules.heating':      BooleanType(False),
+      'modules.radiation':    BooleanType(True)
+   }
 
 .. note::
 
@@ -237,10 +229,10 @@ Such files can be easily generated by processing of a DIP environment with a tem
 
 .. code-block:: python
 
-   from scinumtools.dip.solvers import TemplateSolver
-   
-   with TemplateSolver(env3) as ts:
-       text = ts.template('template.txt','processed.txt')
+   >>> from scinumtools.dip.solvers import TemplateSolver
+   >>> 
+   >>> with TemplateSolver(env3) as ts:
+   >>>     text = ts.template('template.txt','processed.txt')
 
 Template solver in the example above will use the given environment ``env3``, reads template from ``template.txt`` and parses corresponding node values into file ``processed.txt``.
 

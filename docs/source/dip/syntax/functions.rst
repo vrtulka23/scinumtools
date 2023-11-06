@@ -28,38 +28,37 @@ Function names in parentheses correspond to function defined by the interpreter 
 	     
 .. code-block:: python
 
-   def fn_volume(data):
-       side = data['side'].convert('cm').value
-       return side**3
-
-   def fn_surface(data):
-       side = data['side'].convert('cm').value
-       return IntegerType(6*side**2, 'cm2')
-
-   def is_prime(data):
-       side = data['side'].convert('cm').value
-       return side in [1,2,3,5,7,11]
-
-   def print_value(data):
-       return str(data['side'])
+   >>> def fn_volume(data):
+   >>>     side = data['side'].convert('cm').value
+   >>>     return side**3
+   >>> 
+   >>> def fn_surface(data):
+   >>>     side = data['side'].convert('cm').value
+   >>>     return IntegerType(6*side**2, 'cm2')
+   >>> 
+   >>> def is_prime(data):
+   >>>     side = data['side'].convert('cm').value
+   >>>     return side in [1,2,3,5,7,11]
+   >>> 
+   >>> def print_value(data):
+   >>>     return str(data['side'])
 
 Functions are registered to DIP before parsing using method ``DIP::.add_function()``.
 
 .. code-block:: python
        
-   with DIP() as dip:
-       dip.add_function("fn_volume", fn_volume)
-       dip.add_function("fn_surface", fn_surface)
-       dip.add_function("is_prime", is_prime)
-       dip.add_function("print_value", print_value)
-       dip.from_file("function_calls.dip")
-       env = dip.parse()
-       data = env.data()
-
-   # data = {
-   #     'side':    FloatType(5, 'cm'),
-   #     'volume':  FloatType(125, 'cm3'),
-   #     'surface': IntegerType(15000, 'mm2'),
-   #     'prime':   BooleanType(True),
-   #     'value':   StringType("FloatType(5.0 cm)")
-   # }
+   >>> with DIP() as dip:
+   >>>     dip.add_function("fn_volume", fn_volume)
+   >>>     dip.add_function("fn_surface", fn_surface)
+   >>>     dip.add_function("is_prime", is_prime)
+   >>>     dip.add_function("print_value", print_value)
+   >>>     dip.from_file("function_calls.dip")
+   >>>     env = dip.parse()
+   >>>     data = env.data()
+   {
+      'side':    FloatType(5, 'cm'),
+      'volume':  FloatType(125, 'cm3'),
+      'surface': IntegerType(15000, 'mm2'),
+      'prime':   BooleanType(True),
+      'value':   StringType("FloatType(5.0 cm)")
+   }

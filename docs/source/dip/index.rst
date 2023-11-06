@@ -108,18 +108,18 @@ The most notable features of this language are:
 
   .. code-block:: python
 
-     from scinumtools.dip import DIP, Environment
-		  
-     with DIP() as p:
-         p.from_string("""
-	 laser
-	   intensity float = 1e25 W/m2
-         """)
-	 p.from_file('radiation.dip')
-	 p.from_file('gravitation.dip')
-	 
-     laser_settings = p.nodes.query('laser.*')
-     radiation_pressure = p.nodes.query('radiation.pressure')
+        >>> from scinumtools.dip import DIP, Environment
+        >>>	  
+        >>> with DIP() as p:
+        >>>     p.from_string("""
+        >>> laser
+        >>>   intensity float = 1e25 W/m2
+        >>>     """)
+        >>> p.from_file('radiation.dip')
+        >>> p.from_file('gravitation.dip')
+        >>> 
+        >>> laser_settings = p.nodes.query('laser.*')
+        >>> radiation_pressure = p.nodes.query('radiation.pressure')
 	 
 - Template parsing (e.g. producing of pre-processor flag parameter files)
 - Support of tabular data input (e.g. CSV format or similar)

@@ -27,6 +27,7 @@ class StyleLexer(Style):
 
         # default components
         Token.Function:               '#8D6E63',
+        Token.Generic.Prompt:         '#BDBDBD',        # >>> prompt string
     }
 
 def pygments_monkeypatch_style(mod_name, cls):

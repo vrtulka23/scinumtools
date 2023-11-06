@@ -5,18 +5,18 @@ Pygments highlighter can be used in a Sphinx documentation by adding following l
 
 .. code-block:: python
 
-   import sys
-   sys.path.insert(0,"../../tools/pygments")   # import pygments highlighter
-   
-   # DIP Syntax Highlighter
-   from sphinx.highlighting import lexers
-   from syntax_lexer import SyntaxLexer
-   from schema_lexer import SchemaLexer
-   from style_lexer import StyleLexer, pygments_monkeypatch_style
-   pygments_monkeypatch_style("StyleLexer", StyleLexer)
-   pygments_style = 'StyleLexer'
-   lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)
-   lexers['DIPSchema'] = SchemaLexer(startinline=True, style=StyleLexer)
+   >>> import sys
+   >>> sys.path.insert(0,"../../tools/pygments")   # import pygments highlighter
+   >>> 
+   >>> # DIP Syntax Highlighter
+   >>> from sphinx.highlighting import lexers
+   >>> from syntax_lexer import SyntaxLexer
+   >>> from schema_lexer import SchemaLexer
+   >>> from style_lexer import StyleLexer, pygments_monkeypatch_style
+   >>> pygments_monkeypatch_style("StyleLexer", StyleLexer)
+   >>> pygments_style = 'StyleLexer'
+   >>> lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)
+   >>> lexers['DIPSchema'] = SchemaLexer(startinline=True, style=StyleLexer)
 
 Syntax highlighting of a DIP code block is than straightforward:
 

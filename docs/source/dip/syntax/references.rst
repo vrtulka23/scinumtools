@@ -15,12 +15,12 @@ It is also possible to define sources outside a DIP code using ``DIP::add_source
 
 .. code-block:: python
 
-   with DIP() as dip:
-       dip.add_source("settings", 'settings.dip')
-       dip.from_string("""
-       x_size float = {settings?box.size.x}
-       """)
-       env = dip.parse()
+   >>> with DIP() as dip:
+   >>>     dip.add_source("settings", 'settings.dip')
+   >>>     dip.from_string("""
+   >>>     x_size float = {settings?box.size.x}
+   >>>     """)
+   >>>     env = dip.parse()
 
 Source paths are relative to the calling script if code is parsed using ``DIP::from_string()``, or ``DIP::add_source()``. Sources defined in DIP files have path relative to the corresponding DIP file.
    
