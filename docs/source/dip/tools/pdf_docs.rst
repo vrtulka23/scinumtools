@@ -21,4 +21,4 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>>     pageinfo = "DIP Documentation"
    >>>     exp.build('documentation.pdf', title, pageinfo)
    
-Sample PDF documentation generated in the example above is available here: :download:`../../_static/pdf/documentation.pdf`.
+Code above will generate the following `PDF documentation <https://github.com/vrtulka23/scinumtools/blob/main/docs/source/_static/pdf/documentation.pdf>`_.
