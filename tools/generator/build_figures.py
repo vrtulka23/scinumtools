@@ -25,7 +25,7 @@ def build_thumbnail_image():
     extent2 = (-size*2, size*2, -size*2, size*2)
     size2 = (20,20)
     plots = [
-        ('a.', 0, 0, ticks1, labels1, ThumbnailImage(data, extent1) ),
+        ('a.', 0, 0, ticks1, labels1, ThumbnailImage(data, extent1, mode='F') ),
         ('b.', 1, 0, ticks1, labels1, ThumbnailImage(data, extent1).resize(size2) ),
         ('c.', 0, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2) ),
         ('d.', 1, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2, 2).resize(size2) ),
