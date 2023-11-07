@@ -24,7 +24,7 @@ def test_definition_before_case():
         a = 4            # modification
         """)
         env = p.parse_docs()
-        assert len(env.nodes) == 1
+        assert len(env.nodes) == 5
         check_node(env.nodes[0], 'a', 'int', 3)
     
 def test_branch_definition():
@@ -41,7 +41,7 @@ def test_branch_definition():
         a = 4            # modification
         """)
         env = p.parse_docs()
-        assert len(env.nodes) == 3
+        assert len(env.nodes) == 4
         check_node(env.nodes[0], '@1.a', 'float', 4.0)
         check_node(env.nodes[1], '@2.a', 'str',   "4.0")
         check_node(env.nodes[2], '@3.a', 'bool',  True)
