@@ -1,3 +1,5 @@
+from enum import Flag, auto
+
 class Numeric:
     PRECISION   = 1e-6
 
@@ -46,3 +48,11 @@ class Format:
 class Order:
     NONE        = 0
     NAME        = 1
+
+class DocsType(Flag):  # node type in documentation
+    UNKNOWN      = auto()
+    DECLARATION  = auto()
+    DEFINITION   = auto()
+    MODIFICATION = auto()
+    
+    

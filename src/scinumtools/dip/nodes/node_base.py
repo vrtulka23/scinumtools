@@ -37,20 +37,24 @@ class BaseNode(Node):
         super().__init__(*args, **kwargs)
     
     def __str__(self):
+        class_name = self.__class__.__name__.replace('Node','')
+        node_name = (self.name.split('.'))[-1]
         if isinstance(self.value, NumberType) and self.value.unit:
-            return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
+            return f"{class_name}({node_name}: {self.value.value} {self.value.unit})"
         elif isinstance(self.value, Type):
-            return f"{self.__class__.__name__}({self.value.value})"
+            return f"{class_name}({node_name}: {self.value.value})"
         else:
-            return f"{self.__class__.__name__}({self.value})"
+            return f"{class_name}({node_name}: {self.value})"
     
     def __repr__(self):
+        class_name = self.__class__.__name__.replace('Node','')
+        node_name = (self.name.split('.'))[-1]
         if isinstance(self.value, NumberType) and self.value.unit:
-            return f"{self.__class__.__name__}({self.value.value} {self.value.unit})"
+            return f"{class_name}({node_name}: {self.value.value} {self.value.unit})"
         elif isinstance(self.value, Type):
-            return f"{self.__class__.__name__}({self.value.value})"
+            return f"{class_name}({node_name}: {self.value.value})"
         else:
-            return f"{self.__class__.__name__}({self.value})"
+            return f"{class_name}({node_name}: {self.value})"
 
     def parse(self, env):
         return False

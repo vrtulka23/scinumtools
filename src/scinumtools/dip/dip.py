@@ -7,7 +7,7 @@ from inspect import getframeinfo, stack
 
 from .environment import Environment
 from .source import Source
-from .settings import Keyword, Sign, EnvType
+from .settings import Keyword, Sign, EnvType, DocsType
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
 from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode, DescriptionNode
@@ -305,6 +305,8 @@ class DIP:
                 target.branching.prepare_node(node)
                 # Set the node value
                 node.set_value()
+                # Set empty DocsType
+                node.docs_type = DocsType.DEFINITION if node.value else DocsType.DECLARATION
                 # Loop through all nodes and find modifications
                 for n in range(len(target.nodes)):
                     # Continue if names do not match
@@ -319,17 +321,22 @@ class DIP:
                         target_branch = target.branching.branches[target_branch_id]
                         if 'else' in target_branch.types:
                             if target_branch.nodes[target_name] != len(target_branch.cases):
+                                node.docs_type |= DocsType.MODIFICATION
                                 continue # node was not completely defined in its branch
                         else:
+                            node.docs_type |= DocsType.MODIFICATION
                             continue # node branch does not have an else clause 
+                    node.docs_type = DocsType.MODIFICATION
                     # Remove the node with all its properties
-                    for i in range(len(queue.nodes)):
-                        if queue.nodes[0].keyword in self.nodes_properties:
-                            del queue.nodes[0]
+                    #for i in range(len(queue.nodes)):
+                    #    if queue.nodes[0].keyword in self.nodes_properties:
+                    #        del queue.nodes[0]
                     break
-                else:
-                    # If node wasn't defined, create a new node
-                    if node.keyword=='mod' and node.source.primary:
-                        raise Exception(f"Modifying undefined node:",node.name, node.source)
-                    target.nodes.append(node)
+                #else:
+                #print(target.nodes)
+                # If node wasn't defined, create a new node
+                #if node.keyword=='mod' and node.source.primary:
+                #    raise Exception(f"Modifying undefined node:",node.name, node.source)
+                print(node, node.docs_type)
+                target.nodes.append(node)
         return target
