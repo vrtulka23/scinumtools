@@ -1,0 +1,53 @@
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.rl_config import defaultPageSize
+
+SAMPLE_STYLE_SHEET = getSampleStyleSheet()
+
+FONT_NAME = 'Helvetica'
+FONT_SIZE = 10
+PAGE_HEIGHT=defaultPageSize[1]; 
+PAGE_WIDTH=defaultPageSize[0]
+        
+SECTION_STYLE = ParagraphStyle(
+    "SectionTitleStyle",
+    parent=SAMPLE_STYLE_SHEET['Normal'],
+    fontName = FONT_NAME,
+    fontSize = 14,
+    spaceAfter = 10
+)
+
+GROUP_STYLE = ParagraphStyle(
+    "CustomStyle",
+    parent=SAMPLE_STYLE_SHEET["Normal"],
+    fontName=FONT_NAME,
+    fontSize=12,
+    spaceBefore=0, 
+    spaceAfter=10,  # Add 20 points of space after the paragraph
+)
+
+TABLE_HEADER_STYLE = ParagraphStyle(
+    "CustomStyle",
+    parent=SAMPLE_STYLE_SHEET["Normal"],
+    fontName=FONT_NAME,
+    fontSize=FONT_SIZE,
+    textColor=colors.saddlebrown
+)
+
+TABLE_BODY_STYLE = ParagraphStyle(
+    "CustomStyle",
+    parent=SAMPLE_STYLE_SHEET["Normal"],
+    fontName=FONT_NAME,
+    fontSize=FONT_SIZE,
+)
+
+CASE_STYLE = [
+    # whole grid
+    #('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod),
+    ('FONTNAME',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontName),
+    ('FONTSIZE',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontSize),
+    # top panel
+    ('FONTSIZE',   (0,0), (-1,-1),  TABLE_HEADER_STYLE.fontSize),
+    #('BACKGROUND', (0,0), (1,0),    colors.lightgreen),    
+    #('BACKGROUND', (1,0), (-1,0),   colors.floralwhite),  
+]

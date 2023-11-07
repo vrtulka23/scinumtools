@@ -1,2 +1,2 @@
-from .export_pdf import ExportPDF
+from .pdf.export import ExportPDF
 from .export_sphinx import ExportSphinx

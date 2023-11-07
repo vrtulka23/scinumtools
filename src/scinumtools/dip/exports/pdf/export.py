@@ -1,15 +1,14 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.rl_config import defaultPageSize
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether 
 from reportlab.lib.units import inch
 import numpy as np
 import re
 
-from ..environment import Environment
-from ..settings import Order, Sign, Keyword, EnvType
-from ..lists import NodeList
-from ..nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode
+from .settings import *
+from .tpl_node import node_template
+from ...environment import Environment
+from ...settings import Order, Sign, Keyword, EnvType
+from ...lists import NodeList
+from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode
 
 class ExportPDF:
     
@@ -25,68 +24,6 @@ class ExportPDF:
         if env.envtype != EnvType.DOCS:
             raise Exception("Given environment is not a documentation environment")
         self.env = env
-        
-        self.PAGE_HEIGHT=defaultPageSize[1]; 
-        self.PAGE_WIDTH=defaultPageSize[0]
-        styles = getSampleStyleSheet()
-        fontName = 'Helvetica'
-        fontSize = 10
-
-        self.sectionStyle = ParagraphStyle(
-            "SectionTitleStyle",
-            parent=styles['Normal'],
-            fontName = fontName,
-            fontSize = 14,
-            spaceAfter = 10
-        )
-        self.groupStyle = ParagraphStyle(
-            "CustomStyle",
-            parent=styles["Normal"],
-            fontName=fontName,
-            fontSize=12,
-            spaceBefore=0, 
-            spaceAfter=10,  # Add 20 points of space after the paragraph
-        )
-        self.tableHeaderStyle = ParagraphStyle(
-            "CustomStyle",
-            parent=styles["Normal"],
-            fontName=fontName,
-            fontSize=fontSize,
-            textColor=colors.saddlebrown
-        )
-        self.tableBodyStyle = ParagraphStyle(
-            "CustomStyle",
-            parent=styles["Normal"],
-            fontName=fontName,
-            fontSize=fontSize,
-        )
-        self.tableStyle = [
-            # whole grid
-            ('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod),
-            ('FONTNAME',   (0,0), (-1,-1),  self.tableBodyStyle.fontName),
-            ('FONTSIZE',   (0,0), (-1,-1),  self.tableBodyStyle.fontSize),
-            # top panel
-            ('FONTSIZE',   (0,0), (-1,-1),  self.tableHeaderStyle.fontSize),
-            ('TEXTCOLOR',  (0,0), (-1,0),   colors.saddlebrown),   
-            ('BACKGROUND', (0,0), (-1,0),   colors.navajowhite),
-            ('ALIGN',      (-2,0),(-1,0),   'RIGHT'),
-            # property names
-            ('BACKGROUND', (0,1), (0,-1),   colors.antiquewhite),  
-            # property values
-            ('BACKGROUND', (1,1), (-1,-1),  colors.floralwhite),   
-            # parameter name
-            ('SPAN',       (0,0), (1,0)     ),                               
-        ]
-        self.caseStyle = [
-            # whole grid
-            ('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod),
-            ('FONTNAME',   (0,0), (-1,-1),  self.tableBodyStyle.fontName),
-            ('FONTSIZE',   (0,0), (-1,-1),  self.tableBodyStyle.fontSize),
-            # top panel
-            ('FONTSIZE',   (0,0), (-1,-1),  self.tableHeaderStyle.fontSize),
-            ('BACKGROUND', (0,0), (1,0),    colors.lightgreen),    
-            ('BACKGROUND', (1,0), (-1,0),   colors.floralwhite),  
-        ]
 
     def prepare_values(self, node):
         # find out units
@@ -144,7 +81,7 @@ class ExportPDF:
         # reconstruct a clean node name
         node.name = f"{parent_name}{Sign.SEPARATOR}{node.name}"
         name = f"<strong>{node.clean_name()}</strong>"
-        p = Paragraph(name, self.tableHeaderStyle)
+        p = Paragraph(name, TABLE_HEADER_STYLE)
         # prepare additional node data
         dtype, value, unit, options = self.prepare_values(node)
         if node.constant:
@@ -152,37 +89,8 @@ class ExportPDF:
         data = [
             [p, '', dtype],
         ]
-        # construct a node table
-        tableStyle2 = self.tableStyle.copy()
-        if value:
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Default value:', Paragraph(value, self.tableBodyStyle)])
-        if unit:
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Default unit:', Paragraph(unit, self.tableBodyStyle)])
-        if node.condition:
-            condition = node.condition
-            condition = condition.replace("{","<font color='orange'>{")
-            condition = condition.replace("}","}</font>")
-            condition = Paragraph(condition, style=self.tableBodyStyle)
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Condition:', condition])
-        if node.tags:
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Tags:', Paragraph(", ".join(node.tags), self.tableBodyStyle)])
-        if options: 
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Options:', Paragraph(", ".join(options), self.tableBodyStyle)])
-        if node.keyword == StringNode.keyword and node.format:
-            tableStyle2.append(('SPAN', (1,len(data)), (-1,len(data)) ))
-            data.append(['Format:', Paragraph(node.format, self.tableBodyStyle)])
-        if node.description:
-            tableStyle2.append(('SPAN', (0,-1), (-1,-1) ))
-            tableStyle2.append(('BACKGROUND', (0,-1), (-1,-1),  colors.floralwhite))
-            data.append([Paragraph(node.description, self.tableBodyStyle)])
-        colWidths = list(np.array([0.2, 0.58, 0.22])*(self.PAGE_WIDTH-2*inch))
-        t = Table(data,style=tableStyle2, hAlign='LEFT', colWidths=colWidths)
-        return t
+        node_format = node.format if node.keyword == StringNode.keyword else None
+        return node_template(data, value, unit, node.condition, node.tags, options, node.keyword, node_format, node.description)
     
     def collect_blocks(self, nodes, parent_name:str=''):
         blocks = []
@@ -215,12 +123,12 @@ class ExportPDF:
                 condition = condition.replace("}","}</font>")
             else:
                 condition = ''
-            condition = Paragraph(condition, style=self.tableBodyStyle)
+            condition = Paragraph(condition, style=TABLE_BODY_STYLE)
             data = [
                 [case.case_type, condition],
             ]
-            colWidths = list(np.array([0.1, 0.9])*(self.PAGE_WIDTH-2*inch))
-            t = Table(data,style=self.caseStyle, hAlign='LEFT', colWidths=colWidths)
+            colWidths = list(np.array([0.1, 0.9])*(PAGE_WIDTH-2*inch))
+            t = Table(data,style=CASE_STYLE, hAlign='LEFT', colWidths=colWidths)
             blocks.insert(0, t)
             blocks.insert(1, Spacer(inch, inch/12))
             
@@ -231,7 +139,7 @@ class ExportPDF:
             parent_name = re.sub(r'\.(@[0-9]+)', my_replace, parent_name)
         # add a title block
         if blocks:
-            p = Paragraph(f"<strong>{parent_name}</strong>", self.groupStyle)
+            p = Paragraph(f"<strong>{parent_name}</strong>", GROUP_STYLE)
             p.keepWithNext = True # Keep title on the same page as parameters
             blocks.insert(0, p)
         return blocks
@@ -241,7 +149,7 @@ class ExportPDF:
         def myFirstPage(canvas, doc):
             canvas.saveState()
             canvas.setFont('Times-Bold',16)
-            canvas.drawCentredString(self.PAGE_WIDTH/2.0, self.PAGE_HEIGHT-108, title)
+            canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, title)
             canvas.setFont('Times-Roman',9)
             canvas.drawString(inch, 0.75 * inch, "First Page / %s" % pageinfo)
             canvas.restoreState()
@@ -256,7 +164,7 @@ class ExportPDF:
         blocks = [Spacer(1,1*inch)]
 
         # list of all nodes
-        p = Paragraph(f"Parameter list", self.sectionStyle)
+        p = Paragraph(f"Parameter list", SECTION_STYLE)
         blocks.append(p)
         nodes = self.env.nodes.query("*")
         parameters = []
@@ -271,14 +179,14 @@ class ExportPDF:
         blocks.append(Spacer(1,0.2*inch))
         
         # collect all declarations and definitions
-        p = Paragraph(f"Declarations and definitions", self.sectionStyle)
+        p = Paragraph(f"Declarations and definitions", SECTION_STYLE)
         blocks.append(p)
         for block in self.collect_blocks(self.env.nodes):
             blocks.append(block)
         blocks.append(Spacer(1,0.2*inch))
 
         # modifications
-        p = Paragraph(f"Modifications", self.sectionStyle)
+        p = Paragraph(f"Modifications", SECTION_STYLE)
         blocks.append(p)
         
         # build a documentation
