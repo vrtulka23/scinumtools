@@ -4,8 +4,9 @@ from reportlab.platypus.flowables import KeepTogether
 import numpy as np
 
 from .settings import *
-from .tmpl_node import NodeTemplate
-from .tmpl_types import TypesTemplate
+from .sections.node import NodeSection
+from .sections.types import TypesSection
+from .sections.reference import ReferenceSection
 from ...environment import Environment
 from ...settings import Order, Sign, Keyword, EnvType, DocsType
 from ...lists import NodeList
@@ -42,15 +43,6 @@ class ExportPDF:
         self.names = list(self.nodes.keys())
         self.names.sort()
         
-    def parse_parameters(self):
-        blocks = []
-        for name in self.names:
-            p = Paragraph(f"<a href=\"#{name}\" color=\"blue\">{name}</a>")
-            blocks.append(p)
-            blocks.append(Spacer(1,0.02*inch))
-        blocks.append(Spacer(1,0.2*inch))
-        return blocks
-        
     def build(self, file_path: str, title, pageinfo):
         
         def myFirstPage(canvas, doc):
@@ -70,34 +62,17 @@ class ExportPDF:
         doc = SimpleDocTemplate(file_path)
         blocks = [Spacer(1,1*inch)]
 
-        p = Paragraph(f"Instance types", SECTION_STYLE)        
-        blocks.append(p)
-        with TypesTemplate() as tmpl:
-            blocks.append(tmpl.parse())    
-        blocks.append(Spacer(1,0.2*inch))
+        # list node types
+        with TypesSection() as tmpl:
+            blocks += tmpl.parse()    
 
-        # list of all nodes
-        p = Paragraph(f"Quick reference", SECTION_STYLE)
-        blocks.append(p)
-        blocks += self.parse_parameters()
+        # create a quick reference of nodes with links
+        with ReferenceSection(self.names, self.nodes) as tmpl:
+            blocks += tmpl.parse()
         
-        # collect all declarations and definitions
-        p = Paragraph(f"Full node list", SECTION_STYLE)        
-        blocks.append(p)
-        parent_current = ''
-        node_current = ''
-        with NodeTemplate(self.env) as tmpl:
-            for name in self.names:
-                parent_new = ".".join(name.split(".")[:-1])
-                if parent_new!=parent_current:
-                    parent_current = parent_new
-                    blocks.append(Spacer(1,0.1*inch))
-                    blocks.append(Paragraph(f"<strong>{parent_new}</strong>"))
-                blocks.append(Spacer(1,0.1*inch))
-                blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"{name}\"></a>"))
-                blocks.append(Spacer(1,0.1*inch))
-                for node in self.nodes[name]:
-                    blocks.append(tmpl.parse(name, node))
-        
+        # list all nodes and their properties
+        with NodeSection(self.names, self.nodes, self.env) as tmpl:
+            blocks += tmpl.parse()
+ 
         # build a documentation
         doc.build(blocks, onFirstPage=myFirstPage, onLaterPages=myLaterPages)    

@@ -1,13 +1,18 @@
-from reportlab.platypus import Paragraph, Table
+from reportlab.platypus import Paragraph, Table, Spacer
 from reportlab.lib.units import inch
 import numpy as np
 import re
 
-from .settings import *
-from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode
-from ...settings import Order, Sign, Keyword, EnvType, DocsType
+from ..settings import *
+from ....nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode
+from ....settings import Order, Sign, Keyword, EnvType, DocsType
+from ....environment import Environment
 
-class NodeTemplate:
+class NodeSection:
+    
+    names: list
+    nodes: list
+    env: Environment
     
     def __enter__(self):
         return self
@@ -15,7 +20,10 @@ class NodeTemplate:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, env):
+    def __init__(self, names, nodes, env):
+        self.names = names
+        self.nodes = nodes
+        self.env = env
         pass
 
     def _init_bool(self, node):
@@ -107,7 +115,7 @@ class NodeTemplate:
             self.tags = ", ".join(node.tags)
         self.description = None if node.keyword ==ModNode.keyword else node.description
             
-    def parse(self, name, node):
+    def parse_node(self, name, node):
     
         self._init_node(node)
     
@@ -142,7 +150,7 @@ class NodeTemplate:
         # construct a node table
         pname = Paragraph(f"<strong>{name}</strong>", )
         data = [
-            ['', pname, '', self.dtype],
+            ['', '', '', self.dtype],
         ]
         if self.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
@@ -168,3 +176,15 @@ class NodeTemplate:
             
         colWidths = list(np.array([0.01,0.2, 0.57, 0.22])*(PAGE_WIDTH-2*inch))
         return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+
+    def parse(self):
+        blocks = []
+        blocks.append(Paragraph(f"Node list", SECTION_STYLE) )
+        for name in self.names:
+            parent_new = ".".join(name.split(".")[:-1])
+            blocks.append(Spacer(1,0.1*inch))
+            blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"{name}\"></a>"))
+            blocks.append(Spacer(1,0.1*inch))
+            for node in self.nodes[name]:
+                blocks.append(self.parse_node(name, node))
+        return blocks

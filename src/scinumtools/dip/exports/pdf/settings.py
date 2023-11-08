@@ -57,7 +57,7 @@ PALETTE = {
     'def':     '#AABA78',
     'dec/mod': '#D77F33',
     'def/mod': '#DDA15E',
-    'mod':     '#FEFAE0',
+    'mod':     '#FBE974',
     'c4': colors.saddlebrown, #'#',
     'node_name': '#E7CCB1', #colors.navajowhite, 
     'prop_name': '#FAEDCD', #colors.antiquewhite, #'#',
