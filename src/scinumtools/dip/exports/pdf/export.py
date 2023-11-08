@@ -7,6 +7,7 @@ from .settings import *
 from .sections.node import NodeSection
 from .sections.types import TypesSection
 from .sections.reference import ReferenceSection
+from .sections.sources import SourcesSection
 from ...environment import Environment
 from ...settings import Order, Sign, Keyword, EnvType, DocsType
 from ...lists import NodeList
@@ -61,6 +62,10 @@ class ExportPDF:
 
         doc = SimpleDocTemplate(file_path)
         blocks = [Spacer(1,1*inch)]
+
+        # list sources
+        with TypesSection(self.env.sources) as tmpl:
+            blocks += tmpl.parse()    
 
         # list node types
         with TypesSection() as tmpl:

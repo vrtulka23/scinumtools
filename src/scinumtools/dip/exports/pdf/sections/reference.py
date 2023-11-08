@@ -8,6 +8,7 @@ from ....settings import DocsType
 class ReferenceSection:
     
     names: list
+    nodes: list
     
     def __enter__(self):
         return self
