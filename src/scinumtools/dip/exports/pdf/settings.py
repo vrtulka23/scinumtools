@@ -51,3 +51,15 @@ CASE_STYLE = [
     #('BACKGROUND', (0,0), (1,0),    colors.lightgreen),    
     #('BACKGROUND', (1,0), (-1,0),   colors.floralwhite),  
 ]
+
+PALETTE = {
+    'dec':     '#698D3F',
+    'def':     '#AABA78',
+    'dec/mod': '#D77F33',
+    'def/mod': '#DDA15E',
+    'mod':     '#FEFAE0',
+    'c4': colors.saddlebrown, #'#',
+    'node_name': '#E7CCB1', #colors.navajowhite, 
+    'prop_name': '#FAEDCD', #colors.antiquewhite, #'#',
+    'prop_value': '#FEFAE0', #colors.floralwhite, #'#',
+}

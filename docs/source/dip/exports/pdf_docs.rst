@@ -7,7 +7,7 @@ As an example, we will parse following files:
 *  `pdf_definitions.dip <https://github.com/vrtulka23/scinumtools/blob/main/tests/dip/examples/pdf_definitions.dip>`_
 *  `pdf_settings.dip <https://github.com/vrtulka23/scinumtools/blob/main/tests/dip/examples/pdf_settings.dip>`_
 
-Environment suitable for a documentation has to be parsed with a special method ``parse_docs()``, that processes node differently as the standard ``parse()`` method.
+Environment suitable for a documentation has to be parsed with a special method ``parse_pdf()``, that processes node differently as the standard ``parse()`` method.
 
 .. code-block:: python
 
@@ -15,7 +15,7 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>> from scinumtools.dip.exports import ExportPDF
    >>> with DIP(docs=True) as p:
    >>>     p.from_file('pdf_definitions.dip')
-   >>>     env = p.parse_docs()
+   >>>     env = p.parse_pdf()
    >>> with ExportPDF(env) as exp:
    >>>     title = "Example documentation"
    >>>     pageinfo = "DIP Documentation"

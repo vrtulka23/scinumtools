@@ -23,7 +23,7 @@ def file_definitions():
 def test_export_pdf(file_pdf, file_definitions):
     with DIP(docs=True) as p:
         p.from_file(file_definitions)
-        env = p.parse_docs()
+        env = p.parse_pdf()
     with ExportPDF(env) as exp:
         title = "Example documentation"
         pageinfo = "DIP Documentation"

@@ -23,8 +23,8 @@ def test_definition_before_case():
           a bool = true  # modification
         a = 4            # modification
         """)
-        env = p.parse_docs()
-        assert len(env.nodes) == 5
+        env = p.parse_sphinx()
+        assert len(env.nodes) == 1
         check_node(env.nodes[0], 'a', 'int', 3)
     
 def test_branch_definition():
@@ -40,8 +40,8 @@ def test_branch_definition():
           a bool = true  # definition
         a = 4            # modification
         """)
-        env = p.parse_docs()
-        assert len(env.nodes) == 4
+        env = p.parse_sphinx()
+        assert len(env.nodes) == 3
         check_node(env.nodes[0], '@1.a', 'float', 4.0)
         check_node(env.nodes[1], '@2.a', 'str',   "4.0")
         check_node(env.nodes[2], '@3.a', 'bool',  True)
@@ -55,7 +55,7 @@ def test_incomplete_case_definition():
           a float = 4.0  # definition
         a float = 3      # definition, or modification
         """)
-        env = p.parse_docs()
+        env = p.parse_sphinx()
         assert len(env.nodes) == 2
         check_node(env.nodes[0], '@1.a', 'float', 4.0)
         check_node(env.nodes[1], 'a',    'float', 3)
@@ -69,7 +69,7 @@ def test_incomplete_case_definition():
           a float = 5.0  # definition
         a float = 3      # modification
         """)
-        env = p.parse_docs()
+        env = p.parse_sphinx()
         assert len(env.nodes) == 3
         check_node(env.nodes[0], '@1.b', 'float', 4.0)
         check_node(env.nodes[1], '@2.a', 'float', 5.0)
@@ -89,7 +89,7 @@ def test_nested_incomplete():
           a float = 5.0  # definition
         a float = 3      # modification
         """)
-        env = p.parse_docs()
+        env = p.parse_sphinx()
         assert len(env.nodes) == 4
         check_node(env.nodes[0], '@1.@2.b', 'float', 4.0)
         check_node(env.nodes[1], '@1.@3.a', 'float', 8.0)

@@ -29,7 +29,7 @@ class ExportSphinx(Directive):
         
         with DIP(source=source, docs=True) as dip:
             dip.from_file(file_dip)
-            env = dip.parse_docs()
+            env = dip.parse_sphinx()
             sources = env.sources
             units = env.units
             data = env.data(format=Format.NODE)

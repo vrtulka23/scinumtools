@@ -1,5 +1,5 @@
-Syntax
-======
+Language Syntax
+===============
 
 .. toctree::
    :maxdepth: 2

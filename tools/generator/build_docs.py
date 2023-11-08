@@ -24,7 +24,7 @@ def build_export_pdf():
     # Create a DIP environment
     with DIP(docs=True) as p:
         p.from_file(file_definitions)
-        env = p.parse_docs()
+        env = p.parse_pdf()
     # Export parameters as a PDF
     with ExportPDF(env) as exp:
         title = "Example documentation"

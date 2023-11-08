@@ -63,9 +63,12 @@ Below is an overview of all its highlighting capabilities:
    
    name bool
    name int
+   name int32
+   name uint32
    name str
    name float
    name float             # comment
+   name float64
    name table
 
    name float[:1,2]
