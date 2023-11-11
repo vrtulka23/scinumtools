@@ -14,22 +14,22 @@ class TypesSection:
         
     def parse_table(self):
         TABLE_STYLE = [
-            ('BACKGROUND', (1,0), (1,0),   PALETTE['dec']),  
-            ('BACKGROUND', (1,1), (1,1),   PALETTE['def']),  
-            ('BACKGROUND', (1,2), (1,2),   PALETTE['dec/mod']),  
-            ('BACKGROUND', (1,3), (1,3),   PALETTE['def/mod']),  
-            ('BACKGROUND', (1,4), (1,4),   PALETTE['mod']),  
+            ('BACKGROUND', (0,0), (0,0),   PALETTE['dec']),  
+            ('BACKGROUND', (0,1), (0,1),   PALETTE['def']),  
+            ('BACKGROUND', (0,2), (0,2),   PALETTE['dec/mod']),  
+            ('BACKGROUND', (0,3), (0,3),   PALETTE['def/mod']),  
+            ('BACKGROUND', (0,4), (0,4),   PALETTE['mod']),  
         ]
     
         data = [   
-            ['','','Declaration'],
-            ['','','Definition'],
-            ['','','Declaration / Modification'],
-            ['','','Definition / Modification'],
-            ['','','Modification'],
+            ['','Declaration'],
+            ['','Definition'],
+            ['','Declaration / Modification'],
+            ['','Definition / Modification'],
+            ['','Modification'],
         ]
-        colWidths = list(np.array([0.015, 0.035,0.95])*(PAGE_WIDTH-2*inch))
-        return Table(data, style=TABLE_STYLE, colWidths=colWidths)
+        colWidths = list(np.array([0.05,0.95])*(PAGE_WIDTH-2*inch))
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
         
     def parse(self):
         blocks = []

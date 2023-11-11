@@ -1,4 +1,4 @@
-from reportlab.platypus import Paragraph, Table, Spacer
+from reportlab.platypus import Paragraph, Table, Spacer, PageBreak
 from reportlab.lib.units import inch
 import numpy as np
 import re
@@ -133,7 +133,8 @@ class NodeSection:
         # define table style
         TABLE_STYLE = [
             # whole grid
-            #('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod),
+            #('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod), 
+            ('GRID',       (1,1), (-1,-1),  0.5, PALETTE['prop_name']),
             ('FONTNAME',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontName),
             ('FONTSIZE',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontSize),
             # top panel
@@ -149,8 +150,10 @@ class NodeSection:
         
         # construct a node table
         pname = Paragraph(f"<strong>{name}</strong>", )
+        source = self.env.sources[node.source]
+        source = Paragraph(f"<a href=\"#source_{source.parent_name}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
         data = [
-            ['', '', '', self.dtype],
+            ['', source, '', self.dtype],
         ]
         if self.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
@@ -179,12 +182,13 @@ class NodeSection:
 
     def parse(self):
         blocks = []
+        blocks.append(PageBreak())
         blocks.append(Paragraph(f"Node list", SECTION_STYLE) )
         for name in self.names:
-            parent_new = ".".join(name.split(".")[:-1])
             blocks.append(Spacer(1,0.1*inch))
-            blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"{name}\"></a>"))
+            blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"node_{name}\"></a>"))
             blocks.append(Spacer(1,0.1*inch))
             for node in self.nodes[name]:
                 blocks.append(self.parse_node(name, node))
+        blocks.append(Spacer(1,0.2*inch))
         return blocks

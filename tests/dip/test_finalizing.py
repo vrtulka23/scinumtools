@@ -51,6 +51,9 @@ temp = 280.15 K
         'alcohol': FloatType(0.2, '%'),
         'temp': FloatType(7, 'Cel'),
     })  
+    
+def test_modification_errors():
+    
     with pytest.raises(Exception) as e_info:
         parse('''
 age int = 34 yr

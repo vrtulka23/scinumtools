@@ -1,5 +1,9 @@
 from enum import Flag, auto
 
+ROOT_SOURCE   = 'root'
+FILE_SOURCE   = 'file'
+STRING_SOURCE = 'string'
+
 class Numeric:
     PRECISION   = 1e-6
 

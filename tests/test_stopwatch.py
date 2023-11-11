@@ -9,13 +9,13 @@ def test_normal_object():
     # Using as a normal object
     sw = Stopwatch()
     sw.start('part1')
-    time.sleep(.001)
+    time.sleep(.01)
     sw.start('part2')
-    time.sleep(.001)
+    time.sleep(.02)
     sw.stop('part2')
     sw.stop('part1')
     sw.start('part3')
-    time.sleep(.003)
+    time.sleep(.04)
     sw.stop('part3')
     result = sw.report().to_dict()
     assert result['Laps'] == [6, 1, 1, 1]

@@ -11,7 +11,6 @@ Dimensional Input Parameters
 
    intro/index
    syntax/index
-   tools/index
    exports/index
    highlighters/index
 

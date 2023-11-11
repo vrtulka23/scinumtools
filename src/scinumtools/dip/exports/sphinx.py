@@ -7,7 +7,6 @@ from inspect import getframeinfo, stack
 import collections
 
 from ..dip import DIP
-from ..source import Source
 from ..settings import Format
 from ..datatypes import NumberType
 from ..nodes import IntegerNode, StringNode, FloatNode
@@ -24,11 +23,10 @@ class ExportSphinx(Directive):
 
         # We are calling this script from a Sphinx base directory,
         # so DIP file paths are defined relative to it.
-        source = Source(lineno=1, filename=os.getcwd())
         file_dip = self.content[0]
         
-        with DIP(source=source, docs=True) as dip:
-            dip.from_file(file_dip)
+        with DIP() as dip:
+            dip.from_file(file_dip, absolute=False)
             env = dip.parse_sphinx()
             sources = env.sources
             units = env.units
@@ -94,7 +92,7 @@ class ExportSphinx(Directive):
             text =  name+"\n"
             props = nodes.field_list()
             if 'show-code' in self.options:
-                props += add_field("Line", node.source.lineno)
+                props += add_field("Line", node.lineno)
             if node.defined:
                 props += add_field("Node type", 'declaration')
             else:

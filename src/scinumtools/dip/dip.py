@@ -6,8 +6,7 @@ from typing import List, Callable, Tuple
 from inspect import getframeinfo, stack
 
 from .environment import Environment
-from .source import Source
-from .settings import Keyword, Sign, EnvType, DocsType
+from .settings import *
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
 from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode, DescriptionNode
@@ -24,13 +23,18 @@ class DIP:
     """
     env: Environment
     lines: List[dict]
-    source: Source
+    
+    source: str          # source name
+    lineno: int = None   # line number 
     
     nodes_special: list     = ['empty','unit','source']
     nodes_properties: list  = ['option','constant','format','condition','tags','description']
     nodes_hierarchy: list   = ['group']
     nodes_nohierarchy: list = None
     nodes_notypes: list     = None
+    
+    num_files: int = 0 
+    num_strings: int = 0
 
     def __init__(self, env:Environment=None, **kwargs):
         self.lines = []
@@ -45,12 +49,22 @@ class DIP:
         if 'source' not in kwargs:
             # determine which file instantiate this class
             caller = getframeinfo(stack()[1][0])
+            self.source = f"{ROOT_SOURCE}_{id(self)}"
             if caller.filename == '<stdin>':                
-                self.source = Source(lineno=caller.lineno, filename=os.getcwd())
+                self.env.sources.append(
+                    name = self.source, 
+                    path = os.getcwd(),
+                    code = None,
+                )
             else:
-                self.source = Source(lineno=caller.lineno, filename=caller.filename)
+                self.env.sources.append(
+                    name = self.source, 
+                    path = caller.filename, 
+                    code = None, 
+                )
         else:
             self.source = kwargs['source']
+            self.lineno = kwargs['lineno']
         # create additional node groups
         self.nodes_nohierarchy = self.nodes_special+self.nodes_properties
         self.nodes_notypes = self.nodes_special+self.nodes_properties+self.nodes_hierarchy
@@ -92,7 +106,8 @@ class DIP:
         # Determine node type
         parser = Parser(
             code=line['code'],
-            source=line['source']
+            source=line['source'],
+            lineno=line['lineno'],
         )
         steps = [
             EmptyNode.is_node,            # parse empty line node
@@ -154,46 +169,82 @@ class DIP:
         # Return proper node type
         return node
     
-    def from_file(self, filepath:str):
+    def from_file(self, filepath:str, source_name:str = None, absolute=True):
         """ Load DIP code from a file
 
         :param str filepath: Path to a DIP file
+        
+        :param bool absolute: Path is absolute
         """
-        if not os.path.isabs(filepath):
-            # set relative paths with respect to the source script
-            parent = Path(self.source.filename)
+        # ensure relative paths with respect to the source script
+        if not os.path.isabs(filepath) and absolute:
+            parent = Path(self.env.sources[self.source].path)
             if os.path.isfile(parent):
                 filepath = parent.parent / filepath
             else:
                 filepath = parent / filepath
+        # open file and get its content
         with open(filepath,'r') as f:           
             lines = f.read().split(Sign.NEWLINE)
-        for line,code in enumerate(lines):
+        # get source name
+        if source_name is None:
+            self.num_files += 1
+            source_name = f"{FILE_SOURCE}_{id(self)}_{chr(96+self.num_files)}"
+        # prepare individual lines
+        for lineno, linecode in enumerate(lines):
             self.lines.append(dict(
-                code = code,
-                source = Source(
-                    lineno=line+1,
-                    filename=os.path.realpath(filepath),
-                    primary=self.source.primary
-                )
+                code = linecode,
+                source = source_name,
+                lineno = lineno+1
             ))
-        
+        # get line number from the source code
+        if self.lineno is None:
+            caller = getframeinfo(stack()[1][0])
+            lineno = caller.lineno
+        else:
+            lineno = self.lineno
+        # create new source
+        self.env.sources.append(
+            name = source_name,
+            path = os.path.realpath(filepath),
+            code = Sign.NEWLINE.join(lines),
+            parent_name = self.source,
+            parent_lineno = lineno,
+        )
+
     def from_string(self, code:str):
         """ Use DIP code from a string
 
         :param str code: DIP code
         """
         lines = code.split(Sign.NEWLINE)
-        for line,code in enumerate(lines):
+        self.num_strings += 1
+        source_name = f"{STRING_SOURCE}_{id(self)}_{chr(96+self.num_strings)}"
+        for lineno,linecode in enumerate(lines):
             self.lines.append(dict(
-                code = code,
-                source = self.source,
+                code = linecode,
+                source = source_name,
+                lineno = lineno+1
             ))
+        if self.lineno is None:
+            caller = getframeinfo(stack()[1][0])
+            lineno = caller.lineno
+        else:
+            lineno = self.lineno
+        self.env.sources.append(
+            name = source_name,
+            path = self.env.sources[self.source].path,
+            code = Sign.NEWLINE.join(lines),
+            parent_name = self.source,
+            parent_lineno = lineno,
+        )
 
     def add_source(self, name:str, path:str):
         self.lines.append(dict(
-            code = f"{Sign.VARIABLE}{Keyword.SOURCE} {name} = {path}",
-            source = self.source
+            code = f"{Sign.VARIABLE}{Keyword.SOURCE} {name} = '{path}'",
+            name = name,
+            source = self.source,
+            lineno = 0,
         ))
         
     def add_unit(self, name:str, value:float, unit:str=None):
@@ -203,7 +254,9 @@ class DIP:
             code = f"{Sign.VARIABLE}{Keyword.UNIT} {name} = {value}"
         self.lines.append(dict(
             code = code,
-            source = self.source
+            name = name,
+            source = self.source,
+            lineno = 0,
         ))
 
     def add_function(self, name:str, fn:Callable):
@@ -250,7 +303,7 @@ class DIP:
                         break
                 # If node wasn't defined, create a new node
                 else:
-                    if node.keyword=='mod' and node.source.primary:
+                    if node.keyword=='mod' and node.source.startswith(f"{STRING_SOURCE}_{id(self)}"):
                         raise Exception(f"Modifying undefined node:",node.name)
                     target.nodes.append(node)
         # Validate nodes
@@ -327,17 +380,7 @@ class DIP:
                             node.docs_type |= DocsType.MODIFICATION
                             continue # node branch does not have an else clause 
                     node.docs_type = DocsType.MODIFICATION
-                    # Remove the node with all its properties
-                    #for i in range(len(queue.nodes)):
-                    #    if queue.nodes[0].keyword in self.nodes_properties:
-                    #        del queue.nodes[0]
                     break
-                #else:
-                #print(target.nodes)
-                # If node wasn't defined, create a new node
-                #if node.keyword=='mod' and node.source.primary:
-                #    raise Exception(f"Modifying undefined node:",node.name, node.source)
-                #print(node, node.docs_type)
                 target.nodes.append(node)
         return target
 
@@ -393,7 +436,7 @@ class DIP:
                     break
                 else:
                     # If node wasn't defined, create a new node
-                    if node.keyword=='mod' and node.source.primary:
+                    if node.keyword=='mod' and node.source == self.source:
                         raise Exception(f"Modifying undefined node:",node.name, node.source)
                     target.nodes.append(node)
         return target

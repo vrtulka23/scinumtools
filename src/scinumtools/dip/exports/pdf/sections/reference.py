@@ -23,7 +23,7 @@ class ReferenceSection:
     def parse_table(self):
         TABLE_STYLE = [
             ('GRID',       (0,1), (-1,-1),  0.5, PALETTE['prop_name']),
-            ('BACKGROUND', (0,0), (0,0),   PALETTE['prop_name']),  
+            ('BACKGROUND', (0,0), (0,0),   PALETTE['node_name']),  
             ('BACKGROUND', (0,1), (-1,-1),   PALETTE['prop_value']),  
             ('BACKGROUND', (1,0), (1,0),   PALETTE['dec']),  
             ('BACKGROUND', (2,0), (2,0),   PALETTE['def']),  
@@ -34,7 +34,7 @@ class ReferenceSection:
     
         data = [['Property name', '#', '#', '#', '#', '#']]
         for name in self.names:
-            p = Paragraph(f"<a href=\"#{name}\" color=\"blue\">{name}</a>")
+            p = Paragraph(f"<a href=\"#node_{name}\" color=\"blue\">{name}</a>")
             counts = [0, 0, 0, 0, 0]
             for node in self.nodes[name]:
                 if DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
@@ -50,7 +50,7 @@ class ReferenceSection:
             counts = ['' if c==0 else c for c in counts]
             data.append([p]+counts)
         colWidths = list(np.array([0.8, 0.04, 0.04, 0.04, 0.04, 0.04])*(PAGE_WIDTH-2*inch))
-        return Table(data, style=TABLE_STYLE, colWidths=colWidths)
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
         
     def parse(self):
         blocks = []       

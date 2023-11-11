@@ -63,10 +63,6 @@ class ExportPDF:
         doc = SimpleDocTemplate(file_path)
         blocks = [Spacer(1,1*inch)]
 
-        # list sources
-        with TypesSection(self.env.sources) as tmpl:
-            blocks += tmpl.parse()    
-
         # list node types
         with TypesSection() as tmpl:
             blocks += tmpl.parse()    
@@ -78,6 +74,10 @@ class ExportPDF:
         # list all nodes and their properties
         with NodeSection(self.names, self.nodes, self.env) as tmpl:
             blocks += tmpl.parse()
+ 
+        # list sources
+        with SourcesSection(self.env) as tmpl:
+            blocks += tmpl.parse()    
  
         # build a documentation
         doc.build(blocks, onFirstPage=myFirstPage, onLaterPages=myLaterPages)    

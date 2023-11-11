@@ -1,13 +1,19 @@
 from typing import List, Dict, Union
 from dataclasses import dataclass, field
+import copy
 
 from ..settings import Sign
+from .list_nodes import NodeList
 
 @dataclass
 class EnvSource:
-    source: Union[str] # can be also DIP
-    path: str
-    name: str
+    name: str            # this source name
+    path: str            # source filename
+    code: str            # source code
+    parent_name: str = None     # parent source name
+    parent_lineno: int = None   # parent source line number
+    nodes: NodeList = None      # list of nodes (only for remote sources)
+    sources: 'SourceList' = None  # list of sources (only for remote sources)
     
 @dataclass
 class SourceList:
@@ -16,13 +22,27 @@ class SourceList:
     def __len__(self):
         return len(self.sources)
     
-    def __getitem__(self, key):
-        return self.sources[key]
+    def __getitem__(self, name: str):
+        return self.sources[name]
+
+    def __setitem__(self, name: str, source: EnvSource):
+        self.sources[name] = source
+
+    def __contains__(self, item):
+        return item in self.sources
     
     def items(self):
         return self.sources.items()
     
-    def append(self, name:str, source:str, path:str):
+    def keys(self):
+        return self.sources.keys()
+    
+    def copy(self):
+        """ Copy a new object from self
+        """
+        return copy.deepcopy(self)
+        
+    def append(self, name:str, path:str, code:str, parent_name:str = None, parent_lineno:int = None):
         """ Append a new source
 
         :param str name: Name of a new source
@@ -31,7 +51,7 @@ class SourceList:
         """
         if name in self.sources:
             raise Exception("Reference source alread exists:", name)
-        self.sources[name] = EnvSource(source=source, path=str(path), name=name)
+        self.sources[name] = EnvSource(name, str(path), code,  parent_name, parent_lineno)
 
     def query(self, query:str):
         """ Select sources according to a query

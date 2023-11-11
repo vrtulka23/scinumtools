@@ -16,10 +16,10 @@ def test_import_nodes():
     data = parse('''
 $source nodes = blocks/nodes.dip
     
-{nodes}                        # base import
+{nodes?*}                        # base import
 box
-  {nodes}                      # import into a group node
-basket.bag {nodes}             # import into a namespace
+  {nodes?*}                      # import into a group node
+basket.bag {nodes?*}             # import into a namespace
     ''')
     np.testing.assert_equal(data,{
         'fruits': IntegerType(0),
@@ -63,7 +63,7 @@ $source nodes = {?file}
         'fruits': IntegerType(0),
     })
 
-def test_source_import():
+def test_source_import_single():
     data = parse('''
 $source file = blocks/nodes.dip
 $source {file?blocks}
@@ -72,6 +72,8 @@ $source {file?blocks}
     np.testing.assert_equal(data,{
         'energy': FloatType(13, 'J')
     })
+    
+def test_source_import_all():
     data = parse('''
 $source file = blocks/nodes.dip
 $source {file?*}
@@ -80,6 +82,8 @@ $source {file?*}
     np.testing.assert_equal(data,{
         'energy': FloatType(13, 'J')
     })
+    
+def test_source_import_errors():
     with pytest.raises(Exception) as e_info:
         parse('''
 $source file = blocks/nodes.dip

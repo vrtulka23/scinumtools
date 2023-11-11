@@ -1,11 +1,10 @@
 from typing import List
 import copy
 
-from ..source import Source
-
 class Node:
     code: str 
-    source: Source = None
+    source: str = None              # source name
+    lineno: int = None              # line number
     keyword: str = None
     dtype = str                     # datatype
     dtype_prop = list               # datatype properties (e.g.: unsigned, precision)

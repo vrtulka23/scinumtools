@@ -5,7 +5,6 @@ import scinumtools.dip as dipsl
 from .node_base import BaseNode
 from .parser import Parser
 from ..settings import Namespace
-from ..source import Source
 
 class SourceNode(BaseNode):
     keyword: str = 'source'
@@ -26,8 +25,9 @@ class SourceNode(BaseNode):
         parser.part_reference()
         if parser.is_parsed('part_reference'):
             sources = env.request(parser.value_ref, namespace=Namespace.SOURCES)
+            # append remote sources to the local sources
             for key, val in sources.items():
-                env.sources.append(key, val.source, val.path)
+                env.sources[key] = val
         else:
             # inject value of a node
             parser.part_name(path=False) # parse name
@@ -36,18 +36,22 @@ class SourceNode(BaseNode):
             if parser.value_ref:
                 self.inject_value(env, parser)
             if parser.value_raw.endswith('dip'):
-                source = Source(**self.source.__dict__)
-                source.primary = False
-                p = dipsl.DIP(source=source)
-                p.from_file(parser.value_raw)
-                p.parse()
-                env.sources.append(parser.name, p, parser.value_raw)
+                # source is a DIP file
+                p = dipsl.DIP(source=self.source, lineno=self.lineno)
+                p.env.sources = env.sources.copy()
+                p.from_file(parser.value_raw, parser.name)
+                penv = p.parse()
+                env.sources[parser.name] = penv.sources[parser.name]
+                env.sources[parser.name].nodes = penv.nodes
+                env.sources[parser.name].sources = penv.sources
             else:
+                # source is a text file
                 filepath = parser.value_raw
                 if not os.path.isabs(filepath):
                     # set relative paths with respect to the source script
-                    parent = Path(self.source.filename).parent
+                    source = env.sources[self.source]
+                    parent = Path(source.path).parent
                     filepath = parent / filepath
                 with open(filepath,'r') as f:
-                    env.sources.append(parser.name, f.read(), filepath)
+                    env.sources.append(parser.name, filepath, f.read(), self.source, self.lineno)
         return None

@@ -19,6 +19,7 @@ class BaseNode(Node):
         if parser:
             kwargs['code'] = parser.code
             kwargs['source'] = parser.source
+            kwargs['lineno'] = parser.lineno
             kwargs['indent'] = parser.indent
             kwargs['name'] = parser.name
             kwargs['dtype_prop'] = parser.dtype_prop

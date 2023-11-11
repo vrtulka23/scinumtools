@@ -1,0 +1,3 @@
+runtime
+  t_max = 10 ns
+  timestep = 0.01 ns

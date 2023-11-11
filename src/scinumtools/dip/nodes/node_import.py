@@ -20,8 +20,7 @@ class ImportNode(BaseNode):
         for node in env.request(self.value_ref):
             path = self.name.split(Sign.SEPARATOR + '{')
             path.pop()
-            path.append(node.name)                
-            node.source = self.source
+            path.append(node.name)     
             node.name = Sign.SEPARATOR.join(path)
             node.indent = self.indent
             nodes_new.append(node)

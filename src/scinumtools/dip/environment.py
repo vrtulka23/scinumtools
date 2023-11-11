@@ -27,7 +27,7 @@ class Environment:
     def copy(self):
         """ Copy a new object from self
         """
-        return copy.copy(self)
+        return copy.deepcopy(self)
 
     def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
         """ Request nodes from a path
@@ -42,20 +42,18 @@ class Environment:
         elif Sign.QUERY in path:                    # reference type {source?query}
             filename,query = path.split(Sign.QUERY)
         else:                                      # reference type {source}
-            filename,query = path,Sign.WILDCARD
+            filename,query = path,None
         if filename:  # use external source to parse the values
-            source = self.sources[filename].source
-            if isinstance(source, str):
-                return source
+            if query is None:   # import block
+                return self.sources[filename].code
+            elif namespace == Namespace.NODES:
+                nodes = self.sources[filename].nodes.query(query, tags=tags)
+            elif namespace == Namespace.SOURCES:
+                nodes = self.sources[filename].sources.query(query)
+            elif namespace == Namespace.UNITS:
+                nodes = self.sources[filename].units.query(query)
             else:
-                if namespace == Namespace.NODES:
-                    nodes = source.env.nodes.query(query, tags=tags)
-                elif namespace == Namespace.SOURCES:
-                    nodes = source.env.sources.query(query)
-                elif namespace == Namespace.UNITS:
-                    nodes = source.env.sources.query(query)
-                else:
-                    nodes = source.env.query(query, namespace, tags=tags)
+                nodes = self.sources[filename].query(query, namespace, tags=tags)
         else:         # use values parsed in the current file
             if not self.nodes:
                 raise Exception(f"Local nodes are not available for DIP import:", path)
