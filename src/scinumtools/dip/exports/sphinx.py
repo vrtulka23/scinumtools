@@ -25,7 +25,7 @@ class ExportSphinx(Directive):
         # so DIP file paths are defined relative to it.
         file_dip = self.content[0]
         
-        with DIP() as dip:
+        with DIP(name="SPHINX") as dip:
             dip.from_file(file_dip, absolute=False)
             env = dip.parse_sphinx()
             sources = env.sources
@@ -59,7 +59,7 @@ class ExportSphinx(Directive):
             deflist = nodes.definition_list()
             for name, source in sources.items():
                 props = nodes.field_list()
-                props += add_field('File', source.path)
+                props += add_field('Source', f"{source.parent_name}:{source.parent_lineno}")
                 defitem = nodes.definition_list_item()
                 defitem += nodes.term('', '', nodes.strong(text=name))
                 defitem += nodes.definition('', props)
