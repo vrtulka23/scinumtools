@@ -21,4 +21,4 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>>     pageinfo = "DIP Documentation"
    >>>     exp.build('documentation.pdf', title, pageinfo)
    
-Code above will generate the following `PDF documentation <https://github.com/vrtulka23/scinumtools/blob/main/docs/source/_static/pdf/documentation.pdf>`_.
+Code above will generate the following `PDF documentation <_static/pdf/documentation.pdf>`_.
