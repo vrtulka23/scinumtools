@@ -15,7 +15,7 @@ def test_normal_object():
     sw.stop('part2')
     sw.stop('part1')
     sw.start('part3')
-    time.sleep(.04)
+    time.sleep(.05)
     sw.stop('part3')
     result = sw.report().to_dict()
     assert result['Laps'] == [6, 1, 1, 1]

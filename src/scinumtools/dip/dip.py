@@ -21,8 +21,9 @@ class DIP:
     :param str code: DIP code
     :param DIP_Environment env: DIP environment object
     """
-    env: Environment
-    lines: List[dict]
+    name: str            # object name
+    env: Environment     # environment
+    lines: List[dict]    # code lines
     
     source: str          # source name
     lineno: int = None   # line number 
@@ -37,6 +38,7 @@ class DIP:
     num_strings: int = 0
 
     def __init__(self, env:Environment=None, **kwargs):
+        self.name = kwargs['name'] if 'name' in kwargs else str(id(self))
         self.lines = []
         # create a new environment if not givenl
         if env:
@@ -49,7 +51,7 @@ class DIP:
         if 'source' not in kwargs:
             # determine which file instantiate this class
             caller = getframeinfo(stack()[1][0])
-            self.source = f"{ROOT_SOURCE}_{id(self)}"
+            self.source = f"{self.name}_{ROOT_SOURCE}"
             if caller.filename == '<stdin>':                
                 self.env.sources.append(
                     name = self.source, 
@@ -186,10 +188,13 @@ class DIP:
         # open file and get its content
         with open(filepath,'r') as f:           
             lines = f.read().split(Sign.NEWLINE)
+        # strip leading empty lines
+        while lines and lines[0].strip()=='':
+            del lines[0]
         # get source name
         if source_name is None:
             self.num_files += 1
-            source_name = f"{FILE_SOURCE}_{id(self)}_{chr(96+self.num_files)}"
+            source_name = f"{self.name}_{FILE_SOURCE}{self.num_files}"
         # prepare individual lines
         for lineno, linecode in enumerate(lines):
             self.lines.append(dict(
@@ -218,14 +223,20 @@ class DIP:
         :param str code: DIP code
         """
         lines = code.split(Sign.NEWLINE)
+        # create source name
         self.num_strings += 1
-        source_name = f"{STRING_SOURCE}_{id(self)}_{chr(96+self.num_strings)}"
+        source_name = f"{self.name}_{STRING_SOURCE}{self.num_strings}"
+        # strip leading empty lines
+        while lines and lines[0].strip()=='':
+            del lines[0]
+        # create lines
         for lineno,linecode in enumerate(lines):
             self.lines.append(dict(
                 code = linecode,
                 source = source_name,
                 lineno = lineno+1
             ))
+        # create parent new source
         if self.lineno is None:
             caller = getframeinfo(stack()[1][0])
             lineno = caller.lineno
@@ -234,7 +245,7 @@ class DIP:
         self.env.sources.append(
             name = source_name,
             path = self.env.sources[self.source].path,
-            code = Sign.NEWLINE.join(lines),
+            code = code,
             parent_name = self.source,
             parent_lineno = lineno,
         )
@@ -303,7 +314,7 @@ class DIP:
                         break
                 # If node wasn't defined, create a new node
                 else:
-                    if node.keyword=='mod' and node.source.startswith(f"{STRING_SOURCE}_{id(self)}"):
+                    if node.keyword=='mod' and node.source.startswith(f"{self.name}_{STRING_SOURCE}"):
                         raise Exception(f"Modifying undefined node:",node.name)
                     target.nodes.append(node)
         # Validate nodes

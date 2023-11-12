@@ -28,7 +28,7 @@ class SourcesSection:
     def __init__(self, env: Environment):
         self.env = env
         
-    def highlight_python_code(self,code):
+    def highlight_python_code(self, source):
         # format text using pygments
         lexer = SyntaxLexer()
         pygments_monkeypatch_style("StyleLexer", StyleLexer)
@@ -37,7 +37,14 @@ class SourcesSection:
         
         # format text with a lexer
         formatter = get_formatter_by_name('html', style=style)
-        code = highlight(code, lexer, formatter)
+        code = highlight(source.code, lexer, formatter)
+        
+        # add code lines
+        lines = code.split('\n')
+        for l in range(len(lines)):
+            lineno = str(l+1)
+            lines[l] = f"<a name=\"source_{source.name}_{lineno}\"></a>{lineno:5s}{lines[l]}"
+        code = '\n'.join(lines)
         
         # replace standard CSS classes with explicit text formatting
         token_settings = dict(style)
@@ -76,8 +83,8 @@ class SourcesSection:
         TABLE_STYLE = [                       
             ('GRID',       (0,1), (-1,-1),  0.5, PALETTE['prop_name']),
             ('BACKGROUND', (0,0), (1,0),   PALETTE['node_name']),  
-            ('BACKGROUND', (0,1), (0,-2),   PALETTE['prop_name']),  
-            ('BACKGROUND', (1,1), (-2,-2),   PALETTE['prop_value']),  
+            ('BACKGROUND', (0,1), (0,1),   PALETTE['prop_name']),  
+            ('BACKGROUND', (1,1), (1,1),    PALETTE['prop_value']),  
             #('SPAN',       (0,-1), (1,-1)     ),   
         ]
 
@@ -85,22 +92,27 @@ class SourcesSection:
         blocks = []
         p = Paragraph(f"<a name=\"source_{source.name}\"></a>{source.name}")
 
-        if source.name.startswith(ROOT_SOURCE):
-            src = Paragraph(f"")
+        if ROOT_SOURCE in source.name:
+            data = [   
+                [p,  current_path.name],
+            ]
         else:
-            src = Paragraph(f"<a href=\"#source_{source.parent_name}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
-        data = [   
-            [p,  current_path.name],
-            ['Source:', src ],
-        ]
-        colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
+            if ROOT_SOURCE in source.parent_name:
+                link_source = f"#source_{source.parent_name}" 
+            else:
+                link_source = f"#source_{source.parent_name}_{source.parent_lineno}" 
+            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
+            data = [   
+                [p,  current_path.name],
+                ['Source:', src ],
+            ]
+        colWidths = list(np.array([0.3, 0.8])*(PAGE_WIDTH-2*inch))
         t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
         t.keepWithNext = True
         blocks.append(t)
 
-        if not source.name.startswith(ROOT_SOURCE):
-            #blocks.append(Spacer(1,0.1*inch))
-            code = self.highlight_python_code(source.code)
+        if not ROOT_SOURCE in source.name:
+            code = self.highlight_python_code(source)
             c = XPreformatted(code, CODE_STYLE) 
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(c)

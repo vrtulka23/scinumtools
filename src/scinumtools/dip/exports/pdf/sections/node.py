@@ -39,10 +39,10 @@ class NodeSection:
         self.dtype = node.keyword
         if node.value:
             self.value = str(int(node.value.value))
-            if node.value.unsigned:
-                self.dtype = f"u{self.dtype}"
-            if node.value.precision:
-                self.dtype = f"{self.dtype}{node.value.precision}"
+        if node.unsigned:
+            self.dtype = f"u{self.dtype}"
+        if node.precision:
+            self.dtype = f"{self.dtype}{node.precision}"
             
     def _init_float(self, node):
         if node.units_raw:
@@ -56,8 +56,8 @@ class NodeSection:
                 self.value = f"{node.value.value:.03f}"
             else:
                 self.value = f"{node.value.value:.03e}"
-            if node.value.precision:
-                self.dtype = f"{self.dtype}{node.value.precision}"
+        if node.precision:
+            self.dtype = f"{self.dtype}{node.precision}"
             
     def _init_str(self, node):
         self.options = [str(option.value.value) for option in node.options]
@@ -150,8 +150,7 @@ class NodeSection:
         
         # construct a node table
         pname = Paragraph(f"<strong>{name}</strong>", )
-        source = self.env.sources[node.source]
-        source = Paragraph(f"<a href=\"#source_{source.parent_name}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
+        source = Paragraph(f"<a href=\"#source_{node.source}_{node.lineno}\" color=\"blue\">{node.source}:{node.lineno}</a>")
         data = [
             ['', source, '', self.dtype],
         ]

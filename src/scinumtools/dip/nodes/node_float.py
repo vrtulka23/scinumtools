@@ -14,11 +14,12 @@ class FloatNode(BaseNode, SelectNode):
     tags: list = None
     description: str = None
     dtype = float
-    bits = 64
+    precision: int
 
     def __init__(self, *args, **kwargs):
         self.options = []
         super().__init__(*args, **kwargs)
+        self.precision = self.dtype_prop[0] if self.dtype_prop[0] else FloatType.precision
         
     @staticmethod
     def is_node(parser):
@@ -36,11 +37,10 @@ class FloatNode(BaseNode, SelectNode):
     def set_value(self, value=None):
         """ Set value using value_raw or arbitrary value
         """
-        precision = self.dtype_prop[0] if self.dtype_prop[0] else FloatType.precision
         if value is None and self.value_raw:
-            self.value = FloatType(self.cast_value(), self.units_raw, precision=precision)
+            self.value = FloatType(self.cast_value(), self.units_raw, precision=self.precision)
         elif value:
-            self.value = FloatType(value, self.units_raw, precision=precision)
+            self.value = FloatType(value, self.units_raw, precision=self.precision)
         else:
             self.value = None
             

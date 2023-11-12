@@ -14,7 +14,7 @@ def test_root_source():
     with DIP() as dip:
 
         # test if root source is correct
-        assert dip.source.startswith(ROOT_SOURCE)
+        assert ROOT_SOURCE in dip.source
         assert dip.source in dip.env.sources
         rs = dip.env.sources[dip.source]
         assert rs.path == __file__
@@ -23,8 +23,8 @@ def test_file_sources():
         
     with DIP() as dip:
         
-        source_fa = f"{FILE_SOURCE}_{id(dip)}_a"
-        source_fb = f"{FILE_SOURCE}_{id(dip)}_b"
+        source_fa = f"{dip.name}_{FILE_SOURCE}1"
+        source_fb = f"{dip.name}_{FILE_SOURCE}2"
         file_sources = {
             source_fa: dict(
                 name   = source_fa,
@@ -78,8 +78,8 @@ def test_string_sources():
 
     with DIP() as dip:
         
-        source_sa = f"{STRING_SOURCE}_{id(dip)}_a"
-        source_sb = f"{STRING_SOURCE}_{id(dip)}_b"
+        source_sa = f"{dip.name}_{STRING_SOURCE}1"
+        source_sb = f"{dip.name}_{STRING_SOURCE}2"
         string_sources = {
             source_sa: dict(
                 name   = source_sa,
@@ -121,8 +121,8 @@ def test_string_sources():
        
         # test if nodes have correct sources and line numbers
         nodes = [
-            ('name',             source_sa,  2),
-            ('salary',           source_sb,  2),
+            ('name',             source_sa,  1),
+            ('salary',           source_sb,  1),
         ]
         env = dip.parse()
         for name, source, lineno in nodes:
@@ -150,7 +150,7 @@ def test_explicit_sources():
         assert source.name == 'explicit'
         assert source.path == source_path
         assert source.code == source_code
-        assert source.parent_name.startswith(ROOT_SOURCE)
+        assert ROOT_SOURCE in source.parent_name
         assert source.parent_lineno == 0
         
         # test if nodes have correct sources and line numbers
@@ -180,7 +180,7 @@ def test_inline_sources():
             source_code = f.read()
 
         # check the sources
-        source_name = f"{STRING_SOURCE}_{id(dip)}_a"
+        source_name = f"{dip.name}_{STRING_SOURCE}1"
         assert source_name in env.sources
         assert 'inline' in env.sources
         source = env.sources['inline']
@@ -188,7 +188,7 @@ def test_inline_sources():
         assert source.path == source_path
         assert source.code == source_code
         assert source.parent_name == source_name
-        assert source.parent_lineno == 2
+        assert source.parent_lineno == 1
 
         # test if nodes have correct sources and line numbers
         nodes = [

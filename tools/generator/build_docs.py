@@ -22,7 +22,12 @@ def build_export_pdf():
     if not os.path.isdir(dir_pdf):
         os.mkdir(dir_pdf)
     # Create a DIP environment
-    with DIP(docs=True) as p:
+    with DIP(name="PDF") as p:
+        p.from_string("""
+        cfl_factor float = 0.7  # Courant–Friedrichs–Lewy condition
+        max_vare float = 0.2    # maximum energy change of electrons
+        max_vari float = 0.2    # maximum energy change of ions
+        """)
         p.from_file(file_definitions)
         env = p.parse_pdf()
     # Export parameters as a PDF

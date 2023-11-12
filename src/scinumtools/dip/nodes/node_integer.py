@@ -15,11 +15,14 @@ class IntegerNode(BaseNode, SelectNode):
     tags: list = None
     description: str = None
     dtype = int
-    bits = 32
+    unsigned: bool
 
     def __init__(self, *args, **kwargs):
         self.options = []
         super().__init__(*args, **kwargs)
+        unsigned, precision = self.dtype_prop
+        self.unsigned = True if unsigned else IntegerType.unsigned
+        self.precision = precision if precision else IntegerType.precision
         
     @staticmethod
     def is_node(parser):
@@ -37,13 +40,10 @@ class IntegerNode(BaseNode, SelectNode):
     def set_value(self, value=None):
         """ Set value using value_raw or arbitrary value
         """
-        unsigned, precision = self.dtype_prop
-        unsigned = True if unsigned else IntegerType.unsigned
-        precision = precision if precision else IntegerType.precision
         if value is None and self.value_raw:
-            self.value = IntegerType(self.cast_value(), self.units_raw, precision=precision, unsigned=unsigned)
+            self.value = IntegerType(self.cast_value(), self.units_raw, precision=self.precision, unsigned=self.unsigned)
         elif value:
-            self.value = IntegerType(value, self.units_raw, precision=precision, unsigned=unsigned)
+            self.value = IntegerType(value, self.units_raw, precision=self.precision, unsigned=self.unsigned)
         else:
             self.value = None
             
