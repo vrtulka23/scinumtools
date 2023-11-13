@@ -73,7 +73,7 @@ class BaseNode(Node):
             if self.value is None:
                 value = self.value_raw
             else:
-                if isinstance(self.value, (StringType, BooleanType)):
+                if isinstance(self.value, (StringType, BooleanType, NumberType)):
                     value = self.value.value
                 else:
                     value = self.value

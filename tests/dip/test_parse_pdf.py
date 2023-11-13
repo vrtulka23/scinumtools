@@ -18,10 +18,24 @@ def file_pdf():
 
 @pytest.fixture
 def file_definitions():
-    return "examples/pdf_definitions.dip"
+    return "../../docs/source/_static/pdf/definitions.dip"
+    
+@pytest.fixture
+def file_cells():
+    return "../../docs/source/_static/pdf/cells.dip"
 
-def test_export_pdf(file_pdf, file_definitions):
+def test_export_pdf(file_pdf, file_definitions, file_cells):
     with DIP(docs=True) as p:
+        p.add_unit("velocity", 13, 'cm/s')
+        p.from_string("""
+        $unit length = 1 cm
+        $unit mass = 2 g
+        
+        cfl_factor float = 0.7  # Courant–Friedrichs–Lewy condition
+        max_vare float = 0.2    # maximum energy change of electrons
+        max_vari float = 0.2    # maximum energy change of ions
+        """)
+        p.add_source("cells", file_cells)
         p.from_file(file_definitions)
         env = p.parse_pdf()
     with ExportPDF(env) as exp:

@@ -11,7 +11,7 @@ from pathlib import Path
 import re
 
 from ..settings import *
-from ....settings import DocsType, ROOT_SOURCE
+from ....settings import DocsType, Sign, ROOT_SOURCE
 from ....environment import Environment
 from ....pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
 
@@ -36,16 +36,16 @@ class SourcesSection:
         style = get_style_by_name(pygments_style)
         
         # format text with a lexer
-        formatter = get_formatter_by_name('html', style=style)
+        formatter = get_formatter_by_name('html', style=style) 
         code = highlight(source.code, lexer, formatter)
         
         # add code lines
-        lines = code.split('\n')
-        for l in range(len(lines)):
+        lines = code.split(Sign.NEWLINE)
+        for l in range(len(lines)-2):  # the last two lines are always empty
             lineno = str(l+1)
             lines[l] = f"<a name=\"source_{source.name}_{lineno}\"></a>{lineno:5s}{lines[l]}"
-        code = '\n'.join(lines)
-        
+        code = Sign.NEWLINE.join(lines)
+
         # replace standard CSS classes with explicit text formatting
         token_settings = dict(style)
         for token, class_name in STANDARD_TYPES.items():
@@ -83,8 +83,8 @@ class SourcesSection:
         TABLE_STYLE = [                       
             ('GRID',       (0,1), (-1,-1),  0.5, PALETTE['prop_name']),
             ('BACKGROUND', (0,0), (1,0),   PALETTE['node_name']),  
-            ('BACKGROUND', (0,1), (0,1),   PALETTE['prop_name']),  
-            ('BACKGROUND', (1,1), (1,1),    PALETTE['prop_value']),  
+            ('BACKGROUND', (0,1), (0,-1),   PALETTE['prop_name']),  
+            ('BACKGROUND', (1,1), (1,-1),    PALETTE['prop_value']),  
             #('SPAN',       (0,-1), (1,-1)     ),   
         ]
 
@@ -92,21 +92,18 @@ class SourcesSection:
         blocks = []
         p = Paragraph(f"<a name=\"source_{source.name}\"></a>{source.name}")
 
-        if ROOT_SOURCE in source.name:
-            data = [   
-                [p,  current_path.name],
-            ]
-        else:
+        data = [   
+            [p,  ''],
+            ['File:', current_path.name],
+        ]
+        if ROOT_SOURCE not in source.name:
             if ROOT_SOURCE in source.parent_name:
                 link_source = f"#source_{source.parent_name}" 
             else:
                 link_source = f"#source_{source.parent_name}_{source.parent_lineno}" 
             src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
-            data = [   
-                [p,  current_path.name],
-                ['Source:', src ],
-            ]
-        colWidths = list(np.array([0.3, 0.8])*(PAGE_WIDTH-2*inch))
+            data.append(['Source:', src ])
+        colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
         t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
         t.keepWithNext = True
         blocks.append(t)

@@ -38,7 +38,10 @@ class NodeSection:
             self.options = [f"{option.value.value}" for option in node.options]
         self.dtype = node.keyword
         if node.value:
-            self.value = str(int(node.value.value))
+            if isinstance(node.value.value, (np.ndarray, list)):
+                self.value = str(node.value.value)
+            else:
+                self.value = str(int(node.value.value))
         if node.unsigned:
             self.dtype = f"u{self.dtype}"
         if node.precision:
@@ -51,11 +54,14 @@ class NodeSection:
             self.options = [f"{option.value.value}" for option in node.options]
         self.dtype = node.keyword
         if node.value:
-            exp = np.log10(node.value.value)
-            if exp<=3 or exp>=-3:
-                self.value = f"{node.value.value:.03f}"
+            if isinstance(node.value.value, (np.ndarray, list)):
+                self.value = str(node.value.value)
             else:
-                self.value = f"{node.value.value:.03e}"
+                exp = np.log10(node.value.value)
+                if exp<=3 or exp>=-3:
+                    self.value = f"{node.value.value:.03f}"
+                else:
+                    self.value = f"{node.value.value:.03e}"
         if node.precision:
             self.dtype = f"{self.dtype}{node.precision}"
             

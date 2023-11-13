@@ -23,6 +23,8 @@ class SourceList:
         return len(self.sources)
     
     def __getitem__(self, name: str):
+        if name not in self.sources:
+            raise Exception("Source with the following name does not exist:", name)
         return self.sources[name]
 
     def __setitem__(self, name: str, source: EnvSource):

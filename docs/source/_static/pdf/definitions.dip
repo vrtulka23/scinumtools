@@ -1,4 +1,4 @@
-$source settings = pdf_settings.dip
+$source settings = settings.dip
 
 simulation
   name str = "simulation"
@@ -21,7 +21,7 @@ box
     = 2  # cylindrical
     = 3  # spherical
     !description "Type of grid geometry"
-
+    
   size
     x float128 cm            # mandatory
       !condition ("{?} > 0")
@@ -59,3 +59,6 @@ modules
     !tags ["preprocessor"]
   
   {settings?modules.*}
+
+cells
+  {cells?*}

@@ -17,7 +17,10 @@ class UnitList:
     def items(self):
         return self.units.items()
     
-    def append(self, name:str, unit:Quantity):
+    def keys(self):
+        return self.units.keys()
+        
+    def append(self, name:str, value:str, units:str, unit:Quantity, source:str, lineno:int):
         """ Add a new source
 
         :param str name: Name of a new unit
@@ -26,7 +29,14 @@ class UnitList:
         name = f"[{name}]"
         if name in self.units:
             raise Exception("Reference unit alread exists:", name)
-        self.units[name] = {'magnitude':unit.magnitude.value, 'dimensions':unit.baseunits.dimensions.value()} #,'prefixes':['k','M','G']}
+        self.units[name] = {
+            'magnitude':  unit.magnitude.value, 
+            'dimensions': unit.baseunits.dimensions.value(),
+            'value': value, 
+            'units': units,
+            'source': source,
+            'lineno': lineno,
+        } #,'prefixes':['k','M','G']}
         
     def query(self, query:str):
         """ Select units according to a query

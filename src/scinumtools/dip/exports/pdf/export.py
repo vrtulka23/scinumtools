@@ -7,6 +7,7 @@ from .settings import *
 from .sections.node import NodeSection
 from .sections.types import TypesSection
 from .sections.reference import ReferenceSection
+from .sections.units import UnitsSection
 from .sections.sources import SourcesSection
 from ...environment import Environment
 from ...settings import Order, Sign, Keyword, EnvType, DocsType
@@ -74,6 +75,10 @@ class ExportPDF:
         # list all nodes and their properties
         with NodeSection(self.names, self.nodes, self.env) as tmpl:
             blocks += tmpl.parse()
+ 
+        # list units
+        with UnitsSection(self.env) as tmpl:
+            blocks += tmpl.parse()    
  
         # list sources
         with SourcesSection(self.env) as tmpl:

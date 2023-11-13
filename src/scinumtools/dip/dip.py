@@ -188,9 +188,12 @@ class DIP:
         # open file and get its content
         with open(filepath,'r') as f:           
             lines = f.read().split(Sign.NEWLINE)
-        # strip leading empty lines
+        # strip leading and ending empty lines
         while lines and lines[0].strip()=='':
             del lines[0]
+        while lines and lines[-1].strip()=='':
+            del lines[-1]
+        code = Sign.NEWLINE.join(lines)
         # get source name
         if source_name is None:
             self.num_files += 1
@@ -226,9 +229,12 @@ class DIP:
         # create source name
         self.num_strings += 1
         source_name = f"{self.name}_{STRING_SOURCE}{self.num_strings}"
-        # strip leading empty lines
+        # strip leading and ending empty lines
         while lines and lines[0].strip()=='':
             del lines[0]
+        while lines and lines[-1].strip()=='':
+            del lines[-1]
+        code = Sign.NEWLINE.join(lines)
         # create lines
         for lineno,linecode in enumerate(lines):
             self.lines.append(dict(
@@ -251,11 +257,16 @@ class DIP:
         )
 
     def add_source(self, name:str, path:str):
+        if self.lineno is None:
+            caller = getframeinfo(stack()[1][0])
+            lineno = caller.lineno
+        else:
+            lineno = self.lineno
         self.lines.append(dict(
             code = f"{Sign.VARIABLE}{Keyword.SOURCE} {name} = '{path}'",
             name = name,
             source = self.source,
-            lineno = 0,
+            lineno = lineno,
         ))
         
     def add_unit(self, name:str, value:float, unit:str=None):
@@ -263,11 +274,16 @@ class DIP:
             code = f"{Sign.VARIABLE}{Keyword.UNIT} {name} = {value} {unit}"
         else:
             code = f"{Sign.VARIABLE}{Keyword.UNIT} {name} = {value}"
+        if self.lineno is None:
+            caller = getframeinfo(stack()[1][0])
+            lineno = caller.lineno
+        else:
+            lineno = self.lineno
         self.lines.append(dict(
             code = code,
             name = name,
             source = self.source,
-            lineno = 0,
+            lineno = lineno,
         ))
 
     def add_function(self, name:str, fn:Callable):

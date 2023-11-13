@@ -84,19 +84,15 @@ def test_string_sources():
             source_sa: dict(
                 name   = source_sa,
                 path   = __file__,
-                code   = """
-                name str = 'John Smith'
-                age int = 23
-                """,
+                code   = """name str = 'John Smith'
+                age int = 23""",
                 nodes  = None,
                 sources = None,
             ),
             source_sb: dict(
                 name   = source_sb,
                 path   = __file__,
-                code   = """
-                salary float = 60000
-                """,
+                code   = """salary float = 60000""",
                 nodes  = None,
                 sources = None,
             ),
@@ -139,6 +135,9 @@ def test_explicit_sources():
         dip.add_source("explicit", source_file)   # explicitely added
         env = dip.parse()
         
+        # get line number
+        caller = getframeinfo(stack()[0][0])
+        
         # read code from the source file
         source_path = str(Path(__file__).parent/source_file)
         with open(source_path,'r') as f:  # relative path
@@ -151,7 +150,7 @@ def test_explicit_sources():
         assert source.path == source_path
         assert source.code == source_code
         assert ROOT_SOURCE in source.parent_name
-        assert source.parent_lineno == 0
+        assert source.parent_lineno == caller.lineno-4
         
         # test if nodes have correct sources and line numbers
         nodes = [

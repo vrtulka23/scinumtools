@@ -15,19 +15,25 @@ path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 def build_export_pdf():
     
     # Generate a PDF documentation from a DIP file
-    file_definitions = os.environ['DIR_TESTS']+"/dip/examples/pdf_definitions.dip"
     dir_pdf = os.environ['DIR_DOCS']+"/source/_static/pdf"
+    file_definitions = f"{dir_pdf}/definitions.dip"
+    file_cells = f"{dir_pdf}/cells.dip"
     file_pdf = f"{dir_pdf}/documentation.pdf"
     # Create directory if missing
     if not os.path.isdir(dir_pdf):
         os.mkdir(dir_pdf)
     # Create a DIP environment
     with DIP(name="PDF") as p:
+        p.add_unit("velocity", 13, 'cm/s')
         p.from_string("""
+        $unit length = 1 cm
+        $unit mass = 2 g
+        
         cfl_factor float = 0.7  # Courant–Friedrichs–Lewy condition
         max_vare float = 0.2    # maximum energy change of electrons
         max_vari float = 0.2    # maximum energy change of ions
         """)
+        p.add_source("cells", file_cells)
         p.from_file(file_definitions)
         env = p.parse_pdf()
     # Export parameters as a PDF
