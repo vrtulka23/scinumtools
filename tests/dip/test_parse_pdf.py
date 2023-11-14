@@ -4,7 +4,7 @@ import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.dip import DIP
-from scinumtools.dip.exports import ExportPDF
+from scinumtools.dip.exports.pdf import ExportPDF
 
 @pytest.fixture
 def file_pdf():
@@ -25,7 +25,7 @@ def file_cells():
     return "../../docs/source/_static/pdf/cells.dip"
 
 def test_export_pdf(file_pdf, file_definitions, file_cells):
-    with DIP(docs=True) as p:
+    with DIP() as p:
         p.add_unit("velocity", 13, 'cm/s')
         p.from_string("""
         $unit length = 1 cm

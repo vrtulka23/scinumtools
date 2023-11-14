@@ -29,14 +29,17 @@ The following features of DIP are already implemented in the current code versio
   * automatic unit conversion during node modifications
 * parameter properties: options, conditions, format, constants, tags and description
 * parameter branching using conditions
-* syntax highlighter using "Pygments" in Sphinx
-* parameter documentation extension for Sphinx
+* syntax highlighter using "Pygments" in Sphinx and for Emacs editor
+* documentation
+    * extension for Sphinx
+    * PDF format
+* export of DIP parameters into C/C++, Fortran and Rust configuration files
 
 The current version of DIP is continously developing.
 Goals listed below are not implemented yet and need help from potential codevelopers:
 
-* native implementation of DIP in C/C++ and Fortran
-* parameter description in Sphinx documentation using comments 
+* native implementation of DIP in C/C++, Fortran and Rust
+* syntax highlighters for Vim and other code editors
 
 Any kind of help, collaboration, suggestions and further development of this project is heartily welcomed.
 

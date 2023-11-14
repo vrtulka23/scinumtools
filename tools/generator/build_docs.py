@@ -8,7 +8,7 @@ from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
 from scinumtools.dip import DIP
-from scinumtools.dip.exports import ExportPDF
+from scinumtools.dip.exports.pdf import ExportPDF
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 

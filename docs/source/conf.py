@@ -23,7 +23,7 @@ version = data['project']['version']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'scinumtools.dip.exports.sphinx.export',
+    'scinumtools.dip.exports.sphinx',
     'sphinx.ext.autosectionlabel',
     "sphinx.ext.autodoc", 
     'sphinx_rtd_theme'

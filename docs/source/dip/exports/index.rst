@@ -6,3 +6,5 @@ Parameter exports
 
    sphinx_docs
    pdf_docs
+   config
+   templates
