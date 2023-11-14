@@ -147,7 +147,7 @@ Definitions
 
 Often code users can modify initial settings in order to choose functionality of a code to what they currently need.
 DIP gives code developers a tool to manage such input parameter lists and control what parameters are compulsory or mandatory and what is their format.
-In the following example, we first create a definition file with description of all input parameter of a fictional numerical code:
+In the following example, we first create a definition file with description of all input parameters of a fictional numerical code:
 
 .. code-block:: DIP
    :caption: definitions.dip

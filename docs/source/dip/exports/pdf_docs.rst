@@ -13,7 +13,7 @@ Environment suitable for a documentation has to be parsed with a special method 
 
    >>> from scinumtools.dip import DIP
    >>> from scinumtools.dip.exports import ExportPDF
-   >>> with DIP(docs=True) as p:
+   >>> with DIP() as p:
    >>>     p.from_file('definitions.dip')
    >>>     env = p.parse_pdf()
    >>> with ExportPDF(env) as exp:
