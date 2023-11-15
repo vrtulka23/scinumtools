@@ -4,6 +4,7 @@ pandas
 h5py
 matplotlib
 sphinx-rtd-theme
-toml
 reportlab
 beautifulsoup4
+toml
+yaml
