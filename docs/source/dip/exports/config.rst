@@ -67,9 +67,8 @@ One can also restrict which parameters will be exported using query and tag sele
     
     #endif /* CONFIG_H */
     
-    Similar exports are available for other languages.
-    
-Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_exports.py>`_.
+Similar exports are available for other languages.
+Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_config.py>`_.
 
 .. csv-table::
 
