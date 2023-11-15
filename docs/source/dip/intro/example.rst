@@ -214,3 +214,55 @@ Parsing of such DIP code will result in the following:
 
    An important feature of DIP is, that it automatically converts units from user modifications to definition units. E.g. user set ``box.size.x`` in ``nm``, but resulting value is given in definition units of ``cm``.
    
+Quick use
+---------
+
+In all examples above we showed how to parse DIP code using ``DIP`` class.
+Nevertheless, this approach might feel impractical and lengthy when one wants to use DIP language for simple configuration files, or as a data parser.
+For this purpose we wrapped basic functionality of ``DIP`` class into a lightweight `Python module <https://github.com/vrtulka23/dipl>`_ called ``dipl``.
+It implements ``load()`` and ``dump()`` methods similarly as e.g. YAML (``import yaml``) or TOML (``import toml``) modules.
+
+Below is a small example how to parse data from DIP code into a Python dictionary:
+
+.. code-block:: python
+
+   >>> import dipl
+   >>> from dipl import Format
+   >>>
+   >>> text = """
+   >>> width float = 23.34 cm
+   >>> age int = 23 yr
+   >>>   !tags ["body"]
+   >>> """
+   >>> dipl.load(text, Format.QUANTITY)
+   {
+     'width': Quantity(23.34, 'cm'),
+     'age': Quantity(23, 'yr'),
+   }
+
+Parsing Python dictionaries into a DIP code is also possible:
+
+.. code-block:: python
+
+   >>> import dipl
+   >>> import numpy as np
+   >>> from scinumtools.units import Quatity
+   >>>
+   >>> data = {
+   >>>     'body': {
+   >>>         'width': Quantity(172.34, 'cm'),
+   >>>         'age': (23, 'yr'),
+   >>>     },
+   >>>     'married': True,
+   >>>     'name': "John",
+   >>>     'kids': ["Alice","Williams"],
+   >>>     'lucky_numbers': np.array([23, 34, 5]),
+   >>> }
+   >>> dipl.dump(data)
+   body
+     width float = 172.34 cm
+     age int = 23 yr
+   married bool = true
+   name str = "John"
+   kids str[2] = ["Alice","Williams"]
+   lucky_numbers int[3] = [23,34,5]

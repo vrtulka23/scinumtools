@@ -1,7 +1,8 @@
 Configuration files
 ===================
 
-Low level language like C/C++, Fortran, or Rust usually require some kind of configuration file with settings, or constants.
+Low level language like C/C++, Fortran, or Rust usually require some kind of configuration file with settings, or constants. 
+Many codes can already read parameters using (YAML, TOML, and other) configurations files.
 DIP can easily export parsed parameters into these languages and create corresponding configuration files using ``ExportConfig`` class.
 The following example DIP code
 
@@ -30,8 +31,8 @@ can be parsed and exported using ``ExportConfig`` class
     >>> with DIP() as dip:
     >>>    dip.from_file("config.dip")
     >>>    env = dip.parse()
-    >>> with ExportConfig(env) as exp:
-    >>>     exp.build_cpp()
+    >>> with ExportConfigCPP(env) as exp:
+    >>>     exp.parse()
     >>>     exp.save("config.h")
     
 and saved as a C++ header file below:
@@ -51,29 +52,35 @@ and saved as a C++ header file below:
     constexpr unsigned long long int NUM_GROUPS = 2399495729;
     
     #endif /* CONFIG_H */
-    
-Similar exports are available for other languages.
-Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_exports.py>`_.
-
-.. csv-table::
-
-    C,       ``build_c(guard:int="CONFIG_H")``
-    C++,     ``build_cpp(guard:int="CONFIG_H")``
-    Fortran, ``build_fortran(module:int="ConfigurationModule")``
-    Rust,    ``build_rust()``
-
-Since DIP parameter names are not suitable for the mentioned languages, the names are automatically converted to upper case and hierarchy separators ``.`` are substituted by underscores.
 
 One can also restrict which parameters will be exported using query and tag selectors:
 
 .. code-block:: 
 
-    >>> with ExportConfig(env) as exp:
+    >>> with ExportConfigC(env) as exp:
     >>>     exp.select(query="box.*", tags=["selection"])        
-    >>>     exp.build_c()
+    >>>     exp.parse()
     #ifndef CONFIG_H
     #define CONFIG_H
     
     #define WIDTH 12.0
     
     #endif /* CONFIG_H */
+    
+    Similar exports are available for other languages.
+    
+Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_exports.py>`_.
+
+.. csv-table::
+
+    C,       ``ExportConfigC``
+    C++,     ``ExportConfigCPP``
+    Fortran, ``ExportConfigFortran``
+    Rust,    ``ExportConfigRust``
+    Bash,    ``ExportConfigBash``
+    YAML,    ``ExportConfigYAML``
+    TOML,    ``ExportConfigTOML``
+    JSON,    ``ExportConfigJSON``
+
+Since DIP parameter names are not suitable for all languages mentioned above.
+In some cases parameter names are automatically converted to upper case and hierarchy separators ``.`` are substituted by underscores.
