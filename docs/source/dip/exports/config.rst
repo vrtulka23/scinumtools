@@ -84,3 +84,9 @@ Examples of the corresponding exports are available in `pytests <https://github.
 
 Since DIP parameter names are not suitable for all languages mentioned above.
 In some cases parameter names are automatically converted to upper case and hierarchy separators ``.`` are substituted by underscores.
+
+.. note::
+
+  Not all features of DIP can be mapped to other languages.
+  So far exports are implemented only for simple data types and arrays.
+  If you are missing some advanced export feature, you are welcommed to write a GitHub Issue or implement it yourself.

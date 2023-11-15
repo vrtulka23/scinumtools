@@ -7,4 +7,4 @@ sphinx-rtd-theme
 reportlab
 beautifulsoup4
 toml
-yaml
+pyyaml
