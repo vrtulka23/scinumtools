@@ -106,5 +106,5 @@ Alternative Python module [dipl](https://github.com/vrtulka23/dipl) implements b
 >>> 'car': True
 >>> })
 children str[3] = ["John","Jenny","Jonah"]
-car bool = true'
+car bool = true
 ```
