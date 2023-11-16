@@ -91,3 +91,20 @@ For more description and examples of [DIP](https://vrtulka23.github.io/scinumtoo
 >>>     env.data(Format.TUPLE)
 {'box.width': (23.0, '[length]'), 'box.height': (11.5, 'cm'), 'sphere.radius': (34.2, 'mm')}
 ```
+
+Alternative Python module [dipl](https://github.com/vrtulka23/dipl) implements basic loading and dumping functionality of DIP and provides quick solution for data parsing using DIP.
+
+``` python
+>>> import dipl
+>>> dipl.load("""
+>>> width float = 173.34 cm
+>>> age int = 24 yr
+>>> """)
+{'width': (173.34, 'cm'), 'age': (24, 'yr')}
+>>> dipl.dump({
+>>> 'children': ['John','Jenny','Jonah'],
+>>> 'car': True
+>>> })
+children str[3] = ["John","Jenny","Jonah"]
+car bool = true'
+```
