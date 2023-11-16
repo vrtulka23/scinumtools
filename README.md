@@ -96,11 +96,13 @@ Alternative Python module [dipl](https://github.com/vrtulka23/dipl) implements b
 
 ``` python
 >>> import dipl
+>>>
 >>> dipl.load("""
 >>> width float = 173.34 cm
 >>> age int = 24 yr
 >>> """)
 {'width': (173.34, 'cm'), 'age': (24, 'yr')}
+>>>
 >>> dipl.dump({
 >>> 'children': ['John','Jenny','Jonah'],
 >>> 'car': True
