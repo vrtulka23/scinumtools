@@ -2,7 +2,8 @@ import numpy as np
 import re
 
 from ..solver import *
-from .material_base import MaterialBase
+from .material_part import MaterialPart
+from .list_elements import *
 
 class MaterialSolver:
     
@@ -19,9 +20,40 @@ class MaterialSolver:
         # Match numbers
         if m := re.match('[0-9]+', expr):
             return int(expr.strip())
-        else:
-            return MaterialBase.from_string(expr)
             
+        # Match elements
+        pattern = "([A-Z]+[a-z]?)(\{([0-9]*)([+-]?[0-9]*)\}|)"
+        if m := re.match(pattern, expr):
+            exceptions = {
+                'H': ('H',1,1),
+                'D': ('H',1,2),
+                'T': ('H',1,3),
+            }
+            # parse atom and mass numbers
+            if not m.group(3) and m.group(1) in exceptions:
+                S, Z, A = exceptions[m.group(1)]
+            elif m.group(1) in ELEMENTS:
+                S = m.group(1)
+                Z = ELEMENTS[S][0]
+                A = int(m.group(3)) if m.group(3) else Z*2
+            else:
+                raise Exception("Unknown element:", m.group(1))
+            # parse ionization state
+            if m.group(4) in ['-','+']:
+                I = int(m.group(4)+'1')
+            elif m.group(4):
+                I = int(m.group(4))
+            else:
+                I = 0
+            # parse mass
+            M = ELEMENTS[S][2][str(A)][0] + I * NUCLEONS['[e]'][3]
+            return MaterialPart(Z, M, A-Z, Z+I)
+        elif expr in NUCLEONS:
+            Z, N, E, M, name = NUCLEONS[expr]
+            return MaterialPart(Z, M, N, E)
+        else:
+            raise Exception("Atom canot be parsed from given string:", expr)
+
     def preprocess(self, expr):
         pattern = "(([A-Z]+[a-z]?|\[p\]|\[n\]|\[e\])(\{[0-9+-]+\}|)([0-9]*))"
         # insert implicit additions

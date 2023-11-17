@@ -12,6 +12,7 @@ Dimensional Input Parameters
    intro/index
    syntax/index
    exports/index
+   docs/index
    highlighters/index
 
 Welcome to DIP documentation!
