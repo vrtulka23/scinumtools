@@ -102,7 +102,7 @@ def test_read_save_file(temp_file):
     snt.ThumbnailImage(data).save(temp_file)
     
     # Load image from a temporary file
-    image = snt.ThumbnailImage(temp_file)
+    image = snt.ThumbnailImage(temp_file, mode='F')
     
     # Resize image
     image.resize(5, 5)

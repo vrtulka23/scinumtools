@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Union
 
 class ThumbnailImage:
     """ Create a thumbnail from an image
@@ -13,24 +14,36 @@ class ThumbnailImage:
     extent: list
     im: Image = None
     
-    def __init__(self, data, extent=None, mode='F'):
+    def __init__(self, data, extent:list=None, mode=None):
         if isinstance(data, str):
+            if mode is None: mode = 'RGB'
             self.im = Image.open(data).convert(mode)
         else:
+            if mode is None: mode = 'F'
             self.im = Image.fromarray(data).convert(mode)
-        self.extent = extent if extent else (0,1,0,1)
+        self.extent = list(extent if extent else [0,1,0,1])
         self.xratio = np.abs(self.im.size[0]/(self.extent[1]-self.extent[0]))
         self.yratio = np.abs(self.im.size[1]/(self.extent[3]-self.extent[2]))
            
-    def crop(self, *extent, bgcolor=0):
+    def crop(self, left:Union[float,tuple], right:float=None, bottom:float=None, top:float=None, bgcolor=0):
         """ Change image extent
 
-        :param extent: New extent of an image can be a tuple (xmin, xmax, ymin, ymax), or 4 floats
+        :param left: Tuple with an image extent, or left extent
+        :param float right: Right extent
+        :param float bottom: Bottom extent
+        :param float top: Top extent
         :param bgcolor: Color of the thumbnail padding (float or a tuple)
         """
-        if len(extent) in [2,5]:
-            bgcolor = extent[-1]
-        extent = extent[0] if isinstance(extent[0], tuple) else tuple(extent[:4])
+        if isinstance(left, (list,tuple)) and right is None and bottom is None and top is None:
+            extent = left  
+        elif left is None and right is None and bottom is None and top is None:
+            raise Exception("This function requires at least one extent:", left, right, botom, top)
+        else:
+            extent = list(self.extent)
+            if left is not None:   extent[0] = left
+            if right is not None:  extent[1] = right
+            if bottom is not None: extent[2] = bottom
+            if top is not None:    extent[3] = top
         xpix = int(np.round((extent[1]-extent[0])*self.xratio))
         ypix = int(np.round((extent[3]-extent[2])*self.yratio))
         layer = ThumbnailImage(
@@ -41,17 +54,25 @@ class ThumbnailImage:
         pos = [int((layer.im.size[i]-self.im.size[i])/2) for i in range(2)]
         layer.im.paste(self.im, pos)
         self.im = layer.im
-        self.extent = extent
+        self.extent = list(extent)
         self.xratio = np.abs(self.im.size[0]/(extent[1]-extent[0]))
         self.yratio = np.abs(self.im.size[1]/(extent[3]-extent[2]))
         return self
 
-    def resize(self, *resolution):
+    def resize(self, xres:int = None, yres:int = None):
         """ Change image resolution
         
-        :param resolution: Resolution of a new image an be a tuple (xres, yres), or 2 floats
+        :param int xres: Resolution on the X-axis
+        :param int yres: Resolution on the Y-axis
         """
-        resolution = resolution[0] if isinstance(resolution[0],tuple) else tuple(resolution)
+        if isinstance(xres, tuple):
+            resolution = xres
+        elif xres is None and yres is None:
+            raise Exception("At least one resolution has to be set:", xres, yres)
+        else:
+            resolution = list(self.im.size)
+            if xres is not None: resolution[0] = xres
+            if yres is not None: resolution[1] = yres
         self.im = self.im.resize(resolution)
         return self
         

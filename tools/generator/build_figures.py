@@ -28,7 +28,7 @@ def build_thumbnail_image():
         ('a.', 0, 0, ticks1, labels1, ThumbnailImage(data, extent1, mode='F') ),
         ('b.', 1, 0, ticks1, labels1, ThumbnailImage(data, extent1).resize(size2) ),
         ('c.', 0, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2) ),
-        ('d.', 1, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2, 2).resize(size2) ),
+        ('d.', 1, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2, bgcolor=2).resize(size2) ),
     ]
     for name, m, n, ticks, labels, ti in plots:
         ax = axes[m,n]

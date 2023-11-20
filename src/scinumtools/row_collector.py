@@ -9,7 +9,7 @@ class RowCollector:
 
     Example of use:
 
-    ..code-block::
+    .. code-block::
     
         import scinumtools as snt
         
