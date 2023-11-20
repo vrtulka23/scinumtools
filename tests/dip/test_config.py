@@ -45,6 +45,14 @@ def arrays():
     sizes float[3] = [23.4,46,96.4] cm
     """
     
+@pytest.fixture
+def none_value():
+    return """
+    particles
+      stars int = none
+      tracers int = 23
+    """
+    
 def test_parser_dip(basic_types, derived_types):
 
     with DIP() as dip:
@@ -62,11 +70,12 @@ density float128 = 23.0 g/cm3
 num_groups uint64 = 2399495729
         """.strip()
         
-def test_parser_c(basic_types, derived_types):
+def test_parser_c(basic_types, derived_types, none_value):
 
     with DIP() as dip:
         dip.from_string(basic_types)
         dip.from_string(derived_types)
+        dip.from_string(none_value)
         env = dip.parse()
     with ExportConfigC(env) as exp:
         assert exp.parse() == """
@@ -74,12 +83,13 @@ def test_parser_c(basic_types, derived_types):
 #define CONFIG_H
 
 #define SIMULATION_NAME "Configuration test"
-#define SIMULATION_OUTPUT 1
+#define SIMULATION_OUTPUT 
 #define BOX_HEIGHT 15.0
 #define NUM_CELLS 100
 #define BOX_WIDTH 12.0
 #define DENSITY 23.0
 #define NUM_GROUPS 2399495729
+#define PARTICLES_TRACERS 23
 
 #endif /* CONFIG_H */
         """.strip()
@@ -333,7 +343,7 @@ def test_saving(file_pdf, basic_types, derived_types):
 #define CONFIG_H
 
 #define SIMULATION_NAME "Configuration test"
-#define SIMULATION_OUTPUT 1
+#define SIMULATION_OUTPUT 
 #define BOX_HEIGHT 15.0
 #define NUM_CELLS 100
 #define BOX_WIDTH 12.0

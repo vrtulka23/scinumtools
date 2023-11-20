@@ -173,3 +173,25 @@ def test_float_subtypes():
     # test precision
     assert  data['float'].precision             == 64
     assert  data['longFloat'].precision         == 128
+    
+def test_none_values():
+    
+    data = parse('''
+    name str = none
+    age int = none
+    height float = none
+    married bool = none
+    
+    surname str = {?name}
+    
+    age = 20
+    adult bool = ("{?age} > 18")
+    ''')
+    np.testing.assert_equal(data,{
+        'name':     StringType(None),
+        'age':      IntegerType(20),
+        'height':   FloatType(None),
+        'married':  BooleanType(None),
+        'surname':  StringType(None),
+        'adult':    BooleanType(True),
+    })

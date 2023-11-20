@@ -1,11 +1,18 @@
 Values
 ======
 
+Empty values
+------------
+
+Similarly, as in Python, DIP parameters can also be set empty using a special keyword ``none``.
+Operations with empty parameters conform to basic Python rules and may lead to corresponding warnings, or errors.
+DIP parameters with ``none`` values are considered to be fully defined, rather than only declared.
+
 Scalars
 -------
 
 Nodes with a single boolean, number or string value are called scalar nodes.
-If a node is scalar at its definition, it can be modified only with one value.
+If a node is scalar at its definition, it can be modified only with one value, or as empty.
 Example of scalar node values were already shown in section about :ref:`dip/syntax/datatypes:standard data types`.
 
 Arrays

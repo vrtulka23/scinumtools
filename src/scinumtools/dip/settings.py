@@ -8,6 +8,7 @@ class Numeric:
     PRECISION   = 1e-6
 
 class Keyword:
+    NONE        = 'none'
     TRUE        = 'true'
     FALSE       = 'false'
     CASE        = 'case'

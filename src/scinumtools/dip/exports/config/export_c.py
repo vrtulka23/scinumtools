@@ -13,11 +13,16 @@ class ExportConfigC(ExportConfig):
         lines.append("")
         for name, param in self.data.items():
             name = self._rename(name)
+            if param.value is None:
+                continue
             value = str(param.value)
             if isinstance(param, StringType):
                 value = f"\"{value}\""
             elif isinstance(param, BooleanType):
-                value = "1" if param.value else "0"
+                if param.value:
+                    value = ''
+                else:
+                    continue
             lines.append(f"#define {name} {value}")
         lines.append("")
         lines.append(f"#endif /* {guard} */")

@@ -77,7 +77,7 @@ class BaseNode(Node):
                     value = self.value.value
                 else:
                     value = self.value
-        if np.isscalar(value) and value in [None,'none','None']:
+        if np.isscalar(value) and value in [None, Keyword.NONE]:
             value = None
         elif self.dimension or self.value_slice:
             # cast multidimensional values

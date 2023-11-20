@@ -5,18 +5,22 @@ import matplotlib.pyplot as plt
 class ThumbnailImage:
     """ Create a thumbnail from an image
 
+    :param data: Image data array or a file name string
     :param tuple extent: Extent of an image (xmin, xmax, ymin, ymax)
-    :param data: Image data
+    :param str mode: Image mode F/RGB/RGBA
     """
     
     extent: list
     im: Image = None
     
-    def __init__(self, data, extent, mode='F'):
-        self.im = Image.fromarray(data).convert(mode)
-        self.extent = extent
-        self.xratio = np.abs(self.im.size[0]/(extent[1]-extent[0]))
-        self.yratio = np.abs(self.im.size[1]/(extent[3]-extent[2]))
+    def __init__(self, data, extent=None, mode='F'):
+        if isinstance(data, str):
+            self.im = Image.open(data).convert(mode)
+        else:
+            self.im = Image.fromarray(data).convert(mode)
+        self.extent = extent if extent else (0,1,0,1)
+        self.xratio = np.abs(self.im.size[0]/(self.extent[1]-self.extent[0]))
+        self.yratio = np.abs(self.im.size[1]/(self.extent[3]-self.extent[2]))
            
     def crop(self, *extent, bgcolor=0):
         """ Change image extent
@@ -58,3 +62,12 @@ class ThumbnailImage:
         """
         if not ax: ax=plt
         return ax.imshow(np.asarray(self.im), extent=self.extent, origin='lower', **kwargs)
+        
+    def save(self, file_name:str, format:str=None):
+        """ Save thumbnail as a file
+        
+        :param str file_name: Name of the image file
+        """
+        if self.im.mode != 'RGB':
+            self.im = self.im.convert('RGB')
+        self.im.save(file_name, format=format)

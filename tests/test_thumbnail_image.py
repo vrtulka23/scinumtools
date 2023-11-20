@@ -1,9 +1,21 @@
 import numpy as np
+import pytest
 import os
 import sys
 sys.path.insert(0, 'src')
 
 import scinumtools as snt
+
+@pytest.fixture()
+def temp_file():
+    dir_temp = "tmp"
+    name_temp = "thumbnail.png"
+    if os.path.isdir(dir_temp):
+        if os.path.isdir(f"{dir_temp}/{name_temp}"):
+            os.remove()
+    else:
+        os.mkdir(dir_temp)
+    return f"{dir_temp}/{name_temp}"
 
 def test_grayscale():
 
@@ -77,3 +89,28 @@ def test_rgb():
     imnew = imold.crop(-35,35,-25,25).resize(5,5)     # input individual values
     np.testing.assert_equal(np.asarray(imnew.im), data_resized)
     
+def test_read_save_file(temp_file):
+    
+    # Test grayscale case
+    nx, ny = 300, 200
+    data = np.zeros((nx,ny))
+    for i in range(nx):
+        for j in range(ny):
+            data[i,j] = (i-nx/2)**2 + (j-ny/2)**2
+            
+    # Save image into a temporary file
+    snt.ThumbnailImage(data).save(temp_file)
+    
+    # Load image from a temporary file
+    image = snt.ThumbnailImage(temp_file)
+    
+    # Resize image
+    image.resize(5, 5)
+    
+    np.testing.assert_almost_equal(np.asarray(image.im), [
+        [254.99962, 255.00188, 255.09755, 255.00336, 254.9995, ],
+        [255.00157, 254.99255, 254.54832, 254.98578, 255.0021, ],
+        [255.20503, 253.91243, 215.97983, 253.3033,  255.2591, ],
+        [255.00352, 254.98228, 254.17003, 254.96962, 255.00458,],
+        [254.9995,  255.00252, 255.12416, 255.0044,  254.99934,],
+    ], decimal=4)

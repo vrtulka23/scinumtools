@@ -27,6 +27,6 @@ Example documentations to the files used in examples are listed below:
 .. toctree::
    :maxdepth: 1
 
-   doc_definitions
-   doc_nodes
-   doc_docstest
+   sphinx_definitions
+   sphinx_nodes
+   sphinx_docstest

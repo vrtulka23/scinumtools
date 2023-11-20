@@ -24,11 +24,11 @@ def test_normal_object():
 def test_with_statement():
     with Stopwatch() as sw:
         with sw.observer('part1'):
-            time.sleep(.001)
+            time.sleep(.01)
             with sw.observer('part2'):
-                time.sleep(.001)
+                time.sleep(.02)
         with sw.observer('part3'):
-            time.sleep(.003)
+            time.sleep(.05)
         result = sw.report().to_dict()
         assert result['Laps'] == [6, 1, 1, 1]
         assert result['Node'] == ['stopwatch', 'part1/part2', 'part1', 'part3']
