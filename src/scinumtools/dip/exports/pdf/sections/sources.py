@@ -14,8 +14,10 @@ from ..settings import *
 from ....settings import DocsType, Sign, ROOT_SOURCE
 from ....environment import Environment
 from ....pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
+
 pygments_style = 'StyleLexer'
 pygments_monkeypatch_style(pygments_style, StyleLexer)
+from pygments.styles import get_all_styles
 
 class SourcesSection:
     
@@ -33,6 +35,8 @@ class SourcesSection:
     def highlight_python_code(self, source):
         # format text using pygments
         lexer = SyntaxLexer()
+        styles = list(get_all_styles())
+        print(styles)
         style = get_style_by_name(pygments_style)
 
         # format text with a lexer
