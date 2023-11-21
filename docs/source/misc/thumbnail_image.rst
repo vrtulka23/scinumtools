@@ -29,7 +29,7 @@ Class ``ThumbnailImage`` helps to address this issue and implements simple image
    >>>   ('a.', 0, 0, ticks1, labels1, ThumbnailImage(data, extent1) ),
    >>>   ('b.', 1, 0, ticks1, labels1, ThumbnailImage(data, extent1).resize(size2) ),
    >>>   ('c.', 0, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2) ),
-   >>>   ('d.', 1, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2, 2).resize(size2) ),
+   >>>   ('d.', 1, 1, ticks2, labels2, ThumbnailImage(data, extent1).crop(extent2, bgcolor=2).resize(size2) ),
    >>> ]
    >>> for name, m, n, ticks, labels, ti in plots:
    >>>   ax = axes[m,n]
@@ -51,5 +51,13 @@ d) Combination of b) and c) with specified padding background color
 .. image:: ../_static/figures/thumbnail_image.png
 
 Note that ``crop()`` functions automatically modifies image resolution proportionally to the change of the image extent (compare a. and b. cases).
+If an extent is not specified, it is automatically set to ``(0,1,0,1)``.
 
 ``ThumbnailImage`` also works with RGB color maps. One just needs to change mode from ``F`` to ``RGB`` and input image data with tuples of RGB/RGBA values instead of scalars. 
+
+Finally, it is also possible to load images from files, modify them and again save them as a new file.
+Image files are automatically opened in ``RGB`` mode. 
+
+.. code-block::
+
+   >>> ThumbnailImage('original_image.png').resize(20,30).save('resized_image.png')
