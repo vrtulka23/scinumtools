@@ -23,7 +23,10 @@ class BooleanType(Type):
         super().__init__(**kwargs)
 
     def __eq__(self, other):
-        return BooleanType(self.value == other.value)
+        if isinstance(other, bool):
+            return self.value == other
+        else:
+            return self.value == other.value
         
     def logical_and(self, other):
         return BooleanType(self.value and other.value)

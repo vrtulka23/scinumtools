@@ -45,8 +45,21 @@ intensity float W/m2
         'outputs.snapshot': IntegerType([0, 1, 2, 3, 4]),
         'outputs.intensity': FloatType([ 2.34,  9.4 ,  3.4 ,  2.3 , 23.4 ], 'W/m2'),
     })
-
     
+    data = parse('''
+outputs table = """
+name str
+numbers int[3]
+
+"John Smith" [2,3,4]
+"Jennyfer Milton" [5,6,7]
+  """  # endqotes can be indented
+    ''')
+    np.testing.assert_equal(data,{
+        'outputs.name': StringType(["John Smith", "Jennyfer Milton"]),
+        'outputs.numbers': IntegerType([[2,3,4], [5,6,7]]),
+    })
+
 def test_inline_text():
     data = parse('''
 text str = """

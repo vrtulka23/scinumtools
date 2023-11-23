@@ -120,7 +120,7 @@ def test_third_true():
     data = parse('''
     plant.@case false           # using compact node names
         flower str = 'green'
-    plant.@case true            # second condition is false
+    plant.@case false           # second condition is false
         flower str = 'yellow'   
     plant.@case true            # third condition is true
         flower str = 'red'   

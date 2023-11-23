@@ -15,7 +15,7 @@ class StringType(Type):
         return f"StringType({self.value})"
         
     def __eq__(self, other):
-        return BooleanType(self.value == other.value)
+        return self.value == other.value
         
     def __init__(self, value, **kwargs):
         kwargs['value'] = value

@@ -1,4 +1,5 @@
 import csv
+import json
 
 from .node_base import BaseNode
 from .parser import Parser
@@ -25,6 +26,7 @@ class TableNode(BaseNode):
         lines = self.value_raw.split(Sign.NEWLINE)
         # Parse nodes from table header
         table = []
+        dimension = []
         while len(lines)>0:
             line = lines.pop(0)
             if line.strip()=='':
@@ -36,6 +38,7 @@ class TableNode(BaseNode):
             )
             parser.part_name()      # parse node name
             parser.part_type()      # parse node type
+            parser.part_dimension() # parse node type dimension
             parser.part_units()     # parse node units
             if not parser.is_empty():
                 raise Exception(f"Incorrect header format: {line}")
@@ -46,6 +49,7 @@ class TableNode(BaseNode):
                 'float': FloatNode,
                 'str':   StringNode,
             }
+            # Create column
             if parser.keyword in types:
                 node = types[parser.keyword](parser)
                 node.value_raw = []
@@ -63,7 +67,10 @@ class TableNode(BaseNode):
             if len(row)>ncols or len(row)<ncols:
                 raise Exception(f"Number of header nodes does not match number of table columns: {ncols} != {len(row)}")
             for c in range(ncols):
-                table[c].value_raw.append(row[c])
+                if table[c].dimension:
+                    table[c].value_raw.append(json.loads(row[c]))
+                else:
+                    table[c].value_raw.append(row[c])
         # set additional node parameters
         nodes_new = []
         for node in table:

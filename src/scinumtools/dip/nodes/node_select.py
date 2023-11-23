@@ -22,7 +22,7 @@ class SelectNode:
         """
         if self.options:
             for option in self.options:
-                if (option.value==self.value).value:  # == returns BooleanType
+                if option.value==self.value:
                     return True
             else:
                 options = [o.value for o in self.options]

@@ -84,8 +84,11 @@ class BranchingList:
         """
         if not self.state:
             return False
+        branch = self._get_branch_id()
+        num_true = sum([self.cases[c].value==True for c in self.branches[branch].cases])
         case = self._get_case_id()
-        return self.cases[case].value.value == False
+        # only first `true` case is valid
+        return num_true!=1 or self.cases[case].value == False
         
     def solve_case(self, node):
         """ Manage condition nodes

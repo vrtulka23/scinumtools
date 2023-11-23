@@ -61,14 +61,34 @@ class LogicalSolver:
             operators = {
                 'par': OperatorPar,        # should be the last of parenthesis operators
                 'eq': OperatorEq, 'ne': OperatorNe,
-                'not': CustomOperatorNot,  # needs to be after OperatorNe
+                'not': CustomNot,          # needs to be after OperatorNe
                 'le': OperatorLe, 'ge': OperatorGe,
                 'lt': OperatorLt, 'gt': OperatorGt,
-                'and': OperatorAnd, 'or': OperatorOr, 
+                'and': CustomAnd, 'or': CustomOr, 
             }
             with ExpressionSolver(self._eval_node, operators) as es:
                 return es.solve(expr)
                 
 
-class CustomOperatorNot(OperatorNot):
+class CustomNot(OperatorNot):
     symbol: str = Sign.NEGATE
+
+class CustomAnd(OperatorAnd):
+    
+    def operate_binary(self, tokens):
+        left, right = tokens.get_left(), tokens.get_right()
+        if isinstance(left, (bool, np.bool_)):
+            left = BooleanType(left)
+        if isinstance(right, (bool, np.bool_)):
+            right = BooleanType(right)
+        tokens.put_left(left.logical_and(right))
+        
+class CustomOr(OperatorOr):
+    
+    def operate_binary(self, tokens):
+        left, right = tokens.get_left(), tokens.get_right()
+        if isinstance(left, (bool, np.bool_)):
+            left = BooleanType(left)
+        if isinstance(right, (bool, np.bool_)):
+            right = BooleanType(right)
+        tokens.put_left(left.logical_or(right))

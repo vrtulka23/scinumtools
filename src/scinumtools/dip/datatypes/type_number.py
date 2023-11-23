@@ -35,16 +35,16 @@ class NumberType(Type):
     def __eq__(self, other):
         left, right = self._prepare(other)
         if isinstance(left,str) and isinstance(right,str):
-            return BooleanType(left==right)
+            return left==right
         elif isinstance(left,(list,np.ndarray)) and isinstance(right,(list,np.ndarray)):
-            return BooleanType(np.isclose(left, right, rtol=Numeric.PRECISION))
+            return np.all(np.isclose(left, right, rtol=Numeric.PRECISION))
         elif left is None and right is None:
-            return BooleanType(True)
+            return True
         elif left is None or right is None:
-            return BooleanType(False)
+            return False
         else:
             # isclose does not work with integers
-            return BooleanType(np.isclose(float(left), float(right), rtol=Numeric.PRECISION)) 
+            return np.isclose(float(left), float(right), rtol=Numeric.PRECISION)
         
     def __ne__(self, other):
         left, right = self._prepare(other)
