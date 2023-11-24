@@ -37,23 +37,23 @@ class Environment:
         :param str namespace: Query namespace (nodes, sources, or units)
         :param list tags: List of tags
         """
-        if self.autoref and path == Sign.QUERY: # reference type {?}
-            filename,query = '', self.autoref
+        if self.autoref and path == Sign.QUERY:     # reference type {?}
+            source, query = '', self.autoref
         elif Sign.QUERY in path:                    # reference type {source?query}
-            filename,query = path.split(Sign.QUERY)
-        else:                                      # reference type {source}
-            filename,query = path,None
-        if filename:  # use external source to parse the values
+            source, query = path.split(Sign.QUERY)
+        else:                                       # reference type {source}
+            source, query = path,None
+        if source:  # use external source to parse the values
             if query is None:   # import block
-                return self.sources[filename].code
+                return self.sources[source].code
             elif namespace == Namespace.NODES:
-                nodes = self.sources[filename].nodes.query(query, tags=tags)
+                nodes = self.sources[source].nodes.query(query, tags=tags)
             elif namespace == Namespace.SOURCES:
-                nodes = self.sources[filename].sources.query(query)
+                nodes = self.sources[source].sources.query(query)
             elif namespace == Namespace.UNITS:
-                nodes = self.sources[filename].units.query(query)
+                nodes = self.sources[source].units.query(query)
             else:
-                nodes = self.sources[filename].query(query, namespace, tags=tags)
+                nodes = self.sources[source].query(query, namespace, tags=tags)
         else:         # use values parsed in the current file
             if not self.nodes:
                 raise Exception(f"Local nodes are not available for DIP import:", path)

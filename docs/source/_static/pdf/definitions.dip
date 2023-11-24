@@ -5,6 +5,7 @@ simulation
     !format "[a-zA-Z_-]+"
   precision str = "double"
     !options ["double","float"]
+  directory = {pahts?simulation.directory}
 
 runtime
   t_max float s              # mandatory

@@ -112,6 +112,9 @@ class NodeSection:
             self.options = ", ".join(self.options)
         
         # additional settings
+        self.injection = None
+        if node.value_ref:
+            self.injection = "<font color='orange'>{"+node.value_ref+"}</font>"
         if node.constant:
             self.dtype = f"constant {self.dtype}"
         self.dformat = node.format if node.keyword == StringNode.keyword else None
@@ -163,6 +166,9 @@ class NodeSection:
         if self.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
             data.append(['','Value:', Paragraph(self.value, TABLE_BODY_STYLE)])
+        if self.injection:
+            TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
+            data.append(['','Injection:', Paragraph(self.injection, TABLE_BODY_STYLE)])
         if self.unit:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
             data.append(['','Default Unit:',  Paragraph(self.unit, TABLE_BODY_STYLE)])

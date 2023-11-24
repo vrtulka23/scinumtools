@@ -13,11 +13,13 @@ class NumberType(Type):
     def _prepare(self, other):
         if self.dtype not in [int,float,str,bool]:
             # if self node datatype is unknown
-            if other.dtype in [int,float]:
-                self.convert(other.unit)
-            if other.dtype is None:
+            if other is None:
+                return self.value, None
+            elif other.dtype is None:
                 self.value = float(self.value)
             else:
+                if other.dtype in [int,float]:
+                    self.convert(other.unit)
                 self.value = other.dtype(self.value)
         elif other.dtype not in [int,float,str,bool]:
             # if other node datatype is unknown

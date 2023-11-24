@@ -5,7 +5,7 @@ import re
 from .node import Node
 from ..datatypes import Type, NumberType, IntegerType, FloatType, StringType, BooleanType
 from ..environment import Environment
-from ..settings import Keyword, Sign
+from ..settings import Keyword, Sign, EnvType
 
 class BaseNode(Node):
     
@@ -186,7 +186,13 @@ class BaseNode(Node):
             node = self
         if not node.value_ref:
             return
-        nodes = env.request(node.value_ref, count=1)
+        if env.envtype==EnvType.DOCS:
+            try:     # try to request nodes
+                nodes = env.request(node.value_ref, count=1)
+            except:  # if source is missing return 
+                return
+        else:
+            nodes = env.request(node.value_ref, count=1)
         if isinstance(nodes, str):   # block import
             node.value_raw = nodes
         else:                        # node import
