@@ -37,7 +37,7 @@ class SourceNode(BaseNode):
                 self.inject_value(env, parser)
             if parser.value_raw.endswith('dip'):
                 # source is a DIP file
-                p = dipsl.DIP(source=self.source, lineno=self.lineno)
+                p = dipsl.DIP(source=self.source)
                 p.env.sources = env.sources.copy()
                 p.from_file(parser.value_raw, parser.name)
                 penv = p.parse()
@@ -49,9 +49,9 @@ class SourceNode(BaseNode):
                 filepath = parser.value_raw
                 if not os.path.isabs(filepath):
                     # set relative paths with respect to the source script
-                    source = env.sources[self.source]
+                    source = env.sources[self.source[0]]
                     parent = Path(source.path).parent
                     filepath = parent / filepath
                 with open(filepath,'r') as f:
-                    env.sources.append(parser.name, filepath, f.read(), self.source, self.lineno)
+                    env.sources.append(parser.name, filepath, f.read(), self.source[0])
         return None

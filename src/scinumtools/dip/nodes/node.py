@@ -3,8 +3,7 @@ import copy
 
 class Node:
     code: str 
-    source: str = None              # source name
-    lineno: int = None              # line number
+    source: tuple = None            # source 
     keyword: str = None
     dtype = str                     # datatype
     dtype_prop = list               # datatype properties (e.g.: unsigned, precision)

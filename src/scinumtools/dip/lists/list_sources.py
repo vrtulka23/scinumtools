@@ -10,8 +10,7 @@ class EnvSource:
     name: str            # this source name
     path: str            # source filename
     code: str            # source code
-    parent_name: str = None     # parent source name
-    parent_lineno: int = None   # parent source line number
+    parent: tuple = None   # parent source
     nodes: NodeList = None      # list of nodes (only for remote sources)
     sources: 'SourceList' = None  # list of sources (only for remote sources)
     
@@ -44,7 +43,7 @@ class SourceList:
         """
         return copy.deepcopy(self)
         
-    def append(self, name:str, path:str, code:str, parent_name:str = None, parent_lineno:int = None):
+    def append(self, name:str, path:str, code:str, parent:tuple = None):
         """ Append a new source
 
         :param str name: Name of a new source
@@ -53,7 +52,7 @@ class SourceList:
         """
         if name in self.sources:
             raise Exception("Reference source alread exists:", name)
-        self.sources[name] = EnvSource(name, str(path), code,  parent_name, parent_lineno)
+        self.sources[name] = EnvSource(name, str(path), code,  parent)
 
     def query(self, query:str):
         """ Select sources according to a query

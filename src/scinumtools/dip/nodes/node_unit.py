@@ -36,5 +36,5 @@ class UnitNode(BaseNode):
                 unit = Quantity(float(parser.value_raw), parser.units_raw)
                 unit.symbol = '['+parser.name+']'
                 unit.dfn = f"{parser.value_raw}*{parser.units_raw}"
-                env.units.append(parser.name, parser.value_raw, parser.units_raw, unit, self.source, self.lineno)
+                env.units.append(parser.name, parser.value_raw, parser.units_raw, unit, self.source)
         return None

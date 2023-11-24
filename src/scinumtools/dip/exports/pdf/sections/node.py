@@ -84,8 +84,8 @@ class NodeSection:
             self.unit = node.units_raw
             
         """
-        parent_name = ".".join(node.name.split(".")[:-1])
-        if m := re.match(f".*({Sign.CONDITION}[0-9]+)$", parent_name):
+        parent = ".".join(node.name.split(".")[:-1])
+        if m := re.match(f".*({Sign.CONDITION}[0-9]+)$", parent):
             cid = m.group(1)
             case = env.branching.cases[m.group(1)]
             if case.expr is None:
@@ -159,7 +159,7 @@ class NodeSection:
         
         # construct a node table
         pname = Paragraph(f"<strong>{name}</strong>", )
-        source = Paragraph(f"<a href=\"#source_{node.source}_{node.lineno}\" color=\"blue\">{node.source}:{node.lineno}</a>")
+        source = Paragraph(f"<a href=\"#source_{node.source[0]}_{node.source[1]}\" color=\"blue\">{node.source[0]}:{node.source[1]}</a>")
         data = [
             ['', source, '', self.dtype],
         ]

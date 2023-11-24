@@ -11,7 +11,6 @@ class TemplateSolver:
 
     env: Environment
     filename: str
-    lineno: int
 
     def __init__(self, env:Environment=None, **kwargs):
         if env:
@@ -22,11 +21,9 @@ class TemplateSolver:
             # determine which file instantiate this class
             caller = getframeinfo(stack()[1][0])
             self.filename = caller.filename
-            self.lineno = caller.lineno
         else:
-            source = env.sources[kwargs['source']]
+            source = env.sources[kwargs['source'][0]]
             self.filename = source.path
-            self.lineno = source.parent_lineno
             
     def __enter__(self):
         return self

@@ -20,7 +20,7 @@ class UnitList:
     def keys(self):
         return self.units.keys()
         
-    def append(self, name:str, value:str, units:str, unit:Quantity, source:str, lineno:int):
+    def append(self, name:str, value:str, units:str, unit:Quantity, source:tuple):
         """ Add a new source
 
         :param str name: Name of a new unit
@@ -35,7 +35,6 @@ class UnitList:
             'value': value, 
             'units': units,
             'source': source,
-            'lineno': lineno,
         } #,'prefixes':['k','M','G']}
         
     def query(self, query:str):

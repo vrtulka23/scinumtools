@@ -25,9 +25,8 @@ class DIP:
     env: Environment     # environment
     lines: List[dict]    # code lines
     
-    source: str          # source name
-    lineno: int = None   # line number 
-    
+    source: tuple        # source
+
     nodes_special: list     = ['empty','unit','source']
     nodes_properties: list  = ['option','constant','format','condition','tags','description']
     nodes_hierarchy: list   = ['group']
@@ -51,22 +50,21 @@ class DIP:
         if 'source' not in kwargs:
             # determine which file instantiate this class
             caller = getframeinfo(stack()[1][0])
-            self.source = f"{self.name}_{ROOT_SOURCE}"
+            self.source = (f"{self.name}_{ROOT_SOURCE}", None)
             if caller.filename == '<stdin>':                
                 self.env.sources.append(
-                    name = self.source, 
+                    name = self.source[0], 
                     path = os.getcwd(),
                     code = None,
                 )
             else:
                 self.env.sources.append(
-                    name = self.source, 
+                    name = self.source[0], 
                     path = caller.filename, 
                     code = None, 
                 )
         else:
             self.source = kwargs['source']
-            self.lineno = kwargs['lineno']
         # create additional node groups
         self.nodes_nohierarchy = self.nodes_special+self.nodes_properties
         self.nodes_notypes = self.nodes_special+self.nodes_properties+self.nodes_hierarchy
@@ -109,7 +107,6 @@ class DIP:
         parser = Parser(
             code=line['code'],
             source=line['source'],
-            lineno=line['lineno'],
         )
         steps = [
             EmptyNode.is_node,            # parse empty line node
@@ -180,7 +177,7 @@ class DIP:
         """
         # ensure relative paths with respect to the source script
         if not os.path.isabs(filepath) and absolute:
-            parent = Path(self.env.sources[self.source].path)
+            parent = Path(self.env.sources[self.source[0]].path)
             if os.path.isfile(parent):
                 filepath = parent.parent / filepath
             else:
@@ -202,22 +199,20 @@ class DIP:
         for lineno, linecode in enumerate(lines):
             self.lines.append(dict(
                 code = linecode,
-                source = source_name,
-                lineno = lineno+1
+                source = (source_name, lineno+1),
             ))
         # get line number from the source code
-        if self.lineno is None:
+        if self.source[1] is None:
             caller = getframeinfo(stack()[1][0])
             lineno = caller.lineno
         else:
-            lineno = self.lineno
+            lineno = self.source[1]
         # create new source
         self.env.sources.append(
             name = source_name,
             path = os.path.realpath(filepath),
             code = Sign.NEWLINE.join(lines),
-            parent_name = self.source,
-            parent_lineno = lineno,
+            parent = (self.source[0], lineno),
         )
 
     def from_string(self, code:str):
@@ -239,34 +234,31 @@ class DIP:
         for lineno,linecode in enumerate(lines):
             self.lines.append(dict(
                 code = linecode,
-                source = source_name,
-                lineno = lineno+1
+                source = (source_name, lineno+1),
             ))
         # create parent new source
-        if self.lineno is None:
+        if self.source[1] is None:
             caller = getframeinfo(stack()[1][0])
             lineno = caller.lineno
         else:
-            lineno = self.lineno
+            lineno = self.source[1]
         self.env.sources.append(
             name = source_name,
-            path = self.env.sources[self.source].path,
+            path = self.env.sources[self.source[0]].path,
             code = code,
-            parent_name = self.source,
-            parent_lineno = lineno,
+            parent = (self.source[0], lineno),
         )
 
     def add_source(self, name:str, path:str):
-        if self.lineno is None:
+        if self.source[1] is None:
             caller = getframeinfo(stack()[1][0])
             lineno = caller.lineno
         else:
-            lineno = self.lineno
+            lineno = self.source[1]
         self.lines.append(dict(
             code = f"{Sign.VARIABLE}{Keyword.SOURCE} {name} = '{path}'",
             name = name,
-            source = self.source,
-            lineno = lineno,
+            source = (self.source[0], lineno),
         ))
         
     def add_unit(self, name:str, value:float, unit:str=None):
@@ -274,16 +266,15 @@ class DIP:
             code = f"{Sign.VARIABLE}{Keyword.UNIT} {name} = {value} {unit}"
         else:
             code = f"{Sign.VARIABLE}{Keyword.UNIT} {name} = {value}"
-        if self.lineno is None:
+        if self.source[1] is None:
             caller = getframeinfo(stack()[1][0])
             lineno = caller.lineno
         else:
-            lineno = self.lineno
+            lineno = self.source[1]
         self.lines.append(dict(
             code = code,
             name = name,
-            source = self.source,
-            lineno = lineno,
+            source = (self.source[0], lineno),
         ))
 
     def add_function(self, name:str, fn:Callable):
@@ -330,7 +321,7 @@ class DIP:
                         break
                 # If node wasn't defined, create a new node
                 else:
-                    if node.keyword=='mod' and node.source.startswith(f"{self.name}_{STRING_SOURCE}"):
+                    if node.keyword=='mod' and node.source[0].startswith(f"{self.name}_{STRING_SOURCE}"):
                         raise Exception(f"Modifying undefined node:",node.name)
                     target.nodes.append(node)
         # Validate nodes

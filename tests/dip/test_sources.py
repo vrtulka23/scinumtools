@@ -14,9 +14,9 @@ def test_root_source():
     with DIP() as dip:
 
         # test if root source is correct
-        assert ROOT_SOURCE in dip.source
-        assert dip.source in dip.env.sources
-        rs = dip.env.sources[dip.source]
+        assert ROOT_SOURCE in dip.source[0]
+        assert dip.source[0] in dip.env.sources
+        rs = dip.env.sources[dip.source[0]]
         assert rs.path == __file__
         
 def test_file_sources():
@@ -46,10 +46,8 @@ def test_file_sources():
         
         # get the line numbers of the callings above
         caller = getframeinfo(stack()[0][0])
-        file_sources[source_fa]['parent_name'] = dip.source
-        file_sources[source_fa]['parent_lineno'] = caller.lineno-4
-        file_sources[source_fb]['parent_name'] = dip.source
-        file_sources[source_fb]['parent_lineno'] = caller.lineno-3
+        file_sources[source_fa]['parent'] = (dip.source[0], caller.lineno-4)
+        file_sources[source_fb]['parent'] = (dip.source[0], caller.lineno-3)
         
         # get code from files
         with open(file_sources[source_fa]['path'],'r') as f:  # absolute path
@@ -71,8 +69,7 @@ def test_file_sources():
         env = dip.parse()
         for name, source, lineno in nodes:
             node = env.nodes.query(name)[0]
-            assert node.source == source
-            assert node.lineno == lineno
+            assert node.source == (source, lineno)
 
 def test_string_sources():
 
@@ -104,10 +101,8 @@ def test_string_sources():
   
         # get the line numbers of the callings above
         caller = getframeinfo(stack()[0][0])
-        string_sources[source_sa]['parent_name'] = dip.source
-        string_sources[source_sa]['parent_lineno'] = caller.lineno-4
-        string_sources[source_sb]['parent_name'] = dip.source
-        string_sources[source_sb]['parent_lineno'] = caller.lineno-3
+        string_sources[source_sa]['parent'] = (dip.source[0], caller.lineno-4)
+        string_sources[source_sb]['parent'] = (dip.source[0], caller.lineno-3)
 
         
         # test if string sources have correct data
@@ -123,8 +118,7 @@ def test_string_sources():
         env = dip.parse()
         for name, source, lineno in nodes:
             node = env.nodes.query(name)[0]
-            assert node.source == source
-            assert node.lineno == lineno
+            assert node.source == (source, lineno)
 
 def test_explicit_sources():
     
@@ -149,8 +143,8 @@ def test_explicit_sources():
         assert source.name == 'explicit'
         assert source.path == source_path
         assert source.code == source_code
-        assert ROOT_SOURCE in source.parent_name
-        assert source.parent_lineno == caller.lineno-4
+        assert ROOT_SOURCE in source.parent[0]
+        assert source.parent[1] == caller.lineno-4
         
         # test if nodes have correct sources and line numbers
         nodes = [
@@ -158,8 +152,7 @@ def test_explicit_sources():
         ]
         for name, source, lineno in nodes:
             node = env.request(name)[0]
-            assert node.source == source
-            assert node.lineno == lineno
+            assert node.source == (source, lineno)
 
 def test_inline_sources():
     
@@ -186,8 +179,7 @@ def test_inline_sources():
         assert source.name == 'inline'
         assert source.path == source_path
         assert source.code == source_code
-        assert source.parent_name == source_name
-        assert source.parent_lineno == 1
+        assert source.parent == (source_name, 1)
 
         # test if nodes have correct sources and line numbers
         nodes = [
@@ -195,5 +187,4 @@ def test_inline_sources():
         ]
         for name, source, lineno in nodes:
             node = env.request(name)[0]
-            assert node.source == source
-            assert node.lineno == lineno
+            assert node.source == (source, lineno)

@@ -32,11 +32,11 @@ class UnitsSection:
         ]
         for name, unit in self.env.units.items():
             # create source link
-            if ROOT_SOURCE in unit['source']:
-                link_source = f"#source_{unit['source']}" 
+            if ROOT_SOURCE in unit['source'][0]:
+                link_source = f"#source_{unit['source'][0]}" 
             else:
-                link_source = f"#source_{unit['source']}_{unit['lineno']}" 
-            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{unit['source']}:{unit['lineno']}</a>")
+                link_source = f"#source_{unit['source'][0]}_{unit['source'][1]}" 
+            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{unit['source'][0]}:{unit['source'][1]}</a>")
             # add row to the table
             data.append([name, unit['value'], unit['units'], src])
             

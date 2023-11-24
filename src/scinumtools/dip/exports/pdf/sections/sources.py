@@ -95,11 +95,11 @@ class SourcesSection:
             ['File:', current_path.name],
         ]
         if ROOT_SOURCE not in source.name:
-            if ROOT_SOURCE in source.parent_name:
-                link_source = f"#source_{source.parent_name}" 
+            if ROOT_SOURCE in source.parent[0]:
+                link_source = f"#source_{source.parent[0]}" 
             else:
-                link_source = f"#source_{source.parent_name}_{source.parent_lineno}" 
-            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{source.parent_name}:{source.parent_lineno}</a>")
+                link_source = f"#source_{source.parent[0]}_{source.parent[1]}" 
+            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{source.parent[0]}:{source.parent[1]}</a>")
             data.append(['Source:', src ])
         colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
         t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)

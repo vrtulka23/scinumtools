@@ -59,7 +59,8 @@ class ExportSphinx(Directive):
             deflist = nodes.definition_list()
             for name, source in sources.items():
                 props = nodes.field_list()
-                props += add_field('Source', f"{source.parent_name}:{source.parent_lineno}")
+                if source.parent:
+                    props += add_field('Source', f"{source.parent[0]}:{source.parent[1]}")
                 defitem = nodes.definition_list_item()
                 defitem += nodes.term('', '', nodes.strong(text=name))
                 defitem += nodes.definition('', props)
@@ -92,7 +93,7 @@ class ExportSphinx(Directive):
             text =  name+"\n"
             props = nodes.field_list()
             if 'show-code' in self.options:
-                props += add_field("Line", node.lineno)
+                props += add_field("Line", node.source[1])
             if node.defined:
                 props += add_field("Node type", 'declaration')
             else:

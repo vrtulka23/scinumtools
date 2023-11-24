@@ -23,7 +23,7 @@ class NumericalSolver:
 
     def _parse_atom(self, expr):
         expr = expr.lstrip()
-        kwargs = {'code': expr, 'source':{'lineno':0, 'filename': 'expression'}}
+        kwargs = {'code': expr, 'source':None}
         p = Parser(keyword='node',**kwargs)
         p.part_value()
         if p.value_ref:   # import existing node
