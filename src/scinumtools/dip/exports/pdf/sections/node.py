@@ -4,7 +4,7 @@ import numpy as np
 import re
 
 from ..settings import *
-from ....nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode
+from ....nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
 from ....settings import Order, Sign, Keyword, EnvType, DocsType
 from ....environment import Environment
 
@@ -24,7 +24,6 @@ class NodeSection:
         self.names = names
         self.nodes = nodes
         self.env = env
-        pass
 
     def _init_bool(self, node):
         self.dtype = node.keyword
@@ -194,12 +193,14 @@ class NodeSection:
     def parse(self):
         blocks = []
         blocks.append(PageBreak())
-        blocks.append(Paragraph(f"Node list", SECTION_STYLE) )
+        blocks.append(Paragraph(f"<a name=\"section_nodes\"></a>Nodes", SECTION_STYLE) )
         for name in self.names:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"node_{name}\"></a>"))
             blocks.append(Spacer(1,0.1*inch))
             for node in self.nodes[name]:
+                if node.keyword==ImportNode.keyword:
+                    continue
                 blocks.append(self.parse_node(name, node))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

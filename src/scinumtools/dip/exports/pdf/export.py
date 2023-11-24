@@ -1,23 +1,27 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether
+from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.units import inch
 from reportlab.platypus.flowables import KeepTogether 
 import numpy as np
 
 from .settings import *
 from .sections.node import NodeSection
+from .sections.imports import ImportsSection
 from .sections.types import TypesSection
-from .sections.reference import ReferenceSection
+from .sections.toc import TOCSection
+from .sections.parameters import ParametersSection
 from .sections.units import UnitsSection
 from .sections.sources import SourcesSection
 from ...environment import Environment
 from ...settings import Order, Sign, Keyword, EnvType, DocsType
 from ...lists import NodeList
-from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode
+from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
 
 class ExportPDF:
     
     env: Environment
     nodes: dict         # list of nodes grouped by name
+    imports: list       # list of import nodes
     names: list         # sorted list of node names
     
     def __enter__(self):
@@ -34,12 +38,16 @@ class ExportPDF:
         # group nodes according to their names
         nodes = self.env.nodes.query("*")
         self.nodes = {}
+        self.imports = []
         for node in nodes:
-            name = node.clean_name()
-            if name in self.nodes:
-                self.nodes[name].append(node)
+            if node.keyword==ImportNode.keyword:
+                self.imports.append(node)
             else:
-                self.nodes[name] = [node]
+                name = node.clean_name()
+                if name in self.nodes:
+                    self.nodes[name].append(node)
+                else:
+                    self.nodes[name] = [node]
 
         # create a sorted list of node names
         self.names = list(self.nodes.keys())
@@ -63,17 +71,25 @@ class ExportPDF:
 
         doc = SimpleDocTemplate(file_path)
         blocks = [Spacer(1,1*inch)]
+        
+        # create table of content
+        with TOCSection() as tmpl:
+            blocks += tmpl.parse()    
 
         # list node types
         with TypesSection() as tmpl:
             blocks += tmpl.parse()    
 
         # create a quick reference of nodes with links
-        with ReferenceSection(self.names, self.nodes) as tmpl:
+        with ParametersSection(self.names, self.nodes) as tmpl:
             blocks += tmpl.parse()
         
         # list all nodes and their properties
         with NodeSection(self.names, self.nodes, self.env) as tmpl:
+            blocks += tmpl.parse()
+ 
+        # list all imports
+        with ImportsSection(self.imports, self.env) as tmpl:
             blocks += tmpl.parse()
  
         # list units
@@ -84,5 +100,6 @@ class ExportPDF:
         with SourcesSection(self.env) as tmpl:
             blocks += tmpl.parse()    
  
+            
         # build a documentation
         doc.build(blocks, onFirstPage=myFirstPage, onLaterPages=myLaterPages)    

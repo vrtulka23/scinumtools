@@ -1,4 +1,4 @@
-from reportlab.platypus import Table, Paragraph, Spacer
+from reportlab.platypus import Table, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
 import numpy as np
 
@@ -33,7 +33,8 @@ class TypesSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Node types", SECTION_STYLE))
+        blocks.append(PageBreak())
+        blocks.append(Paragraph(f"<a name=\"section_types\"></a>Node types", H1))
         blocks.append(self.parse_table()) 
         blocks.append(Spacer(1,0.2*inch))
         return blocks

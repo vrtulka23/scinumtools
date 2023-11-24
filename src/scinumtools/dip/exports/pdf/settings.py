@@ -63,3 +63,15 @@ PALETTE = {
     'prop_name': '#FAEDCD', #colors.antiquewhite, #'#',
     'prop_value': '#FEFAE0', #colors.floralwhite, #'#',
 }
+
+H1 = ParagraphStyle(
+    name = 'Heading1',
+    fontSize = 14,
+    leading = 16
+)
+
+H2 = ParagraphStyle(
+    name = 'Heading2',
+    fontSize = 12,
+    leading = 14,
+)
