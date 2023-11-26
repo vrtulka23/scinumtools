@@ -45,8 +45,7 @@ class UnitsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(PageBreak())
-        blocks.append(Paragraph(f"<a name=\"section_units\"></a>Units", SECTION_STYLE))
+        blocks.append(Paragraph(f"List of units", H2))
         blocks.append(self.parse_table()) 
         blocks.append(Spacer(1,0.2*inch))
         return blocks

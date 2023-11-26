@@ -4,6 +4,7 @@ from ..settings import Sign
 
 class ImportNode(BaseNode):
     keyword: str = 'import'
+    names: list = None     # names of imported nodes
 
     def is_node(parser):
         parser.part_reference()

@@ -12,6 +12,7 @@ class ImportsSection:
     
     names: list
     nodes: list
+    reference: str
     env: Environment
     
     def __enter__(self):
@@ -60,14 +61,15 @@ class ImportsSection:
         if self.reference:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
             data.append(['Request:', Paragraph(self.reference, TABLE_BODY_STYLE)])
+            TABLE_STYLE.append(('VALIGN',(0,len(data)),(0,len(data)),'TOP'))
+            data.append(['Nodes:', Paragraph('<br/>'.join(node.names), TABLE_BODY_STYLE)])
 
         colWidths = list(np.array([0.2, 0.57, 0.23])*(PAGE_WIDTH-2*inch))
         return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
         
     def parse(self):
         blocks = []
-        blocks.append(PageBreak())
-        blocks.append(Paragraph(f"<a name=\"section_imports\"></a>Imports", SECTION_STYLE) )
+        blocks.append(Paragraph(f"Imports", H2) )
         for node in self.nodes:
             if node.keyword==ImportNode.keyword:
                 blocks.append(Spacer(1,0.1*inch))

@@ -59,5 +59,6 @@ class DocsType(Flag):  # node type in documentation
     DECLARATION  = auto()
     DEFINITION   = auto()
     MODIFICATION = auto()
+    INJECTION    = auto()
     
     

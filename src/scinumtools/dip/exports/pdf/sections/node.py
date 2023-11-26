@@ -20,9 +20,10 @@ class NodeSection:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, names, nodes, env):
-        self.names = names
+    def __init__(self, nodes, env):
         self.nodes = nodes
+        self.names = list(self.nodes.keys())
+        self.names.sort()
         self.env = env
 
     def _init_bool(self, node):
@@ -122,11 +123,8 @@ class NodeSection:
         else:
             self.tags = ", ".join(node.tags)
         self.description = None if node.keyword ==ModNode.keyword else node.description
-            
-    def parse_node(self, name, node):
     
-        self._init_node(node)
-    
+    def parse_color(self, node):
         if DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
             self.color = PALETTE['def/mod']
         elif DocsType.DEFINITION in node.docs_type:
@@ -137,6 +135,10 @@ class NodeSection:
             self.color = PALETTE['dec']
         elif DocsType.MODIFICATION in node.docs_type:
             self.color = PALETTE['mod']
+            
+    def parse_node(self, name, node):
+    
+        self._init_node(node)
     
         # define table style
         TABLE_STYLE = [
@@ -192,8 +194,7 @@ class NodeSection:
 
     def parse(self):
         blocks = []
-        blocks.append(PageBreak())
-        blocks.append(Paragraph(f"<a name=\"section_nodes\"></a>Nodes", SECTION_STYLE) )
+        blocks.append(Paragraph(f"Parameter nodes", H2) )
         for name in self.names:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"node_{name}\"></a>"))
@@ -201,6 +202,7 @@ class NodeSection:
             for node in self.nodes[name]:
                 if node.keyword==ImportNode.keyword:
                     continue
+                self.parse_color(node)
                 blocks.append(self.parse_node(name, node))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

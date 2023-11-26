@@ -16,9 +16,10 @@ class ParametersSection:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, names, nodes):
-        self.names = names
+    def __init__(self, nodes):
         self.nodes = nodes
+        self.names = list(self.nodes.keys())
+        self.names.sort()
     
     def parse_table(self):
         TABLE_STYLE = [
@@ -54,7 +55,7 @@ class ParametersSection:
         
     def parse(self):
         blocks = []       
-        blocks.append(Paragraph(f"<a name=\"section_parameters\"></a>Parameters", H1))
+        blocks.append(Paragraph(f"Parameter list", H2))
         blocks.append(self.parse_table())
         blocks.append(Spacer(1,0.2*inch))
         return blocks

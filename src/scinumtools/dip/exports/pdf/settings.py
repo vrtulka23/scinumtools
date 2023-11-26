@@ -1,6 +1,7 @@
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
+from reportlab.lib.units import cm
 
 SAMPLE_STYLE_SHEET = getSampleStyleSheet()
 
@@ -64,14 +65,26 @@ PALETTE = {
     'prop_value': '#FEFAE0', #colors.floralwhite, #'#',
 }
 
+TITLE = ParagraphStyle(
+    name = 'Title',
+    fontSize = 20,
+    leading = 16,
+    fontName='Times-Bold',
+    spaceAfter=cm,
+)
+
 H1 = ParagraphStyle(
     name = 'Heading1',
-    fontSize = 14,
-    leading = 16
+    fontSize = 18,
+    leading = 16,
+    fontName='Times-Bold',
+    spaceAfter=cm,
 )
 
 H2 = ParagraphStyle(
     name = 'Heading2',
-    fontSize = 12,
+    fontSize = 16,
     leading = 14,
+    fontName='Times-Bold',
+    spaceAfter=cm,
 )

@@ -8,7 +8,8 @@ class Node:
     dtype = str                     # datatype
     dtype_prop = list               # datatype properties (e.g.: unsigned, precision)
     indent: int = 0
-    name: str = None
+    name: str = None                # current node name
+    name_path: str = None           # original name in the hierarchy
     value_raw: str = None           # Raw value
     value_ref: str = None           # Reference
     value_fn: str = None            # Function

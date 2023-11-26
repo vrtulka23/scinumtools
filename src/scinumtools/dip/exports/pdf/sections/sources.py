@@ -116,8 +116,7 @@ class SourcesSection:
         
     def parse(self):
         blocks = []
-        blocks.append(PageBreak())
-        blocks.append(Paragraph(f"<a name=\"section_sources\"></a>Sources", SECTION_STYLE))
+        blocks.append(Paragraph(f"List of sources", H2))
         for name, source in self.env.sources.items():
             blocks.append(Spacer(1,0.1*inch))
             blocks += self.parse_source(source)
