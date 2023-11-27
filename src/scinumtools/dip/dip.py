@@ -364,9 +364,7 @@ class DIP:
             if parsed: 
                 # Add parsed nodes to the queue and continue
                 queue.nodes.prepend(parsed)
-                if node.keyword==ImportNode.keyword:
-                    node.names = [n.name_path for n in parsed]
-                else:
+                if node.keyword!=ImportNode.keyword:
                     continue
             # Create hierarchical name
             target.hierarchy.register(node, self.nodes_nohierarchy)

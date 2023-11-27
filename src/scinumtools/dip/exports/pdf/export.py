@@ -65,7 +65,7 @@ class ExportPDF:
         # group nodes according to their names
         nodes = self.env.nodes.query("*")
         self.nodes = {}
-        self.injections = {}
+        self.injections = []
         self.imports = []
         for node in nodes:
             if node.keyword==ImportNode.keyword:
@@ -79,14 +79,14 @@ class ExportPDF:
                 if node.value_ref:
                     ref_source, ref_node = node.value_ref.split(Sign.QUERY)
                     if ref_source in self.env.sources:
-                        inode = self.env.request(node.value_ref)[0]
-                        inode.name = ref_node
-                        iname = inode.clean_name()
-                        if iname in self.injections:
-                            self.injections[iname].append(inode)
-                        else:
-                            self.injections[iname] = [inode]
-        
+                        node.isource = self.env.request(node.value_ref)[0].source
+                    else:
+                        node.isource = None
+                    if self.injections:
+                        self.injections.append(node)
+                    else:
+                        self.injections = [node]
+
     def build(self, file_path: str, title, pageinfo):
         
         def myFirstPage(canvas, doc):
@@ -135,13 +135,13 @@ class ExportPDF:
         blocks.append(PageBreak())
 
         # list all injected nodes
-        with InjectionsSection(self.injections, self.env) as tmpl:
+        with InjectionsSection(self.injections, self.nodes, self.env) as tmpl:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
 
         # list all imports
-        with ImportsSection(self.imports, self.env) as tmpl:
+        with ImportsSection(self.imports, self.nodes, self.env) as tmpl:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())

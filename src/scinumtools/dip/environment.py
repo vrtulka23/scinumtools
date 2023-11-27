@@ -29,13 +29,14 @@ class Environment:
         """
         return copy.deepcopy(self)
 
-    def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None):
+    def request(self, path:str, count:int=None, namespace:Namespace=Namespace.NODES, tags:list=None, errsrc:bool=True):
         """ Request nodes from a path
 
         :param str path: Request path
         :param int count: Number of nodes that should be selected
         :param str namespace: Query namespace (nodes, sources, or units)
         :param list tags: List of tags
+        :param bool errsrc: If 'False', missing sources will not throw errors
         """
         if self.autoref and path == Sign.QUERY:     # reference type {?}
             source, query = '', self.autoref
@@ -44,7 +45,9 @@ class Environment:
         else:                                       # reference type {source}
             source, query = path,None
         if source:  # use external source to parse the values
-            if query is None:   # import block
+            if source not in self.sources and errsrc is False:
+                nodes = []
+            elif query is None:   # import block
                 return self.sources[source].code
             elif namespace == Namespace.NODES:
                 nodes = self.sources[source].nodes.query(query, tags=tags)

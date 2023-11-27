@@ -186,9 +186,8 @@ class BaseNode(Node):
         if not node.value_ref:
             return
         if env.envtype==EnvType.DOCS:
-            try:     # try to request nodes
-                nodes = env.request(node.value_ref, count=1)
-            except:  # if source is missing return 
+            nodes = env.request(node.value_ref, count=[0,1], errsrc=False)
+            if len(nodes)==0:
                 return
         else:
             nodes = env.request(node.value_ref, count=1)

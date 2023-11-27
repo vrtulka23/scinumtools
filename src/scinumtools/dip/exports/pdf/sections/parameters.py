@@ -35,7 +35,7 @@ class ParametersSection:
     
         data = [['Property name', '#', '#', '#', '#', '#']]
         for name in self.names:
-            p = Paragraph(f"<a href=\"#node_{name}\" color=\"blue\">{name}</a>")
+            p = Paragraph(AnchorLink(AnchorType.PARAM, name))
             counts = [0, 0, 0, 0, 0]
             for node in self.nodes[name]:
                 if DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:

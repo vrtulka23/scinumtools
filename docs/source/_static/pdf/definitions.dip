@@ -47,6 +47,8 @@ box
         !constant
     @end
     {settings?box.size.*}
+  boundary
+    {options?box.boundary.*}
   
 modules
   hydrodynamics bool = true  # optional

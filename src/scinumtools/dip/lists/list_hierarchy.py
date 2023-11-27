@@ -24,4 +24,3 @@ class HierarchyList:
                 self.parents.pop()
             self.parents.append(Parent(node.indent, node.name))
             node.name = Sign.SEPARATOR.join([parent.name for parent in self.parents])
-            node.name_path = node.name

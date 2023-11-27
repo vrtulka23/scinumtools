@@ -41,7 +41,7 @@ class SourcesSection:
         lines = code.split(Sign.NEWLINE)
         for l in range(len(lines)-2):  # the last two lines are always empty
             lineno = str(l+1)
-            lines[l] = f"<a name=\"source_{source.name}_{lineno}\"></a>{lineno:5s}{lines[l]}"
+            lines[l] = AnchorTarget(AnchorType.SOURCE, (source.name, lineno)) + f"{lineno:5s}{lines[l]}"
         code = Sign.NEWLINE.join(lines)
 
         # replace standard CSS classes with explicit text formatting
@@ -88,18 +88,14 @@ class SourcesSection:
 
 
         blocks = []
-        p = Paragraph(f"<a name=\"source_{source.name}\"></a>{source.name}")
+        p = Paragraph(AnchorTarget(AnchorType.SOURCE,(source.name,None)) + source.name)
 
         data = [   
             [p,  ''],
             ['File:', current_path.name],
         ]
         if ROOT_SOURCE not in source.name:
-            if ROOT_SOURCE in source.parent[0]:
-                link_source = f"#source_{source.parent[0]}" 
-            else:
-                link_source = f"#source_{source.parent[0]}_{source.parent[1]}" 
-            src = Paragraph(f"<a href=\"{link_source}\" color=\"blue\">{source.parent[0]}:{source.parent[1]}</a>")
+            src = Paragraph(AnchorLink(AnchorType.SOURCE,source.parent))
             data.append(['Source:', src ])
         colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
         t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)

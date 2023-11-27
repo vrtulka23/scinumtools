@@ -91,18 +91,14 @@ class NodeSection:
             if case.expr is None:
                 self.condition = None
             else:
-                condition = case.expr.replace("{","<font color='orange'>{")
-                condition = condition.replace("}","}</font>")
-                self.condition = condition
+                self.condition = HighlightReference(case.expr)
         else:
             self.condition = None
         """
         # condition
         self.condition = None
         if node.condition:
-            condition = node.condition.replace("{","<font color='orange'>{")
-            condition = condition.replace("}","}</font>")
-            self.condition = condition
+            self.condition = HighlightReference(node.condition)
         
         # type specific initialization
         self.value = None
@@ -114,7 +110,7 @@ class NodeSection:
         # additional settings
         self.injection = None
         if node.value_ref:
-            self.injection = "<font color='orange'>{"+node.value_ref+"}</font>"
+            self.injection = HighlightReference("{"+node.value_ref+"}")
         if node.constant:
             self.dtype = f"constant {self.dtype}"
         self.dformat = node.format if node.keyword == StringNode.keyword else None
@@ -159,10 +155,10 @@ class NodeSection:
         ]
         
         # construct a node table
-        pname = Paragraph(f"<strong>{name}</strong>", )
-        source = Paragraph(f"<a href=\"#source_{node.source[0]}_{node.source[1]}\" color=\"blue\">{node.source[0]}:{node.source[1]}</a>")
+        node_target = AnchorTarget(AnchorType.NODE, node)
+        source_link = AnchorLink(AnchorType.SOURCE, node.source)
         data = [
-            ['', source, '', self.dtype],
+            ['', Paragraph(node_target+source_link), '', self.dtype],
         ]
         if self.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
@@ -197,7 +193,7 @@ class NodeSection:
         blocks.append(Paragraph(f"Parameter nodes", H2) )
         for name in self.names:
             blocks.append(Spacer(1,0.1*inch))
-            blocks.append(Paragraph(f"<strong>{name}</strong><a name=\"node_{name}\"></a>"))
+            blocks.append(Paragraph(f"<strong>{name}</strong>"+AnchorTarget(AnchorType.PARAM, name)))
             blocks.append(Spacer(1,0.1*inch))
             for node in self.nodes[name]:
                 if node.keyword==ImportNode.keyword:
