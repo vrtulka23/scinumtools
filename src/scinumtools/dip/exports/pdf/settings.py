@@ -3,6 +3,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import cm
 from enum import Enum
+import numpy as np
 
 from ...settings import ROOT_SOURCE
 
@@ -12,23 +13,6 @@ FONT_NAME = 'Helvetica'
 FONT_SIZE = 10
 PAGE_HEIGHT=defaultPageSize[1]; 
 PAGE_WIDTH=defaultPageSize[0]
-        
-SECTION_STYLE = ParagraphStyle(
-    "SectionTitleStyle",
-    parent=SAMPLE_STYLE_SHEET['Normal'],
-    fontName = FONT_NAME,
-    fontSize = 14,
-    spaceAfter = 10
-)
-
-GROUP_STYLE = ParagraphStyle(
-    "CustomStyle",
-    parent=SAMPLE_STYLE_SHEET["Normal"],
-    fontName=FONT_NAME,
-    fontSize=12,
-    spaceBefore=0, 
-    spaceAfter=10,  # Add 20 points of space after the paragraph
-)
 
 TABLE_HEADER_STYLE = ParagraphStyle(
     "CustomStyle",
@@ -44,17 +28,6 @@ TABLE_BODY_STYLE = ParagraphStyle(
     fontName=FONT_NAME,
     fontSize=FONT_SIZE,
 )
-
-CASE_STYLE = [
-    # whole grid
-    #('GRID',       (0,0), (-1,-1),  0.5,     colors.goldenrod),
-    ('FONTNAME',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontName),
-    ('FONTSIZE',   (0,0), (-1,-1),  TABLE_BODY_STYLE.fontSize),
-    # top panel
-    ('FONTSIZE',   (0,0), (-1,-1),  TABLE_HEADER_STYLE.fontSize),
-    #('BACKGROUND', (0,0), (1,0),    colors.lightgreen),    
-    #('BACKGROUND', (1,0), (-1,0),   colors.floralwhite),  
-]
 
 PALETTE = {
     'dec':     '#698D3F',
@@ -97,16 +70,25 @@ class AnchorType(Enum):
     PARAM  = 'PARAM'
     SOURCE = 'SOURCE'
     INJECT = 'INJECT'
+    IMPORT = 'IMPORT'
 
 def _anchor_args(aname:AnchorType, *args):
-    if aname in [AnchorType.PARAM, AnchorType.INJECT]:
+    if aname == AnchorType.PARAM:
         name = args[0]
         return name, name
-    elif aname==AnchorType.NODE:
+    elif aname == AnchorType.NODE:
         name = args[0].name
         source = args[0].source[0]
         lineno = args[0].source[1]
         return f"{name}_{source}_{lineno}", name
+    elif aname == AnchorType.INJECT:
+        name = args[0].name
+        source = args[0].source[0]
+        lineno = args[0].source[1]
+        return f"{name}_{source}_{lineno}", ' | injected'
+    elif aname == AnchorType.IMPORT:
+        source, lineno = args[0][0], args[0][1]
+        return f"{source}_{lineno}", f" | imported"
     elif aname==AnchorType.SOURCE:
         source, lineno = args[0][0], args[0][1]
         if ROOT_SOURCE in source:
@@ -126,3 +108,6 @@ def HighlightReference(text:str):
     text = text.replace("{","<font color='orange'>{")
     text = text.replace("}","}</font>")
     return text
+    
+def ColumnWidths(ratios: list):
+    return list(np.array(ratios)*(PAGE_WIDTH-5.2*cm))

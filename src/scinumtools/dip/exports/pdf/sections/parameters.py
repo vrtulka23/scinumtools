@@ -50,8 +50,7 @@ class ParametersSection:
                     counts[4] += 1
             counts = ['' if c==0 else c for c in counts]
             data.append([p]+counts)
-        colWidths = list(np.array([0.8, 0.04, 0.04, 0.04, 0.04, 0.04])*(PAGE_WIDTH-2*inch))
-        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.8, 0.04, 0.04, 0.04, 0.04, 0.04]))
         
     def parse(self):
         blocks = []       

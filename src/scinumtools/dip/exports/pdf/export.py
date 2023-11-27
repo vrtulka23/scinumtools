@@ -79,7 +79,7 @@ class ExportPDF:
                 if node.value_ref:
                     ref_source, ref_node = node.value_ref.split(Sign.QUERY)
                     if ref_source in self.env.sources:
-                        node.isource = self.env.request(node.value_ref)[0].source
+                        node.isource = self.env.request(node.value_ref)[0]
                     else:
                         node.isource = None
                     if self.injections:

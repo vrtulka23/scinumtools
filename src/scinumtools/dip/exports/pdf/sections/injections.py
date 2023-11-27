@@ -32,6 +32,19 @@ class InjectionsSection(NodeSection):
         self.reference = None
         if node.value_ref:
             self.reference = HighlightReference("{"+node.value_ref+"}")
+                    
+    def _init_inode(self, node):
+        ivalue, iunit = None, None
+        if node.keyword==ModNode.keyword:
+            ivalue = node.value
+            if node.units_raw:
+                iunit = node.units_raw
+        else:
+            if node.value.value:
+                ivalue = str(node.value.value)
+            if node.value.unit:
+                iunit = node.value.unit
+        return node.source, ivalue, iunit
                            
     def parse_node(self, inode):
     
@@ -53,23 +66,27 @@ class InjectionsSection(NodeSection):
         ]
         
         # construct a node table
-        source = Paragraph(AnchorLink(AnchorType.SOURCE,inode.source))
+        target_injection = AnchorTarget(AnchorType.INJECT,inode)
+        link_source = AnchorLink(AnchorType.SOURCE,inode.source)
         data = [
-            [source, ''],
+            [Paragraph(target_injection+link_source), ''],
         ]
         if self.reference:
+            data.append(['Injecting node:',      Paragraph(AnchorLink(AnchorType.NODE, inode),    TABLE_BODY_STYLE)])
             data.append(['Request:', Paragraph(self.reference, TABLE_BODY_STYLE)])
-            data.append(['Injection node:',      Paragraph(AnchorLink(AnchorType.NODE, inode),    TABLE_BODY_STYLE)])
             if inode.isource:
-                isource = Paragraph(AnchorLink(AnchorType.SOURCE, inode.isource), TABLE_BODY_STYLE)
-                data.append(['From source:', isource])
-    
-        colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
-        return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+                isource, ivalue, iunit = self._init_inode(inode.isource)
+                data.append(['From source:', Paragraph(AnchorLink(AnchorType.SOURCE, isource), TABLE_BODY_STYLE)])
+                if ivalue:
+                    data.append(['Value:', Paragraph(ivalue, TABLE_BODY_STYLE)])
+                if iunit:
+                    data.append(['Unit:',  Paragraph(iunit, TABLE_BODY_STYLE)])
+
+        return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.2, 0.8]))
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Injected nodes", H2) )
+        blocks.append(Paragraph(f"Injected values", H2) )
         for node in self.inodes:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_node(node))

@@ -56,9 +56,10 @@ class ImportsSection:
         ]
         
         # construct a node table
-        source = Paragraph(AnchorLink(AnchorType.SOURCE,inode.source))
+        target_import = AnchorTarget(AnchorType.IMPORT,inode.source)
+        link_source = AnchorLink(AnchorType.SOURCE,inode.source)
         data = [
-            [source, '', ''],
+            [Paragraph(target_import+link_source), '', ''],
         ]
         if self.reference:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
@@ -79,12 +80,11 @@ class ImportsSection:
                 data.append(['Imported node:', '',  'From source:'])
                 data += rows
                         
-        colWidths = list(np.array([0.2, 0.5, 0.3])*(PAGE_WIDTH-2*inch))
-        return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+        return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.2, 0.5, 0.3]))
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Imports", H2) )
+        blocks.append(Paragraph(f"Imported nodes", H2) )
         for node in self.inodes:
             if node.keyword==ImportNode.keyword:
                 blocks.append(Spacer(1,0.1*inch))

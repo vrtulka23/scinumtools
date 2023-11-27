@@ -108,9 +108,8 @@ class NodeSection:
             self.options = ", ".join(self.options)
         
         # additional settings
-        self.injection = None
-        if node.value_ref:
-            self.injection = HighlightReference("{"+node.value_ref+"}")
+        self.injection = True if node.value_ref else False
+        self.imported = node.isource if isinstance(node.isource,tuple) else False
         if node.constant:
             self.dtype = f"constant {self.dtype}"
         self.dformat = node.format if node.keyword == StringNode.keyword else None
@@ -157,18 +156,17 @@ class NodeSection:
         # construct a node table
         node_target = AnchorTarget(AnchorType.NODE, node)
         source_link = AnchorLink(AnchorType.SOURCE, node.source)
+        injection_link = AnchorLink(AnchorType.INJECT,node) if self.injection else ''
+        import_link = AnchorLink(AnchorType.IMPORT,self.imported) if self.imported else ''
         data = [
-            ['', Paragraph(node_target+source_link), '', self.dtype],
+            ['', Paragraph(f"{node_target}{source_link}{injection_link}{import_link}"), '', self.dtype],
         ]
         if self.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Value:', Paragraph(self.value, TABLE_BODY_STYLE)])
-        if self.injection:
-            TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Injection:', Paragraph(self.injection, TABLE_BODY_STYLE)])
+            data.append(['', 'Value:', Paragraph(self.value, TABLE_BODY_STYLE)])
         if self.unit:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Default Unit:',  Paragraph(self.unit, TABLE_BODY_STYLE)])
+            data.append(['','Unit:',  Paragraph(self.unit, TABLE_BODY_STYLE)])
         if self.condition:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
             data.append(['','Condition:',     Paragraph(self.condition, style=TABLE_BODY_STYLE)])
@@ -185,8 +183,10 @@ class NodeSection:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
             data.append(['','Description:',   Paragraph(self.description, TABLE_BODY_STYLE)])
             
-        colWidths = list(np.array([0.01,0.2, 0.57, 0.22])*(PAGE_WIDTH-2*inch))
-        return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+        return Table(
+            data, style=TABLE_STYLE, hAlign='LEFT', 
+            colWidths=ColumnWidths([0.01,0.2, 0.50, 0.29])
+        )
 
     def parse(self):
         blocks = []

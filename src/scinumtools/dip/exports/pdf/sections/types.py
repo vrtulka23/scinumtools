@@ -28,8 +28,7 @@ class TypesSection:
             ['','Definition / Modification'],
             ['','Modification'],
         ]
-        colWidths = list(np.array([0.05,0.95])*(PAGE_WIDTH-2*inch))
-        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.05,0.95]))
         
     def parse(self):
         blocks = []

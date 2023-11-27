@@ -97,8 +97,7 @@ class SourcesSection:
         if ROOT_SOURCE not in source.name:
             src = Paragraph(AnchorLink(AnchorType.SOURCE,source.parent))
             data.append(['Source:', src ])
-        colWidths = list(np.array([0.2, 0.8])*(PAGE_WIDTH-2*inch))
-        t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)
+        t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.2, 0.8]))
         t.keepWithNext = True
         blocks.append(t)
 
