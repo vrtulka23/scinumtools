@@ -10,31 +10,17 @@ from ....environment import Environment
 
 class ImportsSection:
     
-    nodes: list      # node list
-    inodes: list     # import node list
-    reference: str
-    env: Environment
+    data: list       # list of imports
     
     def __enter__(self):
         return self
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, inodes, nodes, env):
-        self.inodes = inodes
-        self.nodes = nodes
-        self.env = env
-            
-    def _init_node(self, node):
-        
-        # additional settings
-        self.reference = None
-        if node.value_ref:
-            self.reference = HighlightReference("{"+node.value_ref+"}")
-                           
-    def parse_node(self, inode):
-    
-        self._init_node(inode)
+    def __init__(self, data):
+        self.data = data
+
+    def parse_item(self, item):
     
         # define table style
         TABLE_STYLE = [
@@ -56,38 +42,34 @@ class ImportsSection:
         ]
         
         # construct a node table
-        target_import = AnchorTarget(AnchorType.IMPORT,inode.source)
-        link_source = AnchorLink(AnchorType.SOURCE,inode.source)
+        target_import = AnchorTarget(AnchorType.IMPORT,item.source)
+        link_source = AnchorLink(AnchorType.SOURCE,item.source)
         data = [
             [Paragraph(target_import+link_source), '', ''],
         ]
-        if self.reference:
-            TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['Request:', Paragraph(self.reference, TABLE_BODY_STYLE)])
-            rows = []
-            for name in self.nodes.keys():
-                for node in self.nodes[name]:
-                    if node.isource==inode.source:
-                        nrow = len(data)+1+len(rows)
-                        TABLE_STYLE.append(('SPAN', (0,nrow), (1,nrow) ))
-                        rows.append([
-                            Paragraph(AnchorLink(AnchorType.NODE, node), TABLE_BODY_STYLE),  
-                            '',
-                            Paragraph(AnchorLink(AnchorType.SOURCE, node.source), TABLE_BODY_STYLE),  
-                        ])
-            if rows:
-                TABLE_STYLE.append(('BACKGROUND', (0,3), (-1,-1),  PALETTE['prop_value']))
-                data.append(['Imported node:', '',  'From source:'])
-                data += rows
+        TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
+        data.append(['Request:', Paragraph(HighlightReference("{"+item.reference+"}"), TABLE_BODY_STYLE)])
+        rows = []
+        for idata in item.idata:
+            nrow = len(data)+1+len(rows)
+            TABLE_STYLE.append(('SPAN', (0,nrow), (1,nrow) ))
+            rows.append([
+                Paragraph(AnchorLink(AnchorType.NODE, idata), TABLE_BODY_STYLE),  
+                '',
+                Paragraph(AnchorLink(AnchorType.SOURCE, idata.source), TABLE_BODY_STYLE),  
+            ])
+        if rows:
+            TABLE_STYLE.append(('BACKGROUND', (0,3), (-1,-1),  PALETTE['prop_value']))
+            data.append(['Imported node:', '',  'From source:'])
+            data += rows
                         
         return Table(data,style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.2, 0.5, 0.3]))
         
     def parse(self):
         blocks = []
         blocks.append(Paragraph(f"Imported nodes", H2) )
-        for node in self.inodes:
-            if node.keyword==ImportNode.keyword:
-                blocks.append(Spacer(1,0.1*inch))
-                blocks.append(self.parse_node(node))
+        for item in self.data:
+            blocks.append(Spacer(1,0.1*inch))
+            blocks.append(self.parse_item(item))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

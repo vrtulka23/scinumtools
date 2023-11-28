@@ -6,6 +6,7 @@ from reportlab.platypus.frames import Frame
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch, cm
 import numpy as np
+from dataclasses import dataclass
 
 from .settings import *
 from .sections.node import NodeSection
@@ -42,6 +43,52 @@ class DocsTemplate(BaseDocTemplate):
                 self.notify('TOCEntry', (0, text, self.page))
             if style == 'Heading2':
                 self.notify('TOCEntry', (1, text, self.page))
+                
+class InjectionData:
+    name: str
+    reference: str
+    source: tuple
+    isource: tuple = None
+    ivalue: str = None
+    iunit: str = None
+    
+    def __init__(self, node, env):   
+        self.name = node.name
+        self.reference = node.value_ref
+        self.source = node.source
+        ref_source, ref_node = node.value_ref.split(Sign.QUERY)
+        if ref_source in env.sources:
+            inode = env.request(node.value_ref)[0]
+            if inode.keyword==ModNode.keyword:
+                self.ivalue = inode.value
+                if inode.units_raw:
+                    self.iunit = inode.units_raw
+            else:
+                if inode.value.value:
+                    self.ivalue = str(inode.value.value)
+                if inode.value.unit:
+                    self.iunit = inode.value.unit
+            self.isource = inode.source
+
+@dataclass
+class ImportDataItem:
+    name: str
+    source: tuple
+
+class ImportData:
+    name: str
+    reference: str
+    source: tuple
+    idata: list
+    
+    def __init__(self, node, nodes):
+        self.name = node.clean_name().split('.{')[0]
+        self.source = node.source
+        self.reference = node.value_ref
+        self.idata = []
+        for inode in nodes:
+            if inode.isource==node.source:
+                self.idata.append(ImportDataItem(inode.name,inode.source))
 
 class ExportPDF:
     
@@ -69,7 +116,7 @@ class ExportPDF:
         self.imports = []
         for node in nodes:
             if node.keyword==ImportNode.keyword:
-                self.imports.append(node)
+                self.imports.append(ImportData(node, nodes))
             else:
                 name = node.clean_name()
                 if name in self.nodes:
@@ -77,31 +124,9 @@ class ExportPDF:
                 else:
                     self.nodes[name] = [node]
                 if node.value_ref:
-                    ref_source, ref_node = node.value_ref.split(Sign.QUERY)
-                    if ref_source in self.env.sources:
-                        node.isource = self.env.request(node.value_ref)[0]
-                    else:
-                        node.isource = None
-                    if self.injections:
-                        self.injections.append(node)
-                    else:
-                        self.injections = [node]
+                    self.injections.append(InjectionData(node,self.env))
 
     def build(self, file_path: str, title, pageinfo):
-        
-        def myFirstPage(canvas, doc):
-            canvas.saveState()
-            canvas.setFont('Times-Bold',16)
-            canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, title)
-            canvas.setFont('Times-Roman',9)
-            canvas.drawString(inch, 0.75 * inch, "First Page / %s" % pageinfo)
-            canvas.restoreState()
-            
-        def myLaterPages(canvas, doc):
-            canvas.saveState()
-            canvas.setFont('Times-Roman',9)
-            canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, pageinfo))
-            canvas.restoreState()
 
         blocks = []
 
@@ -133,15 +158,16 @@ class ExportPDF:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
+        blocks.append(Paragraph(f"References", H1))
 
         # list all injected nodes
-        with InjectionsSection(self.injections, self.nodes, self.env) as tmpl:
+        with InjectionsSection(self.injections) as tmpl:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
 
         # list all imports
-        with ImportsSection(self.imports, self.nodes, self.env) as tmpl:
+        with ImportsSection(self.imports) as tmpl:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
