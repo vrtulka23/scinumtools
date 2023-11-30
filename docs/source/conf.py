@@ -26,7 +26,8 @@ extensions = [
     'scinumtools.dip.exports.sphinx',
     'sphinx.ext.autosectionlabel',
     "sphinx.ext.autodoc", 
-    'sphinx_rtd_theme'
+    'sphinx_rtd_theme',
+    'sphinx_simplepdf',
 ]
 autosectionlabel_prefix_document = True  # Make sure the target is unique
 templates_path = ['_templates']

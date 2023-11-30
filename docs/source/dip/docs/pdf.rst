@@ -22,3 +22,5 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>>     exp.build('documentation.pdf', title, pageinfo)
    
 Code above will generate the following `PDF documentation <../../_static/pdf/documentation.pdf>`_.
+
+.. pdf-include:: ../../_static/pdf/documentation.pdf

@@ -4,6 +4,7 @@ pandas
 h5py
 matplotlib
 sphinx-rtd-theme
+sphinx-simplepdf
 reportlab
 beautifulsoup4
 toml
