@@ -4,7 +4,7 @@ import copy
 class Node:
     code: str 
     source: tuple = None            # source 
-    isource: tuple = False          # import/injection source
+    isource: tuple = False          # import source
     keyword: str = None
     dtype = str                     # datatype
     dtype_prop = list               # datatype properties (e.g.: unsigned, precision)

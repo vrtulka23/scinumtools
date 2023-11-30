@@ -3,6 +3,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import cm
 from enum import Enum
+import unicodedata
 import numpy as np
 
 from ...settings import ROOT_SOURCE
@@ -35,6 +36,8 @@ PALETTE = {
     'dec/mod': '#D77F33',
     'def/mod': '#DDA15E',
     'mod':     '#FBE974',
+    'inj':     '#AB88BF', 
+    'imp':     '#D0BCDC',
     'c4': colors.saddlebrown, #'#',
     'node_name': '#E7CCB1', #colors.navajowhite, 
     'prop_name': '#FAEDCD', #colors.antiquewhite, #'#',
@@ -44,6 +47,14 @@ PALETTE = {
 TITLE = ParagraphStyle(
     name = 'Title',
     fontSize = 20,
+    leading = 16,
+    fontName='Times-Bold',
+    spaceAfter=cm,
+)
+
+H0 = ParagraphStyle(
+    name = 'Heading0',
+    fontSize = 18,
     leading = 16,
     fontName='Times-Bold',
     spaceAfter=cm,
@@ -71,6 +82,7 @@ class AnchorType(Enum):
     SOURCE = 'SOURCE'
     INJECT = 'INJECT'
     IMPORT = 'IMPORT'
+    SECTION = 'SECTION'
 
 def _anchor_args(aname:AnchorType, *args):
     if aname == AnchorType.PARAM:
@@ -95,6 +107,9 @@ def _anchor_args(aname:AnchorType, *args):
             return f"{source}", f"{source}:{lineno}"
         else:
             return f"{source}_{lineno}", f"{source}:{lineno}"
+    elif aname==AnchorType.SECTION:
+        name = args[0]
+        return str(unicodedata.normalize('NFD',name)), name
 
 def AnchorLink(aname:AnchorType, *args):
     key, name = _anchor_args(aname, *args)
@@ -103,6 +118,10 @@ def AnchorLink(aname:AnchorType, *args):
 def AnchorTarget(aname:AnchorType, *args):
     key, name = _anchor_args(aname, *args)
     return f"<a name=\"{aname.value}_{key}\"></a>"
+    
+def AnchorTitle(aname:AnchorType, *args):
+    key, name = _anchor_args(aname, *args)
+    return f"<a name=\"{aname.value}_{key}\"></a> {name}"
     
 def HighlightReference(text:str):
     text = text.replace("{","<font color='orange'>{")

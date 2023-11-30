@@ -31,30 +31,37 @@ class ParametersSection:
             ('BACKGROUND', (3,0), (3,0),   PALETTE['dec/mod']),  
             ('BACKGROUND', (4,0), (4,0),   PALETTE['def/mod']),  
             ('BACKGROUND', (5,0), (5,0),   PALETTE['mod']),  
+            ('BACKGROUND', (6,0), (6,0),   PALETTE['inj']),  
+            ('BACKGROUND', (7,0), (7,0),   PALETTE['imp']),  
         ]
     
-        data = [['Property name', '#', '#', '#', '#', '#']]
+        data = [['Property name', '#', '#', '#', '#', '#', '#', '#']]
         for name in self.names:
             p = Paragraph(AnchorLink(AnchorType.PARAM, name))
-            counts = [0, 0, 0, 0, 0]
+            counts = [0, 0, 0, 0, 0, 0, 0]
             for node in self.nodes[name]:
-                if DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
-                    counts[3] += 1
-                elif DocsType.DEFINITION in node.docs_type:
-                    counts[1] += 1
-                elif DocsType.DECLARATION|DocsType.MODIFICATION in node.docs_type:
+                if DocsType.DECLARATION|DocsType.MODIFICATION in node.docs_type:
                     counts[2] += 1
+                elif DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
+                    counts[3] += 1
                 elif DocsType.DECLARATION in node.docs_type:
                     counts[0] += 1
+                elif DocsType.DEFINITION in node.docs_type:
+                    counts[1] += 1
                 elif DocsType.MODIFICATION in node.docs_type:
                     counts[4] += 1
+                if node.value_ref:
+                    counts[5] += 1
+                if node.isource:
+                    counts[6] += 1
+                    
             counts = ['' if c==0 else c for c in counts]
             data.append([p]+counts)
-        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.8, 0.04, 0.04, 0.04, 0.04, 0.04]))
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.72, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]))
         
     def parse(self):
         blocks = []       
-        blocks.append(Paragraph(f"Parameter list", H2))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Parameter list"), H2))
         blocks.append(self.parse_table())
         blocks.append(Spacer(1,0.2*inch))
         return blocks

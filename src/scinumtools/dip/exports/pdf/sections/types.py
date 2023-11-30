@@ -19,20 +19,22 @@ class TypesSection:
             ('BACKGROUND', (0,2), (0,2),   PALETTE['dec/mod']),  
             ('BACKGROUND', (0,3), (0,3),   PALETTE['def/mod']),  
             ('BACKGROUND', (0,4), (0,4),   PALETTE['mod']),  
+            ('BACKGROUND', (2,0), (2,0),   PALETTE['inj']),  
+            ('BACKGROUND', (2,1), (2,1),   PALETTE['imp']),  
         ]
     
         data = [   
-            ['','Declaration'],
-            ['','Definition'],
+            ['','Declaration','','Injection'],
+            ['','Definition','','Import'],
             ['','Declaration / Modification'],
             ['','Definition / Modification'],
             ['','Modification'],
         ]
-        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.05,0.95]))
+        return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.05,0.45,0.05,0.45]))
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Node types", H2))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Node types"), H2))
         blocks.append(self.parse_table()) 
         blocks.append(Spacer(1,0.2*inch))
         return blocks

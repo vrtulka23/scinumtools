@@ -38,9 +38,17 @@ def build_export_pdf():
         env = p.parse_pdf()
     # Export parameters as a PDF
     with ExportPDF(env) as exp:
-        title = "Example documentation"
-        pageinfo = "DIP Documentation"
-        exp.build(file_pdf, title, pageinfo)
+        exp.build(
+            file_pdf, 
+            "Example DIP documentation", 
+            """In this document we want to demonstrate basic capabilities of a DIP documentation.<br/><br/>
+            The documentation is structured into 3 main sections. The first section summarizes all parameters
+            in a DIP code, as well as their corresponding node definitions, declarations, modifications and corresponding properties.
+            Following section summarizes all references of injected values and lists imported nodes.
+            The final section gives an overview of custom units and code sources.<br/><br/>
+            Parameters, nodes, sections and many other items in this documentation are cross-linked between
+            each other. All hyperlinks are denoted with a blue text.
+        """)
     print(file_pdf)
 
 def build_prefixes():

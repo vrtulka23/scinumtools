@@ -17,9 +17,11 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>>     p.from_file('definitions.dip')
    >>>     env = p.parse_pdf()
    >>> with ExportPDF(env) as exp:
-   >>>     title = "Example documentation"
-   >>>     pageinfo = "DIP Documentation"
-   >>>     exp.build('documentation.pdf', title, pageinfo)
+   >>>     exp.build(
+   >>>         'documentation.pdf', 
+   >>>         "Example DIP documentation", 
+   >>>         "In this document we want to demonstrate basic capabilities of a DIP documentation..... "
+   >>>     )
    
 Code above will generate the following `PDF documentation <../../_static/pdf/documentation.pdf>`_.
 

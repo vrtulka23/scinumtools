@@ -67,7 +67,7 @@ class ImportsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Imported nodes", H2) )
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Imported nodes"), H2) )
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_item(item))

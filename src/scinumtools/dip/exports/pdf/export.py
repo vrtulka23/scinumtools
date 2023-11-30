@@ -37,7 +37,7 @@ class DocsTemplate(BaseDocTemplate):
     def afterFlowable(self, flowable):
         "Registers TOC entries."
         if flowable.__class__.__name__ == 'Paragraph':
-            text = flowable.getPlainText()
+            text = AnchorLink(AnchorType.SECTION,flowable.getPlainText())
             style = flowable.style.name
             if style == 'Heading1':
                 self.notify('TOCEntry', (0, text, self.page))
@@ -126,22 +126,29 @@ class ExportPDF:
                 if node.value_ref:
                     self.injections.append(InjectionData(node,self.env))
 
-    def build(self, file_path: str, title, pageinfo):
+    def build(self, file_path: str, title, intro=None):
 
         blocks = []
 
-        blocks.append(Paragraph(pageinfo, TITLE))
+        blocks.append(Paragraph(title, TITLE))
+        
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Table of contents"), H0))
         
         toc = TableOfContents()
         toc.levelStyles = [
-            ParagraphStyle(name='TOCHeading1', fontSize=16, leftIndent=20, firstLineIndent=-20, spaceBefore=10, leading=16, fontName='Times-Bold'),
+            ParagraphStyle(name='TOCHeading1', fontSize=16, leftIndent=20, firstLineIndent=-20, spaceBefore=5, leading=16, fontName='Times-Bold'),
             ParagraphStyle(name='TOCHeading2', fontSize=14, leftIndent=40, firstLineIndent=-20, spaceBefore=5, leading=12),
         ]
         blocks.append(toc)
     
-    
+        if intro:
+            blocks.append(PageBreak())
+            blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Introduction"), H1))
+            blocks.append(Paragraph(intro))
+            blocks.append(Spacer(1,cm))
+        
         blocks.append(PageBreak())
-        blocks.append(Paragraph(f"Parameters", H1))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Parameters"), H1))
         
         # list node types
         with TypesSection() as tmpl:
@@ -158,7 +165,7 @@ class ExportPDF:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
-        blocks.append(Paragraph(f"References", H1))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"References"), H1))
 
         # list all injected nodes
         with InjectionsSection(self.injections) as tmpl:
@@ -171,7 +178,7 @@ class ExportPDF:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
-        blocks.append(Paragraph(f"Settings", H1))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Settings"), H1))
         
         # list units
         with UnitsSection(self.env) as tmpl:

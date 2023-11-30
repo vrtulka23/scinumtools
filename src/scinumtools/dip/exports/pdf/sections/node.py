@@ -190,10 +190,10 @@ class NodeSection:
 
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"Parameter nodes", H2) )
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Parameter nodes"), H2) )
         for name in self.names:
             blocks.append(Spacer(1,0.1*inch))
-            blocks.append(Paragraph(f"<strong>{name}</strong>"+AnchorTarget(AnchorType.PARAM, name)))
+            blocks.append(Paragraph(f"<strong>"+AnchorTitle(AnchorType.PARAM, name)+"</strong>"))
             blocks.append(Spacer(1,0.1*inch))
             for node in self.nodes[name]:
                 if node.keyword==ImportNode.keyword:

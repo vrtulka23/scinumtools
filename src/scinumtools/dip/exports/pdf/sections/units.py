@@ -40,7 +40,7 @@ class UnitsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(f"List of units", H2))
+        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"List of units"), H2))
         blocks.append(self.parse_table()) 
         blocks.append(Spacer(1,0.2*inch))
         return blocks
