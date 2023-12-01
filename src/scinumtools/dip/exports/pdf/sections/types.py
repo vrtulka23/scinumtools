@@ -6,29 +6,35 @@ from ..settings import *
 
 class TypesSection:
     
+    data: dict
+    
     def __enter__(self):
         return self
     
     def __exit__(self, type, value, traceback):
         pass
         
+    def __init__(self, data: dict):
+        self.data = data
+        
     def parse_table(self):
+        
         TABLE_STYLE = [
-            ('BACKGROUND', (0,0), (0,0),   PALETTE['dec']),  
-            ('BACKGROUND', (0,1), (0,1),   PALETTE['def']),  
-            ('BACKGROUND', (0,2), (0,2),   PALETTE['dec/mod']),  
-            ('BACKGROUND', (0,3), (0,3),   PALETTE['def/mod']),  
-            ('BACKGROUND', (0,4), (0,4),   PALETTE['mod']),  
-            ('BACKGROUND', (2,0), (2,0),   PALETTE['inj']),  
-            ('BACKGROUND', (2,1), (2,1),   PALETTE['imp']),  
+            ('BACKGROUND', (0,0), (0,0),   NTYPES[self.data[0]][1]),  
+            ('BACKGROUND', (0,1), (0,1),   NTYPES[self.data[1]][1]),  
+            ('BACKGROUND', (0,2), (0,2),   NTYPES[self.data[2]][1]),  
+            ('BACKGROUND', (0,3), (0,3),   NTYPES[self.data[3]][1]),  
+            ('BACKGROUND', (0,4), (0,4),   NTYPES[self.data[4]][1]),  
+            ('BACKGROUND', (2,0), (2,0),   NTYPES[self.data[5]][1]),  
+            ('BACKGROUND', (2,1), (2,1),   NTYPES[self.data[6]][1]),  
         ]
     
         data = [   
-            ['','Declaration','','Injection'],
-            ['','Definition','','Import'],
-            ['','Declaration / Modification'],
-            ['','Definition / Modification'],
-            ['','Modification'],
+            ['',NTYPES[self.data[0]][0],'',NTYPES[self.data[5]][0] ],
+            ['',NTYPES[self.data[1]][0],'',NTYPES[self.data[6]][0] ],
+            ['',NTYPES[self.data[2]][0] ],
+            ['',NTYPES[self.data[3]][0] ],
+            ['',NTYPES[self.data[4]][0] ],
         ]
         return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.05,0.45,0.05,0.45]))
         

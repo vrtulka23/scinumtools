@@ -4,11 +4,10 @@ import numpy as np
 
 from ..settings import *
 from ....settings import ROOT_SOURCE
-from ....environment import Environment
 
 class UnitsSection:
     
-    env: Environment
+    data: list
     
     def __enter__(self):
         return self
@@ -16,8 +15,8 @@ class UnitsSection:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, env: Environment):
-        self.env = env
+    def __init__(self, data: list):
+        self.data = data
         
     def parse_table(self):
         TABLE_STYLE = [
@@ -30,10 +29,10 @@ class UnitsSection:
         data = [   
             ['Name','Value','Units','Source'],
         ]
-        for name, unit in self.env.units.items():
-            src = Paragraph(AnchorLink(AnchorType.SOURCE,unit['source'])) 
+        for item in self.data:
+            src = Paragraph(Link(item.link_source, f"{item.source[0]}:{item.source[1]}")) 
             # add row to the table
-            data.append([name, unit['value'], unit['units'], src])
+            data.append([item.name, item.value, item.units, src])
             
         colWidths = list(np.array([0.2,0.2,0.2,0.4])*(PAGE_WIDTH-2*inch))
         return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=colWidths)

@@ -30,14 +30,17 @@ TABLE_BODY_STYLE = ParagraphStyle(
     fontSize=FONT_SIZE,
 )
 
+NTYPES = [
+    ('Declaration',                '#698D3F',),
+    ('Definition',                 '#AABA78',),
+    ('Declaration / Modification', '#D77F33',),
+    ('Definition / Modification',  '#DDA15E',),
+    ('Modification',               '#FBE974',),
+    ('Injection',                  '#AB88BF',),
+    ('Import',                     '#D0BCDC',),
+]
+
 PALETTE = {
-    'dec':     '#698D3F',
-    'def':     '#AABA78',
-    'dec/mod': '#D77F33',
-    'def/mod': '#DDA15E',
-    'mod':     '#FBE974',
-    'inj':     '#AB88BF', 
-    'imp':     '#D0BCDC',
     'c4': colors.saddlebrown, #'#',
     'node_name': '#E7CCB1', #colors.navajowhite, 
     'prop_name': '#FAEDCD', #colors.antiquewhite, #'#',
@@ -122,6 +125,12 @@ def AnchorTarget(aname:AnchorType, *args):
 def AnchorTitle(aname:AnchorType, *args):
     key, name = _anchor_args(aname, *args)
     return f"<a name=\"{aname.value}_{key}\"></a> {name}"
+
+def Target(key:str, name:str=''):
+    return f"<a name=\"{key}\"></a>{name}"
+    
+def Link(key:str, name:str=''):
+    return f"<a href=\"#{key}\" color=\"blue\">{name}</a>"
     
 def HighlightReference(text:str):
     text = text.replace("{","<font color='orange'>{")

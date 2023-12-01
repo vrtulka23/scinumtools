@@ -5,14 +5,11 @@ import re
 
 from ..settings import *
 from ....nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
-from ....settings import Order, Sign, Keyword, EnvType, DocsType
-from ....environment import Environment
+from ....settings import Order, Sign, Keyword, EnvType, DocsType\
 
 class NodeSection:
     
-    names: list
-    nodes: list
-    env: Environment
+    data: list
     
     def __enter__(self):
         return self
@@ -20,120 +17,13 @@ class NodeSection:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, nodes, env):
-        self.nodes = nodes
-        self.names = list(self.nodes.keys())
-        self.names.sort()
-        self.env = env
-
-    def _init_bool(self, node):
-        self.dtype = node.keyword
-        if node.value:
-            self.value = Keyword.TRUE if node.value.value else Keyword.FALSE
-            
-    def _init_int(self, node):
-        if node.units_raw:
-            self.options = [f"{option.value.value} {option.value.unit}" for option in node.options]
-        else:
-            self.options = [f"{option.value.value}" for option in node.options]
-        self.dtype = node.keyword
-        if node.value:
-            if isinstance(node.value.value, (np.ndarray, list)):
-                self.value = str(node.value.value)
-            else:
-                self.value = str(int(node.value.value))
-        if node.unsigned:
-            self.dtype = f"u{self.dtype}"
-        if node.precision:
-            self.dtype = f"{self.dtype}{node.precision}"
-            
-    def _init_float(self, node):
-        if node.units_raw:
-            self.options = [f"{option.value.value} {option.value.unit}" for option in node.options]
-        else:
-            self.options = [f"{option.value.value}" for option in node.options]
-        self.dtype = node.keyword
-        if node.value:
-            if isinstance(node.value.value, (np.ndarray, list)):
-                self.value = str(node.value.value)
-            else:
-                exp = np.log10(node.value.value)
-                if exp<=3 or exp>=-3:
-                    self.value = f"{node.value.value:.03f}"
-                else:
-                    self.value = f"{node.value.value:.03e}"
-        if node.precision:
-            self.dtype = f"{self.dtype}{node.precision}"
-            
-    def _init_str(self, node):
-        self.options = [str(option.value.value) for option in node.options]
-        self.dtype = node.keyword
-        if node.value:
-            self.value = str(node.value.value)
-            
-    def _init_mod(self, node):
-        self.value = node.value
-        self.dtype = node.keyword
-            
-    def _init_node(self, node):
-        # find out units
-        self.unit = ''
-        if node.keyword != ModNode.keyword and node.value and node.value.unit:
-            self.unit = node.value.unit
-        elif node.units_raw:
-            self.unit = node.units_raw
-            
-        """
-        parent = ".".join(node.name.split(".")[:-1])
-        if m := re.match(f".*({Sign.CONDITION}[0-9]+)$", parent):
-            cid = m.group(1)
-            case = env.branching.cases[m.group(1)]
-            if case.expr is None:
-                self.condition = None
-            else:
-                self.condition = HighlightReference(case.expr)
-        else:
-            self.condition = None
-        """
-        # condition
-        self.condition = None
-        if node.condition:
-            self.condition = HighlightReference(node.condition)
-        
-        # type specific initialization
-        self.value = None
-        self.options = None
-        getattr(self,f"_init_{node.keyword}")(node)
-        if self.options:
-            self.options = ", ".join(self.options)
-        
-        # additional settings
-        self.injection = True if node.value_ref else False
-        self.imported = node.isource if isinstance(node.isource,tuple) else False
-        if node.constant:
-            self.dtype = f"constant {self.dtype}"
-        self.dformat = node.format if node.keyword == StringNode.keyword else None
-        if node.keyword == ModNode.keyword or node.tags is None:
-            self.tags = ''
-        else:
-            self.tags = ", ".join(node.tags)
-        self.description = None if node.keyword ==ModNode.keyword else node.description
-    
-    def parse_color(self, node):
-        if DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
-            self.color = PALETTE['def/mod']
-        elif DocsType.DEFINITION in node.docs_type:
-            self.color = PALETTE['def']
-        elif DocsType.DECLARATION|DocsType.MODIFICATION in node.docs_type:
-            self.color = PALETTE['dec/mod'] 
-        elif DocsType.DECLARATION in node.docs_type:
-            self.color = PALETTE['dec']
-        elif DocsType.MODIFICATION in node.docs_type:
-            self.color = PALETTE['mod']
+    def __init__(self, data):
+        self.data = data
             
     def parse_node(self, name, node):
     
-        self._init_node(node)
+        # define color
+        color = NTYPES[node.ntype][1]
     
         # define table style
         TABLE_STYLE = [
@@ -150,38 +40,41 @@ class NodeSection:
             ('BACKGROUND', (1,1), (1,-1),   PALETTE['prop_name']),  
             ('BACKGROUND', (2,1), (-1,-1),  PALETTE['prop_value']),   
             ('SPAN',       (1,0), (2,0)     ),                            # parameter name
-            ('BACKGROUND', (0,0), (0,-1),   self.color),                  # instance type
+            ('BACKGROUND', (0,0), (0,-1),   color),                       # instance type
         ]
         
         # construct a node table
-        node_target = AnchorTarget(AnchorType.NODE, node)
+        node_target = Target(node.key)
         source_link = AnchorLink(AnchorType.SOURCE, node.source)
-        injection_link = AnchorLink(AnchorType.INJECT,node) if self.injection else ''
-        import_link = AnchorLink(AnchorType.IMPORT,self.imported) if self.imported else ''
+        injection_link = AnchorLink(AnchorType.INJECT,node) if node.injection else ''
+        import_link = AnchorLink(AnchorType.IMPORT,node.imported) if node.imported else ''
+        dtype = node.dtype
+        if node.constant:
+            dtype = f"constant {dtype}"
         data = [
-            ['', Paragraph(f"{node_target}{source_link}{injection_link}{import_link}"), '', self.dtype],
+            ['', Paragraph(f"{node_target}{source_link}{injection_link}{import_link}"), '', dtype],
         ]
-        if self.value:
+        if node.value:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['', 'Value:', Paragraph(self.value, TABLE_BODY_STYLE)])
-        if self.unit:
+            data.append(['', 'Value:',        Paragraph(node.value, TABLE_BODY_STYLE)])
+        if node.unit:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Unit:',  Paragraph(self.unit, TABLE_BODY_STYLE)])
-        if self.condition:
+            data.append(['','Unit:',          Paragraph(node.unit, TABLE_BODY_STYLE)])
+        if node.condition:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Condition:',     Paragraph(self.condition, style=TABLE_BODY_STYLE)])
-        if self.tags:
+            data.append(['','Condition:',     Paragraph(HighlightReference(node.condition), style=TABLE_BODY_STYLE)])
+        if node.tags:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Tags:',          Paragraph(self.tags, TABLE_BODY_STYLE)])
-        if self.options: 
+            data.append(['','Tags:',          Paragraph(", ".join(node.tags), TABLE_BODY_STYLE)])
+        if node.options: 
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Options:',       Paragraph(self.options, TABLE_BODY_STYLE)])
-        if self.dformat:
+            data.append(['','Options:',       Paragraph(", ".join(node.options), TABLE_BODY_STYLE)])
+        if node.dformat:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Format:',        Paragraph(self.dformat, TABLE_BODY_STYLE)])
-        if self.description:
+            data.append(['','Format:',        Paragraph(node.dformat, TABLE_BODY_STYLE)])
+        if node.description:
             TABLE_STYLE.append(('SPAN', (2,len(data)), (-1,len(data)) ))
-            data.append(['','Description:',   Paragraph(self.description, TABLE_BODY_STYLE)])
+            data.append(['','Description:',   Paragraph(node.description, TABLE_BODY_STYLE)])
             
         return Table(
             data, style=TABLE_STYLE, hAlign='LEFT', 
@@ -191,14 +84,13 @@ class NodeSection:
     def parse(self):
         blocks = []
         blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Parameter nodes"), H2) )
-        for name in self.names:
+        names = list(self.data.keys())
+        names.sort()
+        for name in names:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(Paragraph(f"<strong>"+AnchorTitle(AnchorType.PARAM, name)+"</strong>"))
             blocks.append(Spacer(1,0.1*inch))
-            for node in self.nodes[name]:
-                if node.keyword==ImportNode.keyword:
-                    continue
-                self.parse_color(node)
+            for node in self.data[name].nodes:
                 blocks.append(self.parse_node(name, node))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

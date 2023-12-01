@@ -42,7 +42,7 @@ class ImportsSection:
         ]
         
         # construct a node table
-        target_import = AnchorTarget(AnchorType.IMPORT,item.source)
+        target_import = Target(item.key) 
         link_source = AnchorLink(AnchorType.SOURCE,item.source)
         data = [
             [Paragraph(target_import+link_source), '', ''],

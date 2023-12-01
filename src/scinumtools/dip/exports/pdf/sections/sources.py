@@ -12,12 +12,11 @@ import re
 
 from ..settings import *
 from ....settings import DocsType, Sign, ROOT_SOURCE
-from ....environment import Environment
 from ....pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
 
 class SourcesSection:
     
-    env: Environment
+    data: list
     
     def __enter__(self):
         return self
@@ -25,23 +24,23 @@ class SourcesSection:
     def __exit__(self, type, value, traceback):
         pass
         
-    def __init__(self, env: Environment):
-        self.env = env
+    def __init__(self, data: list):
+        self.data = data
         
-    def highlight_python_code(self, source):
+    def highlight_python_code(self, item):
         # format text using pygments
         lexer = SyntaxLexer()
         style = StyleLexer
 
         # format text with a lexer
         formatter = get_formatter_by_name('html', style=style) 
-        code = highlight(source.code, lexer, formatter)
+        code = highlight(item.code, lexer, formatter)
         
         # add code lines
         lines = code.split(Sign.NEWLINE)
         for l in range(len(lines)-2):  # the last two lines are always empty
             lineno = str(l+1)
-            lines[l] = AnchorTarget(AnchorType.SOURCE, (source.name, lineno)) + f"{lineno:5s}{lines[l]}"
+            lines[l] = Target(f"{item.key}_{lineno}", f" {lineno:5s}{lines[l]}")
         code = Sign.NEWLINE.join(lines)
 
         # replace standard CSS classes with explicit text formatting
@@ -73,9 +72,9 @@ class SourcesSection:
 
         return code
     
-    def parse_source(self, source):
+    def parse_item(self, item):
         
-        current_path = Path(source.path)
+        current_path = Path(item.path)
         
         CODE_STYLE = getSampleStyleSheet()["Code"]
         TABLE_STYLE = [                       
@@ -88,21 +87,21 @@ class SourcesSection:
 
 
         blocks = []
-        p = Paragraph(AnchorTarget(AnchorType.SOURCE,(source.name,None)) + source.name)
+        p = Paragraph(Target(item.key) + item.name)
 
         data = [   
             [p,  ''],
             ['File:', current_path.name],
         ]
-        if ROOT_SOURCE not in source.name:
-            src = Paragraph(AnchorLink(AnchorType.SOURCE,source.parent))
+        if ROOT_SOURCE not in item.name:
+            src = Paragraph(Link(item.link_source, f"{item.parent[0]}:{item.parent[1]}"))
             data.append(['Source:', src ])
         t = Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.2, 0.8]))
         t.keepWithNext = True
         blocks.append(t)
 
-        if not ROOT_SOURCE in source.name:
-            code = self.highlight_python_code(source)
+        if not ROOT_SOURCE in item.name:
+            code = self.highlight_python_code(item)
             c = XPreformatted(code, CODE_STYLE) 
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(c)
@@ -112,9 +111,9 @@ class SourcesSection:
     def parse(self):
         blocks = []
         blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"List of sources"), H2))
-        for name, source in self.env.sources.items():
+        for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
-            blocks += self.parse_source(source)
+            blocks += self.parse_item(item)
             blocks.append(Spacer(1,0.1*inch))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

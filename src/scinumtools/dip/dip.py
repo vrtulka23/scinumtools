@@ -6,6 +6,7 @@ from typing import List, Callable, Tuple
 from inspect import getframeinfo, stack
 
 from .environment import Environment
+from .documentation import Documentation
 from .settings import *
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
@@ -401,7 +402,7 @@ class DIP:
                     node.docs_type = DocsType.MODIFICATION
                     break
                 target.nodes.append(node)
-        return target
+        return Documentation(target)
 
     def parse_sphinx(self):
         """ Parse DIP node definitions for a documentation

@@ -36,7 +36,7 @@ class InjectionsSection:
         ]
         
         # construct a item table
-        target_injection = AnchorTarget(AnchorType.INJECT,item)
+        target_injection = Target(item.key)
         link_source = AnchorLink(AnchorType.SOURCE,item.source)
         data = [
             [Paragraph(target_injection+link_source), ''],
