@@ -6,7 +6,7 @@ from typing import List, Callable, Tuple
 from inspect import getframeinfo, stack
 
 from .environment import Environment
-from .documentation import Documentation
+from .docs import Documentation
 from .settings import *
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
@@ -349,7 +349,7 @@ class DIP:
                                     node.value.value, node.format)
         return target
         
-    def parse_pdf(self):
+    def parse_docs(self):
         """ Parse DIP node definitions for a documentation
         """
         # Create queue/target environment

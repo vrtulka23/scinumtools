@@ -1,11 +1,11 @@
 import numpy as np
-import json
+import yaml
 
 from .export import ExportConfig
-from ...settings import Format
-from ...environment import Environment
+from ..settings import Format
+from ..environment import Environment
 
-class ExportConfigJSON(ExportConfig):
+class ExportConfigYAML(ExportConfig):
 
     def __init__(self, env: Environment, **kwargs):
         if 'dtype' not in kwargs:
@@ -20,5 +20,5 @@ class ExportConfigJSON(ExportConfig):
                     data[key] = {'value': data[key][0], 'unit': data[key][1]}
                 else:
                     data[key] = data[key][0]
-        self.text = json.dumps(data, **kwargs).strip()
+        self.text = yaml.dump(data, **kwargs).strip()
         return self.text

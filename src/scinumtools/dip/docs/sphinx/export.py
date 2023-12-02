@@ -6,7 +6,7 @@ from docutils.parsers.rst import Directive, directives
 from inspect import getframeinfo, stack
 import collections
 
-from ...dip import DIP
+import scinumtools as snt
 from ...settings import Format
 from ...datatypes import NumberType
 from ...nodes import IntegerNode, StringNode, FloatNode
@@ -25,7 +25,7 @@ class ExportSphinx(Directive):
         # so DIP file paths are defined relative to it.
         file_dip = self.content[0]
         
-        with DIP(name="SPHINX") as dip:
+        with snt.dip.DIP(name="SPHINX") as dip:
             dip.from_file(file_dip, absolute=False)
             env = dip.parse_sphinx()
             sources = env.sources

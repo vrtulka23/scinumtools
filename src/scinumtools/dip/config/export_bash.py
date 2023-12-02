@@ -1,9 +1,9 @@
 import numpy as np
 
 from .export import ExportConfig
-from ...datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
-from ...settings import Sign, Format
-from ...environment import Environment
+from ..datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
+from ..settings import Sign, Format
+from ..environment import Environment
 
 class ExportConfigBash(ExportConfig):
     

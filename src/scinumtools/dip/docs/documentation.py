@@ -4,9 +4,9 @@ from dataclasses import dataclass, field
 import copy
 from enum import Enum, auto
 
-from .environment import Environment
-from .nodes import ModNode, ImportNode, StringNode
-from .settings import Sign, DocsType, Keyword, ROOT_SOURCE
+from ..environment import Environment
+from ..nodes import ModNode, ImportNode, StringNode
+from ..settings import Sign, DocsType, Keyword, EnvType, ROOT_SOURCE
 
 # Parameter types
 
@@ -22,7 +22,10 @@ class ParType(Enum):
 # Injections
 
 class InjectionItem:
-    key: str
+    target: str
+    link_source: str
+    link_node: str
+    link_isource: str
     name: str               
     reference: str          
     source: tuple           
@@ -31,11 +34,13 @@ class InjectionItem:
     iunit: str = None
     
     @staticmethod        
-    def key(name:str, source:str, lineno:int):
+    def target(name:str, source:str, lineno:int):
         return f"INJECT_{name}_{source}_{lineno}"
     
     def __init__(self, node, env):
-        self.key = InjectionItem.key(node.name, node.source[0], node.source[1])
+        self.target = InjectionItem.target(node.name, node.source[0], node.source[1])
+        self.link_source = SourceItem.target(node.source[0], node.source[1])
+        self.link_node = NodeItem.target(node.name, node.source[0], node.source[1])
         self.name = node.name
         self.reference = node.value_ref
         self.source = node.source
@@ -52,6 +57,7 @@ class InjectionItem:
                 if inode.value.unit:
                     self.iunit = inode.value.unit
             self.isource = inode.source
+            self.link_isource = SourceItem.target(inode.source[0], inode.source[1])
 
 # Imports
 
@@ -60,23 +66,27 @@ class ImportItemNode:
     name: str
     source: tuple
     link_node: str = None
+    link_source: str = None
 
     def __post_init__(self):
-        self.link_node = NodeItem.key(self.name, self.source[0], self.source[1])
+        self.link_node = NodeItem.target(self.name, self.source[0], self.source[1])
+        self.link_source = SourceItem.target(self.source[0], self.source[1])
         
 class ImportItem:
-    key: str
+    target: str
+    link_source: str
     name: str
     reference: str
     source: tuple
     idata: list
     
     @staticmethod        
-    def key(source:str, lineno:int):
+    def target(source:str, lineno:int):
         return f"IMPORT_{source}_{lineno}"
         
     def __init__(self, node, nodes):
-        self.key = ImportItem.key(node.source[0], node.source[1])
+        self.target = ImportItem.target(node.source[0], node.source[1])
+        self.link_source = SourceItem.target(node.source[0], node.source[1])
         self.name = node.clean_name().split('.{')[0]
         self.source = node.source
         self.reference = node.value_ref
@@ -88,7 +98,7 @@ class ImportItem:
 # Sources
 
 class SourceItem:
-    key: str
+    target: str
     link_source: str
     name: str
     path: str
@@ -96,16 +106,16 @@ class SourceItem:
     code: str
     
     @staticmethod        
-    def key(source:str, lineno:int=None):
+    def target(source:str, lineno:int=None):
         if ROOT_SOURCE in source or lineno is None:
             return f"SOURCE_{source}"
         else:
             return f"SOURCE_{source}_{lineno}"
             
     def __init__(self, source):
-        self.key = SourceItem.key(source.name, None)
+        self.target = SourceItem.target(source.name, None)
         if source.parent:
-            self.link_source = SourceItem.key(source.parent[0], source.parent[1])
+            self.link_source = SourceItem.target(source.parent[0], source.parent[1])
         self.name   = source.name
         self.path   = source.path
         self.parent = source.parent
@@ -114,7 +124,7 @@ class SourceItem:
 # Units
 
 class UnitItem:
-    key: str
+    target: str
     link_source: str
     name: str
     value: str
@@ -122,12 +132,12 @@ class UnitItem:
     source: tuple
     
     @staticmethod        
-    def key(name: str):
+    def target(name: str):
         return f"UNIT_{name}"
 
     def __init__(self, name, unit):
-        self.key = UnitItem.key(name)
-        self.link_source = SourceItem.key(unit['source'][0],unit['source'][1])
+        self.target = UnitItem.target(name)
+        self.link_source = SourceItem.target(unit['source'][0],unit['source'][1])
         self.name   = name
         self.value  = unit['value']
         self.units  = unit['units']
@@ -136,7 +146,10 @@ class UnitItem:
 # Parameters
 
 class NodeItem:
-    key: str
+    target: str
+    link_source: str
+    link_injection: str
+    link_import: str
     name: str
     value: str
     unit: str
@@ -153,11 +166,13 @@ class NodeItem:
     condition: str
                
     @staticmethod        
-    def key(name:str, source:str, lineno:int):
+    def target(name:str, source:str, lineno:int):
         return f"NODE_{name}_{source}_{lineno}"
         
     def __init__(self, name, node, node_type):
-        self.key = NodeItem.key(node.name, node.source[0], node.source[1])
+        self.target = NodeItem.target(node.name, node.source[0], node.source[1])
+        self.link_source = SourceItem.target(node.source[0], node.source[1])
+        self.link_injection = InjectionItem.target(node.name, node.source[0], node.source[1])
         self.name = name
         self.source = node.source
         self.ntype = node_type.value
@@ -185,6 +200,8 @@ class NodeItem:
         # references
         self.injection = True if node.value_ref else False
         self.imported = node.isource if isinstance(node.isource,tuple) else False
+        if self.imported:
+            self.link_import = ImportItem.target(node.isource[0], node.isource[1])
         
         # node attributes
         self.constant = node.constant
@@ -240,18 +257,18 @@ class NodeItem:
         self.value = node.value
 
 class ParameterItem:
-    key: str
+    target: str
     name: str
     types: dict
     counts: list
     nodes: list
     
     @staticmethod        
-    def key(name: str):
+    def target(name: str):
         return f"PARAM_{name}"
         
     def __init__(self, name, node):
-        self.key = ParameterItem.key(name)
+        self.target = ParameterItem.target(name)
         self.name    = name
         self.counts  = [0]*len(ParType)
         self.nodes   = []
@@ -290,6 +307,8 @@ class Documentation:
     sources: list    = field(default_factory=list)
     
     def __post_init__(self):
+        if self.env.envtype != EnvType.DOCS:
+            raise Exception("Given environment is not a documentation environment")
         # group nodes according to their names
         nodes = self.env.nodes.query("*")
         

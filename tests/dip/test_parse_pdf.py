@@ -4,7 +4,7 @@ import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.dip import DIP
-from scinumtools.dip.exports.pdf import ExportPDF
+from scinumtools.dip.docs import ExportPDF
 
 @pytest.fixture
 def file_pdf():
@@ -37,8 +37,8 @@ def test_export_pdf(file_pdf, file_definitions, file_cells):
         """)
         p.add_source("cells", file_cells)
         p.from_file(file_definitions)
-        env = p.parse_pdf()
-    with ExportPDF(env) as exp:
+        docs = p.parse_docs()
+    with ExportPDF(docs) as exp:
         title = "Example documentation"
         pageinfo = "DIP Documentation"
         exp.build(file_pdf, title, pageinfo)

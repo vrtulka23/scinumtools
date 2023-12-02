@@ -26,7 +26,7 @@ can be parsed and exported using ``ExportConfig`` class
 .. code-block:: python
 
     >>> from scinumtools.dip import DIP
-    >>> from scinumtools.dip.exports.config import ExportConfig
+    >>> from scinumtools.dip.config import ExportConfigCPP
     >>>
     >>> with DIP() as dip:
     >>>    dip.from_file("config.dip")

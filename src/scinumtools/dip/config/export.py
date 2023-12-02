@@ -1,9 +1,9 @@
 import numpy as np
 
-from ...settings import Sign, EnvType, Format
-from ...datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
-from ...nodes import StringNode, BooleanNode, FloatNode, IntegerNode
-from ...environment import Environment
+from ..settings import Sign, EnvType, Format
+from ..datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
+from ..nodes import StringNode, BooleanNode, FloatNode, IntegerNode
+from ..environment import Environment
 
 class ExportConfig:
     

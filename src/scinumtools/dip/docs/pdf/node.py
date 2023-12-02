@@ -3,9 +3,9 @@ from reportlab.lib.units import inch
 import numpy as np
 import re
 
-from ..settings import *
-from ....nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
-from ....settings import Order, Sign, Keyword, EnvType, DocsType\
+from .settings import *
+from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
+from ...settings import Order, Sign, Keyword, EnvType, DocsType\
 
 class NodeSection:
     
@@ -44,10 +44,10 @@ class NodeSection:
         ]
         
         # construct a node table
-        node_target = Target(node.key)
-        source_link = AnchorLink(AnchorType.SOURCE, node.source)
-        injection_link = AnchorLink(AnchorType.INJECT,node) if node.injection else ''
-        import_link = AnchorLink(AnchorType.IMPORT,node.imported) if node.imported else ''
+        node_target = Target(node.target)
+        source_link = Link(node.link_source, f"{node.source[0]}:{node.source[1]}")
+        injection_link = Link(node.link_injection, " | injected") if node.injection else ''
+        import_link = Link(node.link_import, " | imported") if node.imported else ''
         dtype = node.dtype
         if node.constant:
             dtype = f"constant {dtype}"
@@ -83,12 +83,12 @@ class NodeSection:
 
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Parameter nodes"), H2) )
+        blocks.append(Paragraph(Title(f"Parameter nodes"), H2) )
         names = list(self.data.keys())
         names.sort()
         for name in names:
             blocks.append(Spacer(1,0.1*inch))
-            blocks.append(Paragraph(f"<strong>"+AnchorTitle(AnchorType.PARAM, name)+"</strong>"))
+            blocks.append(Paragraph(f"<strong>"+Target(f"PARAM_{name}", name)+"</strong>"))
             blocks.append(Spacer(1,0.1*inch))
             for node in self.data[name].nodes:
                 blocks.append(self.parse_node(name, node))

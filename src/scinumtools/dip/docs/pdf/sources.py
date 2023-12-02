@@ -10,9 +10,9 @@ import numpy as np
 from pathlib import Path
 import re
 
-from ..settings import *
-from ....settings import DocsType, Sign, ROOT_SOURCE
-from ....pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
+from .settings import *
+from ...settings import DocsType, Sign, ROOT_SOURCE
+from ...pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
 
 class SourcesSection:
     
@@ -40,7 +40,7 @@ class SourcesSection:
         lines = code.split(Sign.NEWLINE)
         for l in range(len(lines)-2):  # the last two lines are always empty
             lineno = str(l+1)
-            lines[l] = Target(f"{item.key}_{lineno}", f" {lineno:5s}{lines[l]}")
+            lines[l] = Target(f"{item.target}_{lineno}", f" {lineno:5s}{lines[l]}")
         code = Sign.NEWLINE.join(lines)
 
         # replace standard CSS classes with explicit text formatting
@@ -87,7 +87,7 @@ class SourcesSection:
 
 
         blocks = []
-        p = Paragraph(Target(item.key) + item.name)
+        p = Paragraph(Target(item.target) + item.name)
 
         data = [   
             [p,  ''],
@@ -110,7 +110,7 @@ class SourcesSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"List of sources"), H2))
+        blocks.append(Paragraph(Title(f"List of sources"), H2))
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks += self.parse_item(item)

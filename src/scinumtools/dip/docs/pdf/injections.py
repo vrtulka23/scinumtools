@@ -3,8 +3,8 @@ from reportlab.lib.units import inch
 import numpy as np
 import re
 
-from ..settings import *
-from ....nodes import ModNode
+from .settings import *
+from ...nodes import ModNode
 
 class InjectionsSection:
     
@@ -36,15 +36,15 @@ class InjectionsSection:
         ]
         
         # construct a item table
-        target_injection = Target(item.key)
-        link_source = AnchorLink(AnchorType.SOURCE,item.source)
+        target_injection = Target(item.target)
+        link_source = Link(item.link_source, f"{item.source[0]}:{item.source[1]}") 
         data = [
             [Paragraph(target_injection+link_source), ''],
         ]
-        data.append(['Injecting node:', Paragraph(AnchorLink(AnchorType.NODE, item),          TABLE_BODY_STYLE)])
+        data.append(['Injecting node:', Paragraph(Link(item.link_node, item.name),          TABLE_BODY_STYLE)])
         data.append(['Request:',        Paragraph(HighlightReference("{"+item.reference+"}"), TABLE_BODY_STYLE)])
         if item.isource:
-            data.append(['From source:', Paragraph(AnchorLink(AnchorType.SOURCE, item.isource), TABLE_BODY_STYLE)])
+            data.append(['From source:', Paragraph(Link(item.link_isource, f"{item.isource[0]}:{item.isource[1]}"), TABLE_BODY_STYLE)])
         if item.ivalue:
             data.append(['Value:', Paragraph(item.ivalue, TABLE_BODY_STYLE)])
         if item.iunit:
@@ -54,7 +54,7 @@ class InjectionsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Injected values"), H2) )
+        blocks.append(Paragraph(Title(f"Injected values"), H2) )
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_item(item))

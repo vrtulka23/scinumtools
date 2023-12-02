@@ -9,19 +9,19 @@ import numpy as np
 from dataclasses import dataclass
 
 from .settings import *
-from .sections.node import NodeSection
-from .sections.injections import InjectionsSection
-from .sections.imports import ImportsSection
-from .sections.types import TypesSection
-from .sections.parameters import ParametersSection
-from .sections.units import UnitsSection
-from .sections.sources import SourcesSection
-from ...documentation import Documentation
-from ...settings import Order, Sign, Keyword, EnvType, DocsType, DocsType
+from .node import NodeSection
+from .injections import InjectionsSection
+from .imports import ImportsSection
+from .types import TypesSection
+from .parameters import ParametersSection
+from .units import UnitsSection
+from .sources import SourcesSection
+from ..documentation import Documentation
+from ...settings import DocsType
 from ...lists import NodeList
 from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
 
-def myLaterPages(canvas, doc):
+def pageSettings(canvas, doc):
     canvas.saveState()
     canvas.setFont('Times-Roman',9)
     canvas.drawString(2.5*cm, 2*cm, "Page %d " % (doc.page))
@@ -31,13 +31,13 @@ class DocsTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):
         self.allowSplitting = 0
         BaseDocTemplate.__init__(self, filename, **kw)
-        template = PageTemplate('normal', [Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F1')], onPage=myLaterPages)
+        template = PageTemplate('normal', [Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F1')], onPage=pageSettings)
         self.addPageTemplates(template)
 
     def afterFlowable(self, flowable):
         "Registers TOC entries."
         if flowable.__class__.__name__ == 'Paragraph':
-            text = AnchorLink(AnchorType.SECTION,flowable.getPlainText())
+            text = Link(f"SECTION_{flowable.getPlainText()}", flowable.getPlainText())
             style = flowable.style.name
             if style == 'Heading1':
                 self.notify('TOCEntry', (0, text, self.page))
@@ -57,8 +57,6 @@ class ExportPDF:
         pass
     
     def __init__(self, docs: Documentation, **kwargs):
-        if docs.env.envtype != EnvType.DOCS:
-            raise Exception("Given environment is not a documentation environment")
         self.docs = docs
         
     def build(self, file_path: str, title, intro=None):
@@ -67,7 +65,7 @@ class ExportPDF:
 
         blocks.append(Paragraph(title, TITLE))
         
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Table of contents"), H0))
+        blocks.append(Paragraph(Title("Table of contents"), H0))
         
         toc = TableOfContents()
         toc.levelStyles = [
@@ -78,12 +76,12 @@ class ExportPDF:
     
         if intro:
             blocks.append(PageBreak())
-            blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Introduction"), H1))
+            blocks.append(Paragraph(Title("Introduction"), H1))
             blocks.append(Paragraph(intro))
             blocks.append(Spacer(1,cm))
         
         blocks.append(PageBreak())
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Parameters"), H1))
+        blocks.append(Paragraph(Title("Parameters"), H1))
         
         # list node types
         with TypesSection(self.docs.types) as tmpl:
@@ -100,7 +98,7 @@ class ExportPDF:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"References"), H1))
+        blocks.append(Paragraph(Title("References"), H1))
 
         # list all injected nodes
         with InjectionsSection(self.docs.injections) as tmpl:
@@ -113,7 +111,7 @@ class ExportPDF:
             blocks += tmpl.parse()
             
         blocks.append(PageBreak())
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,"Settings"), H1))
+        blocks.append(Paragraph(Title("Settings"), H1))
         
         # list units
         with UnitsSection(self.docs.units) as tmpl:

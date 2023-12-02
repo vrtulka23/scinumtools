@@ -8,7 +8,7 @@ from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
 from scinumtools.dip import DIP
-from scinumtools.dip.exports.pdf import ExportPDF
+from scinumtools.dip.docs import ExportPDF
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 
@@ -35,9 +35,8 @@ def build_export_pdf():
         """)
         p.add_source("cells", file_cells)
         p.from_file(file_definitions)
-        env = p.parse_pdf()
-    # Export parameters as a PDF
-    with ExportPDF(env) as exp:
+        docs = p.parse_docs()    # Export parameters as a PDF
+    with ExportPDF(docs) as exp:
         exp.build(
             file_pdf, 
             "Example DIP documentation", 

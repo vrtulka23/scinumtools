@@ -79,52 +79,8 @@ H2 = ParagraphStyle(
     spaceAfter=cm,
 )
 
-class AnchorType(Enum):
-    NODE   = 'NODE'
-    PARAM  = 'PARAM'
-    SOURCE = 'SOURCE'
-    INJECT = 'INJECT'
-    IMPORT = 'IMPORT'
-    SECTION = 'SECTION'
-
-def _anchor_args(aname:AnchorType, *args):
-    if aname == AnchorType.PARAM:
-        name = args[0]
-        return name, name
-    elif aname == AnchorType.NODE:
-        name = args[0].name
-        source = args[0].source[0]
-        lineno = args[0].source[1]
-        return f"{name}_{source}_{lineno}", name
-    elif aname == AnchorType.INJECT:
-        name = args[0].name
-        source = args[0].source[0]
-        lineno = args[0].source[1]
-        return f"{name}_{source}_{lineno}", ' | injected'
-    elif aname == AnchorType.IMPORT:
-        source, lineno = args[0][0], args[0][1]
-        return f"{source}_{lineno}", f" | imported"
-    elif aname==AnchorType.SOURCE:
-        source, lineno = args[0][0], args[0][1]
-        if ROOT_SOURCE in source:
-            return f"{source}", f"{source}:{lineno}"
-        else:
-            return f"{source}_{lineno}", f"{source}:{lineno}"
-    elif aname==AnchorType.SECTION:
-        name = args[0]
-        return str(unicodedata.normalize('NFD',name)), name
-
-def AnchorLink(aname:AnchorType, *args):
-    key, name = _anchor_args(aname, *args)
-    return f"<a href=\"#{aname.value}_{key}\" color=\"blue\">{name}</a>"
-
-def AnchorTarget(aname:AnchorType, *args):
-    key, name = _anchor_args(aname, *args)
-    return f"<a name=\"{aname.value}_{key}\"></a>"
-    
-def AnchorTitle(aname:AnchorType, *args):
-    key, name = _anchor_args(aname, *args)
-    return f"<a name=\"{aname.value}_{key}\"></a> {name}"
+def Title(name:str=''):
+    return f"<a name=\"SECTION_{name}\"></a>{name}"
 
 def Target(key:str, name:str=''):
     return f"<a name=\"{key}\"></a>{name}"

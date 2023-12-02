@@ -1,11 +1,11 @@
 import numpy as np
-import yaml
+import toml
 
 from .export import ExportConfig
-from ...settings import Format
-from ...environment import Environment
+from ..settings import Format
+from ..environment import Environment
 
-class ExportConfigYAML(ExportConfig):
+class ExportConfigTOML(ExportConfig):
 
     def __init__(self, env: Environment, **kwargs):
         if 'dtype' not in kwargs:
@@ -17,8 +17,8 @@ class ExportConfigYAML(ExportConfig):
         for key in self.data.keys():
             if isinstance(data[key], tuple):
                 if units:
-                    data[key] = {'value': data[key][0], 'unit': data[key][1]}
+                    data[key] = {'value': data[key][0], 'unit':data[key][1]}
                 else:
                     data[key] = data[key][0]
-        self.text = yaml.dump(data, **kwargs).strip()
+        self.text = toml.dumps(data, **kwargs).strip()
         return self.text

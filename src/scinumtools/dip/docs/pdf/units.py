@@ -2,8 +2,8 @@ from reportlab.platypus import Table, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
 import numpy as np
 
-from ..settings import *
-from ....settings import ROOT_SOURCE
+from .settings import *
+from ...settings import ROOT_SOURCE
 
 class UnitsSection:
     
@@ -39,7 +39,7 @@ class UnitsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"List of units"), H2))
+        blocks.append(Paragraph(Title(f"List of units"), H2))
         blocks.append(self.parse_table()) 
         blocks.append(Spacer(1,0.2*inch))
         return blocks

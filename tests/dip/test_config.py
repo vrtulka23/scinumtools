@@ -4,7 +4,7 @@ import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.dip import DIP
-from scinumtools.dip.exports.config import *
+from scinumtools.dip.config import *
 
 @pytest.fixture
 def file_pdf():

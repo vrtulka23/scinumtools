@@ -3,10 +3,10 @@ from reportlab.lib.units import inch
 import numpy as np
 import re
 
-from ..settings import *
-from ....nodes import Node, ImportNode
-from ....settings import Order, Sign, Keyword, EnvType, DocsType
-from ....environment import Environment
+from .settings import *
+from ...nodes import Node, ImportNode
+from ...settings import Order, Sign, Keyword, EnvType, DocsType
+from ...environment import Environment
 
 class ImportsSection:
     
@@ -42,8 +42,8 @@ class ImportsSection:
         ]
         
         # construct a node table
-        target_import = Target(item.key) 
-        link_source = AnchorLink(AnchorType.SOURCE,item.source)
+        target_import = Target(item.target) 
+        link_source = Link(item.link_source, f"{item.source[0]}:{item.source[1]}") 
         data = [
             [Paragraph(target_import+link_source), '', ''],
         ]
@@ -54,9 +54,9 @@ class ImportsSection:
             nrow = len(data)+1+len(rows)
             TABLE_STYLE.append(('SPAN', (0,nrow), (1,nrow) ))
             rows.append([
-                Paragraph(AnchorLink(AnchorType.NODE, idata), TABLE_BODY_STYLE),  
+                Paragraph(Link(idata.link_node, idata.name), TABLE_BODY_STYLE),  
                 '',
-                Paragraph(AnchorLink(AnchorType.SOURCE, idata.source), TABLE_BODY_STYLE),  
+                Paragraph(Link(idata.link_source, f"{idata.source[0]}:{idata.source[1]}"), TABLE_BODY_STYLE),  
             ])
         if rows:
             TABLE_STYLE.append(('BACKGROUND', (0,3), (-1,-1),  PALETTE['prop_value']))
@@ -67,7 +67,7 @@ class ImportsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Imported nodes"), H2) )
+        blocks.append(Paragraph(Title(f"Imported nodes"), H2) )
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_item(item))

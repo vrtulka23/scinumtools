@@ -2,8 +2,8 @@ from reportlab.platypus import Paragraph, Table, Spacer
 from reportlab.lib.units import inch
 import numpy as np
 
-from ..settings import *
-from ....settings import DocsType
+from .settings import *
+from ...settings import DocsType
 
 class ParametersSection:
     
@@ -39,14 +39,14 @@ class ParametersSection:
         for name in self.names:
             item = self.data[name]
             #p = Paragraph(AnchorLink(AnchorType.PARAM, item.name))
-            p = Paragraph(Link(item.key, item.name))
+            p = Paragraph(Link(item.target, item.name))
             counts = ['' if c==0 else c for c in item.counts]
             data.append([p]+counts)
         return Table(data, style=TABLE_STYLE, hAlign='LEFT', colWidths=ColumnWidths([0.72, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]))
         
     def parse(self):
         blocks = []       
-        blocks.append(Paragraph(AnchorTitle(AnchorType.SECTION,f"Parameter list"), H2))
+        blocks.append(Paragraph(Title(f"Parameter list"), H2))
         blocks.append(self.parse_table())
         blocks.append(Spacer(1,0.2*inch))
         return blocks
