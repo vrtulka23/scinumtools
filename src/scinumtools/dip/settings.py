@@ -1,5 +1,3 @@
-from enum import Flag, auto
-
 ROOT_SOURCE   = 'ROOT'
 FILE_SOURCE   = 'FILE'
 STRING_SOURCE = 'STRING'
@@ -54,11 +52,4 @@ class Order:
     NONE        = 0
     NAME        = 1
 
-class DocsType(Flag):  # node type in documentation
-    UNKNOWN      = auto()
-    DECLARATION  = auto()
-    DEFINITION   = auto()
-    MODIFICATION = auto()
-    INJECTION    = auto()
-    
     

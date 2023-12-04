@@ -17,7 +17,7 @@ from .parameters import ParametersSection
 from .units import UnitsSection
 from .sources import SourcesSection
 from ..documentation import Documentation
-from ...settings import DocsType
+from ..settings import DocsType
 from ...lists import NodeList
 from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
 

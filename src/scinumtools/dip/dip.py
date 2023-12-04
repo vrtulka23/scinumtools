@@ -8,6 +8,7 @@ from inspect import getframeinfo, stack
 from .environment import Environment
 from .docs import Documentation
 from .settings import *
+from .docs.settings import DocsType
 from .nodes.parser import Parser
 from .nodes import EmptyNode, ImportNode, UnitNode, SourceNode, CaseNode
 from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode, DescriptionNode

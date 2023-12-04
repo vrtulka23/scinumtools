@@ -4,8 +4,9 @@ import numpy as np
 import re
 
 from .settings import *
+from ..settings import DocsType
 from ...nodes import Node, ImportNode
-from ...settings import Order, Sign, Keyword, EnvType, DocsType
+from ...settings import Order, Sign, Keyword, EnvType
 from ...environment import Environment
 
 class ImportsSection:

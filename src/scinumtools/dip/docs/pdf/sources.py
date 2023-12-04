@@ -11,7 +11,8 @@ from pathlib import Path
 import re
 
 from .settings import *
-from ...settings import DocsType, Sign, ROOT_SOURCE
+from ..settings import DocsType
+from ...settings import Sign, ROOT_SOURCE
 from ...pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
 
 class SourcesSection:

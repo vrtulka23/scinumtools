@@ -3,7 +3,7 @@ from reportlab.lib.units import inch
 import numpy as np
 
 from .settings import *
-from ...settings import DocsType
+from ..settings import DocsType
 
 class ParametersSection:
     

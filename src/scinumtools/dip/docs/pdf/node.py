@@ -4,8 +4,9 @@ import numpy as np
 import re
 
 from .settings import *
+from ..settings import DocsType
 from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
-from ...settings import Order, Sign, Keyword, EnvType, DocsType\
+from ...settings import Order, Sign, Keyword, EnvType
 
 class NodeSection:
     
