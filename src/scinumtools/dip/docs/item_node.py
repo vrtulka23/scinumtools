@@ -13,6 +13,7 @@ class NodeItem:
     value: str
     unit: str
     dtype: str
+    source: tuple
     unsigned: bool
     precision: int
     injection: bool

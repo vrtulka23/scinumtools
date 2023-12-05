@@ -13,7 +13,7 @@ import re
 from .settings import *
 from ..settings import DocsType
 from ...settings import Sign, ROOT_SOURCE
-from ...pygments import SyntaxLexer, StyleLexer, pygments_monkeypatch_style
+from ...pygments import SyntaxLexer, StyleLexer
 
 class SourcesSection:
     

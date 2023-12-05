@@ -15,7 +15,6 @@ class ParType(Enum):
 class ParameterItem:
     target: str
     name: str
-    types: dict
     counts: list
     nodes: list
         

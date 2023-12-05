@@ -8,7 +8,7 @@ from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
 from scinumtools.dip import DIP
-from scinumtools.dip.docs import ExportPDF
+from scinumtools.dip.docs import ExportPDF, ExportHTML
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 
@@ -49,6 +49,47 @@ def build_export_pdf():
             each other. All hyperlinks are denoted with a blue text.
         """)
     print(file_pdf)
+
+def build_export_html():
+    
+    # Generate a PDF documentation from a DIP file
+    dir_html = os.environ['DIR_DOCS']+"/source/_static/htmldocs"
+    dir_html_build = f"{dir_html}/build"
+    file_definitions = f"{dir_html}/definitions.dip"
+    file_cells = f"{dir_html}/cells.dip"
+    file_html = f"{dir_html}/documentation.pdf"
+    # Create directory if missing
+    if not os.path.isdir(dir_html_build):
+        os.mkdir(dir_html_build)
+    if not os.path.isdir(dir_html):
+        os.mkdir(dir_html)
+    # Create a DIP environment
+    with DIP(name="PDF") as p:
+        p.add_unit("velocity", 13, 'cm/s')
+        p.from_string("""
+        $unit length = 1 cm
+        $unit mass = 2 g
+        
+        cfl_factor float = 0.7  # Courant-Friedrichs-Lewy condition
+        max_vare float = 0.2    # maximum energy change of electrons
+        max_vari float = 0.2    # maximum energy change of ions
+        """)
+        p.add_source("cells", file_cells)
+        p.from_file(file_definitions)
+        docs = p.parse_docs()    # Export parameters as a PDF
+    with ExportHTML(docs) as exp:
+        exp.build(
+            dir_html_build, 
+            "Example DIP documentation", 
+            """In this document we want to demonstrate basic capabilities of a DIP documentation.<br/><br/>
+            The documentation is structured into 3 main sections. The first section summarizes all parameters
+            in a DIP code, as well as their corresponding node definitions, declarations, modifications and corresponding properties.
+            Following section summarizes all references of injected values and lists imported nodes.
+            The final section gives an overview of custom units and code sources.<br/><br/>
+            Parameters, nodes, sections and many other items in this documentation are cross-linked between
+            each other. All hyperlinks are denoted with a blue text.
+        """)
+    print(dir_html_build)
 
 def build_prefixes():
     

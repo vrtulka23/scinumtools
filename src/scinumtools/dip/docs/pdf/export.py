@@ -47,8 +47,6 @@ class DocsTemplate(BaseDocTemplate):
 class ExportPDF:
     
     docs: Documentation
-    nodes: dict         # list of nodes grouped by name
-    names: list         # sorted list of node names
     
     def __enter__(self):
         return self

@@ -1,0 +1,14 @@
+runtime
+  t_max = 10 ns
+  timestep = 0.01 ns
+
+box
+  geometry = 3
+  size
+    x = 10 nm
+    y = 3e7 nm
+
+modules
+  heating = false
+  radiation = true
+
