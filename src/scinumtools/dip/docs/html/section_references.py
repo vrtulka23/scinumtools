@@ -19,11 +19,11 @@ class ReferencesSection:
         self.docs = docs
         self.dir_html = dir_html
         
-        self.html = BeautifulSoup("<html><head></head><body></body></html>", features="html5lib")
+        self.html = BeautifulSoup("<html><head></head><body></body></html>", 'html.parser')
         style = self.html.new_tag("link", rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
         self.html.head.append(style)
         
-        self.container = BeautifulSoup(f"<div class='container'><div class='row'></div></div>", features="html5lib")
+        self.container = BeautifulSoup(f"<div class='container'><div class='row'></div></div>", 'html.parser')
         self.content = self.html.new_tag("div", **{'class':"col"})
         
         self.container.div.div.append(menu)
@@ -32,13 +32,16 @@ class ReferencesSection:
         section = BeautifulSoup(Title("Injections"), features="html5lib")
         self.content.append(section)
         
-        def add_prop(name, value):
+        def add_prop(name, value, append=False):
             props = self.html.new_tag('div', **{'class':'row'})
             pname = self.html.new_tag('div', **{'class':'col-md-2 bg-light'})
             pname.string = name
             props.append(pname)
             pvalue = self.html.new_tag('div', **{'class':'col'})
-            pvalue.string = value
+            if append:
+                pvalue.append(value)
+            else:
+                pvalue.string = value
             props.append(pvalue)
             return props
         
@@ -47,11 +50,12 @@ class ReferencesSection:
             
             header = self.html.new_tag('div', **{'class':'row bg-light'})
             name = self.html.new_tag('div', **{'class':'col'})
-            name.string = f"{idata.source[0]}:{idata.source[1]}"
+            name.append(Target(idata.target))
+            name.append(Link(PAGE_SOURCES, idata.link_source, f"{idata.source[0]}:{idata.source[1]}"))
             header.append(name)
             item.append(header)
             
-            item.append(add_prop('Injectiong node:', idata.name))
+            item.append(add_prop('Injectiong node:', Link(PAGE_NODES,idata.link_node, idata.name), append=True))
             item.append(add_prop('Request:', "{"+idata.reference+"}"))
             if idata.isource:
                 item.append(add_prop('From source:', f"{idata.isource[0]}:{idata.isource[1]}"))
@@ -60,7 +64,7 @@ class ReferencesSection:
             self.content.append(item)
         
     def build_imports(self):
-        section = BeautifulSoup(Title("Imports"), features="html5lib")
+        section = BeautifulSoup(Title("Imports"), 'html.parser')
         self.content.append(section)
         
         for idata in self.docs.imports:
@@ -68,7 +72,8 @@ class ReferencesSection:
             
             header = self.html.new_tag('div', **{'class':'row bg-light'})
             name = self.html.new_tag('div', **{'class':'col'})
-            name.string = f"{idata.source[0]}:{idata.source[1]}"
+            name.append(Target(idata.target))
+            name.append(Link(PAGE_SOURCES,idata.link_source,f"{idata.source[0]}:{idata.source[1]}"))
             header.append(name)
             item.append(header)
             
@@ -81,22 +86,23 @@ class ReferencesSection:
             props.append(pvalue)
             item.append(props)
             
-            props = self.html.new_tag('div', **{'class':'row'})
-            pname = self.html.new_tag('div', **{'class':'col-6 bg-light'})
-            pname.string = 'Imported node:'
-            props.append(pname)
-            pvalue = self.html.new_tag('div', **{'class':'col-6 bg-light'})
-            pvalue.string = "From source:"
-            props.append(pvalue)
-            item.append(props)
+            if idata.idata:
+                props = self.html.new_tag('div', **{'class':'row'})
+                pname = self.html.new_tag('div', **{'class':'col-6 bg-light'})
+                pname.string = 'Imported node:'
+                props.append(pname)
+                pvalue = self.html.new_tag('div', **{'class':'col-6 bg-light'})
+                pvalue.string = "From source:"
+                props.append(pvalue)
+                item.append(props)
             
             for inode in idata.idata:
                 props = self.html.new_tag('div', **{'class':'row'})
                 pname = self.html.new_tag('div', **{'class':'col-6'})
-                pname.string = inode.name
+                pname.append(Link(PAGE_NODES, inode.link_node, inode.name))
                 props.append(pname)
                 pvalue = self.html.new_tag('div', **{'class':'col-6'})
-                pvalue.string = f"{inode.source[0]}:{inode.source[1]}"
+                pvalue.append(Link(PAGE_SOURCES, inode.link_source, f"{inode.source[0]}:{inode.source[1]}"))
                 props.append(pvalue)
                 item.append(props)
             
@@ -112,7 +118,8 @@ class ReferencesSection:
         
         self.build_imports()
 
-        self.container.div.div.append(self.content)
+        self.container.div.div.append(self.content)  
+        self.container.div.append(BeautifulSoup("<div class='p-3'> </div>", 'html.parser'))
         self.html.body.append(self.container)
         
         with open(f"{self.dir_html}/references.html", "w") as file:

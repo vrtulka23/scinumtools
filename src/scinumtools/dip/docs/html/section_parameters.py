@@ -19,7 +19,7 @@ class ParametersSection:
         self.docs = docs
         self.dir_html = dir_html
         
-        self.html = BeautifulSoup("<html><head></head><body></body></html>", features="html5lib")
+        self.html = BeautifulSoup("<html><head></head><body></body></html>", 'html.parser')
         style = self.html.new_tag("link", rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
         self.html.head.append(style)
         
@@ -46,7 +46,7 @@ class ParametersSection:
         self.content.append(table)
         
     def build_parameters(self):
-        section = BeautifulSoup(Title("Parameter list"), features="html5lib")
+        section = BeautifulSoup(Title("Parameter list"), 'html.parser')
         self.content.append(section)
             
         table = self.html.new_tag('table', **{'class':'table table-bordered'})
@@ -66,7 +66,7 @@ class ParametersSection:
             pdata = self.docs.parameters[pname]
             row = self.html.new_tag('tr')
             col = self.html.new_tag('td', **{'class':'p-1'})
-            col.string = pname
+            col.append(Link(PAGE_PARAMETERS,pdata.target, pname))
             row.append(col)
             for count in pdata.counts:
                 col = self.html.new_tag('td', **{'class':'text-center p-1'})
@@ -76,7 +76,7 @@ class ParametersSection:
         self.content.append(table)
 
     def build_nodes(self):
-        section = BeautifulSoup(Title("Parameter nodes"), features="html5lib")
+        section = BeautifulSoup(Title("Parameter nodes"), 'html.parser')
         self.content.append(section)
         
         def add_property(pname, pvalue):
@@ -94,18 +94,21 @@ class ParametersSection:
         for pname in pnames:
             pdata = self.docs.parameters[pname]
             param = self.html.new_tag("h6", **{'class':'mt-2'})
-            param.string = pname
+            param.append(Target(pdata.target, pname))
             self.content.append(param)
             
             for ndata in pdata.nodes:
                 node = self.html.new_tag("div", **{'class':"container mt-2 border"})
                 header = self.html.new_tag('div', **{'class':'row bg-light'})
                 links = self.html.new_tag('div', **{'class':'col'})
-                links.string = f"{ndata.source[0]}:{ndata.source[1]}"
+                links.append(Target(ndata.target))
+                links.append(Link(PAGE_SOURCES,ndata.link_source, f"{ndata.source[0]}:{ndata.source[1]}"))
                 if ndata.injection:
-                    links.string += " | injection"
+                    links.append(" | ")
+                    links.append(Link(PAGE_INJECTIONS,ndata.link_injection, "injection"))
                 if ndata.imported:
-                    links.string += " | import"
+                    links.append(" | ")
+                    links.append(Link(PAGE_IMPORTS,ndata.link_import, "import"))
                 header.append(links)
                 dtype = self.html.new_tag('div', **{'class':'col-sm-3 text-right'})
                 if ndata.constant:
@@ -146,6 +149,7 @@ class ParametersSection:
         self.build_nodes()
         
         self.container.div.div.append(self.content)
+        self.container.div.append(BeautifulSoup("<div class='p-3'> </div>", 'html.parser'))
         self.html.body.append(self.container)
         
         with open(f"{self.dir_html}/parameters.html", "w") as file:

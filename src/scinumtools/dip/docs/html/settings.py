@@ -10,11 +10,19 @@ NTYPES = [
     ('Import',                     '#D0BCDC',),
 ]
 
+PAGE_TYPES      = "parameters.html"
+PAGE_PARAMETERS = "parameters.html"
+PAGE_NODES      = "parameters.html"
+PAGE_INJECTIONS = "references.html"
+PAGE_IMPORTS    = "references.html"
+PAGE_UNITS      = "settings.html"
+PAGE_SOURCES    = "settings.html"
+
 def Title(name:str=''):
     return f"<a name=\"SECTION_{name}\"></a><h2>{name}</h2>"
 
 def Target(key:str, name:str=''):
-    return f"<a name=\"{key}\"></a>{name}"
+    return BeautifulSoup(f"<a name=\"{key}\"></a>{name}", 'html.parser')
     
-def Link(key:str, name:str=''):
-    return f"<a href=\"#{key}\" color=\"blue\">{name}</a>"
+def Link(page:str, key:str, name:str=''):
+    return BeautifulSoup(f"<a href=\"{page}#{key}\" color=\"blue\">{name}</a>", 'html.parser')

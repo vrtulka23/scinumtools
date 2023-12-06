@@ -84,6 +84,7 @@ class ExportHTML:
             
         container.div.div.append(menu)
         container.div.div.append(content)
+        container.div.append(BeautifulSoup("<div class='p-3'> </div>", 'html.parser'))
         html.body.append(container)
         
         with open(f"{dir_html}/index.html", "w") as file:
