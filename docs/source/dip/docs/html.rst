@@ -25,7 +25,7 @@ Environment suitable for a documentation has to be parsed with a special method 
    
 ``ExportHTML`` class provided above can be used as it is, or as a template for your own personalized documentation.
 When building your own documentation, you can simply take the `existing source code <https://github.com/vrtulka23/scinumtools/tree/main/src/scinumtools/dip/docs/html>`_ and modify it according to your needs.
-For more information how to create and manipulate HTML content using Python see documentation of `Beautiful Soup <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>`.
+For more information how to create and manipulate HTML content using Python see documentation of `Beautiful Soup <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>`_.
 
 Code above will generate the following default `HTML documentation <../../_static/htmldocs/build/index.html>`_.
 

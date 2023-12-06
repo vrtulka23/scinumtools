@@ -25,7 +25,7 @@ Environment suitable for a documentation has to be parsed with a special method 
    
 ``ExportPDF`` class provided above can be used as it is, or as a template for your own personalized documentation.
 When building your own documentation, you can simply take the `existing source code <https://github.com/vrtulka23/scinumtools/tree/main/src/scinumtools/dip/docs/pdf>`_ and modify it according to your needs.
-For more information how to create PDF content using Python see documentation of `ReportLab <https://docs.reportlab.com/>`.
+For more information how to create PDF content using Python see documentation of `ReportLab <https://docs.reportlab.com/>`_.
 
 Code above will generate the following `PDF documentation <../../_static/pdf/documentation.pdf>`_.
 
