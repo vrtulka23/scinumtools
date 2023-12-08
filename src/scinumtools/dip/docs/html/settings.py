@@ -18,8 +18,8 @@ PAGE_IMPORTS    = "references.html"
 PAGE_UNITS      = "settings.html"
 PAGE_SOURCES    = "settings.html"
 
-def Title(name:str=''):
-    return f"<a name=\"SECTION_{name}\"></a><h2>{name}</h2>"
+def Title(name:str='', h:int=2):
+    return f"<a name=\"SECTION_{name}\"></a><h{h}>{name}</h{h}>"
 
 def Target(key:str, name:str=''):
     return BeautifulSoup(f"<a name=\"{key}\"></a>{name}", 'html.parser')

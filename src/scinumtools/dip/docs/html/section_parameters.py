@@ -15,22 +15,16 @@ class ParametersSection:
     def __exit__(self, type, value, traceback):
         pass
     
-    def __init__(self, docs: Documentation, dir_html: str, menu, **kwargs):
+    def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
-        self.dir_html = dir_html
-        
-        self.html = BeautifulSoup("<html><head></head><body></body></html>", 'html.parser')
-        style = self.html.new_tag("link", rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
-        self.html.head.append(style)
-        
-        self.container = BeautifulSoup(f"<div class='container'><div class='row'></div></div>", features="html5lib")
-        self.content = self.html.new_tag("div", **{'class':"col"})
-        
-        self.container.div.div.append(menu)
+        self.html = BeautifulSoup(f"", 'html.parser')
+
+    def styles(self):
+        return None
         
     def build_types(self):
-        section = BeautifulSoup(Title("Node types"), features="html5lib")
-        self.content.append(section)
+        section = BeautifulSoup(Title("Node types",3), 'html.parser')
+        self.html.append(section)
         
         table = self.html.new_tag('table')
         for ptype in ParType:
@@ -38,20 +32,20 @@ class ParametersSection:
             col = self.html.new_tag('td', **{'width': 20, 'style':'background-color:'+NTYPES[ptype.value][1]})
             col.string = ' '
             row.append(col)
-            col = self.html.new_tag('td', **{'class':'pl-3'})
+            col = self.html.new_tag('td', **{'class':'ps-3'})
             col.string = NTYPES[ptype.value][0]
             row.append(col)
             table.append(row)
             
-        self.content.append(table)
+        self.html.append(table)
         
     def build_parameters(self):
-        section = BeautifulSoup(Title("Parameter list"), 'html.parser')
-        self.content.append(section)
+        section = BeautifulSoup(Title("Parameter list",3), 'html.parser')
+        self.html.append(section)
             
         table = self.html.new_tag('table', **{'class':'table table-bordered'})
         row = self.html.new_tag('tr', **{'class':'thead-light'})
-        col = self.html.new_tag('th', **{'class':'p-1'})
+        col = self.html.new_tag('th', **{'class':'p-1 bg-body-secondary'})
         col.string = "Property name"
         row.append(col)
         for ptype in range(len(ParType)):
@@ -73,18 +67,18 @@ class ParametersSection:
                 col.string = str(count) if count else ''
                 row.append(col)
             table.append(row)
-        self.content.append(table)
+        self.html.append(table)
 
     def build_nodes(self):
-        section = BeautifulSoup(Title("Parameter nodes"), 'html.parser')
-        self.content.append(section)
+        section = BeautifulSoup(Title("Parameter nodes",3), 'html.parser')
+        self.html.append(section)
         
         def add_property(pname, pvalue):
             props = self.html.new_tag('div', **{'class':'row'})
-            name = self.html.new_tag('div', **{'class':'col-md-2 bg-light'})
+            name = self.html.new_tag('div', **{'class':'col-md-2 bg-body-secondary'})
             name.string = pname
             props.append(name)
-            value = self.html.new_tag('div', **{'class':'col'})
+            value = self.html.new_tag('div', **{'class':'col bg-white'})
             value.string = pvalue
             props.append(value)
             return props
@@ -95,11 +89,11 @@ class ParametersSection:
             pdata = self.docs.parameters[pname]
             param = self.html.new_tag("h6", **{'class':'mt-2'})
             param.append(Target(pdata.target, pname))
-            self.content.append(param)
+            self.html.append(param)
             
             for ndata in pdata.nodes:
                 node = self.html.new_tag("div", **{'class':"container mt-2 border"})
-                header = self.html.new_tag('div', **{'class':'row bg-light'})
+                header = self.html.new_tag('div', **{'class':'row bg-dark-subtle'})
                 links = self.html.new_tag('div', **{'class':'col'})
                 links.append(Target(ndata.target))
                 links.append(Link(PAGE_SOURCES,ndata.link_source, f"{ndata.source[0]}:{ndata.source[1]}"))
@@ -133,24 +127,15 @@ class ParametersSection:
                 if ndata.description:
                     node.append(add_property('Description:', ndata.description))
 
-                self.content.append(node)
+                self.html.append(node)
             
 
     def build(self):
-        
-        section = self.html.new_tag("h1")
-        section.append(BeautifulSoup(Title("Parameters"), 'html.parser'))
-        self.content.append(section)
         
         self.build_types()
         
         self.build_parameters()
         
         self.build_nodes()
-        
-        self.container.div.div.append(self.content)
-        self.container.div.append(BeautifulSoup("<div class='p-3'> </div>", 'html.parser'))
-        self.html.body.append(self.container)
-        
-        with open(f"{self.dir_html}/parameters.html", "w") as file:
-            file.write(str(self.html.prettify()))
+
+        return self.html

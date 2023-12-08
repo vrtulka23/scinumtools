@@ -6,6 +6,7 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import get_formatter_by_name
 from pygments.styles import get_style_by_name
 from pygments.token import STANDARD_TYPES, Token
+from pygments.formatters import HtmlFormatter
 import re
 
 from .settings import *
@@ -24,18 +25,9 @@ class SettingsSection:
     def __exit__(self, type, value, traceback):
         pass
     
-    def __init__(self, docs: Documentation, dir_html: str, menu, **kwargs):
+    def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
-        self.dir_html = dir_html
-        
-        self.html = BeautifulSoup("<html><head></head><body></body></html>", 'html.parser')
-        style = self.html.new_tag("link", rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T", crossorigin="anonymous")
-        self.html.head.append(style)
-        
-        self.container = BeautifulSoup(f"<div class='container'><div class='row'></div></div>", 'html.parser')
-        self.content = self.html.new_tag("div", **{'class':"col"})
-        
-        self.container.div.div.append(menu)
+        self.html = BeautifulSoup(f"", 'html.parser')
                 
     def highlight_python_code(self, code, target):
         # format text using pygments
@@ -51,18 +43,25 @@ class SettingsSection:
         ) 
         code = highlight(code, lexer, formatter)
         code = code.replace(f"{target}-",f"{target}_")
-        code = code.replace(f"linenos",f"col-2")
+        #code = code.replace(f"linenos",f"")
         return code
         
+    def styles(self):
+        style = StyleLexer
+        formatter = HtmlFormatter(style=style)
+        css = formatter.get_style_defs()
+        css += "\n .linenos {width:50px; display: inline-block; text-align:right; margin-right: 10px; border-right: 1px grey solid; user-select: none;}"
+        return css
+        
     def build_units(self):
-        section = BeautifulSoup(Title("Units"), 'html.parser')
-        self.content.append(section)
+        section = BeautifulSoup(Title("Units",3), 'html.parser')
+        self.html.append(section)
         
         table = self.html.new_tag('table', **{'class':'table table-bordered'})
         row = self.html.new_tag('tr', **{'class':'thead-light'})
         names = ['Name','Value','Units','Source']
         for name in names:
-            col = self.html.new_tag('th', **{'class':'p-1 bg-light'})
+            col = self.html.new_tag('th', **{'class':'p-1 bg-body-secondary'})
             col.string = name
             row.append(col)
         table.append(row)
@@ -77,36 +76,36 @@ class SettingsSection:
             col.append(Link(PAGE_SOURCES,unit.link_source,f"{unit.source[0]}:{unit.source[1]}"))
             row.append(col)
             table.append(row)
-        self.content.append(table)
+        self.html.append(table)
         
     def build_sources(self):
-        section = BeautifulSoup(Title("Sources"), 'html.parser')
-        self.content.append(section)
+        section = BeautifulSoup(Title("Sources",3), 'html.parser')
+        self.html.append(section)
         
         for sdata in self.docs.sources:
-            source = self.html.new_tag("div", **{'class':"container mt-2 border"})
+            source = self.html.new_tag("div", **{'class':"container mt-2 border bg-white"})
             
-            header = self.html.new_tag('div', **{'class':'row bg-light'})
+            header = self.html.new_tag('div', **{'class':'row bg-dark-subtle'})
             name = self.html.new_tag('div', **{'class':'col'})
             name.append(Target(sdata.target, sdata.name))
             header.append(name)
             source.append(header)
             
             props = self.html.new_tag('div', **{'class':'row'})
-            name = self.html.new_tag('div', **{'class':'col-2 bg-light'})
+            name = self.html.new_tag('div', **{'class':'col-2 bg-body-secondary'})
             name.string = 'File:'
             props.append(name)
-            value = self.html.new_tag('div', **{'class':'col'})
+            value = self.html.new_tag('div', **{'class':'col bg-white'})
             value.string = Path(sdata.path).name
             props.append(value)
             source.append(props)
 
             if sdata.parent:
                 props = self.html.new_tag('div', **{'class':'row'})
-                name = self.html.new_tag('div', **{'class':'col-2 bg-light'})
+                name = self.html.new_tag('div', **{'class':'col-2 bg-body-secondary'})
                 name.string = 'Source:'
                 props.append(name)
-                value = self.html.new_tag('div', **{'class':'col'})
+                value = self.html.new_tag('div', **{'class':'col bg-white'})
                 value.append(Link(PAGE_SOURCES, sdata.link_source, f"{sdata.parent[0]}:{sdata.parent[1]}"))
                 props.append(value)
                 source.append(props)
@@ -116,20 +115,12 @@ class SettingsSection:
                 code = BeautifulSoup(code, 'html.parser') 
                 source.append(code)
 
-            self.content.append(source)
+            self.html.append(source)
         
     def build(self):
         
-        section = self.html.new_tag("h1")
-        section.append(BeautifulSoup(Title("Settings"), 'html.parser'))
-        self.content.append(section)
-        
         self.build_units()
+        
         self.build_sources()
 
-        self.container.div.div.append(self.content)
-        self.container.div.append(BeautifulSoup("<div class='p-3'> </div>", 'html.parser'))
-        self.html.body.append(self.container)
-        
-        with open(f"{self.dir_html}/settings.html", "w") as file:
-            file.write(str(self.html.prettify()))
+        return self.html
