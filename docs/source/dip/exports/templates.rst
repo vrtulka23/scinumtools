@@ -16,7 +16,7 @@ This file can be easily processed using ``TemplateSolver`` class
 
 .. code-block:: python
 
-   >>> from scinumtools import DIP
+   >>> from scinumtools.dip import DIP
    >>> from scinumtools.dip.solvers import TemplateSolver
    >>> 
    >>> with DIP() as dip:

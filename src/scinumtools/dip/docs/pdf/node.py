@@ -88,10 +88,11 @@ class NodeSection:
         names = list(self.data.keys())
         names.sort()
         for name in names:
+            pdata = self.data[name]
             blocks.append(Spacer(1,0.1*inch))
-            blocks.append(Paragraph(f"<strong>"+Target(f"PARAM_{name}", name)+"</strong>"))
+            blocks.append(Paragraph(f"<strong>"+Target(pdata.target, name)+"</strong>"))
             blocks.append(Spacer(1,0.1*inch))
-            for node in self.data[name].nodes:
+            for node in pdata.nodes:
                 blocks.append(self.parse_node(name, node))
         blocks.append(Spacer(1,0.2*inch))
         return blocks

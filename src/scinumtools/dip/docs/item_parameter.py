@@ -6,8 +6,8 @@ from .item_node import NodeItem
 class ParType(Enum):
     DEC    = 0    # declaration
     DEF    = 1    # definition
-    DECMOD = 2    # declaration or modification
-    DEFMOD = 3    # definition or modification
+    DCM    = 2    # declaration or modification
+    DFM    = 3    # definition or modification
     MOD    = 4    # modification
     INJ    = 5    # injection
     IMP    = 6    # import
@@ -28,9 +28,9 @@ class ParameterItem:
     def add(self, name, node):
         # update node type counters
         if DocsType.DECLARATION|DocsType.MODIFICATION in node.docs_type:
-            node_type = ParType.DECMOD
+            node_type = ParType.DCM
         elif DocsType.DEFINITION|DocsType.MODIFICATION in node.docs_type:
-            node_type = ParType.DEFMOD
+            node_type = ParType.DFM
         elif DocsType.DECLARATION in node.docs_type:
             node_type = ParType.DEC
         elif DocsType.DEFINITION in node.docs_type:

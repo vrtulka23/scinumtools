@@ -20,13 +20,12 @@ class ExportHTML:
     def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
         
-    def build(self, dir_html: str, title: str, intro=None):
+    def build(self, dir_build: str, title: str, intro=None):
 
         sections = {
             "Parameters": {
                 'filename':'parameters',
                 'content':  ParametersSection,
-                'args': [],
                 'sections': {
                     "types":"Node types",
                     "parameters":"Parameter list",
@@ -36,7 +35,6 @@ class ExportHTML:
             "References": {
                 'filename':'references',
                 'content':  ReferencesSection,
-                'args': [],
                 'sections': {
                     "injections":"Injections",
                     "imports":"Imports"
@@ -45,7 +43,6 @@ class ExportHTML:
             "Settings":   {
                 'filename':'settings',
                 'content':  SettingsSection,
-                'args': [],
                 'sections': {
                     "units":"Units",
                     "sources":"Sources"
@@ -89,7 +86,7 @@ class ExportHTML:
             paragraph.append(BeautifulSoup(intro, 'html.parser'))
             content.append(paragraph)
         
-        with open(f"{dir_html}/index.html", "w") as file:
+        with open(f"{dir_build}/index.html", "w") as file:
             file.write(str(html.prettify()))
         
         # parse sections
@@ -102,7 +99,7 @@ class ExportHTML:
             with settings['content'](self.docs) as sect:
                 if css := sect.styles():
                     style.string = css
-                content.append(sect.build(*settings['args']))
-            with open(f"{dir_html}/{settings['filename']}.html", "w") as file:
+                content.append(sect.build())
+            with open(f"{dir_build}/{settings['filename']}.html", "w") as file:
                 file.write(str(html.prettify()))
         

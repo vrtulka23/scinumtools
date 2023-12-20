@@ -1,0 +1,67 @@
+$source settings = settings.dip
+
+simulation
+  name str = "simulation"
+    !format "[a-zA-Z_-]+"
+  precision str = "double"
+    !options ["double","float"]
+  directory = {pahts?simulation.directory}
+
+runtime
+  t_max float s              # mandatory
+    !condition ("{?} > 0")
+    !description "Maximum simulation time"
+  timestep float s
+    !condition ("{?} < {?runtime.t_max} && {?} > 0")  # mandatory
+    !description "Simulation time step"
+  {settings?runtime.*}
+
+box
+  geometry uint16 = {settings?box.geometry}  # mandatory
+    = 1  # linear
+    = 2  # cylindrical
+    = 3  # spherical
+    !description "Type of grid geometry"
+    
+  size
+    x float128 cm            # mandatory
+      !condition ("{?} > 0")
+      !description "Box size in X direction"
+    #y float cm               # first declared here
+    @case ("{?box.geometry} == 2")
+      y float cm             # mandatory if geometry is non-linear
+        = 3 cm 
+        = 4 cm
+        !description "Box size in Y direction"
+    @case ("{?box.geometry} == 3")
+      y float = 34 au
+      vy float = 23 km/s
+    #@else
+    #  y float = 3 m
+    @end
+    @case ("{?box.geometry} == 3")
+      z float = 23 cm        # constant
+        = 10 m
+        !options [20,23,26] cm
+        !description "Box size in Z direction"
+        !constant
+    @end
+    {settings?box.size.*}
+  boundary
+    {options?box.boundary.*}
+  
+modules
+  hydrodynamics bool = true  # optional
+    !description "Switch on hydrodynamics module"
+    !tags ["preprocessor"]
+  heating bool               # mandatory
+    !description "Switch on heating module"
+    !tags ["preprocessor"]
+  radiation bool             # mandatory
+    !description "Switch on radiation module"
+    !tags ["preprocessor"]
+  
+  {settings?modules.*}
+
+cells
+  {cells?*}

@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import json
 
 from .settings import *
+from .rst_parser import ParseRST
 from ..item_parameter import ParType
 from ..documentation import Documentation
 
@@ -17,47 +18,49 @@ class ReferencesSection:
     
     def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
-        self.html = BeautifulSoup(f"", 'html.parser')
+        self.rst = ParseRST()
         
     def styles(self):
         return None
         
     def build_injections(self):
-        section = BeautifulSoup(Title("Injections",3), 'html.parser')
-        self.html.append(section)
         
-        def add_prop(name, value, append=False):
-            pname = self.html.new_tag('div', **{'class':'col-md-3 bg-body-secondary'})
-            props = self.html.new_tag('div', **{'class':'row bg-white'})
-            pname.string = name
-            props.append(pname)
-            pvalue = self.html.new_tag('div', **{'class':'col'})
-            if append:
-                pvalue.append(value)
-            else:
-                pvalue.string = value
-            props.append(pvalue)
-            return props
-        
+        self.rst.title(1,'Injections')
+            
         for idata in self.docs.injections:
-            item = self.html.new_tag("div", **{'class':"container mt-3 border"})
-            
-            header = self.html.new_tag('div', **{'class':'row bg-dark-subtle'})
-            name = self.html.new_tag('div', **{'class':'col'})
-            name.append(Target(idata.target))
-            name.append(Link(PAGE_SOURCES, idata.link_source, f"{idata.source[0]}:{idata.source[1]}"))
-            header.append(name)
-            item.append(header)
-            
-            item.append(add_prop('Injectiong node:', Link(PAGE_NODES,idata.link_node, idata.name), append=True))
-            item.append(add_prop('Request:', "{"+idata.reference+"}"))
+            data = [[self.rst.link(idata.link_source, f"{idata.source[0]}:{idata.source[1]}", source=True), '']]
+            merge = [(0,0,0,1)]
+            data.append(['**Injectiong node:**', self.rst.link(idata.link_node, idata.name)])
+            data.append(['**Request:**', "``{"+idata.reference+"}``"])
             if idata.isource:
-                item.append(add_prop('From source:', Link(PAGE_SOURCES,idata.link_isource, f"{idata.isource[0]}:{idata.isource[1]}"), append=True))
+                data.append(['**From source:**', self.rst.link(idata.link_isource, f"{idata.isource[0]}:{idata.isource[1]}", source=True)])
             if idata.ivalue:
-                item.append(add_prop('Value:', idata.ivalue))
-            self.html.append(item)
-        
+                data.append(['**Value:**', idata.ivalue])
+            self.rst.target(idata.target)
+            self.rst.table(data, merge=merge, header=True)
+            
     def build_imports(self):
+        
+        self.rst.title(1,'Imports')
+        
+        for idata in self.docs.imports:
+            
+            data = [[self.rst.link(idata.link_source, f"{idata.source[0]}:{idata.source[1]}", source=True), '','']]
+            data.append(['**Request:**', "``{"+idata.reference+"}``", ''])
+            merge = [(0,0,0,2),(1,1,1,2)]
+            if idata.idata:
+                merge.append((len(data),0,len(data),1))
+                data.append(['**Imported node:**', '', "**From source:**"])
+                for inode in idata.idata:
+                    merge.append((len(data),0,len(data),1))
+                    data.append([
+                        self.rst.link(inode.link_node, inode.name), 
+                        '', 
+                        self.rst.link(inode.link_source, f"{inode.source[0]}:{inode.source[1]}", source=True)
+                    ])
+            self.rst.target(idata.target)
+            self.rst.table(data, merge=merge, header=True)
+        """
         section = BeautifulSoup(Title("Imports",3), 'html.parser')
         self.html.append(section)
         
@@ -100,12 +103,13 @@ class ReferencesSection:
                 props.append(pvalue)
                 item.append(props)
             
-            self.html.append(item)        
+            self.html.append(item)     
+        """
             
     def build(self):
         
         self.build_injections()
         
         self.build_imports()
-
-        return self.html
+        
+        return self.rst.parse()
