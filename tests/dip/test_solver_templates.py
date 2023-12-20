@@ -8,7 +8,7 @@ from scinumtools.dip.solvers import TemplateSolver
 
 def test_formatting():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
 id int = 345
 name str = 'Tina'
 body
@@ -34,7 +34,7 @@ Married: True
 
 def test_arrays():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
 name str = "Will Smith"
 widths float[2,3] = [[23.4,235.4,34],[1e10,2e23,5e20]]
         """)
@@ -55,7 +55,7 @@ Array:
 
 def test_strings():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
 name str = "William Smith"
         """)
         env = dip.parse()

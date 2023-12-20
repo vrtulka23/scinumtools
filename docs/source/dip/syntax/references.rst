@@ -17,12 +17,12 @@ It is also possible to define sources outside a DIP code using ``DIP::add_source
 
    >>> with DIP() as dip:
    >>>     dip.add_source("settings", 'settings.dip')
-   >>>     dip.from_string("""
+   >>>     dip.add_string("""
    >>>     x_size float = {settings?box.size.x}
    >>>     """)
    >>>     env = dip.parse()
 
-Source paths are relative to the calling script if code is parsed using ``DIP::from_string()``, or ``DIP::add_source()``. Sources defined in DIP files have path relative to the corresponding DIP file.
+Source paths are relative to the calling script if code is parsed using ``DIP::add_string()``, or ``DIP::add_source()``. Sources defined in DIP files have path relative to the corresponding DIP file.
    
 Depending on a context, **sources** can be either simple text files (references without query) or DIP files (references with, or without query).
 A local domain contains all nodes that were already parsed in the current DIP file.

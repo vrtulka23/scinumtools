@@ -25,7 +25,7 @@ def build_export_pdf():
     # Create a DIP environment
     with DIP(name="PDF") as p:
         p.add_unit("velocity", 13, 'cm/s')
-        p.from_string("""
+        p.add_string("""
         $unit length = 1 cm
         $unit mass = 2 g
         
@@ -34,7 +34,7 @@ def build_export_pdf():
         max_vari float = 0.2    # maximum energy change of ions
         """)
         p.add_source("cells", file_cells)
-        p.from_file(file_definitions)
+        p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
     with ExportPDF(docs) as exp:
         exp.build(
@@ -66,7 +66,7 @@ def build_export_html():
     # Create a DIP environment
     with DIP(name="PDF") as p:
         p.add_unit("velocity", 13, 'cm/s')
-        p.from_string("""
+        p.add_string("""
         $unit length = 1 cm
         $unit mass = 2 g
         
@@ -75,7 +75,7 @@ def build_export_html():
         max_vari float = 0.2    # maximum energy change of ions
         """)
         p.add_source("cells", file_cells)
-        p.from_file(file_definitions)
+        p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
     with ExportHTML(docs) as exp:
         exp.build(
@@ -107,7 +107,7 @@ def build_export_rst():
     # Create a DIP environment
     with DIP(name="PDF") as p:
         p.add_unit("velocity", 13, 'cm/s')
-        p.from_string("""
+        p.add_string("""
         $unit length = 1 cm
         $unit mass = 2 g
         
@@ -116,7 +116,7 @@ def build_export_rst():
         max_vari float = 0.2    # maximum energy change of ions
         """)
         p.add_source("cells", file_cells)
-        p.from_file(file_definitions)
+        p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
     with ExportRST(docs) as exp:
         exp.build(
@@ -132,7 +132,7 @@ Environment suitable for a documentation has to be parsed with a special method 
    >>> from scinumtools.dip import DIP
    >>> from scinumtools.dip.docs import ExportRST
    >>> with DIP() as p:
-   >>>     p.from_file('definitions.dip')
+   >>>     p.add_file('definitions.dip')
    >>>     docs = p.parse_docs()
    >>> with ExportRST(docs) as exp:
    >>>     exp.build(

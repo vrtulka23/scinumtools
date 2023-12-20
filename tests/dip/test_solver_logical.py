@@ -30,7 +30,7 @@ def test_parenthesis():
 
 def test_compare_nodes():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
         dogs int = 23
         cats int = 44
         birds int = 23
@@ -65,7 +65,7 @@ def test_compare_nodes():
 
 def test_compare_values():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
     weight float = 57.3 kg
         """)
         env = dip.parse()
@@ -90,7 +90,7 @@ def test_compare_values():
 
 def test_combination():
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
     size float = 34 cm
     geometry int = 2
       = 1 # line

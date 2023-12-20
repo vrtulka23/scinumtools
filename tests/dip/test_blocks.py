@@ -9,12 +9,12 @@ from scinumtools.dip.datatypes import FloatType, IntegerType, StringType
 
 def parse(code):
     with DIP() as p:
-        p.from_string(code)
+        p.add_string(code)
         return p.parse().data(verbose=True,format=Format.TYPE)
     
 def test_inline_matrix():
     with DIP() as p:
-        p.from_string('''
+        p.add_string('''
 velocity int[1:,3] = """
 [[42,34,35],
  [23,34,64],

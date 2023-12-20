@@ -41,8 +41,8 @@ def test_file_sources():
         }
         
         # import code from file
-        dip.from_file(file_sources[source_fa]['path'])
-        dip.from_file(file_sources[source_fb]['path'])
+        dip.add_file(file_sources[source_fa]['path'])
+        dip.add_file(file_sources[source_fb]['path'])
         
         # get the line numbers of the callings above
         caller = getframeinfo(stack()[0][0])
@@ -96,8 +96,8 @@ def test_string_sources():
         }
         
         # import code from string
-        dip.from_string(string_sources[source_sa]['code'])
-        dip.from_string(string_sources[source_sb]['code'])
+        dip.add_string(string_sources[source_sa]['code'])
+        dip.add_string(string_sources[source_sb]['code'])
   
         # get the line numbers of the callings above
         caller = getframeinfo(stack()[0][0])
@@ -160,7 +160,7 @@ def test_inline_sources():
         
         source_file = "examples/source_fa.dip"
         
-        dip.from_string(f"""
+        dip.add_string(f"""
         $source inline = {source_file}            # source added in code
         name str = 'John Smith'
         """)

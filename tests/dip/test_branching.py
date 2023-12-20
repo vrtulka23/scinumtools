@@ -9,7 +9,7 @@ from scinumtools.dip.datatypes import FloatType, IntegerType, StringType, Boolea
 
 def parse(code):
     with DIP() as p:
-        p.from_string(code)
+        p.add_string(code)
         return p.parse().data(Format.TYPE,verbose=True)
 
 def test_invalid_start():
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 def test_leaking_node_properties():
   
     with DIP() as p:
-        p.from_string('''
+        p.add_string('''
         gravity bool = false
         
         @case ("{?gravity}")

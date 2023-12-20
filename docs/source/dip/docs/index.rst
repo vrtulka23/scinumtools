@@ -8,7 +8,7 @@ Environment from ``parse_docs()`` method differs from a standard data environmen
 
    >>> from scinumtools.dip import DIP
    >>> with DIP() as p:
-   >>>     p.from_file('definitions.dip')
+   >>>     p.add_file('definitions.dip')
    >>>     docs = p.parse_docs()
 
 The ``Documentation`` class returned by ``parse_docs()`` method contains the following:

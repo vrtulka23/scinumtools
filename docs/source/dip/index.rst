@@ -113,12 +113,12 @@ The most notable features of this language are:
         >>> from scinumtools.dip import DIP, Environment
         >>>	  
         >>> with DIP() as p:
-        >>>     p.from_string("""
+        >>>     p.add_string("""
         >>> laser
         >>>   intensity float = 1e25 W/m2
         >>>     """)
-        >>> p.from_file('radiation.dip')
-        >>> p.from_file('gravitation.dip')
+        >>> p.add_file('radiation.dip')
+        >>> p.add_file('gravitation.dip')
         >>> 
         >>> laser_settings = p.nodes.query('laser.*')
         >>> radiation_pressure = p.nodes.query('radiation.pressure')

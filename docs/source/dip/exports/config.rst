@@ -29,7 +29,7 @@ can be parsed and exported using ``ExportConfig`` class
     >>> from scinumtools.dip.config import ExportConfigCPP
     >>>
     >>> with DIP() as dip:
-    >>>    dip.from_file("config.dip")
+    >>>    dip.add_file("config.dip")
     >>>    env = dip.parse()
     >>> with ExportConfigCPP(env) as exp:
     >>>     exp.parse()

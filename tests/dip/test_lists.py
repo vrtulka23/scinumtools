@@ -8,7 +8,7 @@ from scinumtools.dip.datatypes import FloatType
 
 def test_node_list():
     with DIP() as p:
-        p.from_file("examples/definitions.dip")
+        p.add_file("examples/definitions.dip")
         env = p.parse()
         
     assert env.nodes.keys()                       == ['box', 'modules', 'runtime', 'simulation']

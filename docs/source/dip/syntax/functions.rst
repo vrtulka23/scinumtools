@@ -52,7 +52,7 @@ Functions are registered to DIP before parsing using method ``DIP::.add_function
    >>>     dip.add_function("fn_surface", fn_surface)
    >>>     dip.add_function("is_prime", is_prime)
    >>>     dip.add_function("print_value", print_value)
-   >>>     dip.from_file("function_calls.dip")
+   >>>     dip.add_file("function_calls.dip")
    >>>     env = dip.parse()
    >>>     data = env.data()
    {

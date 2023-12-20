@@ -40,8 +40,8 @@ The final set of parameters can be obtained by parsing these two files together:
    >>> from scinumtools.dip import DIP
    >>> 
    >>> with DIP() as dip:
-   >>>     dip.from_file('definitions.dip')
-   >>>     dip.from_file('modifications.dip')
+   >>>     dip.add_file('definitions.dip')
+   >>>     dip.add_file('modifications.dip')
    >>>     env = dip.parse()
 
 Parsed parameters can be then obtained in a form of a Python dictionary, while several output formats are available:
@@ -135,7 +135,7 @@ Parsing of parameters in this case can be done in the following way:
    >>> 
    >>> with DIP() as dip:
    >>>     dip.add_source('mods','modifications.dip')
-   >>>     dip.from_file('definitions.dip')
+   >>>     dip.add_file('definitions.dip')
    >>>     env = dip.parse()
    >>> env.data(Format.TUPLE)
    {

@@ -20,7 +20,7 @@ This file can be easily processed using ``TemplateSolver`` class
    >>> from scinumtools.dip.solvers import TemplateSolver
    >>> 
    >>> with DIP() as dip:
-   >>>     dip.from_file('definitions.dip')
+   >>>     dip.add_file('definitions.dip')
    >>>     env = dip.parse()
    >>> with TemplateSolver(env) as ts:
    >>>     text = ts.template('template.txt','processed.txt')

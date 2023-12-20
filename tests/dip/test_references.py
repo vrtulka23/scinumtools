@@ -9,7 +9,7 @@ from scinumtools.dip.datatypes import FloatType, IntegerType, StringType
 
 def parse(code):
     with DIP() as p:
-        p.from_string(code)
+        p.add_string(code)
         return p.parse().data(verbose=True,format=Format.TYPE)
 
 def test_import_nodes():

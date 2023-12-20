@@ -13,7 +13,7 @@ def check_node(node, name, keyword, value):
 def test_definition_before_case():
     
     with DIP(docs=True) as p:
-        p.from_string("""
+        p.add_string("""
         a int = 3        # definition
         @case false
           a float = 4.0  # modification
@@ -31,7 +31,7 @@ def test_branch_definition():
 
     # full definition in branch
     with DIP(docs=True) as p:
-        p.from_string("""
+        p.add_string("""
         @case false
           a float = 4.0  # definition
         @case true
@@ -50,7 +50,7 @@ def test_incomplete_case_definition():
 
     # definition in else case is missing
     with DIP(docs=True) as p:
-        p.from_string("""
+        p.add_string("""
         @case true
           a float = 4.0  # definition
         a float = 3      # definition, or modification
@@ -62,7 +62,7 @@ def test_incomplete_case_definition():
 
     # all but one branch has definition
     with DIP(docs=True) as p:
-        p.from_string("""
+        p.add_string("""
         @case true
           b float = 4.0  
         @else
@@ -79,7 +79,7 @@ def test_nested_incomplete():
 
     # incomplete nested definition
     with DIP(docs=True) as p:
-        p.from_string("""
+        p.add_string("""
         @case true
           @case true
             b float = 4.0  

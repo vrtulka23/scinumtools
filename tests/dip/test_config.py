@@ -56,8 +56,8 @@ def none_value():
 def test_parser_dip(basic_types, derived_types):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
         env = dip.parse()
     with ExportConfig(env) as exp:
         assert exp.parse() == """
@@ -73,9 +73,9 @@ num_groups uint64 = 2399495729
 def test_parser_c(basic_types, derived_types, none_value):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
-        dip.from_string(none_value)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
+        dip.add_string(none_value)
         env = dip.parse()
     with ExportConfigC(env) as exp:
         assert exp.parse() == """
@@ -97,8 +97,8 @@ def test_parser_c(basic_types, derived_types, none_value):
 def test_parser_cpp(basic_types, derived_types):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
         env = dip.parse()
     with ExportConfigCPP(env) as exp:        
         assert exp.parse() == """
@@ -119,8 +119,8 @@ constexpr unsigned long long int NUM_GROUPS = 2399495729;
 def test_parser_rust(basic_types, derived_types):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
         env = dip.parse()
     with ExportConfigRust(env) as exp:
         assert exp.parse() == """
@@ -136,8 +136,8 @@ pub const NUM_GROUPS: u64 = 2399495729;
 def test_parser_fortran(basic_types, derived_types):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
         env = dip.parse()
     with ExportConfigFortran(env) as exp:
         assert exp.parse() == """
@@ -158,9 +158,9 @@ end module ConfigurationModule
 def test_parser_yaml(basic_types, derived_types, arrays):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
-        dip.from_string(arrays)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
+        dip.add_string(arrays)
         env = dip.parse()
     with ExportConfigYAML(env) as exp:
         assert exp.parse() == """
@@ -196,9 +196,9 @@ width: 12.0
 def test_parser_toml(basic_types, derived_types, arrays):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
-        dip.from_string(arrays)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
+        dip.add_string(arrays)
         env = dip.parse()
     with ExportConfigTOML(env) as exp:
         assert exp.parse() == """
@@ -232,9 +232,9 @@ width = 12.0
 def test_parser_json(basic_types, derived_types, arrays):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
-        dip.from_string(arrays)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
+        dip.add_string(arrays)
         env = dip.parse()
     with ExportConfigJSON(env) as exp:
         assert exp.parse(indent=2) == """
@@ -278,9 +278,9 @@ def test_parser_json(basic_types, derived_types, arrays):
 def test_parser_bash(basic_types, derived_types, arrays):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
-        dip.from_string(arrays)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
+        dip.add_string(arrays)
         env = dip.parse()
     with ExportConfigBash(env) as exp:
         assert exp.parse() == """
@@ -299,7 +299,7 @@ def test_selection(basic_types):
 
     # select nodes using a query
     with DIP() as dip:
-        dip.from_string(basic_types)
+        dip.add_string(basic_types)
         env = dip.parse()
     with ExportConfigC(env) as exp:
         exp.select(query="box.*")        
@@ -314,7 +314,7 @@ def test_selection(basic_types):
 
     # select nodes by tags
     with DIP() as dip:
-        dip.from_string(basic_types)
+        dip.add_string(basic_types)
         env = dip.parse()
     with ExportConfigC(env) as exp:
         exp.select(tags=["selection"])        
@@ -330,8 +330,8 @@ def test_selection(basic_types):
 def test_saving(file_pdf, basic_types, derived_types):
 
     with DIP() as dip:
-        dip.from_string(basic_types)
-        dip.from_string(derived_types)
+        dip.add_string(basic_types)
+        dip.add_string(derived_types)
         env = dip.parse()
     with ExportConfigC(env) as exp:
         exp.parse() 

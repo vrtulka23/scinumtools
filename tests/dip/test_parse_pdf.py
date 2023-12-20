@@ -27,7 +27,7 @@ def file_cells():
 def test_export_pdf(file_pdf, file_definitions, file_cells):
     with DIP() as p:
         p.add_unit("velocity", 13, 'cm/s')
-        p.from_string("""
+        p.add_string("""
         $unit length = 1 cm
         $unit mass = 2 g
         
@@ -36,7 +36,7 @@ def test_export_pdf(file_pdf, file_definitions, file_cells):
         max_vari float = 0.2    # maximum energy change of ions
         """)
         p.add_source("cells", file_cells)
-        p.from_file(file_definitions)
+        p.add_file(file_definitions)
         docs = p.parse_docs()
     with ExportPDF(docs) as exp:
         title = "Example documentation"

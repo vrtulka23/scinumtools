@@ -164,7 +164,7 @@ Tagged nodes can be later on selected from environment using a tag selector.
 .. code-block:: 
 
    >>> with DIP() as p:
-   >>>     p.from_string('''
+   >>>     p.add_string('''
    >>>     name str = John
    >>>         !tags ["name","male"]
    >>>     age int = 34
@@ -194,7 +194,7 @@ Descriptions are stored in nodes and are used mostly in documentation.
 .. code-block:: 
 
    >>> with DIP() as p:
-   >>>     p.from_string('''
+   >>>     p.add_string('''
    >>>     name str = "John Smith"
    >>>         !description "Name of a person"
    >>>     ''')

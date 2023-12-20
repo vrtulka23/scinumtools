@@ -16,7 +16,7 @@ def test_path():
 def test_example_of_use(test_path):
 
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
         mpi
           nodes int = 36
           cores int = 96
@@ -24,7 +24,7 @@ def test_example_of_use(test_path):
         env1 = dip.parse()                 # parse the code
 
     with DIP(env1) as dip:                 # pass environment to a new DIP instance
-        dip.from_file(test_path+"settings2.dip") # add new parameter
+        dip.add_file(test_path+"settings2.dip") # add new parameter
         env2 = dip.parse()                 # parse new parameters
 
     nodes = env2.nodes.query("mpi.*")            # select nodes using a query
@@ -91,7 +91,7 @@ def test_example_of_use(test_path):
 def test_invalid_code():
     
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
         mpi
           nodes int = 36 23 5
         """)                               
@@ -103,12 +103,12 @@ def test_invalid_code():
 def test_query_request_tag(test_path):
     
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
         mpi
           nodes int = 36
           cores int = 96
         """)                               
-        dip.from_file(test_path+"settings2.dip") 
+        dip.add_file(test_path+"settings2.dip") 
         env = dip.parse()               
     
     nodes = env.nodes.query("mpi.*")
@@ -124,12 +124,12 @@ def test_query_request_tag(test_path):
 def test_data_tag(test_path):
     
     with DIP() as dip:
-        dip.from_string("""
+        dip.add_string("""
         mpi
           nodes int = 36
           cores int = 96
         """)                               
-        dip.from_file(test_path+"settings2.dip") 
+        dip.add_file(test_path+"settings2.dip") 
         env = dip.parse()                 # parse the code
     
     data = env.data(query="mpi.*")
@@ -148,7 +148,7 @@ def test_data_tag(test_path):
 def test_definition_template(test_path):
     
     with DIP() as dip:
-        dip.from_file(test_path+'definitions.dip')
+        dip.add_file(test_path+'definitions.dip')
         env3 = dip.parse()
         data = env3.data(Format.TYPE)
     np.testing.assert_equal(data,{
@@ -173,7 +173,7 @@ def test_units_sources(test_path):
     with DIP() as dip:
         dip.add_source("settings", test_path+'settings.dip')
         dip.add_unit("length", 1, "m")
-        dip.from_string("""
+        dip.add_string("""
         width float = 23 [length]
         x_size float = {settings?box.size.x}
         """)
@@ -206,7 +206,7 @@ def test_functions():
         dip.add_function("fn_surface", fn_surface)
         dip.add_function("is_prime", is_prime)
         dip.add_function("print_value", print_value)
-        dip.from_string("""
+        dip.add_string("""
         side float = 5 cm
         volume float = (fn_volume) cm3
         surface int = (fn_surface) mm2

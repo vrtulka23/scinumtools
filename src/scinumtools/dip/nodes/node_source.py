@@ -39,7 +39,7 @@ class SourceNode(BaseNode):
                 # source is a DIP file
                 p = dipsl.DIP(source=self.source)
                 p.env.sources = env.sources.copy()
-                p.from_file(parser.value_raw, parser.name)
+                p.add_file(parser.value_raw, parser.name)
                 penv = p.parse()
                 env.sources[parser.name] = penv.sources[parser.name]
                 env.sources[parser.name].nodes = penv.nodes

@@ -59,7 +59,7 @@ Information about sign and precision is stored both in DIP node and type objects
 .. code-block::
 
     >>> with DIP() as p:
-    >>>     p.from_string("""
+    >>>     p.add_string("""
     >>>     unsignedLongInteger uint64 = 29349850209348495020394849
     >>>     """)
     >>>     env = p.parse()

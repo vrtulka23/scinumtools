@@ -9,7 +9,7 @@ from scinumtools.dip.datatypes import FloatType, IntegerType, StringType
 
 def parse(code):
     with DIP() as p:
-        p.from_string(code)
+        p.add_string(code)
         return p.parse().data(verbose=True,format=Format.TYPE)
 
 def test_option():
@@ -109,7 +109,7 @@ size float = 23 cm
 
 def test_tags():
     with DIP() as p:
-        p.from_string('''
+        p.add_string('''
         name str = John
           !tags ["name","male"]
         age int = 34
@@ -141,7 +141,7 @@ def test_tags():
 
 def test_description():
     with DIP() as p:
-        p.from_string('''
+        p.add_string('''
         name str = John
           !description "Name of a person"
         age int = 34

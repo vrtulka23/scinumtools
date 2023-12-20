@@ -170,7 +170,7 @@ class DIP:
         # Return proper node type
         return node
     
-    def from_file(self, filepath:str, source_name:str = None, absolute=True):
+    def add_file(self, filepath:str, source_name:str = None, absolute=True):
         """ Load DIP code from a file
 
         :param str filepath: Path to a DIP file
@@ -217,7 +217,7 @@ class DIP:
             parent = (self.source[0], lineno),
         )
 
-    def from_string(self, code:str):
+    def add_string(self, code:str):
         """ Use DIP code from a string
 
         :param str code: DIP code
