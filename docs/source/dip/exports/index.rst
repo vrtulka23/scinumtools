@@ -87,8 +87,8 @@ Parsed parameters can be then obtained in a form of a Python dictionary, while s
    'simulation_box.size': FloatType(5.0 Mpc)
    }
 
-Modifications from sources
---------------------------
+Modifications using references
+------------------------------
 
 References and branching in DIP files bring an additional level of complication to the parameter parsing. In the case below, some of the nodes (e.g. box dimensions) depend on user settings.
 
