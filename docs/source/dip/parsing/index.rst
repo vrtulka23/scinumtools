@@ -4,6 +4,20 @@ Parameter parsing
 DIP code is used both: for definition of parameters by a code developer and for their modification by a code user.
 The definitions and modifications can be composed together and parsed as a parameter list that is later used by the code.
 
+The ``DIP`` class has following methods that can be used to combine various parts of DIP code together and parse resulting parameters.
+
+.. csv-table:: Methods of ``DIP`` class
+   :header-rows: 1
+   
+   Method, Description
+   "add_string(code:str)", "adds DIP code from a string"
+   "add_file(filepath:str, source_name:str, absolute:bool)", "adds DIP code from a file"
+   "add_source(name:str, path:str)", "adds a custom source"
+   "add_unit(name:str, value:float, unit:str)", "adds a custom unit"
+   "add_function(name:str, fn:Callable)", "adds a custom function"
+   "parse()", "parse parameter environment"
+   "parse_docs()", "parse documentation environment"
+
 Direct modifications
 --------------------
 
