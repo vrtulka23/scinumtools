@@ -111,9 +111,11 @@ References and branching in DIP files bring an additional level of complication 
        size.x float = {?simulation_box.size} Mpc
        size.y float = {?simulation_box.size} Mpc
        size.z float = {?simulation_box.size} Mpc
-     @else
+     @case ("{?simulation_box.grid}=='cylindrical'")
        size.r float = {?simulation_box.size} Mpc
        size.h float = {?simulation_box.size} Mpc
+     @else
+       size.r float = {?simulation_box.size} Mpc
 
 The definition file cannot be simply modified, as in the previous section. One has to define a modification source first.
 
