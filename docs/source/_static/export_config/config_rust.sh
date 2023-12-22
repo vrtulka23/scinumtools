@@ -1,0 +1,7 @@
+export SIMULATION_NAME="Configuration test"
+export SIMULATION_OUTPUT=0
+export BOX_WIDTH=12.0
+export BOX_HEIGHT=15.0
+export DENSITY=23.0
+export NUM_CELLS=100
+export NUM_GROUPS=2399495729

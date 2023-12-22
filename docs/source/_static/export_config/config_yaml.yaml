@@ -1,0 +1,13 @@
+box.height:
+  unit: cm
+  value: 15.0
+box.width:
+  unit: cm
+  value: 12.0
+density:
+  unit: g/cm3
+  value: 23.0
+num_cells: 100
+num_groups: 2399495729
+simulation.name: Configuration test
+simulation.output: true

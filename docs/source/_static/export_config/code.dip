@@ -1,0 +1,11 @@
+simulation
+  name str = 'Configuration test'
+  output bool = true
+box
+  width float32 = 12 cm
+    !tags ["selection"]
+  height float = 15 cm
+density float128 = 23 g/cm3
+num_cells int = 100
+  !tags ["selection"]
+num_groups uint64 = 2399495729
