@@ -1,6 +1,7 @@
 import numpy as np
 from dataclasses import dataclass, field, fields
 from typing import Union
+from math import isclose
 
 from .settings import *
 
@@ -32,7 +33,11 @@ class Fraction:
         self.den = int(den)
 
     def __eq__(self, other):
-        return self.num==other.num and self.den==other.den
+        return isclose(
+            self.num*other.den, 
+            other.num*self.den, 
+            abs_tol=MAGNITUDE_PRECISION
+        )
 
     def __str__(self):
         self.rebase()

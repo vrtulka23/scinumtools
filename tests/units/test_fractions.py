@@ -33,3 +33,9 @@ def test_arithmetics():
     assert str(f1-f2)       == "-7:6"
     assert str(f1*f2)       == "1:2"
     assert str(f1/f2)       == "2:9"
+    
+def test_equality():
+    
+    fract1 = Fraction(4,4)
+    fract2 = Fraction(1,1)
+    assert fract1 == fract2

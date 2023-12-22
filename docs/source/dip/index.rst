@@ -12,6 +12,7 @@ Dimensional Input Parameters
    intro/index
    syntax/index
    parsing/index
+   export/index
    docs/index
    highlighters/index
 
@@ -117,8 +118,8 @@ The most notable features of this language are:
         >>> laser
         >>>   intensity float = 1e25 W/m2
         >>>     """)
-        >>> p.add_file('radiation.dip')
-        >>> p.add_file('gravitation.dip')
+        >>>     p.add_file('radiation.dip')
+        >>>     p.add_file('gravitation.dip')
         >>> 
         >>> laser_settings = p.nodes.query('laser.*')
         >>> radiation_pressure = p.nodes.query('radiation.pressure')

@@ -2,7 +2,8 @@
 set -e
 if [[ "$1" == "-g" ]]; then
     ./generate.sh build_docs
-    ./generate.sh build_exports
+    ./generate.sh build_export_docs
+    ./generate.sh build_export_config
     ./generate.sh build_figures
     shift
 fi

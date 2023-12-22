@@ -44,7 +44,7 @@ class DocsTemplate(BaseDocTemplate):
             if style == 'Heading2':
                 self.notify('TOCEntry', (1, text, self.page))
                 
-class ExportPDF:
+class ExportDocsPDF:
     
     docs: Documentation
     

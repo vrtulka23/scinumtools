@@ -12,18 +12,18 @@ Environment suitable for a documentation has to be parsed with a special method 
 .. code-block:: python
 
    >>> from scinumtools.dip import DIP
-   >>> from scinumtools.dip.docs import ExportHTML
+   >>> from scinumtools.dip.docs import ExportDocsHTML
    >>> with DIP() as p:
    >>>     p.add_file('definitions.dip')
    >>>     docs = p.parse_docs()
-   >>> with ExportHTML(docs) as exp:
+   >>> with ExportDocsHTML(docs) as exp:
    >>>     exp.build(
    >>>         './build', 
    >>>         "Example DIP documentation", 
    >>>         "In this document we want to demonstrate basic capabilities of a DIP documentation..... "
    >>>     )
    
-``ExportHTML`` class provided above can be used as it is, or as a template for your own personalized documentation.
+``ExportDocsHTML`` class provided above can be used as it is, or as a template for your own personalized documentation.
 When building your own documentation, you can simply take the `existing source code <https://github.com/vrtulka23/scinumtools/tree/main/src/scinumtools/dip/docs/html>`_ and modify it according to your needs.
 For more information how to create and manipulate HTML content using Python see documentation of `Beautiful Soup <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>`_ and `Bootstrap <https://getbootstrap.com/docs/5.3/getting-started/introduction/>`_.
 

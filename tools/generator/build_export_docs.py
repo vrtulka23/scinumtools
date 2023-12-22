@@ -8,11 +8,9 @@ from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
 from scinumtools.dip import DIP
-from scinumtools.dip.docs import ExportPDF, ExportHTML, ExportRST
+from scinumtools.dip.docs import *
 
-path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
-
-def build_export_pdf():
+def build_docs_pdf():
     
     # Generate a PDF documentation from a DIP file
     dir_pdf = os.environ['DIR_DOCS']+"/source/_static/pdf"
@@ -36,7 +34,7 @@ def build_export_pdf():
         p.add_source("cells", file_cells)
         p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
-    with ExportPDF(docs) as exp:
+    with ExportDocsPDF(docs) as exp:
         exp.build(
             file_pdf, 
             "Example DIP documentation", 
@@ -50,7 +48,7 @@ def build_export_pdf():
         """)
     print(file_pdf)
 
-def build_export_html():
+def build_docs_html():
     
     # Generate a PDF documentation from a DIP file
     dir_docs = os.environ['DIR_DOCS']+"/source/_static/htmldocs"
@@ -77,7 +75,7 @@ def build_export_html():
         p.add_source("cells", file_cells)
         p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
-    with ExportHTML(docs) as exp:
+    with ExportDocsHTML(docs) as exp:
         exp.build(
             dir_docs_build, 
             "Example DIP documentation", 
@@ -91,7 +89,7 @@ def build_export_html():
         """)
     print(dir_docs_build)
 
-def build_export_rst():
+def build_docs_rst():
     
     # Generate a PDF documentation from a DIP file
     dir_docs = os.environ['DIR_DOCS']+"/source/dip/docs/rst"
@@ -118,7 +116,7 @@ def build_export_rst():
         p.add_source("cells", file_cells)
         p.add_file(file_definitions)
         docs = p.parse_docs()    # Export parameters as a PDF
-    with ExportRST(docs) as exp:
+    with ExportDocsRST(docs) as exp:
         exp.build(
             dir_docs_build, 
             "RST documentation", """
@@ -130,18 +128,18 @@ Environment suitable for a documentation has to be parsed with a special method 
 .. code-block:: python
 
    >>> from scinumtools.dip import DIP
-   >>> from scinumtools.dip.docs import ExportRST
+   >>> from scinumtools.dip.docs import ExportDocsRST
    >>> with DIP() as p:
    >>>     p.add_file('definitions.dip')
    >>>     docs = p.parse_docs()
-   >>> with ExportRST(docs) as exp:
+   >>> with ExportDocsRST(docs) as exp:
    >>>     exp.build(
    >>>         './build', 
    >>>         "Example DIP documentation", 
    >>>         "In this document we want to demonstrate basic capabilities of a DIP documentation..... "
    >>>     )
 
-``ExportRST`` class provided above can be used as it is, or as a template for your own personalized documentation.
+``ExportDocsRST`` class provided above can be used as it is, or as a template for your own personalized documentation.
 When building your own documentation, you can simply take the `existing source code <https://github.com/vrtulka23/scinumtools/tree/main/src/scinumtools/dip/docs/rst>`_ and modify it according to your needs.
 RST code is generated using a custom `RST parser class <https://github.com/vrtulka23/scinumtools/tree/main/src/scinumtools/dip/docs/rst/rst_parser.py>`_.
 

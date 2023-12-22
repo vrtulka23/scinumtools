@@ -162,13 +162,3 @@ Parsing of parameters in this case can be done in the following way:
    'simulation_box.size.h': (5.0, 'Mpc')
    }
    
-Parameter export
-----------------
-
-In the sections above, we showed how to parse DIP files into a list of parameters. In this section, we provide several tools that use such parameter lists and export them into different formats. 
-
-.. toctree::
-   :maxdepth: 2
-
-   config
-   templates

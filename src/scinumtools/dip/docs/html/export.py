@@ -7,7 +7,7 @@ from .section_references import ReferencesSection
 from .section_settings import SettingsSection
 from ..documentation import Documentation
 
-class ExportHTML:
+class ExportDocsHTML:
         
     docs: Documentation
 
