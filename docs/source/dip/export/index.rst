@@ -71,55 +71,6 @@ can be parsed with ``DIP`` and exported using ``ExportConfig***`` classes
     >>>    dip.add_file("config.dip")
     >>>    env = dip.parse()
 
-and saved as a C++ header file below:
-    
-C configuration
-~~~~~~~~~~~~~~~    
-    
-C++ configuration
-~~~~~~~~~~~~~~~~~
-    
-.. code-block:: python
-
-    >>> from scinumtools.dip.config import ExportConfigCPP
-    >>> with ExportConfigCPP(env) as exp:
-    >>>     exp.parse()
-    >>>     exp.save("config.h")
-    
-.. code-block:: c
-    :caption: config.h
-
-    #ifndef CONFIG_H
-    #define CONFIG_H
-    
-    constexpr const char* SIMULATION_NAME = "Configuration test";
-    constexpr bool SIMULATION_OUTPUT = true;
-    constexpr float BOX_WIDTH = 12.0;
-    constexpr double BOX_HEIGHT = 15.0;
-    constexpr long double DENSITY = 23.0;
-    constexpr int NUM_CELLS = 100;
-    constexpr unsigned long long int NUM_GROUPS = 2399495729;
-    
-    #endif /* CONFIG_H */
-
-Fortran configuration
-~~~~~~~~~~~~~~~~~~~~~  
-
-Rust configuration
-~~~~~~~~~~~~~~~~~~
-
-Bash configuration
-~~~~~~~~~~~~~~~~~~  
-
-YAML configuration
-~~~~~~~~~~~~~~~~~~  
-
-TOML configuration
-~~~~~~~~~~~~~~~~~~  
-
-JSON configuration
-~~~~~~~~~~~~~~~~~~
-
 One can also restrict which parameters will be exported using query and tag selectors:
 
 .. code-block:: 
@@ -127,15 +78,10 @@ One can also restrict which parameters will be exported using query and tag sele
     >>> with ExportConfigC(env) as exp:
     >>>     exp.select(query="box.*", tags=["selection"])        
     >>>     exp.parse()
-    #ifndef CONFIG_H
-    #define CONFIG_H
     
-    #define WIDTH 12.0
-    
-    #endif /* CONFIG_H */
-    
-Similar exports are available for other languages.
 Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_config.py>`_.
+Exports are currently available for following languages:
+
 
 .. csv-table::
 
@@ -156,4 +102,108 @@ In some cases parameter names are automatically converted to upper case and hier
   Not all features of DIP can be mapped to other languages.
   So far exports are implemented only for simple data types and arrays.
   If you are missing some advanced export feature, you are welcommed to write a GitHub Issue or implement it yourself.
-  
+    
+C configuration
+~~~~~~~~~~~~~~~    
+    
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigC
+    >>> with ExportConfigC(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_c.h")
+   
+.. literalinclude :: ../../_static/export_config/config_c.h
+   :language: c
+
+C++ configuration
+~~~~~~~~~~~~~~~~~
+    
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigCPP
+    >>> with ExportConfigCPP(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_cpp.h")
+   
+.. literalinclude :: ../../_static/export_config/config_cpp.h
+   :language: cpp
+
+Fortran configuration
+~~~~~~~~~~~~~~~~~~~~~  
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigFortran
+    >>> with ExportConfigFortran(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_fortran.f90")
+   
+.. literalinclude :: ../../_static/export_config/config_fortran.f90
+   :language: fortran
+
+Rust configuration
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigRust
+    >>> with ExportConfigFortran(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_rust.rs")
+   
+.. literalinclude :: ../../_static/export_config/config_rust.rs
+   :language: rust
+
+Bash configuration
+~~~~~~~~~~~~~~~~~~  
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigBash
+    >>> with ExportConfigBash(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_bash.sh")
+   
+.. literalinclude :: ../../_static/export_config/config_bash.sh
+   :language: bash
+
+YAML configuration
+~~~~~~~~~~~~~~~~~~  
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigYAML
+    >>> with ExportConfigYAML(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_yaml.yaml")
+   
+.. literalinclude :: ../../_static/export_config/config_yaml.yaml
+   :language: yaml
+
+TOML configuration
+~~~~~~~~~~~~~~~~~~  
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigTOML
+    >>> with ExportConfigTOML(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_toml.toml")
+   
+.. literalinclude :: ../../_static/export_config/config_toml.toml
+   :language: toml
+
+JSON configuration
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    >>> from scinumtools.dip.config import ExportConfigJSON
+    >>> with ExportConfigJSON(env) as exp:
+    >>>     exp.parse()
+    >>>     exp.save("config_json.json")
+   
+.. literalinclude :: ../../_static/export_config/config_json.json
+   :language: json
+

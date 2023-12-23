@@ -51,7 +51,7 @@ def build_config_rust():
 
 def build_config_fortran():
     
-    file_export = f"{dir_export}/config_rust.f90"
+    file_export = f"{dir_export}/config_fortran.f90"
     print(file_export)
     
     with DIP() as dip:
@@ -63,7 +63,7 @@ def build_config_fortran():
         
 def build_config_bash():
     
-    file_export = f"{dir_export}/config_rust.sh"
+    file_export = f"{dir_export}/config_bash.sh"
     print(file_export)
     
     with DIP() as dip:
