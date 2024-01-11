@@ -357,3 +357,23 @@ const unsigned long long int NUM_GROUPS = 2399495729;
 
 #endif /* CONFIG_H */
             """.strip()
+            
+def test_renaming(basic_types):
+    
+    with DIP() as dip:
+        dip.add_string(basic_types)
+        env = dip.parse()
+    with ExportConfigC(env, rename=False) as exp:
+        assert exp.parse() == """
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <stdbool.h>
+
+const char* simulation.name = "Configuration test";
+const bool simulation.output = true;
+const double box.height = 15.0;
+const int num_cells = 100;
+
+#endif /* CONFIG_H */
+        """.strip()

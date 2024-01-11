@@ -10,6 +10,7 @@ class ExportConfig:
     env: Environment
     data: dict
     dtype: Format
+    rename: bool
     text: str
 
     def __enter__(self):
@@ -27,12 +28,16 @@ class ExportConfig:
             raise Exception("Given environment is not a data environment")
         self.env = env
         self.dtype = kwargs['dtype'] if 'dtype' in kwargs else Format.TYPE
+        self.rename = kwargs['rename'] if 'rename' in kwargs else True
         self.data = self.env.data(self.dtype)
     
     def _rename(self, name):
         """ Internal routine that renames parameter names into a proper format
         """
-        return name.upper().replace(Sign.SEPARATOR,"_")
+        if self.rename:
+            return name.upper().replace(Sign.SEPARATOR,"_")
+        else:
+            return name
     
     def select(self, query:str=None, tags:list=None):
         """ Select nodes from an environment

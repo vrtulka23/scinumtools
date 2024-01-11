@@ -119,8 +119,10 @@ class Parser(Node):
             self._strip(m.group(1))
 
     def kwd_description(self):
+        kwd1 = re.escape(Sign.VALIDATION)+Keyword.DESCRIPTION
+        kwd2 = re.escape(Sign.VALIDATION)+Keyword.DESCRIPTION[:4]
         m=re.match(
-            r'^(('+re.escape(Sign.VALIDATION)+Keyword.DESCRIPTION+r')\s*)',
+            r'^(('+kwd1+r'|'+kwd2+r')\s*)',
             self.ccode
         )
         if m:

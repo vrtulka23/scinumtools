@@ -6,7 +6,7 @@ export BOX_HEIGHT=15.0
 export DENSITY=23.0
 export NUM_CELLS=100
 export NUM_GROUPS=23994957
-export VECTOR=("0", "0", "-1")
+export VECTOR=("0" "0" "-1")
 declare -A MATRIX
 MATRIX[0,0]=1
 MATRIX[0,1]=2

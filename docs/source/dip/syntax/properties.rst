@@ -182,12 +182,13 @@ Description
 **Used by:** ``int``, ``float``, ``str``, ``bool``
 
 Notes about parameters in ``.dip`` file can be written as comments, however, comments as such are not visible in automatically generated DIP documentation.
-For this purpouse, there is a dedicated node property ``!description``. 
+For this purpouse, there is a dedicated node property ``!description``. Abbreviation ``!desc`` can be also used. 
 
 .. code-block:: DIPSchema
    :caption: Schema for node description
    
    <indent>!description <value>
+   <indent>!desc <value>
 
 Descriptions are stored in nodes and are used mostly in documentation.
 

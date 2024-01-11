@@ -70,7 +70,7 @@ One can also restrict which parameters will be exported using query and tag sele
     
 Examples of the corresponding exports are available in `pytests <https://github.com/vrtulka23/scinumtools/tree/main/tests/dip/test_config.py>`_.
 
-Since DIP parameter names are not suitable for all languages mentioned above, in some cases parameter names are automatically converted to upper case and hierarchy separators ``.`` are substituted by underscores.
+Since DIP parameter names are not suitable for all languages mentioned above, in some cases parameter names are automatically converted to upper case and hierarchy separators ``.`` are substituted by underscores. This feature can be switched off using the following export option: ``ExportConfigC(env, rename=False)``.
 
 .. note::
 

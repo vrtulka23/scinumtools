@@ -145,8 +145,10 @@ def test_description():
         name str = John
           !description "Name of a person"
         age int = 34
+          !desc "Age of a person"
         ''')
         env = p.parse()
 
     nodes = env.nodes.query("*")
     assert nodes[0].description == "Name of a person"
+    assert nodes[1].description == "Age of a person"
