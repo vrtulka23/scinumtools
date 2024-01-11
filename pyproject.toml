@@ -4,7 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scinumtools"
+<<<<<<< HEAD
 version = "2.16.3"
+=======
+version = "2.16.2"
+>>>>>>> 9d6a2ae2d8289987281ef84b462f064e1b422f5e
 authors = [
   { name="Ondrej Pego Jaura", email="vrtulka23@pm.me" },
 ]
