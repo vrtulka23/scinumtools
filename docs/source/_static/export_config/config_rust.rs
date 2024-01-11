@@ -1,7 +1,10 @@
+pub const RADIATION: bool = false;
 pub const SIMULATION_NAME: &str = "Configuration test";
 pub const SIMULATION_OUTPUT: bool = true;
 pub const BOX_WIDTH: f32 = 12.0;
 pub const BOX_HEIGHT: f64 = 15.0;
-pub const DENSITY: f128 = 23.0;
+pub const DENSITY: f64 = 23.0;
 pub const NUM_CELLS: i32 = 100;
-pub const NUM_GROUPS: u64 = 2399495729;
+pub const NUM_GROUPS: u64 = 23994957;
+pub const VECTOR: [bool; 3] = [true, true, false];
+pub const MATRIX: [[i32; 3]; 2] = [[1, 2, 3], [4, 5, 6]];

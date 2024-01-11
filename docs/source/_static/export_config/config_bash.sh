@@ -1,7 +1,17 @@
+export RADIATION=
 export SIMULATION_NAME="Configuration test"
 export SIMULATION_OUTPUT=0
 export BOX_WIDTH=12.0
 export BOX_HEIGHT=15.0
 export DENSITY=23.0
 export NUM_CELLS=100
-export NUM_GROUPS=2399495729
+export NUM_GROUPS=23994957
+export VECTOR=("0", "0", "-1")
+declare -A MATRIX
+MATRIX[0,0]=1
+MATRIX[0,1]=2
+MATRIX[0,2]=3
+MATRIX[1,0]=4
+MATRIX[1,1]=5
+MATRIX[1,2]=6
+export MATRIX

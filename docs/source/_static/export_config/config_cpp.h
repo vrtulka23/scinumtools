@@ -1,12 +1,15 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-constexpr const char* SIMULATION_NAME = "Configuration test";
+#define RADIATION 
+#define SIMULATION_NAME "Configuration test"
 constexpr bool SIMULATION_OUTPUT = true;
-constexpr float BOX_WIDTH = 12.0;
-constexpr double BOX_HEIGHT = 15.0;
+const float BOX_WIDTH = 12.0;
+const double BOX_HEIGHT = 15.0;
 constexpr long double DENSITY = 23.0;
 constexpr int NUM_CELLS = 100;
-constexpr unsigned long long int NUM_GROUPS = 2399495729;
+constexpr unsigned long long int NUM_GROUPS = 23994957;
+constexpr bool VECTOR[3] = {true, true, false};
+constexpr int MATRIX[2][3] = {{1, 2, 3}, {4, 5, 6}};
 
 #endif /* CONFIG_H */

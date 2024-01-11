@@ -1,3 +1,4 @@
+radiation bool = none
 simulation
   name str = 'Configuration test'
   output bool = true
@@ -8,4 +9,6 @@ box
 density float128 = 23 g/cm3
 num_cells int = 100
   !tags ["selection"]
-num_groups uint64 = 2399495729
+num_groups uint64 = 23994957
+vector bool[3] = [true,true,false]
+matrix int[2,3] = [[1,2,3],[4,5,6]] cm

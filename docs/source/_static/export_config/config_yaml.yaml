@@ -7,7 +7,21 @@ box.width:
 density:
   unit: g/cm3
   value: 23.0
+matrix:
+  unit: cm
+  value:
+  - - 1
+    - 2
+    - 3
+  - - 4
+    - 5
+    - 6
 num_cells: 100
-num_groups: 2399495729
+num_groups: 23994957
+radiation: null
 simulation.name: Configuration test
 simulation.output: true
+vector:
+- true
+- true
+- false

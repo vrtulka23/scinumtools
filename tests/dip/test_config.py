@@ -82,14 +82,17 @@ def test_parser_c(basic_types, derived_types, none_value):
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SIMULATION_NAME "Configuration test"
-#define SIMULATION_OUTPUT 
-#define BOX_HEIGHT 15.0
-#define NUM_CELLS 100
-#define BOX_WIDTH 12.0
-#define DENSITY 23.0
-#define NUM_GROUPS 2399495729
-#define PARTICLES_TRACERS 23
+#include <stdbool.h>
+
+const char* SIMULATION_NAME = "Configuration test";
+const bool SIMULATION_OUTPUT = true;
+const double BOX_HEIGHT = 15.0;
+const int NUM_CELLS = 100;
+const float BOX_WIDTH = 12.0;
+const long double DENSITY = 23.0;
+const unsigned long long int NUM_GROUPS = 2399495729;
+const int PARTICLES_STARS = None;
+const int PARTICLES_TRACERS = 23;
 
 #endif /* CONFIG_H */
         """.strip()
@@ -105,7 +108,7 @@ def test_parser_cpp(basic_types, derived_types):
 #ifndef CONFIG_H
 #define CONFIG_H
 
-constexpr const char* SIMULATION_NAME = "Configuration test";
+constexpr char* SIMULATION_NAME = "Configuration test";
 constexpr bool SIMULATION_OUTPUT = true;
 constexpr double BOX_HEIGHT = 15.0;
 constexpr int NUM_CELLS = 100;
@@ -129,7 +132,7 @@ pub const SIMULATION_OUTPUT: bool = true;
 pub const BOX_HEIGHT: f64 = 15.0;
 pub const NUM_CELLS: i32 = 100;
 pub const BOX_WIDTH: f32 = 12.0;
-pub const DENSITY: f128 = 23.0;
+pub const DENSITY: f64 = 23.0;
 pub const NUM_GROUPS: u64 = 2399495729;
         """.strip()
         
@@ -307,7 +310,7 @@ def test_selection(basic_types):
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define HEIGHT 15.0
+const double HEIGHT = 15.0;
 
 #endif /* CONFIG_H */
         """.strip()
@@ -322,7 +325,7 @@ def test_selection(basic_types):
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define NUM_CELLS 100
+const int NUM_CELLS = 100;
 
 #endif /* CONFIG_H */
         """.strip()
@@ -342,13 +345,15 @@ def test_saving(file_pdf, basic_types, derived_types):
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SIMULATION_NAME "Configuration test"
-#define SIMULATION_OUTPUT 
-#define BOX_HEIGHT 15.0
-#define NUM_CELLS 100
-#define BOX_WIDTH 12.0
-#define DENSITY 23.0
-#define NUM_GROUPS 2399495729
+#include <stdbool.h>
+
+const char* SIMULATION_NAME = "Configuration test";
+const bool SIMULATION_OUTPUT = true;
+const double BOX_HEIGHT = 15.0;
+const int NUM_CELLS = 100;
+const float BOX_WIDTH = 12.0;
+const long double DENSITY = 23.0;
+const unsigned long long int NUM_GROUPS = 2399495729;
 
 #endif /* CONFIG_H */
             """.strip()

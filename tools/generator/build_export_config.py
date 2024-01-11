@@ -11,7 +11,7 @@ from scinumtools.dip import DIP
 from scinumtools.dip.config import *
 
 dir_export = os.environ['DIR_DOCS']+"/source/_static/export_config"
-file_code = f"{dir_export}/code.dip"
+file_code = f"{dir_export}/config.dip"
 
 def build_config_c():
     
@@ -22,7 +22,10 @@ def build_config_c():
        dip.add_file(file_code)
        env = dip.parse()
     with ExportConfigC(env) as exp:
-        exp.parse()
+        exp.parse(
+            guard='CONFIG_H',
+            define=['radiation','simulation.name']
+        )
         exp.save(file_export)
         
 def build_config_cpp():
@@ -34,7 +37,11 @@ def build_config_cpp():
        dip.add_file(file_code)
        env = dip.parse()
     with ExportConfigCPP(env) as exp:
-        exp.parse()
+        exp.parse(
+            guard='CONFIG_H',
+            define=['radiation','simulation.name'],
+            const=['box.width','box.height']
+        )
         exp.save(file_export)
         
 def build_config_rust():
@@ -82,7 +89,7 @@ def build_config_yaml():
        dip.add_file(file_code)
        env = dip.parse()
     with ExportConfigYAML(env) as exp:
-        exp.parse()
+        exp.parse(units=True, default_flow_style=False)
         exp.save(file_export)
         
 def build_config_toml():
