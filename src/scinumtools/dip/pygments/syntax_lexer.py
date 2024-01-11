@@ -16,7 +16,9 @@ class SyntaxLexer(RegexLexer):
             (r'[ ]*\@case', Token.DIP.Keyword, 'node_value'),
             (r'[ ]*\@(else|end)', Token.DIP.Keyword),
             (r'[ ]*!(options|format|condition|constant|tags|description)',
-             Token.DIP.Keyword, 'node_value'),
+             Token.DIP.Keyword, 'node_value'), # full keywords
+            (r'[ ]*!(desc)',
+             Token.DIP.Keyword, 'node_value'), # abbreviated forms
             (r'^([ ]*)(=)',
              bygroups(Token.DIP.Text, Token.DIP.Keyword), 'node_value'),
             (r'^([ ]*)([a-zA-Z0-9-_.]+)([ ]+=)',

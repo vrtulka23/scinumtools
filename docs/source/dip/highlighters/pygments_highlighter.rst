@@ -199,6 +199,7 @@ Below is an overview of all its highlighting capabilities:
      """)
      !tags ["foo","bar"]
      !description "Node description"
+     !desc "Node description"
      
    # special nodes
 
