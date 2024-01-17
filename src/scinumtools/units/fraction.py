@@ -110,6 +110,7 @@ class Fraction:
         if self.num==0 or self.den==1:
             return self.num
         elif dtype==tuple:
+            self.rebase()
             return (self.num,self.den)
         elif dtype==float:
             return self.num/self.den
