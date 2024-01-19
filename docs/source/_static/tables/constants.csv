@@ -1,4 +1,8 @@
 Symbol,Name,Definition
+[alpha],fine str. const.,7.29735256e-3
+[euler],Euler's num.,2.718282
+[N_0],Avogadro's num.,6.02214076e23
+[pi],pi,3.1415926
 [a_0],Bohr radius,5.29177210903e-11*m
 [c],speed of light,299792458*m/s
 [e],elem. charge,1.602176634e-19*C
@@ -20,7 +24,6 @@ Symbol,Name,Definition
 [R_inf],Rydberg constant,1.09737e5/cm
 [R_sol],Solar radius,6.9558e10*cm
 [sigma],Stef.-Boltz. const.,5.67037e-8*W/(m2*K4)
-[alpha],fine str. const.,7.29735256e-3
-[euler],Euler's num.,2.718282
-[N_A],Avogadro's num.,6.022137e23
-[pi],pi,3.1415926
+[N_A],Avogadro's const.,[N_0]/mol
+[se],elem. charge GBU,4.80320427e-10*statC
+[smu_B],Bohr magneton GBU,9.274010078e-21*erg/statG

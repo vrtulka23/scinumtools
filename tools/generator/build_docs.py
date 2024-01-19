@@ -3,11 +3,12 @@ import os
 import sys
 sys.path.insert(0, os.environ['DIR_SOURCE'])
 
-from scinumtools import RowCollector
+from scinumtools import RowCollector, ParameterTable
 from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
 from scinumtools.dip import DIP
+from scinumtools.materials.periodic_table import *
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'
 
@@ -174,6 +175,24 @@ def build_au_quantities():
         rc.append([f"#A{symbol}", f"AU.{name}", definition])
     df = rc.to_dataframe()
     file_path = f"{path_docs_static}/quantities_au.csv"
+    df.to_csv(file_path, index=False)
+    print(file_path)
+    
+def build_constants():
+    
+    pt = ParameterTable(PT_HEADER, PT_DATA, keys=True)
+    # create table of constants
+    rc = RowCollector(['Symbol','Z','A','Relative atomic mass (Da)', 'Natural abundance'])
+    for symbol, e in pt.items():
+        first = True
+        for A, (M, NA) in e.A.items():
+            if first:
+                rc.append([f"``{symbol}``", e.Z, A, M, NA])
+                first = False
+            else:
+                rc.append(['', '', A, M, NA])
+    df = rc.to_dataframe()
+    file_path = f"{path_docs_static}/elements.csv"
     df.to_csv(file_path, index=False)
     print(file_path)
     

@@ -62,6 +62,7 @@ def test_solver():
         # parentheses
         assert str(ms.solve('(H2O)'))   == "Compound(p=10 n=8.005 e=10 A=18.015)"
         assert str(ms.solve('H(CN)'))   == "Compound(p=14 n=13.014 e=14 A=27.025)"
+        assert str(ms.solve('Ca(OH)2')) == "Compound(p=38 n=36.125 e=38 A=74.093)"
 
         # multiplication
         assert str(ms.solve('H{1-1}2'))             == "Compound(p=2 n=0.000 e=0 A=2.015)"

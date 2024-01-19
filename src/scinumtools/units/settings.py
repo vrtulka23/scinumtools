@@ -242,7 +242,7 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'CGS', 'AU', 'GAUSS'], [
 ('ElectricFlux',          'EFL',   'V*m',      None,                 None,                   'statC',          ),
 ('ElectricPolarizability','EPL',   'm2/J',     None,                 '[e]2*[a_0]2/E_h',      None,             ),
 ('ElectromotiveForce',    'EFO',   'V',        None,                 None,                   None,             ),
-('ElementaryCharge',      'ECH',   '[e]',      '[e]',                '[e]',                  '[se]',           ),
+('ElementaryCharge',      'ELC',   '[e]',      '[e]',                '[e]',                  '[se]',           ),
 ('Energy',                'ENE',   'J',        'erg',                'E_h',                  'erg',            ),
 ('EquivalentDose',        'EDO',   'Sv',       None,                 None,                   None,             ),
 ('Force',                 'FOR',   'N',        'dyn',                'E_h/[a_0]',            'dyn',            ),

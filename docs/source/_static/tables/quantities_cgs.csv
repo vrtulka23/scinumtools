@@ -1,11 +1,14 @@
 Symbol,Name,Definition
 #CACC,CGS.Acceleration,cm/s2
+#CBMA,CGS.BohrMagneton,[mu_B]
 #CDVI,CGS.DynamicViscosity,P
-#CEDM,CGS.ElectricDipoleMoment,D
+#CELC,CGS.ElementaryCharge,[e]
 #CENE,CGS.Energy,erg
 #CFOR,CGS.Force,dyn
 #CKVI,CGS.KinematicViscosity,St
 #CLEN,CGS.Length,cm
+#CMFI,CGS.MagneticField,Oe
+#CMFL,CGS.MagneticFlux,Mx
 #CMFD,CGS.MagneticFluxDensity,G
 #CMAS,CGS.Mass,g
 #CPOW,CGS.Power,erg/s

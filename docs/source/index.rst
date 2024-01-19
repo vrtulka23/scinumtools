@@ -19,6 +19,10 @@ The module is divided into following sections:
      
   Physical routines and manipulation with dimensional quantities
 
+:ref:`materials/index:material properties`
+
+  Calculator of atomic properties from chemical formulas
+
 :ref:`dip/index:dimensional input parameters`
      
   Parser of dimensional input parameters serialization language
@@ -33,6 +37,7 @@ The module is divided into following sections:
 
    solver/index
    units/index
+   materials/index
    dip/index
    misc/index
    api/modules

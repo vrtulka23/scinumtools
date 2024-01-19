@@ -12,7 +12,7 @@ ft,US foot,0.3048*m,
 yd,US yard,0.9144*m,
 mi,US mile,1.609344*km,
 le,US league,4.828032*km,
-"u, amu",atomic mass unit,1.6605402e-24*g,
+"u, amu",atomic mass unit,g/[N_0],
 Da,Dalton,u,
 t,tonne,1e3*kg,"kt, mt, Gt"
 oz,US ounce,28.349523125*g,
@@ -55,15 +55,17 @@ W,Watt,J/s,all
 hp,horse power,745.7*W,
 mph,US miles per hour,0.44704*m/s,
 kn,knot,0.514444*m/s,
+Mx,Maxwell,1e-8*Wb,
+Wb,Weber,V*s,
 St,Stokes,cm2/s,cSt
 Ka,Kayser,cm-1,
 D,Debye,3.33564e-30*C*m,all
+Oe,Oersted,1e3*A/(4*[pi]*m),
 sr,steradian,rad2,
 lm,lumen,cd*sr,
 A,Ampere,C/s,all
 H,Henry,Wb/A,
 Ohm,Ohm,V/A,all
-Wb,Weber,V*s,
 V,Volt,J/C,all
 lx,lux,lm/m2,
 F,Farad,C/V,all
@@ -71,3 +73,10 @@ S,Siemens,Ohm-1,all
 kat,katal,mol/s,all
 %,percent,1e-2,
 ppth,promile,1e-3,
+statC,statcoulomb GBU,dyn1:2*cm,
+Fr,Franklin GBU,statC,
+esu,el.stat. unit GBU,statC,
+statA,statampere GBU,statC/s,
+statV,statvolt GBU,erg/statC,
+statG,Gauss GBU,cm-1:2*g1:2/s,
+statOe,Oersted GBU,cm-1:2*g1:2/s,

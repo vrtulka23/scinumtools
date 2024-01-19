@@ -37,7 +37,12 @@ def build_unit_systems():
     text = "\n".join(text)
     
     # test if new symbols are unique
-    assert len(np.unique(symbols)) == len(symbols)
+    try:
+        assert len(np.unique(symbols)) == len(symbols)
+    except:
+        unique = np.unique(symbols)
+        notunique = [s for s in unique if symbols.count(s)>1]
+        raise Exception("Some units symbols are not unique:", notunique)
     
     # test if we produced a valid Python code
     exec(text)

@@ -33,6 +33,16 @@ def test_expression():
 4        sum  8.000000  31.059330  18.00  13.000  18.00
 """.strip('\n')
 
+def test_context():
+    with Compound('H2O') as c:
+        assert c.data_compound().to_text() == """
+  expression  count      A[Da]          Z         N          e
+0          H    2.0   2.015882   2.000000  0.000230   2.000000
+1          O    1.0  15.999405   8.000000  8.004480   8.000000
+2        avg    1.5   6.005095   3.333333  2.668237   3.333333
+3        sum    3.0  18.015286  10.000000  8.004710  10.000000
+""".strip('\n')
+
 def test_partial_data():
     compound = Compound('B{11}N{14}H{1}6')
     assert compound.data_compound(['B{11}','N{14}']).to_text() == """
@@ -127,3 +137,27 @@ def test_arithmetic():
         assert expr in c2.elements
         assert element.count == c2.elements[expr].count * 2
     
+def test_print():
+    with Compound('H2O') as c:
+        c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
+        assert c.print() == """
+Properties:
+
+Mass density: Quantity(9.970e+02 kg*m-3)
+Molecular mass: Quantity(1.802e+01 Da)
+Molecular density: Quantity(3.333e+28 m-3)
+
+Elements:
+
+expression element isotope ionisation     A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
+         H       H       2          0  2.014102  1  1  1   2.016491    1.112882
+         O       O      16          0 15.994915  8  8  8  16.131930    7.976806
+
+Compound:
+
+expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]
+         H    2.0  2.015882  2.000000 0.000230  2.000000 6.665533e+22    0.111563  11.189839 6.665533e+25 111.562693
+         O    1.0 15.999405  8.000000 8.004480  8.000000 3.332766e+22    0.885437  88.810161 3.332766e+25 885.437307
+       avg    1.5  6.005095  3.333333 2.668237  3.333333 3.332766e+22    0.332333  33.333333 3.332766e+25 332.333333
+       sum    3.0 18.015286 10.000000 8.004710 10.000000 9.998299e+22    0.997000 100.000000 9.998299e+25 997.000000
+""".strip('\n')

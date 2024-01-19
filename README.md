@@ -70,6 +70,38 @@ Quantity(2.3340(30)e+01 cm)
 Quantity([4.796 7.681 4.472 3.162] m)
 ```
 
+### Material Properties
+
+Simulation setups often require atomic and molecular properties of various materials. The core of this submodule, molecular expression solver, is designed to simplify calculations of such properties from a given molecular formula.
+For more description and examples of [Material Properties](https://vrtulka23.github.io/scinumtools/materials/index.html) please refer to the documentation.
+
+``` python
+>>> from scinumtools.units import Quantity
+>>> from scinumtools.materials import Compound
+>>> with Compound('H2O') as c:
+>>>     c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
+>>>     c.print()
+Properties:
+
+Mass density: Quantity(9.970e+02 kg*m-3)
+Molecular mass: Quantity(1.802e+01 Da)
+Molecular density: Quantity(3.333e+28 m-3)
+
+Elements:
+
+expression element isotope ionisation     A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
+         H       H       2          0  2.014102  1  1  1   2.016491    1.112882
+         O       O      16          0 15.994915  8  8  8  16.131930    7.976806
+
+Compound:
+
+expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]
+         H    2.0  2.015882  2.000000 0.000230  2.000000 6.665533e+22    0.111563  11.189839 6.665533e+25 111.562693
+         O    1.0 15.999405  8.000000 8.004480  8.000000 3.332766e+22    0.885437  88.810161 3.332766e+25 885.437307
+       avg    1.5  6.005095  3.333333 2.668237  3.333333 3.332766e+22    0.332333  33.333333 3.332766e+25 332.333333
+       sum    3.0 18.015286 10.000000 8.004710 10.000000 9.998299e+22    0.997000 100.000000 9.998299e+25 997.000000
+```
+
 ### Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes user interface with the code clear and straightforward. 

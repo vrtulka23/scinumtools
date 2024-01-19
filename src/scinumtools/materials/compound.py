@@ -30,6 +30,12 @@ class Compound:
                 Element(expression),
             ])
             
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+            
     def __init__(self, expression:str=None):
         self.elements = {}
         if expression and expression!='':
@@ -38,7 +44,7 @@ class Compound:
             for expr, el in compound.elements.items():
                 self.elements[expr] = el
         self.M = np.sum([e.A for e in self.elements.values()])
-        
+
     def __str__(self):
         elements = []
         for expr, el in self.elements.items():
@@ -90,9 +96,9 @@ class Compound:
             self.elements[expr] = element
         self.M = np.sum([e.A for e in self.elements.values()])
     
-    def set_amount(self, rho:Quantity, volume:Quantity=None):
+    def set_amount(self, rho:Quantity, V:Quantity=None):
         self.rho = rho
-        self.V = volume
+        self.V = V
         self.n = (rho/self.M).rebase()
         for s in self.elements.keys():
             self.elements[s].set_density(self.n)
@@ -160,13 +166,17 @@ class Compound:
             return rc
             
     def print(self):
-        print("Properties:\n")
-        print("Mass density:", self.rho)
-        print("Molecular mass:", self.M)
-        print("Molecular density:", self.n)
-        print("")
-        print("Elements:\n")
-        print(self.data_elements().to_dataframe().to_string(index=False))
-        print("")
-        print("Compound:\n")
-        print(self.data_compound().to_dataframe().to_string(index=False))
+        text = []
+        text.append("Properties:\n")
+        text.append(f"Mass density: {self.rho}")
+        text.append(f"Molecular mass: {self.M}")
+        text.append(f"Molecular density: {self.n}")
+        text.append("")
+        text.append("Elements:\n")
+        text.append(self.data_elements().to_dataframe().to_string(index=False))
+        text.append("")
+        text.append("Compound:\n")
+        text.append(self.data_compound().to_dataframe().to_string(index=False))
+        text = "\n".join(text)
+        print(text)
+        return text

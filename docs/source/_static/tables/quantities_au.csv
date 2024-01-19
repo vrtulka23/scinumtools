@@ -1,5 +1,6 @@
 Symbol,Name,Definition
 #AACT,AU.Action,[hbar]
+#ABMA,AU.BohrMagneton,[mu_B]
 #AECU,AU.ElectricCurrent,[e]*E_h/[hbar]
 #AECH,AU.ElectricCharge,[e]
 #AECD,AU.ElectricChargeDensity,[e]/[a_0]3
@@ -8,6 +9,7 @@ Symbol,Name,Definition
 #AEFI,AU.ElectricField,E_h/([e]*[a_0])
 #AEFG,AU.ElectricFieldGradient,E_h/([e]*[a_0]2)
 #AEPL,AU.ElectricPolarizability,[e]2*[a_0]2/E_h
+#AELC,AU.ElementaryCharge,[e]
 #AENE,AU.Energy,E_h
 #AFOR,AU.Force,E_h/[a_0]
 #AIRR,AU.Irradience,E_h2/([hbar]*[a_0]2)
