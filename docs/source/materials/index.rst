@@ -1,4 +1,4 @@
-Material properties
+Material Properties
 ===================
 
 In this section we describe an application of the :ref:`solver/index:expression solver` that calculates atomic properties from molecular formulas.
