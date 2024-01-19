@@ -10,6 +10,7 @@ PERIODIC_TABLE = ParameterTable(PT_HEADER, PT_DATA, keys=True)
 class Element:
     expression: str
     count: int
+    natural: bool
     element: str
     isotope: int
     ionisation: int
@@ -20,8 +21,8 @@ class Element:
     n: Quantity = None
     rho: Quantity = None
 
-    @staticmethod
-    def get_isotope(element:str, isotope: int, ionisation: int):
+    # get a specific isotope
+    def get_isotope(self, element:str, isotope: int, ionisation: int):
         isotopes = PERIODIC_TABLE[element]
         Z = isotopes.Z
         iso = isotope if isotope else Z*2
@@ -34,12 +35,19 @@ class Element:
         e = isotopes.Z+ion
         return NA, A, Z, N, e, iso, ion
         
-    @staticmethod
-    def get_average(element:str, ionisation:int):
-        elements = PERIODIC_TABLE[element]
+    # get the most abundant isotope
+    def get_abundant(self, element:str, ionisation:int):
+        isotopes = PERIODIC_TABLE[element]
+        idmax = np.argmax(iso[1] for iso in isotopes.A.values())
+        isotope = int(list(A for A in isotopes.A.keys())[idmax])
+        return self.get_isotope(element, isotope, ionisation)        
+
+    # get the a natural isotopic average
+    def get_natural(self, element:str, ionisation:int):
+        isotopes = PERIODIC_TABLE[element]
         with RowCollector(['NA', 'A', 'Z', 'N', 'e', 'iso', 'ion']) as rc:
-            for iso in elements.A.keys():
-                rc.append(Element.get_isotope(element, int(iso), ionisation))
+            for iso in isotopes.A.keys():
+                rc.append(self.get_isotope(element, int(iso), ionisation))
             return (
                 np.sum(rc.NA), 
                 np.average(rc.A, weights=rc.NA),
@@ -50,9 +58,10 @@ class Element:
                 int(rc.ion[0]),
             )
 
-    def __init__(self, expression:str, count:int=1):
+    def __init__(self, expression:str, count:int=1, natural:bool=True):
         self.expression = expression
         self.count = count
+        self.natural = natural
         # parse the expression
         if m := re.match("(\[(p|n|e)\])", expression):
             nucleon = m.group(2)
@@ -83,9 +92,11 @@ class Element:
                 self.isotope, self.ionisation = None, 0
             # set element values
             if self.isotope:
-                NA, A, Z, N, e, iso, ion = Element.get_isotope(self.element, self.isotope, self.ionisation)
+                NA, A, Z, N, e, iso, ion = self.get_isotope(self.element, self.isotope, self.ionisation)
+            elif self.natural:
+                NA, A, Z, N, e, self.isotope, self.ionisation = self.get_natural(self.element, self.ionisation)
             else:
-                NA, A, Z, N, e, self.isotope, self.ionisation = Element.get_average(self.element, self.ionisation)
+                NA, A, Z, N, e, self.isotope, self.ionisation = self.get_abundant(self.element, self.ionisation)
         else:
             raise Exception('Unrecognized expression', expression)
         self.A = self.count*A
@@ -94,12 +105,12 @@ class Element:
         self.e = self.count*e
         
     def __mul__(self, other:float):
-        return Element(self.expression, self.count*other)
+        return Element(self.expression, self.count*other, natural=self.natural)
             
     def __add__(self, other:'Element'):
         if self.expression!=other.expression:
             raise Exception("Only same elements can be added up:", self.expression, other.expression)
-        return Element(self.expression, self.count+other.count)
+        return Element(self.expression, self.count+other.count, natural=self.natural)
         
     def set_density(self, n:Quantity):
         self.n = self.count * n

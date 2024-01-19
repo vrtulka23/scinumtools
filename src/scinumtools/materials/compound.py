@@ -1,6 +1,7 @@
 import numpy as np
 import re
 from math import isclose
+import copy
 
 from .element import Element
 from .material_solver import MaterialSolver
@@ -8,27 +9,27 @@ from .. import RowCollector
 from ..units import Quantity, Unit
 
 class Compound:
-    elements: dict = None
+    natural: bool
+    elements: dict
+    M: Quantity
     rho: Quantity = None
     V: Quantity = None
-    M: Quantity = None
     n: Quantity = None
     
     @staticmethod
-    def from_elements(elements:list):
-        compound = Compound()
+    def from_elements(elements:list, natural:bool=True):
+        compound = Compound(natural=natural)
         for el in elements:
             compound.add_element(el)
         return compound
         
-    @staticmethod
-    def from_atom(expression:str):
+    def atom(self, expression:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expression):
             return float(expression)
         else:
             return Compound.from_elements([
-                Element(expression),
-            ])
+                Element(expression, natural=self.natural),
+            ], natural=self.natural)
             
     def __enter__(self):
         return self
@@ -36,10 +37,11 @@ class Compound:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
             
-    def __init__(self, expression:str=None):
+    def __init__(self, expression:str=None, natural:bool=True):
+        self.natural = natural
         self.elements = {}
         if expression and expression!='':
-            with MaterialSolver(Compound.from_atom) as ms:
+            with MaterialSolver(self.atom) as ms:
                 compound = ms.solve(expression)
             for expr, el in compound.elements.items():
                 self.elements[expr] = el
@@ -61,22 +63,16 @@ class Compound:
         return f"Compound(p={p:d} n={n:.03f} e={e:d} A={A:.03f})"
         
     def __mul__(self, other:float):
-        compound = Compound()
-        compound.rho = self.rho
-        compound.M = self.M
-        compound.V = self.V
-        compound.n = self.n
+        compound = copy.deepcopy(self)
+        compound.elements = {}
         for expr in self.elements.keys():
             el = self.elements[expr] * other
             compound.add_element(el)
         return compound
     
     def __add__(self, other):
-        compound = Compound()
-        compound.rho = self.rho
-        compound.M = self.M
-        compound.V = self.V
-        compound.n = self.n
+        compound = copy.deepcopy(self)
+        compound.elements = {}
         for expr,el in self.elements.items():
             compound.add_element(el)
         if isinstance(other, Compound):
@@ -106,7 +102,7 @@ class Compound:
     def data_elements(self):
         with RowCollector(['expression','element','isotope','ionisation','A[Da]','Z','N','e','A_nuc[Da]','E_bin[MeV]']) as rc:
             for s,e in self.elements.items():
-                el = Element(s)
+                el = Element(s, natural=self.natural)
                 A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]') + Quantity(el.e, '[m_e]')
                 E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
                 rc.append([

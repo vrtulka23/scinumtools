@@ -4,7 +4,7 @@ import numpy as np
 class AtomBase:
     
     value: Union[float,bool]
-    
+
     def __init__(self, value:Union[str,float,bool]):
         if isinstance(value,str):
             self.value = float(value.strip())

@@ -10,7 +10,8 @@ from scinumtools.materials import *
 
 def test_preprocessing():
     
-    with MaterialSolver(Compound.from_atom) as ms:
+    compound = Compound()
+    with MaterialSolver(compound.atom) as ms:
         
         # implicit multiplication and addition
         assert ms.preprocess('C2B4')  == "C * 2 + B * 4"
@@ -28,7 +29,8 @@ def test_preprocessing():
 
 def test_solver():
     
-    with MaterialSolver(Compound.from_atom) as ms:
+    compound = Compound()
+    with MaterialSolver(compound.atom) as ms:
         
         # single atom parsing
         assert str(ms.solve('C'))       == "Compound(p=6 n=6.011 e=6 A=12.011)"
