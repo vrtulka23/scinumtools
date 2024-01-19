@@ -47,7 +47,7 @@ class Element:
                 np.average(rc.N, weights=rc.NA),
                 np.average(rc.e, weights=rc.NA),
                 np.average(rc.iso, weights=rc.NA),
-                np.average(rc.ion, weights=rc.NA),
+                int(rc.ion[0]),
             )
 
     def __init__(self, expression:str, count:int=1):
@@ -74,18 +74,18 @@ class Element:
                 elif ion1=="+": ion1="1"
                 self.isotope, self.ionisation = int(iso1), int(ion1)
             elif iso2:
-                self.isotope, self.ionisation = int(iso2), None
+                self.isotope, self.ionisation = int(iso2), 0
             elif ion3:
                 if ion3=="-": ion3="-1"
                 elif ion3=="+": ion3="1"
                 self.isotope, self.ionisation = None, int(ion3)
             else:
-                self.isotope, self.ionisation = None, None
+                self.isotope, self.ionisation = None, 0
             # set element values
             if self.isotope:
                 NA, A, Z, N, e, iso, ion = Element.get_isotope(self.element, self.isotope, self.ionisation)
             else:
-                NA, A, Z, N, e, iso, ion = Element.get_average(self.element, self.ionisation)
+                NA, A, Z, N, e, self.isotope, self.ionisation = Element.get_average(self.element, self.ionisation)
         else:
             raise Exception('Unrecognized expression', expression)
         self.A = self.count*A

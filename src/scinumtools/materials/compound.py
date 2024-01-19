@@ -106,19 +106,18 @@ class Compound:
     def data_elements(self):
         with RowCollector(['expression','element','isotope','ionisation','A[Da]','Z','N','e','A_nuc[Da]','E_bin[MeV]']) as rc:
             for s,e in self.elements.items():
-                element    = e.element
-                NA, A, Z, N, e, isotope, ionisation = Element.get_isotope(e.element, e.isotope, e.ionisation)
-                A_nuc = Quantity(Z, '[m_p]') + Quantity(N, '[m_n]') + Quantity(e, '[m_e]')
-                E_bin = ((A_nuc-A)*Unit('[c]')**2)/(Z+N)
+                el = Element(s)
+                A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]') + Quantity(el.e, '[m_e]')
+                E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
                 rc.append([
                     s, 
-                    element, 
-                    f"{isotope:d}", 
-                    f"{ionisation:d}", 
-                    A.value('Da'), 
-                    Z, 
-                    N, 
-                    e, 
+                    e.element, 
+                    el.isotope, 
+                    el.ionisation, 
+                    el.A.value('Da'), 
+                    el.Z, 
+                    el.N, 
+                    el.e, 
                     A_nuc.value('Da'), 
                     E_bin.value('MeV'),
                 ])

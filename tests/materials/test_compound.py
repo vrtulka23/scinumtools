@@ -92,10 +92,10 @@ def test_from_elements():
             Element('H{1}',6),
     ])
     assert compound.data_elements().to_text() == """
-  expression element isotope ionisation      A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
-0      B{11}       B      11          0  11.009305  5  6  5  11.091122    6.928315
-1      N{14}       N      14          0  14.003074  7  7  7  14.115439    7.476214
-2       H{1}       H       1          0   1.007825  1  0  1   1.007826    0.000598
+  expression element  isotope  ionisation      A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
+0      B{11}       B       11           0  11.009305  5  6  5  11.091122    6.928315
+1      N{14}       N       14           0  14.003074  7  7  7  14.115439    7.476214
+2       H{1}       H        1           0   1.007825  1  0  1   1.007826    0.000598
 """.strip('\n')
     assert compound.data_compound().to_text() == """
   expression     count      A[Da]      Z       N      e
@@ -149,9 +149,9 @@ Molecular density: Quantity(3.333e+28 m-3)
 
 Elements:
 
-expression element isotope ionisation     A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
-         H       H       2          0  2.014102  1  1  1   2.016491    1.112882
-         O       O      16          0 15.994915  8  8  8  16.131930    7.976806
+expression element   isotope  ionisation     A[Da]   Z        N   e  A_nuc[Da]  E_bin[MeV]
+         H       H  1.000115           0  1.007941 1.0 0.000115 1.0   1.007942    0.000854
+         O       O 16.004480           0 15.999405 8.0 8.004480 8.0  16.136449    7.976233
 
 Compound:
 
