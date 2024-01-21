@@ -89,9 +89,9 @@ Molecular density: Quantity(3.334e+28 m-3)
 
 Elements:
 
-expression element  isotope  ionisation     A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
-         H       H        1           0  1.007825  1  0  1   1.007826    0.000598
-         O       O       16           0 15.994915  8  8  8  16.131930    7.976806
+expression element  isotope  ionisation     A[Da]  Z  N  e
+         H       H        1           0  1.007825  1  0  1
+         O       O       16           0 15.994915  8  8  8
 
 Compound:
 

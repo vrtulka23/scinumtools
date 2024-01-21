@@ -100,10 +100,11 @@ class Compound:
         self.V = V
             
     def data_elements(self):
-        with ParameterTable(['element','isotope','ionisation','A','Z','N','e','A_nuc','E_bin'], keys=True, keyname='expression') as pt:
+        with ParameterTable(['element','isotope','ionisation','A','Z','N','e'], #,'A_nuc','E_bin'], 
+                keys=True, keyname='expression') as pt:
             for s,e in self.elements.items():
                 el = Element(s, natural=self.natural)
-                A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]') + Quantity(el.e, '[m_e]')
+                A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]')
                 E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
                 pt[s] = [
                     e.element, 
@@ -113,8 +114,8 @@ class Compound:
                     el.Z, 
                     el.N, 
                     el.e, 
-                    A_nuc.value('Da'), 
-                    E_bin.value('MeV'),
+                    #A_nuc.value('Da'), 
+                    #E_bin.value('MeV'),
                 ]
             return pt
             
