@@ -5,7 +5,7 @@ import copy
 
 from .element import Element
 from .material_solver import MaterialSolver
-from .. import RowCollector
+from .. import ParameterTable, RowCollector
 from ..units import Quantity, Unit
 
 class Compound:
@@ -56,10 +56,10 @@ class Compound:
             elements.append(element)
         elements = " ".join(elements)
         data = self.data_compound()
-        p = int(round(data['Z'][-1]))
-        n = data['N'][-1]
-        e = int(round(data['e'][-1]))
-        A = data['A[Da]'][-1]
+        p = int(round(data['sum']['Z']))
+        n = data['sum']['N']
+        e = int(round(data['sum']['e']))
+        A = data['sum']['A']
         return f"Compound(p={p:d} n={n:.03f} e={e:d} A={A:.03f})"
         
     def __mul__(self, other:float):
@@ -94,19 +94,18 @@ class Compound:
     
     def set_amount(self, rho:Quantity, V:Quantity=None):
         self.rho = rho
-        self.V = V
         self.n = (rho/self.M).rebase()
         for s in self.elements.keys():
             self.elements[s].set_density(self.n)
+        self.V = V
             
     def data_elements(self):
-        with RowCollector(['expression','element','isotope','ionisation','A[Da]','Z','N','e','A_nuc[Da]','E_bin[MeV]']) as rc:
+        with ParameterTable(['element','isotope','ionisation','A','Z','N','e','A_nuc','E_bin'], keys=True, keyname='expression') as pt:
             for s,e in self.elements.items():
                 el = Element(s, natural=self.natural)
                 A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]') + Quantity(el.e, '[m_e]')
                 E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
-                rc.append([
-                    s, 
+                pt[s] = [
                     e.element, 
                     el.isotope, 
                     el.ionisation, 
@@ -116,23 +115,23 @@ class Compound:
                     el.e, 
                     A_nuc.value('Da'), 
                     E_bin.value('MeV'),
-                ])
-            return rc
+                ]
+            return pt
             
     def data_compound(self, part:list=None):
         if not self.elements:
             return None
-        columns = ['A[Da]','Z','N','e']
+        columns = ['A','Z','N','e']
         if self.rho:
-            columns += ['n[cm-3]','rho[g/cm3]','X[%]']
+            columns += ['n','rho','X']
         if self.V:
-            columns += ['n_V','M_V[g]']
-        with RowCollector(['expression','count']+columns) as rc:
+            columns += ['n_V','M_V']
+        with ParameterTable(['count']+columns, keys=True, keyname='expression') as pt:
+            rc = RowCollector(['count']+columns)
             for s,e in self.elements.items():
                 if part and s not in part:
                     continue
                 row = [
-                    s, 
                     e.count, 
                     e.A.value('Da'), 
                     e.Z, 
@@ -150,28 +149,38 @@ class Compound:
                         (e.n*self.V).value(),
                         (e.rho*self.V).value('g'),
                     ]
+                pt[s] = row
                 rc.append(row)
-            avg = ['avg', np.average(rc['count'])]
-            sum = ['sum', np.sum(rc['count'])]
+            avg = [np.average(rc['count'])]
+            sum = [np.sum(rc['count'])]
             for p in columns:
                 sum.append(np.sum(rc[p]))
                 avg.append(np.average(np.divide(rc[p],rc['count']), weights=rc['count']))
-            rc.append(avg)
-            rc.append(sum)
-            return rc
+            pt['avg'] = avg
+            pt['sum'] = sum
+            return pt
             
     def print(self):
         text = []
         text.append("Properties:\n")
-        text.append(f"Mass density: {self.rho}")
         text.append(f"Molecular mass: {self.M}")
-        text.append(f"Molecular density: {self.n}")
+        if self.rho:
+            text.append(f"Mass density: {self.rho}")
+            text.append(f"Molecular density: {self.n}")
         text.append("")
         text.append("Elements:\n")
-        text.append(self.data_elements().to_dataframe().to_string(index=False))
+        df = self.data_elements().to_dataframe()
+        df = df.rename(columns={"A": "A[Da]", "A_nuc": "A_nuc[Da]", "E_bin": "E_bin[MeV]"})
+        text.append(df.to_string(index=False))
         text.append("")
         text.append("Compound:\n")
-        text.append(self.data_compound().to_dataframe().to_string(index=False))
+        df = self.data_compound().to_dataframe()
+        df = df.rename(columns={"A": "A[Da]"})
+        if self.rho:
+            df = df.rename(columns={"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})
+        if self.V:
+            df = df.rename(columns={"M_V": "M_V[g]"})
+        text.append(df.to_string(index=False))
         text = "\n".join(text)
         print(text)
         return text

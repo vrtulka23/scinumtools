@@ -85,3 +85,62 @@ def test_delete_item():
         assert params['e'].a == 4
         assert params['e'].b == 5
         assert params['e'].c == 6
+
+def test_data():
+    
+    with snt.ParameterTable(['a','b','c']) as params:
+        params.append([1, 2, 3])
+        params.append([4, 5, 6])
+        assert params.data() == [
+            {'a': 1, 'b': 2, 'c': 3},
+            {'a': 4, 'b': 5, 'c': 6},
+        ]
+        
+    with snt.ParameterTable(['a','b','c'], keys=True) as params:
+        params['d'] = [1, 2, 3]
+        params['e'] = [4, 5, 6]
+        assert params.data() == {
+            'd': {'a': 1, 'b': 2, 'c': 3},
+            'e': {'a': 4, 'b': 5, 'c': 6},
+        }
+        
+def test_to_dataframe():
+    
+    with snt.ParameterTable(['a','b','c']) as params:
+        params.append([1, 2, 3])
+        params.append([4, 5, 6])
+        assert params.to_dataframe().equals(pd.DataFrame({
+            'a': [1, 4],
+            'b': [2, 5],
+            'c': [3, 6],
+        }))
+        
+    with snt.ParameterTable(['a','b','c'], keys=True) as params:
+        params['d'] = [1, 2, 3]
+        params['e'] = [4, 5, 6]
+        assert params.to_dataframe().equals(pd.DataFrame({
+            '#': ['d','e'],
+            'a': [1, 4],
+            'b': [2, 5],
+            'c': [3, 6],
+        }))
+        
+def test_to_text():
+    
+    with snt.ParameterTable(['a','b','c']) as params:
+        params.append([1, 2, 3])
+        params.append([4, 5, 6])
+        assert params.to_text() == """
+   a  b  c
+0  1  2  3
+1  4  5  6
+""".strip('\n')
+        
+    with snt.ParameterTable(['a','b','c'], keys=True, keyname='x') as params:
+        params['d'] = [1, 2, 3]
+        params['e'] = [4, 5, 6]
+        assert params.to_text() == """
+   x  a  b  c
+0  d  1  2  3
+1  e  4  5  6
+""".strip('\n')

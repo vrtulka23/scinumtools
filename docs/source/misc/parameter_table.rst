@@ -75,3 +75,16 @@ If needed, parameter sets can be deleted similarly as standard list, or dictiona
     >>>     del pt['d']
     >>>     pt.shape()
     (1, 3)
+
+Parameter table object can also be easily converted into a Pandas DataFrame, or casted as a text. If rows in parameter table have keys, it is possible to set a name for the parameter key column. By default symbol ``#`` is used.
+
+.. code-block::
+
+    >>> with snt.ParameterTable(['a','b','c'], keys=True, keyname='x') as pt:
+    >>>     pt['d'] = [1, 2, 3]
+    >>>     pt['e'] = [4, 5, 6]
+    >>>     df = pt.to_dataframe()
+    >>>     pt.to_text()
+       x  a  b  c
+    0  d  1  2  3
+    1  e  4  5  6

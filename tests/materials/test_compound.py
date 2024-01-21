@@ -16,7 +16,7 @@ def test_add_element():
     compound = Compound()
     compound.add_element(Element('B'))
     assert compound.data_compound().to_text() == """
-  expression  count      A[Da]    Z      N    e
+  expression  count          A    Z      N    e
 0          B    1.0  10.811028  5.0  5.801  5.0
 1        avg    1.0  10.811028  5.0  5.801  5.0
 2        sum    1.0  10.811028  5.0  5.801  5.0
@@ -25,7 +25,7 @@ def test_add_element():
 def test_expression():
     compound = Compound('B{11}N{14}H{1}6')
     assert compound.data_compound().to_text() == """
-  expression     count      A[Da]      Z       N      e
+  expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
 2       H{1}  6.000000   6.046950   6.00   0.000   6.00
@@ -36,7 +36,7 @@ def test_expression():
 def test_context():
     with Compound('H2O') as c:
         assert c.data_compound().to_text() == """
-  expression  count      A[Da]          Z         N          e
+  expression  count          A          Z         N          e
 0          H    2.0   2.015882   2.000000  0.000230   2.000000
 1          O    1.0  15.999405   8.000000  8.004480   8.000000
 2        avg    1.5   6.005095   3.333333  2.668237   3.333333
@@ -46,7 +46,7 @@ def test_context():
 def test_partial_data():
     compound = Compound('B{11}N{14}H{1}6')
     assert compound.data_compound(['B{11}','N{14}']).to_text() == """
-  expression  count      A[Da]     Z     N     e
+  expression  count          A     Z     N     e
 0      B{11}    1.0  11.009305   5.0   6.0   5.0
 1      N{14}    1.0  14.003074   7.0   7.0   7.0
 2        avg    1.0  12.506190   6.0   6.5   6.0
@@ -60,12 +60,12 @@ def test_density():
         Quantity(780,'kg/m3')
     )
     assert compound.data_compound().to_text() == """
-  expression     count      A[Da]      Z       N      e       n[cm-3]  rho[g/cm3]       X[%]
-0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22    0.276479   35.44605
-1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22    0.351662   45.08492
-2       H{1}  6.000000   6.046950   6.00   0.000   6.00  9.074123e+22    0.151858   19.46903
-3        avg  2.666667   3.882416   2.25   1.625   2.25  1.512354e+22    0.097500   12.50000
-4        sum  8.000000  31.059330  18.00  13.000  18.00  1.209883e+23    0.780000  100.00000
+  expression     count          A      Z       N      e             n       rho          X
+0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605
+1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492
+2       H{1}  6.000000   6.046950   6.00   0.000   6.00  9.074123e+22  0.151858   19.46903
+3        avg  2.666667   3.882416   2.25   1.625   2.25  1.512354e+22  0.097500   12.50000
+4        sum  8.000000  31.059330  18.00  13.000  18.00  1.209883e+23  0.780000  100.00000
 """.strip('\n')
     
 def test_density_volume():
@@ -76,12 +76,12 @@ def test_density_volume():
         Quantity(1,'l')
     )
     assert compound.data_compound().to_text() == """
-  expression     count      A[Da]      Z       N      e       n[cm-3]  rho[g/cm3]       X[%]           n_V      M_V[g]
-0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22    0.276479   35.44605  1.512354e+25  276.479187
-1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22    0.351662   45.08492  1.512354e+25  351.662379
-2       H{1}  6.000000   6.046950   6.00   0.000   6.00  9.074123e+22    0.151858   19.46903  9.074123e+25  151.858434
-3        avg  2.666667   3.882416   2.25   1.625   2.25  1.512354e+22    0.097500   12.50000  1.512354e+25   97.500000
-4        sum  8.000000  31.059330  18.00  13.000  18.00  1.209883e+23    0.780000  100.00000  1.209883e+26  780.000000
+  expression     count          A      Z       N      e             n       rho          X           n_V         M_V
+0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605  1.512354e+25  276.479187
+1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492  1.512354e+25  351.662379
+2       H{1}  6.000000   6.046950   6.00   0.000   6.00  9.074123e+22  0.151858   19.46903  9.074123e+25  151.858434
+3        avg  2.666667   3.882416   2.25   1.625   2.25  1.512354e+22  0.097500   12.50000  1.512354e+25   97.500000
+4        sum  8.000000  31.059330  18.00  13.000  18.00  1.209883e+23  0.780000  100.00000  1.209883e+26  780.000000
 """.strip('\n')
 
 def test_from_elements():
@@ -92,13 +92,13 @@ def test_from_elements():
             Element('H{1}',6),
     ])
     assert compound.data_elements().to_text() == """
-  expression element  isotope  ionisation      A[Da]  Z  N  e  A_nuc[Da]  E_bin[MeV]
-0      B{11}       B       11           0  11.009305  5  6  5  11.091122    6.928315
-1      N{14}       N       14           0  14.003074  7  7  7  14.115439    7.476214
-2       H{1}       H        1           0   1.007825  1  0  1   1.007826    0.000598
+  expression element  isotope  ionisation          A  Z  N  e      A_nuc     E_bin
+0      B{11}       B       11           0  11.009305  5  6  5  11.091122  6.928315
+1      N{14}       N       14           0  14.003074  7  7  7  14.115439  7.476214
+2       H{1}       H        1           0   1.007825  1  0  1   1.007826  0.000598
 """.strip('\n')
     assert compound.data_compound().to_text() == """
-  expression     count      A[Da]      Z       N      e
+  expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
 2       H{1}  6.000000   6.046950   6.00   0.000   6.00
@@ -143,8 +143,8 @@ def test_most_abundant():
         assert c.print() == """
 Properties:
 
-Mass density: Quantity(9.970e+02 kg*m-3)
 Molecular mass: Quantity(1.801e+01 Da)
+Mass density: Quantity(9.970e+02 kg*m-3)
 Molecular density: Quantity(3.334e+28 m-3)
 
 Elements:
@@ -160,4 +160,32 @@ expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3
          O    1.0 15.994915  8.000000 8.000000  8.000000 3.333640e+22    0.885421  88.808513 3.333640e+25 885.420871
        avg    1.5  6.003522  3.333333 2.666667  3.333333 3.333640e+22    0.332333  33.333333 3.333640e+25 332.333333
        sum    3.0 18.010565 10.000000 8.000000 10.000000 1.000092e+23    0.997000 100.000000 1.000092e+26 997.000000
+""".strip('\n')
+
+def test_print():
+    
+    assert str(Compound('DT'))                 == "Compound(p=2 n=3.000 e=2 A=5.030)"
+    assert str(Compound('H2O', natural=False)) == "Compound(p=10 n=8.000 e=10 A=18.011)"
+    
+    c = Compound.from_elements([
+        Element('B{11}',1),
+        Element('N{14}',1),
+        Element('H{1}',6),
+    ])
+    assert (str(c)) == "Compound(p=18 n=13.000 e=18 A=31.059)"
+    
+def test_parameter_selection():
+    
+    with Compound('H2O', natural=False) as c:
+        data = c.data_elements()
+        assert data.O['N'] == 8
+        data = c.data_compound()
+        assert data['sum'].e == 10
+        assert data.H.count == 2
+        data = c.data_compound(['H'])
+        assert data.to_text() == """
+  expression  count         A    Z    N    e
+0          H    2.0  2.015650  2.0  0.0  2.0
+1        avg    2.0  1.007825  1.0  0.0  1.0
+2        sum    2.0  2.015650  2.0  0.0  2.0
 """.strip('\n')

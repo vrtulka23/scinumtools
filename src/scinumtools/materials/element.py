@@ -42,7 +42,7 @@ class Element:
         isotope = int(list(A for A in isotopes.A.keys())[idmax])
         return self.get_isotope(element, isotope, ionisation)        
 
-    # get the a natural isotopic average
+    # get a natural isotopic average
     def get_natural(self, element:str, ionisation:int):
         isotopes = PERIODIC_TABLE[element]
         with RowCollector(['NA', 'A', 'Z', 'N', 'e', 'iso', 'ion']) as rc:
@@ -112,6 +112,13 @@ class Element:
             raise Exception("Only same elements can be added up:", self.expression, other.expression)
         return Element(self.expression, self.count+other.count, natural=self.natural)
         
+    def __str__(self):
+        if self.count>1:
+            return f"Element({self.expression}{self.count} Z={self.Z} N={self.N:.3f} e={self.e} A={self.A.value('Da'):.3f})"
+        else:
+            return f"Element({self.expression} Z={self.Z} N={self.N:.3f} e={self.e} A={self.A.value('Da'):.3f})"
+        
     def set_density(self, n:Quantity):
         self.n = self.count * n
         self.rho = self.A * n
+            

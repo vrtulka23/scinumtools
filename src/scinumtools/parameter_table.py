@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import pandas as pd
 from typing import Union
 
 class ParameterSettings:
@@ -33,6 +34,14 @@ class ParameterSettings:
         return self._to_string()
     def __repr__(self):
         return self._to_string()
+    def keys(self):
+        return self._keys
+    def items(self):
+        settings = []
+        for key in self._keys:
+            yield key, getattr(self, key)
+    def data(self):
+        return {k:v for k,v in self.items()}        
 
 @dataclass
 class ParameterTable:
@@ -40,12 +49,14 @@ class ParameterTable:
     """
     _settings: list
     _keys: list = None
+    _keyname: str = None
     _data: Union[dict,list] = None
 
-    def __init__(self, settings: list, parameters: Union[list,dict]=None, keys: bool=False):
+    def __init__(self, settings: list, parameters: Union[list,dict]=None, keys: bool=False, keyname: str="#"):
         self._settings = settings
         if keys:
             self._keys = []
+            self._keyname = keyname
         self._data = [] if self._keys is None else {}
         if parameters:
             if self._keys is None:
@@ -125,3 +136,22 @@ class ParameterTable:
             settings = ParameterSettings(dict(zip(self._settings, values)))
             self._data[key] = settings
         
+    def data(self):
+        if self._keys is None:
+            return [v.data() for k,v in self.items()]
+        else:
+            return {k:v.data() for k,v in self.items()}
+            
+    def to_dataframe(self):
+        if self._keys is None:
+            df = pd.DataFrame(columns=self._settings)
+            for v in self.data():
+                df.loc[len(df.index)] = v.values()
+        else:
+            df = pd.DataFrame(columns=[self._keyname]+self._settings)
+            for k,v in self.data().items():
+                df.loc[len(df.index)] = [k]+list(v.values())
+        return df
+        
+    def to_text(self, **kwargs):
+        return self.to_dataframe().to_string(**kwargs)
