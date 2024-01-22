@@ -25,7 +25,7 @@ Besides several useful tools, package `scinumtools` consist of four main submodu
 
 ### Expression Solver
 
-Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of both, physical units and DIP modules.
+Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of other submodules.
 For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html) please refer to the documentation.
 
 ``` python
