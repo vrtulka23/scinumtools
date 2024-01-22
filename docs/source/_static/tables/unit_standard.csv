@@ -6,7 +6,7 @@ Ao,Angstrom,1e-10*m,"mAo, kAo"
 twip,US twip,17.6388888*um,
 mil,US mil,25.4*um,
 p,US point,352.778*um,
-P,Poise,g/(cm*s),cP
+pi,US pica,4.233*mm,
 in,US inch,25.4*mm,
 ft,US foot,0.3048*m,
 yd,US yard,0.9144*m,
@@ -57,14 +57,18 @@ mph,US miles per hour,0.44704*m/s,
 kn,knot,0.514444*m/s,
 Mx,Maxwell,1e-8*Wb,
 Wb,Weber,V*s,
+P,Poise,g/(cm*s),cP
 St,Stokes,cm2/s,cSt
 Ka,Kayser,cm-1,
 D,Debye,3.33564e-30*C*m,all
 Oe,Oersted,1e3*A/(4*[pi]*m),
+Gal,Gal,cm/s2,
+Bi,Biot,10*A,
+Rad,radiation dose,0.01*Gy,
 sr,steradian,rad2,
 lm,lumen,cd*sr,
 A,Ampere,C/s,all
-H,Henry,Wb/A,
+H,Henry,Wb/A,all
 Ohm,Ohm,V/A,all
 V,Volt,J/C,all
 lx,lux,lm/m2,
@@ -80,3 +84,8 @@ statA,statampere GBU,statC/s,
 statV,statvolt GBU,erg/statC,
 statG,Gauss GBU,cm-1:2*g1:2/s,
 statOe,Oersted GBU,cm-1:2*g1:2/s,
+abC,abcoulomb GBU,g1:2*cm1:2,
+abA,abampere GBU,g1:2*cm1:2/s,
+abBi,Biot GBU,abA,
+abH,Henry GBU,nH,
+abOhm,Ohm GBU,cm/s,

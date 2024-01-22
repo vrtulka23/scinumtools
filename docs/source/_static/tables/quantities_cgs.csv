@@ -1,5 +1,5 @@
 Symbol,Name,Definition
-#CACC,CGS.Acceleration,cm/s2
+#CACC,CGS.Acceleration,Gal
 #CBMA,CGS.BohrMagneton,[mu_B]
 #CDVI,CGS.DynamicViscosity,P
 #CELC,CGS.ElementaryCharge,[e]
