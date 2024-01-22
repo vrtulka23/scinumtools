@@ -404,3 +404,6 @@ class DIP:
                     break
                 target.nodes.append(node)
         return Documentation(target)
+
+    def setup(self):
+        pass

@@ -21,7 +21,7 @@ The newest release of `scinumtools` is available on [PyPi](https://pypi.org/proj
 pip3 install scinumtools
 ```
 
-Besides several useful tools, package `scinumtools` consist of three main submodules: expression solver, physical units and DIP.
+Besides several useful tools, package `scinumtools` consist of four main submodules: expression solver, physical units, material properties and DIP.
 
 ### Expression Solver
 
