@@ -110,6 +110,8 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 'J':        (1.0e3,          [ 2, 1,-2, 0, 0, 0, 0, 0],  'N*m',                    'Joule',             True               ),
 'eV':       (1.602176634e-16,[ 2, 1,-2, 0, 0, 0, 0, 0],  '[e]*V',                  'electronvolt',      True               ),
 'erg':      (1.0e-4,         [ 2, 1,-2, 0, 0, 0, 0, 0],  'dyn*cm',                 'erg',               False              ),
+'cal':      (4184.0,         [ 2, 1,-2, 0, 0, 0, 0, 0],  '4.184*J',                'calorie',           ['k','M']          ),
+'Cal':      (4.184e6,        [ 2, 1,-2, 0, 0, 0, 0, 0],  'kcal',                   'Calorie',           False              ),
 'Ha':       (4.35974472e-15, [ 2, 1,-2, 0, 0, 0, 0, 0],  '4.3597447222071e-18*J',  'Hartree',           ['k','M']          ),
 'E_h':      (4.35974472e-15, [ 2, 1,-2, 0, 0, 0, 0, 0],  'Ha',                     'Hartree',           ['k','M']          ),
 # units of pressure
@@ -196,7 +198,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 '[H_0]':    (2.197232394e-18,[ 0, 0,-1, 0, 0, 0, 0, 0],  '67.8*km/(s*Mpc)',        'Hubble const.',     False              ),
 '[k]':      (1.380658e-20,   [ 2, 1,-2,-1, 0, 0, 0, 0],  '1.380658e-23*J/K',       'Boltzmann const.',  False              ),
 '[k_B]':    (1.380658e-20,   [ 2, 1,-2,-1, 0, 0, 0, 0],  '[k]',                    'Boltzmann const.',  False              ),
-'[k_e]':    (8.9875517923e12,[ 3, 1,-2, 0,-2, 0, 0, 0],  '8.9875517923e9*kg*m3/(s4*A2)', 'Coulomb const.', False           ),
+'[k_e]':    (8.9875517923e12,[ 3, 1,-2, 0,-2, 0, 0, 0],  '8.9875517923e9*N*m2/C2', 'Coulomb const.',    False              ),
 '[L_sol]':  (3.826e29,       [ 2, 1,-3, 0, 0, 0, 0, 0],  '3.826e33*erg/s',         'Solar luminosity',  False              ),
 '[M_sol]':  (1.98847e33,     [ 0, 1, 0, 0, 0, 0, 0, 0],  '1.98847e30*kg',          'Solar mass',        False              ),
 '[mu_0]':   (1.256637e-3,    [ 1, 1, 0, 0,-2, 0, 0, 0],  '4*[pi]*1e-7*N/A2',       'permeab. of vac.',  False              ),
@@ -206,7 +208,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 '[m_n]':    (1.6749286e-24,  [ 0, 1, 0, 0, 0, 0, 0, 0],  '1.6749286e-24*g',        'neutron mass',      False              ),
 '[R_inf]':  (1.09737e7,      [-1, 0, 0, 0, 0, 0, 0, 0],  '1.09737e5/cm',           'Rydberg constant',  False              ),
 '[R_sol]':  (6.9558e8,       [ 1, 0, 0, 0, 0, 0, 0, 0],  '6.9558e10*cm',           'Solar radius',      False              ),
-'[sigma]':  (5.67037e-5,     [ 0, 1,-3,-4, 0, 0, 0, 0],  '5.67037e-8*W/(m2*K4)',   'Stef.-Boltz. const.', False            ),
+'[sigma]':  (5.67037e-5,     [ 0, 1,-3,-4, 0, 0, 0, 0],  '5.67037e-8*W/(m2*K4)',   'Stef.Bolt. const.', False              ),
 '[N_A]':    (6.02214076e23,  [ 0, 0, 0, 0, 0, 0,-1, 0],  '[N_0]/mol',              "Avogadro's const.", False              ),
 
 # Gaussian based units (GBU), EMU and ESU
@@ -237,7 +239,6 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'AU', 'CGS', 'GAUSS', 'ESU'
 ('Action',                'ACT',   'J*s',      '[hbar]',               None,       None,             None,             None,             ),
 ('AmountOfSubstance',     'AOS',   'mol',      None,                   None,       None,             None,             None,             ),
 ('AngularFrequency',      'AFR',   'rad/s',    None,                   None,       None,             None,             None,             ),
-('BohrMagneton',          'BMA',   '[mu_B]',   '[mu_B]',               '[mu_B]',   '[esu_mu_B]',    '[emu_mu_B]',      '[emu_mu_B]',     ),
 ('Capacitance',           'CAP',   'F',        None,                   None,       'cm',             'cm',             'abF',            ),
 ('CatalyticActivity',     'CAC',   'kat',      None,                   None,       None,             None,             None,             ),
 ('Conductance',           'CON',   'S',        None,                   None,       None,             None,             None,             ),
@@ -253,7 +254,6 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'AU', 'CGS', 'GAUSS', 'ESU'
 ('ElectricFlux',          'EFL',   'V*m',      None,                   None,       'statC',          'statC',          'abC',            ),
 ('ElectricPolarizability','EPL',   'm2/J',     '[e]2*[a_0]2/E_h',      None,       None,             None,             None,             ),
 ('ElectromotiveForce',    'EFO',   'V',        None,                   None,       None,             None,             None,             ),
-('ElementaryCharge',      'ELC',   '[e]',      '[e]',                  '[e]',      '[esu_e]',        '[esu_e]',        '[emu_e]',        ),
 ('Energy',                'ENE',   'J',        'E_h',                  'erg',      'erg',            'erg',            'erg',            ),
 ('EquivalentDose',        'EDO',   'Sv',       None,                   None,       None,             None,             None,             ),
 ('Force',                 'FOR',   'N',        'E_h/[a_0]',            'dyn',      'dyn',            'dyn',           'dyn',             ),
@@ -292,6 +292,12 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'AU', 'CGS', 'GAUSS', 'ESU'
 ('Wavenumber',            'WAV',   'm-1',      None,                   'Ka',       'Ka',             'Ka',             'Ka',             ),
 ('Weight',                'WEI',   'N',        None,                   None,       None,             None,             None,             ),
 ('Work',                  'WOR',   'J',        None,                   None,       None,             None,             None,             ),
+# Constants
+('BohrMagneton',          'BMA',   '[mu_B]',   '[mu_B]',               '[mu_B]',   '[esu_mu_B]',    '[emu_mu_B]',      '[emu_mu_B]',     ),
+('CoulombConst',          'CCO',   '[k_e]',    '[k_e]',                '[k_e]',    '1',             '1',               '[c]2',           ),
+('ElementaryCharge',      'ELC',   '[e]',      '[e]',                  '[e]',      '[esu_e]',       '[esu_e]',         '[emu_e]',        ),
+('PermeabilityVacuum',    'PBV',   '[mu_0]',   '[mu_0]',               '[mu_0]',   '1',             '[c]-2',           '1',              ),
+('PermittivityVacuum',    'PTV',   '[eps_0]',  '[eps_0]',              '[eps_0]',  '1',             '1',               '[c]-2',          ),
 ])
 SI    = Enum('SI',    dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}S{symbol}" for symbol in QUANTITY_LIST.symbol])))
 AU    = Enum('AU',    dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}A{symbol}" for symbol in QUANTITY_LIST.symbol])))
