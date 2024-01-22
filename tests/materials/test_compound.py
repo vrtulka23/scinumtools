@@ -174,6 +174,26 @@ def test_print():
     ])
     assert (str(c)) == "Compound(p=18 n=13.000 e=18 A=31.059)"
     
+def test_nucleons():
+    
+    c = Compound('[p]3[n]2[e]')
+    data = c.data_elements()
+    assert data.to_text() == """
+  expression element  isotope  ionisation         A  Z  N  e
+0        [p]     [p]        0           0  1.007277  1  0  0
+1        [n]     [n]        0           0  1.008666  0  1  0
+2        [e]     [e]        0           0  0.000549  0  0  1
+""".strip('\n')
+    data = c.data_compound()
+    assert data.to_text() == """
+  expression  count         A    Z         N         e
+0        [p]    3.0  3.021831  3.0  0.000000  0.000000
+1        [n]    2.0  2.017331  0.0  2.000000  0.000000
+2        [e]    1.0  0.000549  0.0  0.000000  1.000000
+3        avg    2.0  0.839952  0.5  0.333333  0.166667
+4        sum    6.0  5.039711  3.0  2.000000  1.000000
+""".strip('\n')
+    
 def test_parameter_selection():
     
     with Compound('H2O', natural=False) as c:

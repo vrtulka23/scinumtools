@@ -104,10 +104,10 @@ class Compound:
                 keys=True, keyname='expression') as pt:
             for s,e in self.elements.items():
                 el = Element(s, natural=self.natural)
-                A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]')
-                E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
+                #A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]')
+                #E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
                 pt[s] = [
-                    e.element, 
+                    el.element, 
                     el.isotope, 
                     el.ionisation, 
                     el.A.value('Da'), 

@@ -70,6 +70,8 @@ class Element:
             A = Unit(f"[m_{nucleon}]").to('Da')
             nucleons = {'p':(1,0,0),'n':(0,1,0),'e':(0,0,1)}
             Z, N, e = nucleons[nucleon]
+            self.isotope = 0
+            self.ionisation = 0
         elif m := re.match("([a-zA-Z]{1,2})(\{([0-9]+)([+-]{1}[0-9]*)\}|\{([0-9]+)\}|\{([+-]{1}[0-9]*)\}|)", expression):
             # Extract information about isos
             element, variant, iso1, ion1, iso2, ion3 = m.groups()
