@@ -157,6 +157,11 @@ Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>
    10
    >>>     data.H.count
    2
+   >>>     data.H.A
+   Quantity(2.015650, 'Da')
+
+In both cases, dimensional parameters are returned as ``Quantity`` objects.
+If needed, simple numerical values can be requested by setting the following option: ``quantity=False``
 
 Sometimes it is required to know information about part of a molecule.
 In this case, one can specify which elements (``H``) should be returned.
@@ -164,7 +169,7 @@ In this case, one can specify which elements (``H``) should be returned.
 .. code-block:: python
 
    >>> with Compound('H2O', natural=False) as c:
-   >>>     c.data_compound(['H']).to_text()
+   >>>     c.data_compound(['H'], quantity=False).to_text()
      expression  count         A    Z    N    e
    0          H    2.0  2.015650  2.0  0.0  2.0
    1        avg    2.0  1.007825  1.0  0.0  1.0

@@ -55,7 +55,7 @@ class Compound:
                 element += f"{int(el.count):d}"
             elements.append(element)
         elements = " ".join(elements)
-        data = self.data_compound()
+        data = self.data_compound(quantity=False)
         p = int(round(data['sum']['Z']))
         n = data['sum']['N']
         e = int(round(data['sum']['e']))
@@ -99,7 +99,7 @@ class Compound:
             self.elements[s].set_density(self.n)
         self.V = V
             
-    def data_elements(self):
+    def data_elements(self, quantity=True):
         with ParameterTable(['element','isotope','ionisation','A','Z','N','e'], #,'A_nuc','E_bin'], 
                 keys=True, keyname='expression') as pt:
             for s,e in self.elements.items():
@@ -110,7 +110,7 @@ class Compound:
                     el.element, 
                     el.isotope, 
                     el.ionisation, 
-                    el.A.value('Da'), 
+                    el.A.to('Da') if quantity else el.A.value('Da'), 
                     el.Z, 
                     el.N, 
                     el.e, 
@@ -119,7 +119,7 @@ class Compound:
                 ]
             return pt
             
-    def data_compound(self, part:list=None):
+    def data_compound(self, part:list=None, quantity=True):
         if not self.elements:
             return None
         columns = ['A','Z','N','e']
@@ -134,21 +134,21 @@ class Compound:
                     continue
                 row = [
                     e.count, 
-                    e.A.value('Da'), 
+                    e.A.to('Da') if quantity else e.A.value('Da'), 
                     e.Z, 
                     e.N, 
                     e.e, 
                 ]
                 if self.rho:
                     row += [
-                        e.n.value('cm-3'), 
-                        e.rho.value('g/cm3'),
-                        (e.rho/self.rho).value('%'),
+                        e.n.to('cm-3') if quantity else e.n.value('cm-3'), 
+                        e.rho.to('g/cm3') if quantity else e.rho.value('g/cm3'),
+                        (e.rho/self.rho).to('%') if quantity else (e.rho/self.rho).value('%'),
                     ]
                 if self.V:
                     row += [
                         (e.n*self.V).value(),
-                        (e.rho*self.V).value('g'),
+                        (e.rho*self.V).to('g') if quantity else (e.rho*self.V).value('g'),
                     ]
                 pt[s] = row
                 rc.append(row)
@@ -170,12 +170,12 @@ class Compound:
             text.append(f"Molecular density: {self.n}")
         text.append("")
         text.append("Elements:\n")
-        df = self.data_elements().to_dataframe()
+        df = self.data_elements(quantity=False).to_dataframe()
         df = df.rename(columns={"A": "A[Da]", "A_nuc": "A_nuc[Da]", "E_bin": "E_bin[MeV]"})
         text.append(df.to_string(index=False))
         text.append("")
         text.append("Compound:\n")
-        df = self.data_compound().to_dataframe()
+        df = self.data_compound(quantity=False).to_dataframe()
         df = df.rename(columns={"A": "A[Da]"})
         if self.rho:
             df = df.rename(columns={"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})

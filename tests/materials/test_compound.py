@@ -15,7 +15,7 @@ def test_empty():
 def test_add_element():
     compound = Compound()
     compound.add_element(Element('B'))
-    assert compound.data_compound().to_text() == """
+    assert compound.data_compound(quantity=False).to_text() == """
   expression  count          A    Z      N    e
 0          B    1.0  10.811028  5.0  5.801  5.0
 1        avg    1.0  10.811028  5.0  5.801  5.0
@@ -24,7 +24,7 @@ def test_add_element():
 
 def test_expression():
     compound = Compound('B{11}N{14}H{1}6')
-    assert compound.data_compound().to_text() == """
+    assert compound.data_compound(quantity=False).to_text() == """
   expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
@@ -35,7 +35,7 @@ def test_expression():
 
 def test_context():
     with Compound('H2O') as c:
-        assert c.data_compound().to_text() == """
+        assert c.data_compound(quantity=False).to_text() == """
   expression  count          A          Z         N          e
 0          H    2.0   2.015882   2.000000  0.000230   2.000000
 1          O    1.0  15.999405   8.000000  8.004480   8.000000
@@ -45,7 +45,7 @@ def test_context():
 
 def test_partial_data():
     compound = Compound('B{11}N{14}H{1}6')
-    assert compound.data_compound(['B{11}','N{14}']).to_text() == """
+    assert compound.data_compound(['B{11}','N{14}'], quantity=False).to_text() == """
   expression  count          A     Z     N     e
 0      B{11}    1.0  11.009305   5.0   6.0   5.0
 1      N{14}    1.0  14.003074   7.0   7.0   7.0
@@ -59,7 +59,7 @@ def test_density():
     compound.set_amount(
         Quantity(780,'kg/m3')
     )
-    assert compound.data_compound().to_text() == """
+    assert compound.data_compound(quantity=False).to_text() == """
   expression     count          A      Z       N      e             n       rho          X
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492
@@ -75,7 +75,7 @@ def test_density_volume():
         Quantity(780,'kg/m3'),
         Quantity(1,'l')
     )
-    assert compound.data_compound().to_text() == """
+    assert compound.data_compound(quantity=False).to_text() == """
   expression     count          A      Z       N      e             n       rho          X           n_V         M_V
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605  1.512354e+25  276.479187
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492  1.512354e+25  351.662379
@@ -91,13 +91,13 @@ def test_from_elements():
             Element('N{14}',1),
             Element('H{1}',6),
     ])
-    assert compound.data_elements().to_text() == """
+    assert compound.data_elements(quantity=False).to_text() == """
   expression element  isotope  ionisation          A  Z  N  e
 0      B{11}       B       11           0  11.009305  5  6  5
 1      N{14}       N       14           0  14.003074  7  7  7
 2       H{1}       H        1           0   1.007825  1  0  1
 """.strip('\n')
-    assert compound.data_compound().to_text() == """
+    assert compound.data_compound(quantity=False).to_text() == """
   expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
@@ -177,14 +177,14 @@ def test_print():
 def test_nucleons():
     
     c = Compound('[p]3[n]2[e]')
-    data = c.data_elements()
+    data = c.data_elements(quantity=False)
     assert data.to_text() == """
   expression element  isotope  ionisation         A  Z  N  e
 0        [p]     [p]        0           0  1.007277  1  0  0
 1        [n]     [n]        0           0  1.008666  0  1  0
 2        [e]     [e]        0           0  0.000549  0  0  1
 """.strip('\n')
-    data = c.data_compound()
+    data = c.data_compound(quantity=False)
     assert data.to_text() == """
   expression  count         A    Z         N         e
 0        [p]    3.0  3.021831  3.0  0.000000  0.000000
@@ -202,7 +202,8 @@ def test_parameter_selection():
         data = c.data_compound()
         assert data['sum'].e == 10
         assert data.H.count == 2
-        data = c.data_compound(['H'])
+        assert data.H.A == Quantity(2.015650, 'Da')
+        data = c.data_compound(['H'], quantity=False)
         assert data.to_text() == """
   expression  count         A    Z    N    e
 0          H    2.0  2.015650  2.0  0.0  2.0
