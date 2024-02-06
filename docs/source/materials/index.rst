@@ -91,11 +91,6 @@ Class ``Molecule`` can solve a molecular formula, break it into individual eleme
 Similarly, as for ``Element`` class, it has an option to switch between natural and most abundant elements when isotopes are not specified.
 In this case, the option applies to all elements in a molecule.
 
-.. note::
-
-   Generally speaking, molecules in context of this module should be rather called molecules, because they can consist of 
-   multiple elements of the same kind. Nevertheless, we will stick to the term molecules for now.
-
 .. code-block:: python
 
    >>> from scinumtools.materials import Molecule
