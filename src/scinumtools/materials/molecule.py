@@ -8,7 +8,7 @@ from .material_solver import MaterialSolver
 from .. import ParameterTable, RowCollector
 from ..units import Quantity, Unit
 
-class Compound:
+class Molecule:
     natural: bool
     elements: dict
     M: Quantity
@@ -18,16 +18,16 @@ class Compound:
     
     @staticmethod
     def from_elements(elements:list, natural:bool=True):
-        compound = Compound(natural=natural)
+        molecule = Molecule(natural=natural)
         for el in elements:
-            compound.add_element(el)
-        return compound
+            molecule.add_element(el)
+        return molecule
         
     def atom(self, expression:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expression):
             return float(expression)
         else:
-            return Compound.from_elements([
+            return Molecule.from_elements([
                 Element(expression, natural=self.natural),
             ], natural=self.natural)
             
@@ -42,8 +42,8 @@ class Compound:
         self.elements = {}
         if expression and expression!='':
             with MaterialSolver(self.atom) as ms:
-                compound = ms.solve(expression)
-            for expr, el in compound.elements.items():
+                molecule = ms.solve(expression)
+            for expr, el in molecule.elements.items():
                 self.elements[expr] = el
         self.M = np.sum([e.A for e in self.elements.values()])
 
@@ -55,32 +55,32 @@ class Compound:
                 element += f"{int(el.count):d}"
             elements.append(element)
         elements = " ".join(elements)
-        data = self.data_compound(quantity=False)
+        data = self.data_molecule(quantity=False)
         p = int(round(data['sum']['Z']))
         n = data['sum']['N']
         e = int(round(data['sum']['e']))
         A = data['sum']['A']
-        return f"Compound(p={p:d} n={n:.03f} e={e:d} A={A:.03f})"
+        return f"Molecule(p={p:d} n={n:.03f} e={e:d} A={A:.03f})"
         
     def __mul__(self, other:float):
-        compound = copy.deepcopy(self)
-        compound.elements = {}
+        molecule = copy.deepcopy(self)
+        molecule.elements = {}
         for expr in self.elements.keys():
             el = self.elements[expr] * other
-            compound.add_element(el)
-        return compound
+            molecule.add_element(el)
+        return molecule
     
     def __add__(self, other):
-        compound = copy.deepcopy(self)
-        compound.elements = {}
+        molecule = copy.deepcopy(self)
+        molecule.elements = {}
         for expr,el in self.elements.items():
-            compound.add_element(el)
-        if isinstance(other, Compound):
+            molecule.add_element(el)
+        if isinstance(other, Molecule):
             for expr,el in other.elements.items():
-                compound.add_element(el)
+                molecule.add_element(el)
         elif isinstance(other, Element):
-            compound.add_element(other)
-        return compound
+            molecule.add_element(other)
+        return molecule
     
     def add_element(self, element:Element):
         expr = element.expression
@@ -119,7 +119,7 @@ class Compound:
                 ]
             return pt
             
-    def data_compound(self, part:list=None, quantity=True):
+    def data_molecule(self, part:list=None, quantity=True):
         if not self.elements:
             return None
         columns = ['A','Z','N','e']
@@ -166,8 +166,8 @@ class Compound:
         df = df.rename(columns={"A": "A[Da]", "A_nuc": "A_nuc[Da]", "E_bin": "E_bin[MeV]"})
         print( df.to_string(index=False) )
 
-    def print_compound(self, part:list=None):
-        df = self.data_compound(part=part, quantity=False).to_dataframe()
+    def print_molecule(self, part:list=None):
+        df = self.data_molecule(part=part, quantity=False).to_dataframe()
         columns = {"A": "A[Da]"}
         if self.rho:
             columns.update({"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})
@@ -190,6 +190,6 @@ class Compound:
         print("")
         self.print_elements()
         print("")
-        print("Compound:")
+        print("Molecule:")
         print("")
-        self.print_compound()
+        self.print_molecule()

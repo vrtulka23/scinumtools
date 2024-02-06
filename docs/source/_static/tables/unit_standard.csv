@@ -38,6 +38,8 @@ bbl,US barrel,158.987294928*L,
 J,Joule,N*m,all
 eV,electronvolt,[e]*V,all
 erg,erg,dyn*cm,
+cal,calorie,4.184*J,"kcal, Mcal"
+Cal,Calorie,kcal,
 "Ha, E_h",Hartree,4.3597447222071e-18*J,"kHa, MHa, kE_h, ME_h"
 Pa,Pascal,N/m2,all
 atm,atm. pressure,101325*Pa,

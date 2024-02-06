@@ -72,7 +72,7 @@ If set to ``False``, an isotope with the highest abundance is used.
    >>> Element('O', natural=False)
    Element(O Z=8 N=8.000 e=8 A=15.995)
 
-The option ``count`` is by default set to one, but it can also hold multiple elements of the same type, e.g. in a compound.
+The option ``count`` is by default set to one, but it can also hold multiple elements of the same type, e.g. in a molecule.
 If its value is higher than one, all element properties are multiplied correspondingly by this number.
 
 .. code-block:: python
@@ -83,45 +83,45 @@ If its value is higher than one, all element properties are multiplied correspon
    >>> e.count, e.element, e.isotope, e.ionisation
    2, 'O', 16, 0
 
-Compounds
+Molecules
 ---------
 
-Atomic compounds consist of several elements.
-Class ``Compound`` can solve a molecular formula, break it into individual elements and calculate their collective atomic properties.
+Atomic molecules consist of several elements.
+Class ``Molecule`` can solve a molecular formula, break it into individual elements and calculate their collective atomic properties.
 Similarly, as for ``Element`` class, it has an option to switch between natural and most abundant elements when isotopes are not specified.
-In this case, the option applies to all elements in a compound.
+In this case, the option applies to all elements in a molecule.
 
 .. note::
 
-   Generally speaking, compounds in context of this module should be rather called molecules, because they can consist of 
-   multiple elements of the same kind. Nevertheless, we will stick to the term compounds for now.
+   Generally speaking, molecules in context of this module should be rather called molecules, because they can consist of 
+   multiple elements of the same kind. Nevertheless, we will stick to the term molecules for now.
 
 .. code-block:: python
 
-   >>> from scinumtools.materials import Compound
-   >>> Compound('DT')
-   Compound(p=2 n=3.000 e=2 A=5.030)
-   >>> Compound('H2O', natural=False)
-   Compound(p=10 n=8.000 e=10 A=18.011)
+   >>> from scinumtools.materials import Molecule
+   >>> Molecule('DT')
+   Molecule(p=2 n=3.000 e=2 A=5.030)
+   >>> Molecule('H2O', natural=False)
+   Molecule(p=10 n=8.000 e=10 A=18.011)
 
-A compound can also be initialised from an explicit list of elements.
+A molecule can also be initialised from an explicit list of elements.
 
 .. code-block:: python
 
-   >>> Compound.from_elements([
+   >>> Molecule.from_elements([
    >>>     Element("B{11}",1),
    >>>     Element("N{14}",1),
    >>>     Element("H{1}",6),
    >>> ])
-   Compound(p=18 n=13.000 e=18 A=31.059)
+   Molecule(p=18 n=13.000 e=18 A=31.059)
 
-Besides information about elements and nucleon, every compound calculate also other parameters.
+Besides information about elements and nucleon, every molecule calculate also other parameters.
 In the example below, we show an example for the molecule of water ``H2O``.
 A concise overview of all its properties can be printed using its ``print()`` method.
 
 .. code-block:: python
 
-   >>> with Compound('H2O', natural=False) as c:
+   >>> with Molecule('H2O', natural=False) as c:
    >>>     c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
    >>>     c.print()
    Properties:
@@ -137,7 +137,7 @@ A concise overview of all its properties can be printed using its ``print()`` me
             H       H        1           0  1.007825  1  0  1
             O       O       16           0 15.994915  8  8  8
    
-   Compound:
+   Molecule:
    
    expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]
             H    2.0  2.015650  2.000000 0.000000  2.000000 6.667280e+22    0.111579  11.191487 6.667280e+25 111.579129
@@ -145,21 +145,21 @@ A concise overview of all its properties can be printed using its ``print()`` me
           avg    1.5  6.003522  3.333333 2.666667  3.333333 3.333640e+22    0.332333  33.333333 3.333640e+25 332.333333
           sum    3.0 18.010565 10.000000 8.000000 10.000000 1.000092e+23    0.997000 100.000000 1.000092e+26 997.000000
 
-In the example above, we additionally set compound density ``rho`` and its volume ``V``.
+In the example above, we additionally set molecule density ``rho`` and its volume ``V``.
 Density is used for calculation of number/mass (``n``/``rho``) densities and mass fractions ``X``.
 If volume is also set, absolute number of species ``n_V`` and mass ``m_V`` are added.
 
-Individual compound parameters can be accessed directly using ``data_elements()`` and ``data_compound()``.
+Individual molecule parameters can be accessed directly using ``data_elements()`` and ``data_molecule()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
-Corresponding tabular values can be printed using method ``print_elements()`` and ``print_compound()``.
+Corresponding tabular values can be printed using method ``print_elements()`` and ``print_molecule()``.
 
 .. code-block:: python
 
-   >>> with Compound('H2O', natural=False) as c:
+   >>> with Molecule('H2O', natural=False) as c:
    >>>     data = c.data_elements()
    >>>     data.O['N']
    8
-   >>>     data = c.data_compound()
+   >>>     data = c.data_molecule()
    >>>     data['sum'].e
    10
    >>>     data.H.count
@@ -175,8 +175,8 @@ In this case, one can specify which elements (``H``) should be returned.
 
 .. code-block:: python
 
-   >>> with Compound('H2O', natural=False) as c:
-   >>>     c.data_compound(['H'], quantity=False).to_text()
+   >>> with Molecule('H2O', natural=False) as c:
+   >>>     c.data_molecule(['H'], quantity=False).to_text()
      expression  count         A    Z    N    e
    0          H    2.0  2.015650  2.0  0.0  2.0
    1        avg    2.0  1.007825  1.0  0.0  1.0

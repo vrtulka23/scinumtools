@@ -20,13 +20,13 @@ class Capturing(list):
         sys.stdout = self._stdout
 
 def test_empty():
-    compound = Compound()
-    assert compound.data_compound() == None
+    molecule = Molecule()
+    assert molecule.data_molecule() == None
 
 def test_add_element():
-    compound = Compound()
-    compound.add_element(Element('B'))
-    assert compound.data_compound(quantity=False).to_text() == """
+    molecule = Molecule()
+    molecule.add_element(Element('B'))
+    assert molecule.data_molecule(quantity=False).to_text() == """
   expression  count          A    Z      N    e
 0          B    1.0  10.811028  5.0  5.801  5.0
 1        avg    1.0  10.811028  5.0  5.801  5.0
@@ -34,8 +34,8 @@ def test_add_element():
 """.strip('\n')
 
 def test_expression():
-    compound = Compound('B{11}N{14}H{1}6')
-    assert compound.data_compound(quantity=False).to_text() == """
+    molecule = Molecule('B{11}N{14}H{1}6')
+    assert molecule.data_molecule(quantity=False).to_text() == """
   expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
@@ -45,8 +45,8 @@ def test_expression():
 """.strip('\n')
 
 def test_context():
-    with Compound('H2O') as c:
-        assert c.data_compound(quantity=False).to_text() == """
+    with Molecule('H2O') as c:
+        assert c.data_molecule(quantity=False).to_text() == """
   expression  count          A          Z         N          e
 0          H    2.0   2.015882   2.000000  0.000230   2.000000
 1          O    1.0  15.999405   8.000000  8.004480   8.000000
@@ -55,8 +55,8 @@ def test_context():
 """.strip('\n')
 
 def test_partial_data():
-    compound = Compound('B{11}N{14}H{1}6')
-    assert compound.data_compound(['B{11}','N{14}'], quantity=False).to_text() == """
+    molecule = Molecule('B{11}N{14}H{1}6')
+    assert molecule.data_molecule(['B{11}','N{14}'], quantity=False).to_text() == """
   expression  count          A     Z     N     e
 0      B{11}    1.0  11.009305   5.0   6.0   5.0
 1      N{14}    1.0  14.003074   7.0   7.0   7.0
@@ -66,11 +66,11 @@ def test_partial_data():
 
 def test_density():
     
-    compound = Compound('B{11}N{14}H{1}6')
-    compound.set_amount(
+    molecule = Molecule('B{11}N{14}H{1}6')
+    molecule.set_amount(
         Quantity(780,'kg/m3')
     )
-    assert compound.data_compound(quantity=False).to_text() == """
+    assert molecule.data_molecule(quantity=False).to_text() == """
   expression     count          A      Z       N      e             n       rho          X
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492
@@ -81,12 +81,12 @@ def test_density():
     
 def test_density_volume():
     
-    compound = Compound('B{11}N{14}H{1}6')
-    compound.set_amount(
+    molecule = Molecule('B{11}N{14}H{1}6')
+    molecule.set_amount(
         Quantity(780,'kg/m3'),
         Quantity(1,'l')
     )
-    assert compound.data_compound(quantity=False).to_text() == """
+    assert molecule.data_molecule(quantity=False).to_text() == """
   expression     count          A      Z       N      e             n       rho          X           n_V         M_V
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00  1.512354e+22  0.276479   35.44605  1.512354e+25  276.479187
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00  1.512354e+22  0.351662   45.08492  1.512354e+25  351.662379
@@ -97,18 +97,18 @@ def test_density_volume():
 
 def test_from_elements():
     
-    compound = Compound.from_elements([
+    molecule = Molecule.from_elements([
             Element('B{11}',1),
             Element('N{14}',1),
             Element('H{1}',6),
     ])
-    assert compound.data_elements(quantity=False).to_text() == """
+    assert molecule.data_elements(quantity=False).to_text() == """
   expression element  isotope  ionisation          A  Z  N  e
 0      B{11}       B       11           0  11.009305  5  6  5
 1      N{14}       N       14           0  14.003074  7  7  7
 2       H{1}       H        1           0   1.007825  1  0  1
 """.strip('\n')
-    assert compound.data_compound(quantity=False).to_text() == """
+    assert molecule.data_molecule(quantity=False).to_text() == """
   expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00
 1      N{14}  1.000000  14.003074   7.00   7.000   7.00
@@ -119,37 +119,37 @@ def test_from_elements():
 
 def test_arithmetic():
     
-    c1 = Compound('B{11}N{14}')
-    c2 = Compound('H{1}6')
-    c3 = Compound('B{11}N{14}H{1}6')
+    c1 = Molecule('B{11}N{14}')
+    c2 = Molecule('H{1}6')
+    c3 = Molecule('B{11}N{14}H{1}6')
     e1 = Element('H{1}',6)
     
-    # addition two different compounds
+    # addition two different molecules
     c12 = c1 + c2
     for expr, element in c12.elements.items():
         assert expr in c3.elements
         assert element.count == c3.elements[expr].count
         
-    # adding two same compounds
+    # adding two same molecules
     c22 = c2 + c2
     for expr, element in c22.elements.items():
         assert expr in c2.elements
         assert element.count == c2.elements[expr].count * 2
         
-    # addition of an element to a compound
+    # addition of an element to a molecule
     c1e = c1 + e1
     for expr, element in c1e.elements.items():
         assert expr in c3.elements
         assert element.count == c3.elements[expr].count
 
-    # multiplication of a compound  
+    # multiplication of a molecule  
     c1m = c2 * 2
     for expr, element in c1m.elements.items():
         assert expr in c2.elements
         assert element.count == c2.elements[expr].count * 2
     
 def test_most_abundant():
-    with Compound('H2O', natural=False) as c:
+    with Molecule('H2O', natural=False) as c:
         c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
         with Capturing() as output:
             c.print()
@@ -165,7 +165,7 @@ def test_most_abundant():
             '         H       H        1           0  1.007825  1  0  1', 
             '         O       O       16           0 15.994915  8  8  8', 
             '', 
-            'Compound:', 
+            'Molecule:', 
             '', 
             'expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]', 
             '         H    2.0  2.015650  2.000000 0.000000  2.000000 6.667280e+22    0.111579  11.191487 6.667280e+25 111.579129', 
@@ -176,19 +176,19 @@ def test_most_abundant():
 
 def test_print():
     
-    assert str(Compound('DT'))                 == "Compound(p=2 n=3.000 e=2 A=5.030)"
-    assert str(Compound('H2O', natural=False)) == "Compound(p=10 n=8.000 e=10 A=18.011)"
+    assert str(Molecule('DT'))                 == "Molecule(p=2 n=3.000 e=2 A=5.030)"
+    assert str(Molecule('H2O', natural=False)) == "Molecule(p=10 n=8.000 e=10 A=18.011)"
     
-    c = Compound.from_elements([
+    c = Molecule.from_elements([
         Element('B{11}',1),
         Element('N{14}',1),
         Element('H{1}',6),
     ])
-    assert (str(c)) == "Compound(p=18 n=13.000 e=18 A=31.059)"
+    assert (str(c)) == "Molecule(p=18 n=13.000 e=18 A=31.059)"
     
 def test_nucleons():
     
-    c = Compound('[p]3[n]2[e]')
+    c = Molecule('[p]3[n]2[e]')
     data = c.data_elements(quantity=False)
     assert data.to_text() == """
   expression element  isotope  ionisation         A  Z  N  e
@@ -196,7 +196,7 @@ def test_nucleons():
 1        [n]     [n]        0           0  1.008666  0  1  0
 2        [e]     [e]        0           0  0.000549  0  0  1
 """.strip('\n')
-    data = c.data_compound(quantity=False)
+    data = c.data_molecule(quantity=False)
     assert data.to_text() == """
   expression  count         A    Z         N         e
 0        [p]    3.0  3.021831  3.0  0.000000  0.000000
@@ -208,14 +208,14 @@ def test_nucleons():
     
 def test_parameter_selection():
     
-    with Compound('H2O', natural=False) as c:
+    with Molecule('H2O', natural=False) as c:
         data = c.data_elements()
         assert data.O['N'] == 8
-        data = c.data_compound()
+        data = c.data_molecule()
         assert data['sum'].e == 10
         assert data.H.count == 2
         assert data.H.A == Quantity(2.015650, 'Da')
-        data = c.data_compound(['H'], quantity=False)
+        data = c.data_molecule(['H'], quantity=False)
         assert data.to_text() == """
   expression  count         A    Z    N    e
 0          H    2.0  2.015650  2.0  0.0  2.0
@@ -226,7 +226,7 @@ def test_parameter_selection():
 
 def test_prints():
 
-    with Compound('H2O', natural=False) as c:
+    with Molecule('H2O', natural=False) as c:
         with Capturing() as output:
             c.print_elements()
         assert output == [
@@ -236,7 +236,7 @@ def test_prints():
         ]
 
         with Capturing() as output:
-            c.print_compound()
+            c.print_molecule()
         assert output == [
             'expression  count     A[Da]         Z        N         e',
             '         H    2.0  2.015650  2.000000 0.000000  2.000000',
@@ -246,7 +246,7 @@ def test_prints():
         ]
         c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
         with Capturing() as output:
-            c.print_compound()
+            c.print_molecule()
         assert output == [
             'expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]', 
             '         H    2.0  2.015650  2.000000 0.000000  2.000000 6.667280e+22    0.111579  11.191487 6.667280e+25 111.579129', 

@@ -1,8 +1,8 @@
 Symbol,Name,Definition
+#CADO,CGS.AbsorbedDose,Rad
 #CACC,CGS.Acceleration,Gal
-#CBMA,CGS.BohrMagneton,[mu_B]
 #CDVI,CGS.DynamicViscosity,P
-#CELC,CGS.ElementaryCharge,[e]
+#CECU,CGS.ElectricCurrent,Bi
 #CENE,CGS.Energy,erg
 #CFOR,CGS.Force,dyn
 #CKVI,CGS.KinematicViscosity,St
@@ -16,3 +16,8 @@ Symbol,Name,Definition
 #CTIM,CGS.Time,s
 #CVEL,CGS.Velocity,cm/s
 #CWAV,CGS.Wavenumber,Ka
+#CBMA,CGS.BohrMagneton,[mu_B]
+#CCCO,CGS.CoulombConst,[k_e]
+#CELC,CGS.ElementaryCharge,[e]
+#CPBV,CGS.PermeabilityVacuum,[mu_0]
+#CPTV,CGS.PermittivityVacuum,[eps_0]
