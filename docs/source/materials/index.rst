@@ -86,10 +86,15 @@ If its value is higher than one, all element properties are multiplied correspon
 Compounds
 ---------
 
-Atomic compounds, or simply molecules, consist of several elements.
+Atomic compounds consist of several elements.
 Class ``Compound`` can solve a molecular formula, break it into individual elements and calculate their collective atomic properties.
 Similarly, as for ``Element`` class, it has an option to switch between natural and most abundant elements when isotopes are not specified.
 In this case, the option applies to all elements in a compound.
+
+.. note::
+
+   Generally speaking, compounds in context of this module should be rather called molecules, because they can consist of 
+   multiple elements of the same kind. Nevertheless, we will stick to the term compounds for now.
 
 .. code-block:: python
 
