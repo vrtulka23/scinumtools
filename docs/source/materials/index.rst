@@ -145,8 +145,8 @@ Density is used for calculation of number/mass (``n``/``rho``) densities and mas
 If volume is also set, absolute number of species ``n_V`` and mass ``m_V`` are added.
 
 Individual compound parameters can be accessed directly using ``data_elements()`` and ``data_compound()``.
-Corresponding tabular values can be printed using method ``print_elements()`` and ``print_compound()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
+Corresponding tabular values can be printed using method ``print_elements()`` and ``print_compound()``.
 
 .. code-block:: python
 
