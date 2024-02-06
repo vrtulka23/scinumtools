@@ -160,28 +160,36 @@ class Compound:
             pt['avg'] = avg
             pt['sum'] = sum
             return pt
-            
-    def print(self):
-        text = []
-        text.append("Properties:\n")
-        text.append(f"Molecular mass: {self.M}")
-        if self.rho:
-            text.append(f"Mass density: {self.rho}")
-            text.append(f"Molecular density: {self.n}")
-        text.append("")
-        text.append("Elements:\n")
+    
+    def print_elements(self):
         df = self.data_elements(quantity=False).to_dataframe()
         df = df.rename(columns={"A": "A[Da]", "A_nuc": "A_nuc[Da]", "E_bin": "E_bin[MeV]"})
-        text.append(df.to_string(index=False))
-        text.append("")
-        text.append("Compound:\n")
-        df = self.data_compound(quantity=False).to_dataframe()
-        df = df.rename(columns={"A": "A[Da]"})
+        print( df.to_string(index=False) )
+
+    def print_compound(self, part:list=None):
+        df = self.data_compound(part=part, quantity=False).to_dataframe()
+        columns = {"A": "A[Da]"}
         if self.rho:
-            df = df.rename(columns={"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})
+            columns.update({"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})
         if self.V:
-            df = df.rename(columns={"M_V": "M_V[g]"})
-        text.append(df.to_string(index=False))
-        text = "\n".join(text)
-        print(text)
-        return text
+            columns.update({"M_V": "M_V[g]"})
+        df = df.rename(columns=columns)
+        print( df.to_string(index=False) )
+        
+    def print(self):
+        print("Properties:")
+        print()
+        print(f"Molecular mass: {self.M}")
+        if self.rho:
+            print(f"Mass density: {self.rho}")
+            print(f"Molecular density: {self.n}")
+        if self.V:
+            print(f"Volume: {self.V}")
+        print("")
+        print("Elements:")
+        print("")
+        self.print_elements()
+        print("")
+        print("Compound:")
+        print("")
+        self.print_compound()

@@ -124,6 +124,7 @@ A concise overview of all its properties can be printed using its ``print()`` me
    Molecular mass: Quantity(1.801e+01 Da)
    Mass density: Quantity(9.970e+02 kg*m-3)
    Molecular density: Quantity(3.334e+28 m-3)
+   Volume: Quantity(1.000e+00 l)
    
    Elements:
    
@@ -143,7 +144,8 @@ In the example above, we additionally set compound density ``rho`` and its volum
 Density is used for calculation of number/mass (``n``/``rho``) densities and mass fractions ``X``.
 If volume is also set, absolute number of species ``n_V`` and mass ``m_V`` are added.
 
-Individual compound parameters can be accessed directly using ``data_elements()`` and ``data_compound()`` methods.
+Individual compound parameters can be accessed directly using ``data_elements()`` and ``data_compound()``.
+Corresponding tabular values can be printed using method ``print_elements()`` and ``print_compound()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
 
 .. code-block:: python
@@ -161,8 +163,8 @@ Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>
    Quantity(2.015650, 'Da')
 
 In both cases, dimensional parameters are returned as ``Quantity`` objects.
-If needed, simple numerical values can be requested by setting the following option: ``quantity=False``
-
+If needed, simple numerical values can be requested by setting the following option: ``quantity=False``.
+T
 Sometimes it is required to know information about part of a molecule.
 In this case, one can specify which elements (``H``) should be returned.
 

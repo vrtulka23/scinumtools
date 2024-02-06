@@ -21,7 +21,7 @@ class ThumbnailImage:
         else:
             if mode is None: mode = 'F'
             self.im = Image.fromarray(data).convert(mode)
-        self.extent = list(extent if extent else [0,1,0,1])
+        self.extent = list(extent if extent else [0,1,0,self.im.size[1]/self.im.size[0]])
         self.xratio = np.abs(self.im.size[0]/(self.extent[1]-self.extent[0]))
         self.yratio = np.abs(self.im.size[1]/(self.extent[3]-self.extent[2]))
            

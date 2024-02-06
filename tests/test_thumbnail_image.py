@@ -114,3 +114,20 @@ def test_read_save_file(temp_file):
         [255.00352, 254.98228, 254.17003, 254.96962, 255.00458,],
         [254.9995,  255.00252, 255.12416, 255.0044,  254.99934,],
     ], decimal=4)
+
+def test_default_extent(temp_file):
+    
+    # Test grayscale case
+    nx, ny = 300, 150
+    data = np.zeros((nx,ny))
+    for i in range(nx):
+        for j in range(ny):
+            data[i,j] = (i-nx/2)**2 + (j-ny/2)**2
+            
+    # Save image into a temporary file
+    thumb = snt.ThumbnailImage(data)
+    assert thumb.extent == [0, 1, 0, 2.0]
+    thumb.crop([0, 2, 0, 2])
+    assert thumb.im.size == (300, 300)
+    thumb.save(temp_file)
+    

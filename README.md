@@ -86,6 +86,7 @@ Properties:
 Mass density: Quantity(9.970e+02 kg*m-3)
 Molecular mass: Quantity(1.801e+01 Da)
 Molecular density: Quantity(3.334e+28 m-3)
+Volume: Quantity(1.000e+00 l)
 
 Elements:
 
