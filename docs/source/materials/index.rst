@@ -113,6 +113,7 @@ A molecule can also be initialised from an explicit list of elements.
 Besides information about elements and nucleon, every molecule calculate also other parameters.
 In the example below, we show an example for the molecule of water ``H2O``.
 A concise overview of all its properties can be printed using its ``print()`` method.
+Here the ``A`` is an atomic mass, ``Z`` proton number, ``N`` number of neutrons, ``e`` number of electrons, ``x`` number fraction and ``X`` is a mass fraction.
 
 .. code-block:: python
 
@@ -134,15 +135,15 @@ A concise overview of all its properties can be printed using its ``print()`` me
    
    Molecule:
    
-   expression  count     A[Da]         Z        N         e      n[cm-3]  rho[g/cm3]       X[%]          n_V     M_V[g]
-            H    2.0  2.015650  2.000000 0.000000  2.000000 6.667280e+22    0.111579  11.191487 6.667280e+25 111.579129
-            O    1.0 15.994915  8.000000 8.000000  8.000000 3.333640e+22    0.885421  88.808513 3.333640e+25 885.420871
-          avg    1.5  6.003522  3.333333 2.666667  3.333333 3.333640e+22    0.332333  33.333333 3.333640e+25 332.333333
-          sum    3.0 18.010565 10.000000 8.000000 10.000000 1.000092e+23    0.997000 100.000000 1.000092e+26 997.000000
+   expression  count     A[Da]         Z        N         e       x[%]       X[%]      n[cm-3]  rho[g/cm3]          n_V     M_V[g]
+            H    2.0  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487 6.667280e+22    0.111579 6.667280e+25 111.579129 
+            O    1.0 15.994915  8.000000 8.000000  8.000000  33.333333  88.808513 3.333640e+22    0.885421 3.333640e+25 885.420871 
+          avg    1.5  6.003522  3.333333 2.666667  3.333333  33.333333  33.333333 3.333640e+22    0.332333 3.333640e+25 332.333333 
+          sum    3.0 18.010565 10.000000 8.000000 10.000000 100.000000 100.000000 1.000092e+23    0.997000 1.000092e+26 997.000000
 
 In the example above, we additionally set molecule density ``rho`` and its volume ``V``.
-Density is used for calculation of number/mass (``n``/``rho``) densities and mass fractions ``X``.
-If volume is also set, absolute number of species ``n_V`` and mass ``m_V`` are added.
+Density is used for calculation of number ``n`` and mass ``rho`` densities.
+If volume is also set, total number of species ``n_V`` and total mass ``m_V`` are added.
 
 Individual molecule parameters can be accessed directly using ``data_elements()`` and ``data_molecule()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
@@ -172,10 +173,10 @@ In this case, one can specify which elements (``H``) should be returned.
 
    >>> with Molecule('H2O', natural=False) as c:
    >>>     c.data_molecule(['H'], quantity=False).to_text()
-     expression  count         A    Z    N    e
-   0          H    2.0  2.015650  2.0  0.0  2.0
-   1        avg    2.0  1.007825  1.0  0.0  1.0
-   2        sum    2.0  2.015650  2.0  0.0  2.0
+     expression  count         A    Z    N    e          x          X
+   0          H    2.0  2.015650  2.0  0.0  2.0  66.666667  11.191487
+   1        avg    2.0  1.007825  1.0  0.0  1.0  33.333333   5.595744
+   2        sum    2.0  2.015650  2.0  0.0  2.0  66.666667  11.191487
    
 List of elements
 ----------------

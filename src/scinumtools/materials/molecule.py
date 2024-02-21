@@ -126,13 +126,15 @@ class Molecule:
     def data_molecule(self, part:list=None, quantity=True):
         if not self.elements:
             return None
-        columns = ['A','Z','N','e']
+        columns = ['A','Z','N','e','x','X']
         if self.rho:
-            columns += ['n','rho','X']
+            columns += ['n','rho']
         if self.V:
             columns += ['n_V','M_V']
         with ParameterTable(['count']+columns, keys=True, keyname='expression') as pt:
             rc = RowCollector(['count']+columns)
+            mass_tot = np.sum([e.A for s,e in self.elements.items()])
+            count_tot = np.sum([e.count for s,e in self.elements.items()])
             for s,e in self.elements.items():
                 if part and s not in part:
                     continue
@@ -142,12 +144,14 @@ class Molecule:
                     e.Z, 
                     e.N, 
                     e.e, 
+                    Quantity(100*e.count/count_tot, '%') if quantity else 100*e.count/count_tot,
+                    (e.A/mass_tot).to('%') if quantity else (e.A/mass_tot).value('%'),
                 ]
                 if self.rho:
                     row += [
                         e.n.to('cm-3') if quantity else e.n.value('cm-3'), 
                         e.rho.to('g/cm3') if quantity else e.rho.value('g/cm3'),
-                        (e.rho/self.rho).to('%') if quantity else (e.rho/self.rho).value('%'),
+                        #(e.rho/self.rho).to('%') if quantity else (e.rho/self.rho).value('%'),
                     ]
                 if self.V:
                     row += [
@@ -172,9 +176,9 @@ class Molecule:
 
     def print_molecule(self, part:list=None):
         df = self.data_molecule(part=part, quantity=False).to_dataframe()
-        columns = {"A": "A[Da]"}
+        columns = {"A": "A[Da]", "x": "x[%]", "X": "X[%]"}
         if self.rho:
-            columns.update({"n": "n[cm-3]", "rho": "rho[g/cm3]", "X": "X[%]"})
+            columns.update({"n": "n[cm-3]", "rho": "rho[g/cm3]"})
         if self.V:
             columns.update({"M_V": "M_V[g]"})
         df = df.rename(columns=columns)
