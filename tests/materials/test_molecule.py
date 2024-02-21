@@ -26,6 +26,7 @@ def test_empty():
 def test_add_element():
     molecule = Molecule()
     molecule.add_element(Element('B'))
+    assert molecule.expression == 'B'
     assert molecule.data_molecule(quantity=False).to_text() == """
   expression  count          A    Z      N    e
 0          B    1.0  10.811028  5.0  5.801  5.0
@@ -35,6 +36,7 @@ def test_add_element():
 
 def test_expression():
     molecule = Molecule('B{11}N{14}H{1}6')
+    assert molecule.expression == 'B{11}N{14}H{1}6'
     assert molecule.data_molecule(quantity=False).to_text() == """
   expression     count          A      Z       N      e
 0      B{11}  1.000000  11.009305   5.00   6.000   5.00

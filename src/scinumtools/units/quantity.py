@@ -303,7 +303,13 @@ def floor(a, **kwargs):
 @implements(np.ceil)
 def ceil(a, **kwargs):
     return Quantity(np.ceil(a.magnitude.value), a.baseunits)
+
+@implements(np.sum)
+def sum(a, **kwargs):
+    return Quantity(np.sum(a.magnitude.value), a.baseunits)
     
 @implements(np.iscomplexobj)
 def iscomplexobj(a, **kwargs):
     return False
+
+    

@@ -4,7 +4,7 @@ from math import isclose
 import copy
 
 from .element import Element
-from .material_solver import MaterialSolver
+from .molecule_solver import MoleculeSolver
 from .. import ParameterTable, RowCollector
 from ..units import Quantity, Unit
 
@@ -15,6 +15,8 @@ class Molecule:
     rho: Quantity = None
     V: Quantity = None
     n: Quantity = None
+    fraction: int = 1.0
+    expression: str = ''
     
     @staticmethod
     def from_elements(elements:list, natural:bool=True):
@@ -41,7 +43,8 @@ class Molecule:
         self.natural = natural
         self.elements = {}
         if expression and expression!='':
-            with MaterialSolver(self.atom) as ms:
+            self.expression = expression
+            with MoleculeSolver(self.atom) as ms:
                 molecule = ms.solve(expression)
             for expr, el in molecule.elements.items():
                 self.elements[expr] = el
@@ -84,6 +87,7 @@ class Molecule:
     
     def add_element(self, element:Element):
         expr = element.expression
+        self.expression += expr
         if self.rho:
             element.set_density(self.n)
         if expr in self.elements:
