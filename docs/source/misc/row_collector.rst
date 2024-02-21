@@ -24,7 +24,8 @@ In the example below, we create a table with three columns ``['col1','col2','col
     >>>     rc['col2']
     [2, 5, 8]
 
-``RowCollector`` object can also be quickly converted into a dictionary, ``pandas`` DataFrame, or text.
+``RowCollector`` object can also be quickly converted into a dictionary, ``pandas`` DataFrame, plain text, or export
+tabulated values as a CSV and text format.
 
 .. code-block:: python
     
@@ -37,6 +38,8 @@ In the example below, we create a table with three columns ``['col1','col2','col
     1     4     5     6
     >>>     rc.to_text()
     '   col1  col2  col3\n0     1     2     3\n1     4     5     6'
+    >>>     rc.to_csv('data.csv')
+    >>>     rc.to_fiile('table.txt')
         
 
 It is also possible to specify properties of individual columns using ``numpy`` arrays.

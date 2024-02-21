@@ -125,3 +125,19 @@ class RowCollector:
         :param kwargs: kwargs of DataFrame's to_string() method
         """
         return self.to_dataframe().to_string(**kwargs)
+    
+    def to_csv(self, file_name:str, **kwargs):
+        """ Save class data as a CSV formatted file
+        
+        :param file_name str: Name of the new file
+        """
+        self.to_dataframe().to_csv(file_name, **kwargs)
+        
+    def to_file(self, file_name:str, **kwargs):
+        """ Save tabulated class data as a text file
+        
+        :param file_name str: Name of the new file
+        """
+        with open(file_name, 'w') as f:
+            text = self.to_dataframe().to_string(**kwargs)
+            f.write(text)

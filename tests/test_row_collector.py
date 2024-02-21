@@ -3,10 +3,22 @@ import pandas as pd
 from textwrap import dedent
 import pytest
 import sys
+import os
 sys.path.insert(0, 'src')
 
 import scinumtools as snt
 
+@pytest.fixture()
+def temp_file(request):
+    name_temp = request.param
+    dir_temp = "tmp"
+    if os.path.isdir(dir_temp):
+        if os.path.isdir(f"{dir_temp}/{name_temp}"):
+            os.remove()
+    else:
+        os.mkdir(dir_temp)
+    return f"{dir_temp}/{name_temp}"
+    
 @pytest.fixture
 def rows():
     return [[1,2,3],
@@ -138,3 +150,32 @@ def test_conversions_array(columns, rows):
         """.rstrip())
         assert rc.to_text() == result
         assert str(rc) == result
+
+
+@pytest.mark.parametrize("temp_file", ["row_collector_data.csv"], indirect=True)
+def test_to_csv(columns, rows, temp_file):
+    with snt.RowCollector(columns) as rc:
+        for row in rows:
+            rc.append(row)
+        rc.to_csv(temp_file)
+    with open(temp_file,'r') as f:
+        assert f.read() == """
+,col1,col2,col3
+0,1,2,3
+1,4,5,6
+2,7,8,0
+""".lstrip('\n')
+
+@pytest.mark.parametrize("temp_file", ["row_collector_data.txt"], indirect=True)
+def test_to_file(columns, rows, temp_file):
+    with snt.RowCollector(columns) as rc:
+        for row in rows:
+            rc.append(row)
+        rc.to_file(temp_file)
+    with open(temp_file,'r') as f:
+        assert f.read() == """
+   col1  col2  col3
+0     1     2     3
+1     4     5     6
+2     7     8     0
+""".strip('\n')
