@@ -2,6 +2,7 @@ import numpy as np
 import re
 import copy
 
+from . import FracType
 from .molecule import Molecule
 from .mixture_solver import MixtureSolver
 from ..units import Quantity, Unit
@@ -12,32 +13,37 @@ class Mixture:
     natural: bool
     molecules: dict
     norm: dict
-    rho: Quantity = None
     expression: str = ''
+    rho: Quantity = None
+    fractype: FracType = None
 
     @staticmethod
-    def from_molecules(molecules:list, natural:bool=True):
-        mixture = Mixture(natural=natural)
-        for mol in molecules:
-            mixture.add_molecule(mol)
+    def from_dict(molecules:dict, natural:bool=True, fractype:FracType=FracType.NUMBER):
+        mixture = Mixture(natural=natural, fractype=fractype)
+        for expression, fraction in molecules.items():
+            mol = Molecule(expression, natural=natural)
+            mixture.add_molecule(mol, fraction)
         return mixture
         
     def atom(self, expression:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expression):
             return float(expression)
         else:
-            return Mixture.from_molecules([
-                Molecule(expression, natural=self.natural),
-            ], natural=self.natural)
-            
+            return Mixture.from_dict(
+                {expression: 1.0},
+                natural  = self.natural,
+                fractype = self.fractype,
+            )
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
             
-    def __init__(self, expression:str=None, natural:bool=True):
-        self.natural = natural
+    def __init__(self, expression:str=None, natural:bool=True, fractype:FracType=FracType.NUMBER):
+        self.natural   = natural
+        self.fractype  = fractype
         self.molecules = {}
         if expression and expression!='':
             self.expression = expression
@@ -109,6 +115,9 @@ class Mixture:
             pt['avg'] = avg
             pt['sum'] = sum
             return pt
+            
+    def data_mixture(self, quantity=True):
+        pass
             
     def print_molecules(self):
         df = self.data_molecules(quantity=False).to_dataframe()

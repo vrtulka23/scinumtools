@@ -15,7 +15,7 @@ class Molecule:
     rho: Quantity = None
     V: Quantity = None
     n: Quantity = None
-    fraction: int = 1.0
+    fraction: float = None
     expression: str = ''
     
     @staticmethod
@@ -39,8 +39,9 @@ class Molecule:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
             
-    def __init__(self, expression:str=None, natural:bool=True):
+    def __init__(self, expression:str=None, natural:bool=True, fraction:float=1.0):
         self.natural = natural
+        self.fraction = fraction
         self.elements = {}
         if expression and expression!='':
             self.expression = expression

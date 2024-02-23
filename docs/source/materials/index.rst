@@ -165,7 +165,6 @@ Corresponding tabular values can be printed using method ``print_elements()`` an
 
 In both cases, dimensional parameters are returned as ``Quantity`` objects.
 If needed, simple numerical values can be requested by setting the following option: ``quantity=False``.
-T
 Sometimes it is required to know information about part of a molecule.
 In this case, one can specify which elements (``H``) should be returned.
 

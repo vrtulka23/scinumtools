@@ -23,6 +23,19 @@ def test_empty():
     mixture = Mixture()
     assert mixture.data_molecules() == None
     
+def test_from_molecules():
+    mixture = Mixture.from_dict({
+        'H2O':  0.2,
+        'NaCl': 0.8,
+    })
+    assert mixture.data_molecules(quantity=False).to_text() == """
+  expression    X          M
+0        H2O  0.2  18.015286
+1       NaCl  0.8  58.442707
+2        avg  0.5  38.228997
+3        sum  1.0  76.457993
+""".strip('\n')
+    
 def test_add_molecules():
     mixture = Mixture()
     mixture.add_molecule(Molecule('H2O'))
