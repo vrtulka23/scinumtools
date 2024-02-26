@@ -25,6 +25,12 @@ def test_expression():
     assert str([e.A,e.Z,e.N,e.e]) == "[Quantity(1.101e+01 Da), 5, 6, 4]"
     assert isclose(e.A.value(), 11.008757420144217, rel_tol=MAGNITUDE_PRECISION)
 
+    # Most abundant
+    e = Element('B', natural=False)
+    assert str([e.A,e.Z,e.N,e.e]) == "[Quantity(1.101e+01 Da), 5, 6, 5]"
+    assert isclose(e.A.value(), 11.009306, rel_tol=MAGNITUDE_PRECISION)
+    
+
 def test_print():
     
     e = Element('O')

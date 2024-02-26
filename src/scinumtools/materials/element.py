@@ -38,7 +38,7 @@ class Element:
     # get the most abundant isotope
     def get_abundant(self, element:str, ionisation:int):
         isotopes = PERIODIC_TABLE[element]
-        idmax = np.argmax(iso[1] for iso in isotopes.A.values())
+        idmax = np.argmax([iso[1] for iso in isotopes.A.values()])
         isotope = int(list(A for A in isotopes.A.keys())[idmax])
         return self.get_isotope(element, isotope, ionisation)        
 

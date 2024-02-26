@@ -1,6 +1,6 @@
 import numpy as np
 import re
-import copy
+from typing import Union
 
 from . import FracType
 from .molecule import Molecule
@@ -17,23 +17,13 @@ class Mixture:
     rho: Quantity = None
     fractype: FracType = None
 
-    @staticmethod
-    def from_dict(molecules:dict, natural:bool=True, fractype:FracType=FracType.NUMBER):
-        mixture = Mixture(natural=natural, fractype=fractype)
-        for expression, fraction in molecules.items():
-            mol = Molecule(expression, natural=natural)
-            mixture.add_molecule(mol, fraction)
-        return mixture
-        
     def atom(self, expression:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expression):
             return float(expression)
         else:
-            return Mixture.from_dict(
-                {expression: 1.0},
-                natural  = self.natural,
-                fractype = self.fractype,
-            )
+            return Mixture({
+                expression: 1.0
+            }, natural=self.natural, fractype=self.fractype)
 
     def __enter__(self):
         return self
@@ -41,16 +31,19 @@ class Mixture:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
             
-    def __init__(self, expression:str=None, natural:bool=True, fractype:FracType=FracType.NUMBER):
+    def __init__(self, expression:Union[str,dict]=None, natural:bool=True, fractype:FracType=FracType.NUMBER):
         self.natural   = natural
         self.fractype  = fractype
         self.molecules = {}
-        if expression and expression!='':
+        if isinstance(expression, str) and expression:
             self.expression = expression
             with MixtureSolver(self.atom) as ms:
                 mixture = ms.solve(expression)
             for expr, mol in mixture.molecules.items():
                 self.molecules[expr] = mol
+        elif isinstance(expression, dict) and expression:
+            for expr, frac in expression.items():
+                self.add_molecule(expr, frac)
         self._calculate_norm()
    
     def __str__(self):
@@ -61,21 +54,22 @@ class Mixture:
         return f"Mixture({molecules})"
         
     def __rmul__(self, other:float):
-        mixture = copy.deepcopy(self)
+        mixture = Mixture(natural=self.natural, fractype=self.fractype)
         mixture.molecules = {}
-        for expr in self.molecules.keys():
-            el = self.molecules[expr]
-            el.fraction *= other
-            mixture.add_molecule(el)
+        for expression in self.molecules.keys():
+            fraction = self.molecules[expression].fraction*other
+            mixture.add_molecule(expression, fraction)
         return mixture
         
     def __add__(self, other):
-        mixture = copy.deepcopy(self)
+        mixture = Mixture(natural=self.natural, fractype=self.fractype)
         mixture.molecules = {}
-        for expr,el in self.molecules.items():
-            mixture.add_molecule(el)
-        for expr,el in other.molecules.items():
-            mixture.add_molecule(el)
+        for expression in self.molecules.keys():
+            fraction = self.molecules[expression].fraction
+            mixture.add_molecule(expression, fraction)
+        for expression in other.molecules.keys():
+            fraction = other.molecules[expression].fraction
+            mixture.add_molecule(expression, fraction)
         return mixture
 
     def _calculate_norm(self):
@@ -84,22 +78,20 @@ class Mixture:
         if self.norm>1:
             raise Exception("Sum of all molecule ratios is more than one", self.norm , fractions)
     
-    def add_molecule(self, molecule:Molecule, fraction:float=None):
-        expression = molecule.expression
-        if fraction is not None:
-            molecule.fraction = fraction
+    def add_molecule(self, expression:str, fraction:float=1.0):
         if expression in self.molecules:
-            self.molecules[expression].fraction += molecule.fraction
+            self.molecules[expression].fraction += fraction
         else:
-            self.molecules[expression] = molecule
+            self.molecules[expression] = Molecule(expression, natural=self.natural, fraction=fraction)
         self._calculate_norm()
         
     def data_molecules(self, quantity=True):
         if not self.molecules:
             return None
+        FRACSIGN = 'X_N' if self.fractype==FracType.NUMBER else 'X_M'
         columns = ['M']
-        with ParameterTable(['X']+columns, keys=True, keyname='expression') as pt:
-            rc = RowCollector(['X']+columns)
+        with ParameterTable([FRACSIGN]+columns, keys=True, keyname='expression') as pt:
+            rc = RowCollector([FRACSIGN]+columns)
             for s,m in self.molecules.items():
                 row = [
                     m.fraction,
@@ -107,8 +99,8 @@ class Mixture:
                 ]
                 pt[s] = row
                 rc.append(row)
-            avg = [np.average(rc['X'])]
-            sum = [np.sum(rc['X'])]
+            avg = [np.average(rc[FRACSIGN])]
+            sum = [np.sum(rc[FRACSIGN])]
             for p in columns:
                 sum.append(np.sum(rc[p]))
                 avg.append(np.average(rc[p]))
