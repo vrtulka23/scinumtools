@@ -113,7 +113,7 @@ For more description and examples of [DIP](https://vrtulka23.github.io/scinumtoo
 >>> with DIP() as dip:
 >>>     dip.add_source("settings", 'settings.dip')
 >>>     dip.add_unit("length", 1, "m")
->>>     dip.from_string("""
+>>>     dip.add_string("""
 >>>     box
 >>>       width float = 23 [length]
 >>>       height float = 11.5 cm
