@@ -80,7 +80,7 @@ Several other important NumPy functions are also integrated.
    "np.absolute, np.abs", "Units of an argument are preserved"
    "np.round, np.floor, np.ceil", "Units of an argument are preserved"
    "np.iscomplexobj", "Returns false"
-   "np.sum", "Returns a quantity with summed magnitude and same units"
+   "np.sum", "Returns the same quantity with summed magnitude"
    
 .. code-block::
 
