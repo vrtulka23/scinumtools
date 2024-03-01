@@ -43,7 +43,7 @@ Cal,Calorie,kcal,
 "Ha, E_h",Hartree,4.3597447222071e-18*J,"kHa, MHa, kE_h, ME_h"
 Pa,Pascal,N/m2,all
 atm,atm. pressure,101325*Pa,
-bar,bar,100*kPa,"mbar, kbar"
+bar,bar,100*kPa,"Mbar, kbar, dbar, cbar, mbar"
 Ba,Barye,0.1*Pa,
 N,Newton,kg*m/s2,all
 dyn,dyne,g*cm/s2,all

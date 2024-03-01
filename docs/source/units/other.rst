@@ -57,7 +57,7 @@ Available NumPy universal functions ``ufunc`` that can be used with quantities a
    np.power,    "Unit exponents are raised on the given power."
    "np.sin, np.cos, np.tan", "Input quantity must be convertible to radians and output quantity is dimensionless."
    "np.arcsin, np.arccos, np.arctan", "Input quantity is dimensionless and output quantity is in radians."
-   "np.isnan, np.isnat", "Returns booleans"
+   "np.isnan, np.isnat, np.iscomplexobj", "Returns booleans"
    
 .. code-block::
    
@@ -80,6 +80,7 @@ Several other important NumPy functions are also integrated.
    "np.absolute, np.abs", "Units of an argument are preserved"
    "np.round, np.floor, np.ceil", "Units of an argument are preserved"
    "np.iscomplexobj", "Returns false"
+   "np.sum", "Returns a quantity with summed magnitude and same units"
    
 .. code-block::
 
