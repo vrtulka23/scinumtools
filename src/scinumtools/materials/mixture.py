@@ -12,7 +12,8 @@ class Mixture:
     
     natural: bool
     molecules: dict
-    norm: dict
+    total_mass: Quantity
+    total_count: float
     expression: str = ''
     rho: Quantity = None
     fractype: FracType = None
@@ -40,79 +41,102 @@ class Mixture:
             with MixtureSolver(self.atom) as ms:
                 mixture = ms.solve(expression)
             for expr, mol in mixture.molecules.items():
+                mol.natural = self.natural
                 self.molecules[expr] = mol
         elif isinstance(expression, dict) and expression:
             for expr, frac in expression.items():
                 self.add_molecule(expr, frac)
-        self._calculate_norm()
-   
+        self._set_norms()
+
     def __str__(self):
         molecules = []
         for expr, mol in self.molecules.items():
-            molecules.append(f"{mol.fraction} {expr}")
+            molecules.append(f"{mol.count} {expr}")
         molecules = "; ".join(molecules)
         return f"Mixture({molecules})"
         
     def __rmul__(self, other:float):
         mixture = Mixture(natural=self.natural, fractype=self.fractype)
         mixture.molecules = {}
-        for expression in self.molecules.keys():
-            fraction = self.molecules[expression].fraction*other
-            mixture.add_molecule(expression, fraction)
+        for expression, molecule in self.molecules.items():
+            mixture.add_molecule(expression, molecule.count*other)
         return mixture
         
     def __add__(self, other):
         mixture = Mixture(natural=self.natural, fractype=self.fractype)
         mixture.molecules = {}
-        for expression in self.molecules.keys():
-            fraction = self.molecules[expression].fraction
-            mixture.add_molecule(expression, fraction)
-        for expression in other.molecules.keys():
-            fraction = other.molecules[expression].fraction
-            mixture.add_molecule(expression, fraction)
+        for expression, molecule in self.molecules.items():
+            mixture.add_molecule(expression, molecule.count)
+        for expression, molecule in other.molecules.items():
+            mixture.add_molecule(expression, molecule.count)
         return mixture
 
-    def _calculate_norm(self):
-        fractions = [m.fraction for m in self.molecules.values()]
-        self.norm = np.sum(fractions)
-        if self.norm>1:
-            raise Exception("Sum of all molecule ratios is more than one", self.norm , fractions)
-    
-    def add_molecule(self, expression:str, fraction:float=1.0):
-        if expression in self.molecules:
-            self.molecules[expression].fraction += fraction
+    def _set_norms(self):
+        if self.fractype==FracType.NUMBER:
+            self.total_count = np.sum([m.count for m in self.molecules.values()])
+            self.total_mass  = np.sum([m.count*m.total_mass for m in self.molecules.values()])
+        elif self.fractype==FracType.MASS:
+            self.total_count = np.sum([m.count/m.total_mass for m in self.molecules.values()])
+            self.total_mass  = np.sum([m.count for m in self.molecules.values()])
         else:
-            self.molecules[expression] = Molecule(expression, natural=self.natural, fraction=fraction)
-        self._calculate_norm()
-        
+            raise Exception("Invalid fraction type:", self.fractype)
+            
+    def add_molecule(self, expression:str, count:float=1.0):
+        if expression in self.molecules:
+            self.molecules[expression].count += count
+        else:
+            self.molecules[expression] = Molecule(expression, natural=self.natural, count=count)
+        self._set_norms()
+
     def data_molecules(self, quantity=True):
         if not self.molecules:
             return None
-        FRACSIGN = 'X_N' if self.fractype==FracType.NUMBER else 'X_M'
-        columns = ['M']
-        with ParameterTable([FRACSIGN]+columns, keys=True, keyname='expression') as pt:
-            rc = RowCollector([FRACSIGN]+columns)
+        columns = ['count','M']
+        with ParameterTable(columns, keys=True, keyname='expression') as pt:
+            rc = RowCollector(columns)
             for s,m in self.molecules.items():
                 row = [
-                    m.fraction,
-                    m.M.to('Da') if quantity else m.M.value('Da'), 
+                    m.count,
+                    m.total_mass.to('Da') if quantity else m.total_mass.value('Da'), 
                 ]
                 pt[s] = row
                 rc.append(row)
-            avg = [np.average(rc[FRACSIGN])]
-            sum = [np.sum(rc[FRACSIGN])]
-            for p in columns:
-                sum.append(np.sum(rc[p]))
-                avg.append(np.average(rc[p]))
-            pt['avg'] = avg
-            pt['sum'] = sum
+            pt['avg'] = [np.average(rc[p]) for p in columns]
+            pt['sum'] = [np.sum(rc[p]) for p in columns]
             return pt
             
     def data_mixture(self, quantity=True):
-        pass
+        if not self.molecules:
+            return None
+        columns = ['x','X']
+        with ParameterTable(columns, keys=True, keyname='expression') as pt:
+            rc = RowCollector(columns)
+            for s,m in self.molecules.items():
+                row = []
+                if self.fractype==FracType.NUMBER:
+                    row = row + [
+                        m.count/self.total_count,
+                        (m.total_mass*m.count/self.total_mass).value(None),
+                    ]
+                elif self.fractype==FracType.MASS:
+                    row = row + [
+                        (m.count/m.total_mass/self.total_count).value(None),
+                        m.count/self.total_mass,
+                    ]
+                pt[s] = row
+                rc.append(row)
+            pt['avg'] = [np.average(rc[p]) for p in columns]
+            pt['sum'] = [np.sum(rc[p]) for p in columns]
+            return pt
             
     def print_molecules(self):
         df = self.data_molecules(quantity=False).to_dataframe()
         columns = {"M": "M[Da]"}
+        df = df.rename(columns=columns)
+        print( df.to_string(index=False) )
+        
+    def print_mixture(self):
+        df = self.data_mixture(quantity=False).to_dataframe()
+        columns = {}
         df = df.rename(columns=columns)
         print( df.to_string(index=False) )

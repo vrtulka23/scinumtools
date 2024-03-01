@@ -99,15 +99,15 @@ In this case, the option applies to all elements in a molecule.
    >>> Molecule('H2O', natural=False)
    Molecule(p=10 n=8.000 e=10 A=18.011)
 
-A molecule can also be initialised from an explicit list of elements.
+A molecule can also be initialised from an explicit dictionary of element expressions and counts.
 
 .. code-block:: python
 
-   >>> Molecule.from_elements([
-   >>>     Element("B{11}",1),
-   >>>     Element("N{14}",1),
-   >>>     Element("H{1}",6),
-   >>> ])
+   >>> Molecule({
+   >>>     "B{11}": 1,
+   >>>     "N{14}": 1,
+   >>>     "H{1}":  6,
+   >>> })
    Molecule(p=18 n=13.000 e=18 A=31.059)
 
 Besides information about elements and nucleon, every molecule calculate also other parameters.

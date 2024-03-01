@@ -2,6 +2,7 @@ import numpy as np
 import re
 from math import isclose
 import copy
+from typing import Union
 
 from .element import Element
 from .molecule_solver import MoleculeSolver
@@ -11,27 +12,21 @@ from ..units import Quantity, Unit
 class Molecule:
     natural: bool
     elements: dict
-    M: Quantity
+    total_mass: Quantity   # total molecule mass
+    total_count: float     # total number of atoms
     rho: Quantity = None
     V: Quantity = None
     n: Quantity = None
-    fraction: float = None
+    count: float = None
     expression: str = ''
     
-    @staticmethod
-    def from_elements(elements:list, natural:bool=True):
-        molecule = Molecule(natural=natural)
-        for el in elements:
-            molecule.add_element(el)
-        return molecule
-        
     def atom(self, expression:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expression):
             return float(expression)
         else:
-            return Molecule.from_elements([
-                Element(expression, natural=self.natural),
-            ], natural=self.natural)
+            return Molecule({
+                expression: 1,
+            }, natural=self.natural)
             
     def __enter__(self):
         return self
@@ -39,17 +34,20 @@ class Molecule:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
             
-    def __init__(self, expression:str=None, natural:bool=True, fraction:float=1.0):
+    def __init__(self, expression:Union[str,dict]=None, natural:bool=True, count:float=1.0):
         self.natural = natural
-        self.fraction = fraction
+        self.count = count
         self.elements = {}
-        if expression and expression!='':
+        if isinstance(expression,str) and expression:
             self.expression = expression
             with MoleculeSolver(self.atom) as ms:
                 molecule = ms.solve(expression)
             for expr, el in molecule.elements.items():
                 self.elements[expr] = el
-        self.M = np.sum([e.A for e in self.elements.values()])
+        elif isinstance(expression, dict) and expression:
+            for expr, frac in expression.items():
+                self.add_element(expr, frac)
+        self._set_norms()
 
     def __str__(self):
         elements = []
@@ -64,42 +62,43 @@ class Molecule:
         n = data['sum']['N']
         e = int(round(data['sum']['e']))
         A = data['sum']['A']
-        return f"Molecule(p={p:d} n={n:.03f} e={e:d} A={A:.03f})"
+        return f"Molecule(A={A:.03f} Z={p:d} N={n:.03f} e={e:d})"
         
     def __mul__(self, other:float):
-        molecule = copy.deepcopy(self)
-        molecule.elements = {}
-        for expr in self.elements.keys():
-            el = self.elements[expr] * other
-            molecule.add_element(el)
+        molecule = Molecule(natural=self.natural)
+        for expr, element in self.elements.items():
+            molecule.add_element(expr, element.count*other)
         return molecule
     
     def __add__(self, other):
-        molecule = copy.deepcopy(self)
-        molecule.elements = {}
-        for expr,el in self.elements.items():
-            molecule.add_element(el)
+        molecule = Molecule(natural=self.natural)
+        for expr, element in self.elements.items():
+            molecule.add_element(expr, element.count)
         if isinstance(other, Molecule):
-            for expr,el in other.elements.items():
-                molecule.add_element(el)
+            for expr, element in other.elements.items():
+                molecule.add_element(expr, element.count)
         elif isinstance(other, Element):
-            molecule.add_element(other)
+            molecule.add_element(other.expression, other.count)
         return molecule
     
-    def add_element(self, element:Element):
-        expr = element.expression
-        self.expression += expr
-        if self.rho:
-            element.set_density(self.n)
-        if expr in self.elements:
-            self.elements[expr] += element
-        else:
-            self.elements[expr] = element
-        self.M = np.sum([e.A for e in self.elements.values()])
+    def _set_norms(self):
+        self.total_mass = np.sum([e.A for e in self.elements.values()])
+        self.total_count = np.sum([e.count for e in self.elements.values()])
     
+    def add_element(self, expression:str, count:float=1.0):
+        print(expression)
+        self.expression += expression
+        if expression in self.elements:
+            self.elements[expression].count += count
+        else:
+            self.elements[expression] = Element(expression, natural=self.natural, count=count)
+            if self.rho:
+                self.elements[expression].set_density(self.n)
+        self._set_norms()
+
     def set_amount(self, rho:Quantity, V:Quantity=None):
         self.rho = rho
-        self.n = (rho/self.M).rebase()
+        self.n = (rho/self.total_mass).rebase()
         for s in self.elements.keys():
             self.elements[s].set_density(self.n)
         self.V = V
@@ -109,8 +108,6 @@ class Molecule:
                 keys=True, keyname='expression') as pt:
             for s,e in self.elements.items():
                 el = Element(s, natural=self.natural)
-                #A_nuc = Quantity(el.Z, '[m_p]') + Quantity(el.N, '[m_n]')
-                #E_bin = ((A_nuc-el.A)*Unit('[c]')**2)/(el.Z+el.N)
                 pt[s] = [
                     el.element, 
                     el.isotope, 
@@ -119,8 +116,6 @@ class Molecule:
                     el.Z, 
                     el.N, 
                     el.e, 
-                    #A_nuc.value('Da'), 
-                    #E_bin.value('MeV'),
                 ]
             return pt
             
@@ -134,8 +129,6 @@ class Molecule:
             columns += ['n_V','M_V']
         with ParameterTable(['count']+columns, keys=True, keyname='expression') as pt:
             rc = RowCollector(['count']+columns)
-            mass_tot = np.sum([e.A for s,e in self.elements.items()])
-            count_tot = np.sum([e.count for s,e in self.elements.items()])
             for s,e in self.elements.items():
                 if part and s not in part:
                     continue
@@ -145,14 +138,13 @@ class Molecule:
                     e.Z, 
                     e.N, 
                     e.e, 
-                    Quantity(100*e.count/count_tot, '%') if quantity else 100*e.count/count_tot,
-                    (e.A/mass_tot).to('%') if quantity else (e.A/mass_tot).value('%'),
+                    Quantity(100*e.count/self.total_count, '%') if quantity else 100*e.count/self.total_count,
+                    (e.A/self.total_mass).to('%') if quantity else (e.A/self.total_mass).value('%'),
                 ]
                 if self.rho:
                     row += [
                         e.n.to('cm-3') if quantity else e.n.value('cm-3'), 
                         e.rho.to('g/cm3') if quantity else e.rho.value('g/cm3'),
-                        #(e.rho/self.rho).to('%') if quantity else (e.rho/self.rho).value('%'),
                     ]
                 if self.V:
                     row += [
@@ -188,7 +180,7 @@ class Molecule:
     def print(self):
         print("Properties:")
         print()
-        print(f"Molecular mass: {self.M}")
+        print(f"Molecular mass: {self.total_mass}")
         if self.rho:
             print(f"Mass density: {self.rho}")
             print(f"Molecular density: {self.n}")

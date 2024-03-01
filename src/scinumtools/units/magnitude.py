@@ -15,7 +15,7 @@ class Magnitude:
             self.value = value
         elif isinstance(value, list):
             self.value = np.array(value, dtype=float)
-        elif isinstance(value, np.ndarray):
+        elif isinstance(value, np.ndarray) or np.isscalar(value):
             self.value = value.astype(float)
         else:
             raise Exception("Magnitude value can be either a number or an list/array of numbers", value)

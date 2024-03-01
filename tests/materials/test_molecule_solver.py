@@ -33,21 +33,21 @@ def test_solver():
     with MoleculeSolver(compound.atom) as ms:
         
         # single atom parsing
-        assert str(ms.solve('C'))       == "Molecule(p=6 n=6.011 e=6 A=12.011)"
-        assert str(ms.solve('C{12}'))   == "Molecule(p=6 n=6.000 e=6 A=12.000)"
-        assert str(ms.solve('C{-2}'))   == "Molecule(p=6 n=6.011 e=4 A=12.010)"
-        assert str(ms.solve('C{+}'))    == "Molecule(p=6 n=6.011 e=7 A=12.011)"
-        assert str(ms.solve('C{12-}'))  == "Molecule(p=6 n=6.000 e=5 A=11.999)"
-        assert str(ms.solve('C{13}'))   == "Molecule(p=6 n=7.000 e=6 A=13.003)"
-        assert str(ms.solve('C{13-2}')) == "Molecule(p=6 n=7.000 e=4 A=13.002)"
+        assert str(ms.solve('C'))       == "Molecule(A=12.011 Z=6 N=6.011 e=6)"
+        assert str(ms.solve('C{12}'))   == "Molecule(A=12.000 Z=6 N=6.000 e=6)"
+        assert str(ms.solve('C{-2}'))   == "Molecule(A=12.010 Z=6 N=6.011 e=4)"
+        assert str(ms.solve('C{+}'))    == "Molecule(A=12.011 Z=6 N=6.011 e=7)"
+        assert str(ms.solve('C{12-}'))  == "Molecule(A=11.999 Z=6 N=6.000 e=5)"
+        assert str(ms.solve('C{13}'))   == "Molecule(A=13.003 Z=6 N=7.000 e=6)"
+        assert str(ms.solve('C{13-2}')) == "Molecule(A=13.002 Z=6 N=7.000 e=4)"
 
         # nucleons
-        assert str(ms.solve('[e]'))      == "Molecule(p=0 n=0.000 e=1 A=0.001)"
-        assert str(ms.solve('[n]'))      == "Molecule(p=0 n=1.000 e=0 A=1.009)"
-        assert str(ms.solve('[n]2'))     == "Molecule(p=0 n=2.000 e=0 A=2.017)"
-        assert str(ms.solve('[p]'))      == "Molecule(p=1 n=0.000 e=0 A=1.007)"
-        assert str(ms.solve('[p]2'))     == "Molecule(p=2 n=0.000 e=0 A=2.015)"
-        assert str(ms.solve('[p]B{11}')) == "Molecule(p=6 n=6.000 e=5 A=12.017)"
+        assert str(ms.solve('[e]'))      == "Molecule(A=0.001 Z=0 N=0.000 e=1)"
+        assert str(ms.solve('[n]'))      == "Molecule(A=1.009 Z=0 N=1.000 e=0)"
+        assert str(ms.solve('[n]2'))     == "Molecule(A=2.017 Z=0 N=2.000 e=0)"
+        assert str(ms.solve('[p]'))      == "Molecule(A=1.007 Z=1 N=0.000 e=0)"
+        assert str(ms.solve('[p]2'))     == "Molecule(A=2.015 Z=2 N=0.000 e=0)"
+        assert str(ms.solve('[p]B{11}')) == "Molecule(A=12.017 Z=6 N=6.000 e=5)"
         
         # hydrogen isotopes
         assert str(ms.solve('[p]'))     == str(ms.solve('H{1-1}'))
@@ -57,16 +57,16 @@ def test_solver():
         assert str(ms.solve('T'))       == str(ms.solve('H{3}'))
     
         # addition       
-        assert str(ms.solve('H{1-1}'))           == "Molecule(p=1 n=0.000 e=0 A=1.007)"
-        assert str(ms.solve('B{11}'))            == "Molecule(p=5 n=6.000 e=5 A=11.009)"
-        assert str(ms.solve('H{1-1} + B{11}'))   == "Molecule(p=6 n=6.000 e=5 A=12.017)"
+        assert str(ms.solve('H{1-1}'))           == "Molecule(A=1.007 Z=1 N=0.000 e=0)"
+        assert str(ms.solve('B{11}'))            == "Molecule(A=11.009 Z=5 N=6.000 e=5)"
+        assert str(ms.solve('H{1-1} + B{11}'))   == "Molecule(A=12.017 Z=6 N=6.000 e=5)"
     
         # parentheses
-        assert str(ms.solve('(H2O)'))   == "Molecule(p=10 n=8.005 e=10 A=18.015)"
-        assert str(ms.solve('H(CN)'))   == "Molecule(p=14 n=13.014 e=14 A=27.025)"
-        assert str(ms.solve('Ca(OH)2')) == "Molecule(p=38 n=36.125 e=38 A=74.093)"
+        assert str(ms.solve('(H2O)'))   == "Molecule(A=18.015 Z=10 N=8.005 e=10)"
+        assert str(ms.solve('H(CN)'))   == "Molecule(A=27.025 Z=14 N=13.014 e=14)"
+        assert str(ms.solve('Ca(OH)2')) == "Molecule(A=74.093 Z=38 N=36.125 e=38)"
 
         # multiplication
-        assert str(ms.solve('H{1-1}2'))             == "Molecule(p=2 n=0.000 e=0 A=2.015)"
-        assert str(ms.solve('(H{1-1} + B{11})2'))   == "Molecule(p=12 n=12.000 e=10 A=24.033)"
+        assert str(ms.solve('H{1-1}2'))             == "Molecule(A=2.015 Z=2 N=0.000 e=0)"
+        assert str(ms.solve('(H{1-1} + B{11})2'))   == "Molecule(A=24.033 Z=12 N=12.000 e=10)"
         

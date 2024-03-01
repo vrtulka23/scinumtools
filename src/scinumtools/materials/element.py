@@ -116,9 +116,9 @@ class Element:
         
     def __str__(self):
         if self.count>1:
-            return f"Element({self.expression}{self.count} Z={self.Z} N={self.N:.3f} e={self.e} A={self.A.value('Da'):.3f})"
+            return f"Element({self.expression}{self.count} A={self.A.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
         else:
-            return f"Element({self.expression} Z={self.Z} N={self.N:.3f} e={self.e} A={self.A.value('Da'):.3f})"
+            return f"Element({self.expression} A={self.A.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
         
     def set_density(self, n:Quantity):
         self.n = self.count * n

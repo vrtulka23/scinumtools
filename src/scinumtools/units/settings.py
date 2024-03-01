@@ -117,7 +117,7 @@ UNIT_STANDARD = ParameterTable(['magnitude','dimensions','definition','name','pr
 # units of pressure
 'Pa':       (1.0e3,          [-1, 1,-2, 0, 0, 0, 0, 0],  'N/m2',                   'Pascal',            True               ),
 'atm':      (1.013250e8,     [-1, 1,-2, 0, 0, 0, 0, 0],  '101325*Pa',              'atm. pressure',     False              ),
-'bar':      (1e8,            [-1, 1,-2, 0, 0, 0, 0, 0],  '100*kPa',                'bar',               ['m','k']          ),
+'bar':      (1e8,            [-1, 1,-2, 0, 0, 0, 0, 0],  '100*kPa',                'bar',               ['M','k','d','c','m']),
 'Ba':       (1e2,            [-1, 1,-2, 0, 0, 0, 0, 0],  '0.1*Pa',                 'Barye',             False              ),
 # units of force
 'N':        (1.0e3,          [ 1, 1,-2, 0, 0, 0, 0, 0],  'kg*m/s2',                'Newton',            True               ),

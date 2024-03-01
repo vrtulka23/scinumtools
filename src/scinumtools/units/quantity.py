@@ -27,7 +27,7 @@ class Quantity:
         rele: Union[int,float] = None
     ):
         # Set magnitude
-        if isinstance(magnitude, (int,float,Decimal,list,np.ndarray)):
+        if isinstance(magnitude, (int,float,Decimal,list,np.ndarray)) or np.isscalar(magnitude):
             self.magnitude = Magnitude(magnitude, abse=abse, rele=rele)
         elif isinstance(magnitude, Magnitude):
             if abse is not None:
@@ -36,7 +36,7 @@ class Quantity:
                 magnitude.rele(rele)
             self.magnitude = magnitude
         else:
-            raise Exception("Magnitude can be either a number or an list/array of numbers", magnitude)
+            raise Exception("Magnitude can be either a number or an list/array of numbers", magnitude, type(magnitude))
         # Set base units
         if baseunits is None or isinstance(baseunits, (dict,Dimensions,list,np.ndarray)):
             self.baseunits = BaseUnits(baseunits)

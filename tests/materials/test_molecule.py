@@ -25,7 +25,7 @@ def test_empty():
 
 def test_add_element():
     molecule = Molecule()
-    molecule.add_element(Element('B'))
+    molecule.add_element('B')
     assert molecule.expression == 'B'
     assert molecule.data_molecule(quantity=False).to_text() == """
   expression  count          A    Z      N    e      x      X
@@ -97,13 +97,13 @@ def test_density_volume():
 4        sum  8.000000  31.059330  18.00  13.000  18.00  100.0  100.00000  1.209883e+23  0.780000  1.209883e+26  780.000000
 """.strip('\n')
 
-def test_from_elements():
+def test_from_dict():
     
-    molecule = Molecule.from_elements([
-            Element('B{11}',1),
-            Element('N{14}',1),
-            Element('H{1}',6),
-    ])
+    molecule = Molecule({
+        'B{11}': 1,
+        'N{14}': 1,
+        'H{1}':  6,
+    })
     assert molecule.data_elements(quantity=False).to_text() == """
   expression element  isotope  ionisation          A  Z  N  e
 0      B{11}       B       11           0  11.009305  5  6  5
@@ -178,15 +178,15 @@ def test_most_abundant():
 
 def test_print():
     
-    assert str(Molecule('DT'))                 == "Molecule(p=2 n=3.000 e=2 A=5.030)"
-    assert str(Molecule('H2O', natural=False)) == "Molecule(p=10 n=8.000 e=10 A=18.011)"
+    assert str(Molecule('DT'))                 == "Molecule(A=5.030 Z=2 N=3.000 e=2)"
+    assert str(Molecule('H2O', natural=False)) == "Molecule(A=18.011 Z=10 N=8.000 e=10)"
     
-    c = Molecule.from_elements([
-        Element('B{11}',1),
-        Element('N{14}',1),
-        Element('H{1}',6),
-    ])
-    assert (str(c)) == "Molecule(p=18 n=13.000 e=18 A=31.059)"
+    c = Molecule({
+        'B{11}': 1,
+        'N{14}': 1,
+        'H{1}':  6,
+    })
+    assert (str(c)) == "Molecule(A=31.059 Z=18 N=13.000 e=18)"
     
 def test_nucleons():
     
