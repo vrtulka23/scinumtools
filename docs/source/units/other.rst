@@ -57,7 +57,7 @@ Available NumPy universal functions ``ufunc`` that can be used with quantities a
    np.power,    "Unit exponents are raised on the given power."
    "np.sin, np.cos, np.tan", "Input quantity must be convertible to radians and output quantity is dimensionless."
    "np.arcsin, np.arccos, np.arctan", "Input quantity is dimensionless and output quantity is in radians."
-   "np.isnan, np.isnat, np.iscomplexobj", "Returns booleans"
+   "np.isnan, np.isnat", "Returns booleans"
    
 .. code-block::
    
