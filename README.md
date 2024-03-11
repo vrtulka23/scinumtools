@@ -77,8 +77,8 @@ For more description and examples of [Material Properties](https://vrtulka23.git
 
 ``` python
 >>> from scinumtools.units import Quantity
->>> from scinumtools.materials import Molecule
->>> with Molecule('H2O', natural=False) as c:
+>>> from scinumtools.materials import Substance
+>>> with Substance('H2O', natural=False) as c:
 >>>     c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
 >>>     c.print()
 Properties:
@@ -94,7 +94,7 @@ expression element  isotope  ionisation     A[Da]  Z  N  e
          H       H        1           0  1.007825  1  0  1
          O       O       16           0 15.994915  8  8  8
 
-Molecule:
+Substance:
 
 expression  count     A[Da]         Z        N         e       x[%]       X[%]      n[cm-3]  rho[g/cm3]          n_V     M_V[g] 
          H    2.0  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487 6.667280e+22    0.111579 6.667280e+25 111.579129 

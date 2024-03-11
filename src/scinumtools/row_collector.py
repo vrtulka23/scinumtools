@@ -99,14 +99,14 @@ class RowCollector:
         else:
             return 0
         
-    def to_dict(self):
+    def to_dict(self, transpose:str=None):
         """ Convert class data to a dictionary of lists/arrays
         """
         data = {}
         for name in self._columns:
             data[name] = getattr(self,name)
         return data
-    
+        
     def to_dataframe(self, columns: Union[list,dict]=None):
         """ Convert class data to a pandas data frame
 

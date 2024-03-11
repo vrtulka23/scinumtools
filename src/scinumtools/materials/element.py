@@ -1,20 +1,18 @@
 import re
 import numpy as np
 
+from .compound import Item
 from .periodic_table import *
 from ..units import Quantity, Unit
 from .. import RowCollector, ParameterTable
 
 PERIODIC_TABLE = ParameterTable(PT_HEADER, PT_DATA, keys=True)
 
-class Element:
-    expression: str
-    count: int
+class Element(Item):
     natural: bool
     element: str
     isotope: int
     ionisation: int
-    A: Quantity = None
     Z: float = None
     N: float = None
     e: float = None
@@ -58,21 +56,21 @@ class Element:
                 int(rc.ion[0]),
             )
 
-    def __init__(self, expression:str, count:int=1, natural:bool=True):
-        self.expression = expression
+    def __init__(self, expr:str, count:int=1, natural:bool=True):
+        self.expr = expr
         self.count = count
         self.natural = natural
-        # parse the expression
-        if m := re.match("(\[(p|n|e)\])", expression):
+        # parse the expr
+        if m := re.match("(\[(p|n|e)\])", expr):
             nucleon = m.group(2)
-            self.element = expression
+            self.element = expr
             NA, iso, ion = 100.0, None, None
-            A = Unit(f"[m_{nucleon}]").to('Da')
+            self.mass = Unit(f"[m_{nucleon}]").to('Da')
             nucleons = {'p':(1,0,0),'n':(0,1,0),'e':(0,0,1)}
-            Z, N, e = nucleons[nucleon]
+            self.Z, self.N, self.e = nucleons[nucleon]
             self.isotope = 0
             self.ionisation = 0
-        elif m := re.match("([a-zA-Z]{1,2})(\{([0-9]+)([+-]{1}[0-9]*)\}|\{([0-9]+)\}|\{([+-]{1}[0-9]*)\}|)", expression):
+        elif m := re.match("([a-zA-Z]{1,2})(\{([0-9]+)([+-]{1}[0-9]*)\}|\{([0-9]+)\}|\{([+-]{1}[0-9]*)\}|)", expr):
             # Extract information about isos
             element, variant, iso1, ion1, iso2, ion3 = m.groups()
             if element=='D':
@@ -94,33 +92,25 @@ class Element:
                 self.isotope, self.ionisation = None, 0
             # set element values
             if self.isotope:
-                NA, A, Z, N, e, iso, ion = self.get_isotope(self.element, self.isotope, self.ionisation)
+                NA, self.mass, self.Z, self.N, self.e, iso, ion = self.get_isotope(self.element, self.isotope, self.ionisation)
             elif self.natural:
-                NA, A, Z, N, e, self.isotope, self.ionisation = self.get_natural(self.element, self.ionisation)
+                NA, self.mass, self.Z, self.N, self.e, self.isotope, self.ionisation = self.get_natural(self.element, self.ionisation)
             else:
-                NA, A, Z, N, e, self.isotope, self.ionisation = self.get_abundant(self.element, self.ionisation)
+                NA, self.mass, self.Z, self.N, self.e, self.isotope, self.ionisation = self.get_abundant(self.element, self.ionisation)
         else:
-            raise Exception('Unrecognized expression', expression)
-        self.A = self.count*A
-        self.Z = self.count*Z
-        self.N = self.count*N
-        self.e = self.count*e
-        
+            raise Exception('Unrecognized expr', expr)
+
     def __mul__(self, other:float):
-        return Element(self.expression, self.count*other, natural=self.natural)
-            
+        return Element(self.expr, self.count*other, natural=self.natural)
+    
     def __add__(self, other:'Element'):
-        if self.expression!=other.expression:
-            raise Exception("Only same elements can be added up:", self.expression, other.expression)
-        return Element(self.expression, self.count+other.count, natural=self.natural)
+        if self.expr!=other.expr:
+            raise Exception("Only same elements can be added up:", self.expr, other.expr)
+        return Element(self.expr, self.count+other.count, natural=self.natural)
         
     def __str__(self):
         if self.count>1:
-            return f"Element({self.expression}{self.count} A={self.A.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
+            return f"Element({self.expr}{self.count} mass={self.count*self.mass.value('Da'):.3f} Z={self.count*self.Z} N={self.count*self.N:.3f} e={self.count*self.e})"
         else:
-            return f"Element({self.expression} A={self.A.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
+            return f"Element({self.expr} mass={self.mass.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
         
-    def set_density(self, n:Quantity):
-        self.n = self.count * n
-        self.rho = self.A * n
-            

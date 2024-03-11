@@ -4,7 +4,7 @@ import re
 from .element import Element
 from ..solver import *
 
-class MoleculeSolver:
+class SubstanceSolver:
     
     atom
     

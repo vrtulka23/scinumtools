@@ -72,7 +72,7 @@ If set to ``False``, an isotope with the highest abundance is used.
    >>> Element('O', natural=False)
    Element(O Z=8 N=8.000 e=8 A=15.995)
 
-The option ``count`` is by default set to one, but it can also hold multiple elements of the same type, e.g. in a molecule.
+The option ``count`` is by default set to one, but it can also hold multiple elements of the same type, e.g. in a substance.
 If its value is higher than one, all element properties are multiplied correspondingly by this number.
 
 .. code-block:: python
@@ -83,42 +83,42 @@ If its value is higher than one, all element properties are multiplied correspon
    >>> e.count, e.element, e.isotope, e.ionisation
    2, 'O', 16, 0
 
-Molecules
+Substances
 ---------
 
-Atomic molecules consist of several elements.
-Class ``Molecule`` can solve a molecular formula, break it into individual elements and calculate their collective atomic properties.
+Substances consist of several elements.
+In this context, we consider as substances pure elements, chemical compounds and molecules.
+Class ``Substance`` can solve a molecular formula, break it into individual elements and calculate their collective atomic properties.
 Similarly, as for ``Element`` class, it has an option to switch between natural and most abundant elements when isotopes are not specified.
-In this case, the option applies to all elements in a molecule.
+In this case, the option applies to all elements in a substance.
 
 .. code-block:: python
 
-   >>> from scinumtools.materials import Molecule
-   >>> Molecule('DT')
-   Molecule(p=2 n=3.000 e=2 A=5.030)
-   >>> Molecule('H2O', natural=False)
-   Molecule(p=10 n=8.000 e=10 A=18.011)
+   >>> from scinumtools.materials import Substance
+   >>> Substance('DT')
+   Substance(p=2 n=3.000 e=2 A=5.030)
+   >>> Substance('H2O', natural=False)
+   Substance(p=10 n=8.000 e=10 A=18.011)
 
-A molecule can also be initialised from an explicit dictionary of element expressions and counts.
+A substance can also be initialised from an explicit dictionary of element expressions and counts.
 
 .. code-block:: python
 
-   >>> Molecule({
+   >>> Substance({
    >>>     "B{11}": 1,
    >>>     "N{14}": 1,
    >>>     "H{1}":  6,
    >>> })
-   Molecule(p=18 n=13.000 e=18 A=31.059)
+   Substance(p=18 n=13.000 e=18 A=31.059)
 
-Besides information about elements and nucleon, every molecule calculate also other parameters.
-In the example below, we show an example for the molecule of water ``H2O``.
+Besides information about elements and nucleon, every substance calculate also other parameters.
+In the example below, we show an example for the substance of water ``H2O``.
 A concise overview of all its properties can be printed using its ``print()`` method.
 Here the ``A`` is an atomic mass, ``Z`` proton number, ``N`` number of neutrons, ``e`` number of electrons, ``x`` number fraction and ``X`` is a mass fraction.
 
 .. code-block:: python
 
-   >>> with Molecule('H2O', natural=False) as c:
-   >>>     c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
+   >>> with Substance('H2O', natural=False, rho=Quantity(997,'kg/m3'), V=Quantity(1,'l')) as c:
    >>>     c.print()
    Properties:
    
@@ -133,7 +133,7 @@ Here the ``A`` is an atomic mass, ``Z`` proton number, ``N`` number of neutrons,
             H       H        1           0  1.007825  1  0  1
             O       O       16           0 15.994915  8  8  8
    
-   Molecule:
+   Substance:
    
    expression  count     A[Da]         Z        N         e       x[%]       X[%]      n[cm-3]  rho[g/cm3]          n_V     M_V[g]
             H    2.0  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487 6.667280e+22    0.111579 6.667280e+25 111.579129 
@@ -141,21 +141,21 @@ Here the ``A`` is an atomic mass, ``Z`` proton number, ``N`` number of neutrons,
           avg    1.5  6.003522  3.333333 2.666667  3.333333  33.333333  33.333333 3.333640e+22    0.332333 3.333640e+25 332.333333 
           sum    3.0 18.010565 10.000000 8.000000 10.000000 100.000000 100.000000 1.000092e+23    0.997000 1.000092e+26 997.000000
 
-In the example above, we additionally set molecule density ``rho`` and its volume ``V``.
+In the example above, we additionally set substance density ``rho`` and its volume ``V``.
 Density is used for calculation of number ``n`` and mass ``rho`` densities.
 If volume is also set, total number of species ``n_V`` and total mass ``m_V`` are added.
 
-Individual molecule parameters can be accessed directly using ``data_elements()`` and ``data_molecule()``.
+Individual substance parameters can be accessed directly using ``data_elements()`` and ``data_substance()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
-Corresponding tabular values can be printed using method ``print_elements()`` and ``print_molecule()``.
+Corresponding tabular values can be printed using method ``print_elements()`` and ``print_substance()``.
 
 .. code-block:: python
 
-   >>> with Molecule('H2O', natural=False) as c:
+   >>> with Substance('H2O', natural=False) as c:
    >>>     data = c.data_elements()
    >>>     data.O['N']
    8
-   >>>     data = c.data_molecule()
+   >>>     data = c.data_substance()
    >>>     data['sum'].e
    10
    >>>     data.H.count
@@ -165,17 +165,50 @@ Corresponding tabular values can be printed using method ``print_elements()`` an
 
 In both cases, dimensional parameters are returned as ``Quantity`` objects.
 If needed, simple numerical values can be requested by setting the following option: ``quantity=False``.
-Sometimes it is required to know information about part of a molecule.
+Sometimes it is required to know information about part of a substance.
 In this case, one can specify which elements (``H``) should be returned.
 
 .. code-block:: python
 
-   >>> with Molecule('H2O', natural=False) as c:
-   >>>     c.data_molecule(['H'], quantity=False).to_text()
+   >>> with Substance('H2O', natural=False) as c:
+   >>>     c.data_substance(['H'], quantity=False).to_text()
      expression  count         A    Z    N    e          x          X
    0          H    2.0  2.015650  2.0  0.0  2.0  66.666667  11.191487
    1        avg    2.0  1.007825  1.0  0.0  1.0  33.333333   5.595744
    2        sum    2.0  2.015650  2.0  0.0  2.0  66.666667  11.191487
+
+Materails
+---------
+
+Materials can be formed from one or more substances and their corresponding number (``x``, ``FracType.NUMBER``), or mass (``X``, ``FracType.MASS``) fractions.
+If number fractions are given, mass fractions are calculated using substance masses, and vice versa.
+Number and mass fraction values are always normalized to unity.
+
+.. code-block:: python
+
+   >>> from scinumtools.materials import Material, FracType
+   >>> m = Material({
+   >>>    'N2':  78.0840,  # given as percentage
+   >>>    'O2':  20.9460,
+   >>>    'Ar':  0.93400,
+   >>>    'CO2': 0.03600,
+   >>> }, fractype=FracType.NUMBER)
+   >>> m.print_substances()
+   expression  fraction          M
+          N2    78.084   28.013406
+          O2    20.946   31.998810
+          Ar     0.934   39.947799
+         CO2     0.036   44.009546
+         avg    25.000   35.992390
+         sum   100.000  143.969561
+   >>> m.print_material()
+   expression        x         X
+           N2  0.78084  0.755176
+           O2  0.20946  0.231396
+           Ar  0.00934  0.012881
+          CO2  0.00036  0.000547
+          avg  0.25000  0.250000
+          sum  1.00000  1.000000
    
 List of elements
 ----------------

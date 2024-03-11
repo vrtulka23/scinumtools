@@ -1,10 +1,10 @@
 import numpy as np
 import re
 
-from .molecule import Molecule
+from .substance import Substance
 from ..solver import *
 
-class MixtureSolver:
+class MaterialSolver:
     
     atom
     

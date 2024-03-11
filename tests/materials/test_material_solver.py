@@ -10,8 +10,8 @@ from scinumtools.materials import *
 
 def test_preprocessing():
     
-    mixture = Mixture()
-    with MixtureSolver(mixture.atom) as ms:
+    material = Material()
+    with MaterialSolver(material.atom) as ms:
         
         # implicit multiplication and addition
         assert ms.preprocess('1.0 <H2O>')             == "1.0 * <H2O>"
@@ -21,12 +21,12 @@ def test_preprocessing():
         
 def test_solver():
     
-    mixture = Mixture()
-    with MixtureSolver(mixture.atom) as ms:
+    material = Material()
+    with MaterialSolver(material.atom) as ms:
         
         # single atom parsing
-        assert str(ms.solve('<H2O>'))                 == "Mixture(1.0 H2O)"
-        assert str(ms.solve('0.5 <H2O>'))             == "Mixture(0.5 H2O)"
-        assert str(ms.solve('0.2 <H2O> 0.8 <NaCl>'))  == "Mixture(0.2 H2O; 0.8 NaCl)"
+        assert str(ms.solve('<H2O>'))                 == "Material(1.0 H2O)"
+        assert str(ms.solve('0.5 <H2O>'))             == "Material(0.5 H2O)"
+        assert str(ms.solve('0.2 <H2O> 0.8 <NaCl>'))  == "Material(0.2 H2O; 0.8 NaCl)"
         assert str(ms.solve('0.7808 <N2> 0.2095 <O2> 0.0093 <Ar> 0.0004 <CO2>')) == \
-                    "Mixture(0.7808 N2; 0.2095 O2; 0.0093 Ar; 0.0004 CO2)"
+                    "Material(0.7808 N2; 0.2095 O2; 0.0093 Ar; 0.0004 CO2)"

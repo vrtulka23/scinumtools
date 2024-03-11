@@ -2,12 +2,13 @@ from enum import Enum
 MAGNITUDE_PRECISION = 1e-7
 
 # Fraction input type
-class FracType(Enum):
-    NUMBER = 1    # number fraction
-    MASS   = 2    # mass fraction
+class Norm(Enum):
+    ITEM_COUNT      = 0    # number of items
+    NUMBER_FRACTION = 1    # number fraction
+    MASS_FRACTION   = 2    # mass fraction
 
 from .element import Element
-from .molecule import Molecule
-from .mixture import Mixture
-from .molecule_solver import MoleculeSolver
-from .mixture_solver import MixtureSolver
+from .substance import Substance
+from .substance_solver import SubstanceSolver
+from .material import Material
+from .material_solver import MaterialSolver
