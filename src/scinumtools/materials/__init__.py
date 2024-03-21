@@ -3,7 +3,7 @@ MAGNITUDE_PRECISION = 1e-7
 
 # Fraction input type
 class Norm(Enum):
-    ITEM_COUNT      = 0    # number of items
+    NUMBER          = 0    # number
     NUMBER_FRACTION = 1    # number fraction
     MASS_FRACTION   = 2    # mass fraction
 

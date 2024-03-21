@@ -1,14 +1,14 @@
 import re
 import numpy as np
 
-from .compound import Item
+from .compound import Component, Units
 from .periodic_table import *
 from ..units import Quantity, Unit
 from .. import RowCollector, ParameterTable
 
 PERIODIC_TABLE = ParameterTable(PT_HEADER, PT_DATA, keys=True)
 
-class Element(Item):
+class Element(Component):
     natural: bool
     element: str
     isotope: int
@@ -16,8 +16,6 @@ class Element(Item):
     Z: float = None
     N: float = None
     e: float = None
-    n: Quantity = None
-    rho: Quantity = None
 
     # get a specific isotope
     def get_isotope(self, element:str, isotope: int, ionisation: int):
@@ -28,7 +26,7 @@ class Element(Item):
         if str(iso) not in isotopes.A:
             raise Exception("Required isotope could not be found:", element, iso)
         M, NA = isotopes.A[str(iso)]
-        A = Quantity(M, 'Da') + Quantity(ion, '[m_e]')
+        A = Quantity(M, Units.ATOMIC_MASS) + Quantity(ion, '[m_e]')
         N = int(iso-isotopes.Z)
         e = isotopes.Z+ion
         return NA, A, Z, N, e, iso, ion
@@ -57,15 +55,15 @@ class Element(Item):
             )
 
     def __init__(self, expr:str, count:int=1, natural:bool=True):
+        Component.__init__(self, count)
         self.expr = expr
-        self.count = count
         self.natural = natural
         # parse the expr
         if m := re.match("(\[(p|n|e)\])", expr):
             nucleon = m.group(2)
             self.element = expr
             NA, iso, ion = 100.0, None, None
-            self.mass = Unit(f"[m_{nucleon}]").to('Da')
+            self.mass = Unit(f"[m_{nucleon}]").to(Units.ATOMIC_MASS)
             nucleons = {'p':(1,0,0),'n':(0,1,0),'e':(0,0,1)}
             self.Z, self.N, self.e = nucleons[nucleon]
             self.isotope = 0
@@ -110,7 +108,7 @@ class Element(Item):
         
     def __str__(self):
         if self.count>1:
-            return f"Element({self.expr}{self.count} mass={self.count*self.mass.value('Da'):.3f} Z={self.count*self.Z} N={self.count*self.N:.3f} e={self.count*self.e})"
+            return f"Element({self.expr}{self.count} mass={self.count*self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.count*self.Z} N={self.count*self.N:.3f} e={self.count*self.e})"
         else:
-            return f"Element({self.expr} mass={self.mass.value('Da'):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
+            return f"Element({self.expr} mass={self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
         
