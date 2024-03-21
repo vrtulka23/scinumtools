@@ -78,8 +78,8 @@ For more description and examples of [Material Properties](https://vrtulka23.git
 ``` python
 >>> from scinumtools.units import Quantity
 >>> from scinumtools.materials import Substance
->>> with Substance('H2O', natural=False, mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l')) as c:
->>>     c.print()
+>>> s = Substance('H2O', natural=False, mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l'))
+>>> s.print()
 Components:
 
 expr element  isotope  ionisation  mass[Da]  count  Z  N  e
