@@ -78,29 +78,36 @@ For more description and examples of [Material Properties](https://vrtulka23.git
 ``` python
 >>> from scinumtools.units import Quantity
 >>> from scinumtools.materials import Substance
->>> with Substance('H2O', natural=False) as c:
->>>     c.set_amount(rho=Quantity(997,'kg/m3'), V=Quantity(1,'l'))
+>>> with Substance('H2O', natural=False, mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l')) as c:
 >>>     c.print()
-Properties:
+Components:
 
-Mass density: Quantity(9.970e+02 kg*m-3)
-Molecular mass: Quantity(1.801e+01 Da)
-Molecular density: Quantity(3.334e+28 m-3)
-Volume: Quantity(1.000e+00 l)
+expr element  isotope  ionisation  mass[Da]  count  Z  N  e
+   H       H        1           0  1.007825    2.0  1  0  1
+   O       O       16           0 15.994915    1.0  8  8  8
 
-Elements:
+Compound:
 
-expression element  isotope  ionisation     A[Da]  Z  N  e
-         H       H        1           0  1.007825  1  0  1
-         O       O       16           0 15.994915  8  8  8
+Total mass:     Quantity(1.801e+01 Da)
+Total number:   3.0
 
-Substance:
+expr  mass[Da]         Z        N         e       x[%]       X[%]
+   H  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487
+   O 15.994915  8.000000 8.000000  8.000000  33.333333  88.808513
+ avg  6.003522  3.333333 2.666667  3.333333  33.333333  33.333333
+ sum 18.010565 10.000000 8.000000 10.000000 100.000000 100.000000
 
-expression  count     A[Da]         Z        N         e       x[%]       X[%]      n[cm-3]  rho[g/cm3]          n_V     M_V[g] 
-         H    2.0  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487 6.667280e+22    0.111579 6.667280e+25 111.579129 
-         O    1.0 15.994915  8.000000 8.000000  8.000000  33.333333  88.808513 3.333640e+22    0.885421 3.333640e+25 885.420871 
-       avg    1.5  6.003522  3.333333 2.666667  3.333333  33.333333  33.333333 3.333640e+22    0.332333 3.333640e+25 332.333333 
-       sum    3.0 18.010565 10.000000 8.000000 10.000000 100.000000 100.000000 1.000092e+23    0.997000 1.000092e+26 997.000000
+Matter:
+
+Mass density:   Quantity(9.970e-01 g*cm-3)
+Number density: Quantity(3.334e+22 cm-3)
+Volume:         Quantity(1.000e+00 l)
+
+expr      n[cm-3]  rho[g/cm3]            N       M[g]
+   H 6.667280e+22    0.111579 6.667280e+25 111.579129
+   O 3.333640e+22    0.885421 3.333640e+25 885.420871
+ avg 3.333640e+22    0.332333 3.333640e+25 332.333333
+ sum 1.000092e+23    0.997000 1.000092e+26 997.000000
 ```
 
 ### Dimensional Input Parameters
