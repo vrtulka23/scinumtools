@@ -186,7 +186,7 @@ In this case, one can specify which elements (``H``) should be returned.
    1  avg  1.007825  1.0  0.0  1.0  33.333333   5.595744
    2  sum  2.015650  2.0  0.0  2.0  66.666667  11.191487
 
-Materails
+Materials
 ---------
 
 Materials can be formed from one or more substances and their corresponding number (``x``, ``Norm.NUMBER_FRACTION``), or mass (``X``, ``Norm.MASS_FRACTION``) fractions.
