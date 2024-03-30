@@ -6,13 +6,13 @@ from typing import Union
 
 from . import Norm, Units
 from .matter import Matter
-from .compound import Compound, Component
+from .composite import Composite, Component
 from .element import Element
 from .substance_solver import SubstanceSolver
 from .. import ParameterTable, RowCollector
 from ..units import Quantity, Unit
 
-class Substance(Compound, Component, Matter):
+class Substance(Composite, Component, Matter):
     
     def atom(self, expr:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
@@ -23,7 +23,7 @@ class Substance(Compound, Component, Matter):
     def __init__(self, expr:Union[str,dict]=None, proportion:float=1.0, natural:bool=True, **kwargs):
         Matter.__init__(self, **kwargs)
         Component.__init__(self, proportion)
-        Compound.__init__(self, 
+        Composite.__init__(self, 
             SubstanceSolver, Element, expr, {
                 'element':    None,
                 'isotope':    None,
@@ -49,7 +49,7 @@ class Substance(Compound, Component, Matter):
                 element += f"{int(el.proportion):d}"
             elements.append(element)
         elements = " ".join(elements)
-        data = self.data_compound(quantity=False)
+        data = self.data_composite(quantity=False)
         p = int(round(data['sum']['Z']))
         n = data['sum']['N']
         e = int(round(data['sum']['e']))
@@ -79,7 +79,7 @@ class Substance(Compound, Component, Matter):
             }
         return self._data(self.cols_components, fn_row, quantity=quantity)
         
-    def data_compound(self, components:list=None, quantity:bool=True):
+    def data_composite(self, components:list=None, quantity:bool=True):
         def fn_row(s,m):
             return {
                 'mass':  m.proportion*m.mass,
@@ -87,4 +87,4 @@ class Substance(Compound, Component, Matter):
                 'N':     m.proportion*m.N, 
                 'e':     m.proportion*m.e, 
             }
-        return self._data(self.cols_compound, fn_row, stats=True, weight=True, components=components, quantity=quantity)
+        return self._data(self.cols_composite, fn_row, stats=True, weight=True, components=components, quantity=quantity)

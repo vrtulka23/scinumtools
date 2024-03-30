@@ -86,7 +86,7 @@ expr element  isotope  ionisation  mass[Da]  count  Z  N  e
    H       H        1           0  1.007825    2.0  1  0  1
    O       O       16           0 15.994915    1.0  8  8  8
 
-Compound:
+Composite:
 
 Total mass:     Quantity(1.801e+01 Da)
 Total number:   3.0

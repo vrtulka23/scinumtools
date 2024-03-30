@@ -14,17 +14,17 @@ class Component:
     def __init__(self, proportion:int=1):
         self.proportion = proportion
 
-class Compound:
-    components: Dict[str,Component] # list of compound components
-    component_class: callable       # name of the class that inherits Compound
+class Composite:
+    components: Dict[str,Component] # list of composite components
+    component_class: callable       # name of the class that inherits Composite
     
     cols_components: dict           # settings of component columns
-    cols_compound: dict             # settings of compound columns
+    cols_composit: dict             # settings of composite columns
     
     natural: bool                   # natural ements
-    norm_type: Norm                 # type of compound norm
+    norm_type: Norm                 # type of composite norm
     proportion_norm: Union[float,int] # sum of all comonent proportions
-    compound_mass: Quantity         # sum of all component masses
+    composite_mass: Quantity         # sum of all component masses
     
     def __enter__(self):
         return self
@@ -34,14 +34,14 @@ class Compound:
     
     def __init__(self, 
         solver:callable, component_class:callable, expr:Union[str,dict], 
-        cols_components: dict, cols_compound: dict,
+        cols_components: dict, cols_composite: dict,
         natural:bool, norm_type:Norm,
     ):
         self.expr = ''
         self.norm_type = norm_type
         self.natural = natural
         self.cols_components = cols_components
-        self.cols_compound = cols_compound | {
+        self.cols_composite = cols_composite | {
             "x":     Units.FRACTION, 
             "X":     Units.FRACTION,
         }
@@ -62,12 +62,12 @@ class Compound:
         components = self.components.values()
         if self.norm_type==Norm.MASS_FRACTION:
             self.proportion_norm = np.sum([i.proportion/i.component_mass for i in components])
-            self.compound_mass  = np.sum([i.proportion for i in components])
+            self.composite_mass  = np.sum([i.proportion for i in components])
         else:
             self.proportion_norm = np.sum([i.proportion for i in components])
-            self.compound_mass  = np.sum([i.proportion*i.component_mass for i in components])
+            self.composite_mass  = np.sum([i.proportion*i.component_mass for i in components])
         if type(self) in Component.__subclasses__():
-            self.component_mass = self.compound_mass
+            self.component_mass = self.composite_mass
         Matter._norm(self)
 
     def _data(self, columns:dict, fn_row:callable, stats:bool=False, weight:bool=False, components:list=None, quantity:bool=True):
@@ -87,11 +87,11 @@ class Compound:
             row, values = [], fn_row(s,m)
             if self.norm_type in [Norm.NUMBER_FRACTION, Norm.NUMBER]:
                 values['x'] = Quantity(m.proportion/self.proportion_norm)
-                values['X'] = m.proportion*m.component_mass/self.compound_mass
+                values['X'] = m.proportion*m.component_mass/self.composite_mass
                 weights.append(m.proportion)
             elif self.norm_type==Norm.MASS_FRACTION:
                 values['x'] = m.proportion/m.component_mass/self.proportion_norm
-                values['X'] = Quantity(m.proportion/self.compound_mass)
+                values['X'] = Quantity(m.proportion/self.composite_mass)
                 weights.append(m.proportion/m.component_mass)
             # convert to proper units
             for col in column_names:
@@ -122,20 +122,20 @@ class Compound:
             
         return pt
 
-    def _multiply(self, compound, other):
+    def _multiply(self, composite, other):
         for expr, component in self.components.items():
-            compound.add(expr, component.proportion*other)
-        return compound
+            composite.add(expr, component.proportion*other)
+        return composite
     
-    def _add(self, compound, other):
+    def _add(self, composite, other):
         for expr, component in self.components.items():
-            compound.add(expr, component.proportion)
+            composite.add(expr, component.proportion)
         if isinstance(other, self.component_class):
-            compound.add(other.expr, other.proportion)
+            composite.add(other.expr, other.proportion)
         else:
             for expr, component in other.components.items():
-                compound.add(expr, component.proportion)
-        return compound
+                composite.add(expr, component.proportion)
+        return composite
     
     def _add_expr(self, expr:str, proportion:int):
         pass
@@ -156,21 +156,21 @@ class Compound:
     def print_components(self):
         self._print_table(self.cols_components, self.data_components)
         
-    def print_compound(self, components:list=None):
-        self._print_table(self.cols_compound, self.data_compound, components=components)
+    def print_composite(self, components:list=None):
+        self._print_table(self.cols_composite, self.data_composite, components=components)
         
     def print(self):
         print("Components:")
         print("")
         self._print_table(self.cols_components, self.data_components)
         print("")
-        print("Compound:")
+        print("Composite:")
         if self.norm_type == Norm.NUMBER:
             print("")
-            print(f"Total mass:     {self.compound_mass}")
+            print(f"Total mass:     {self.composite_mass}")
             print(f"Total number:   {self.proportion_norm}")
         print("")
-        self._print_table(self.cols_compound, self.data_compound)
+        self._print_table(self.cols_composite, self.data_composite)
         if self.mass_density:
             print("")
             Matter.print(self)

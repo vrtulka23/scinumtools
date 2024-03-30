@@ -4,12 +4,12 @@ from typing import Union
 
 from . import Norm, Units
 from .matter import Matter
-from .compound import Compound
+from .composite import Composite
 from .substance import Substance
 from .material_solver import MaterialSolver
 from ..units import Quantity, Unit
 
-class Material(Compound, Matter):
+class Material(Composite, Matter):
     
     def atom(self, expr:str):
         if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
@@ -19,7 +19,7 @@ class Material(Compound, Matter):
 
     def __init__(self, expr:Union[str,dict]=None, natural:bool=True, norm_type:Norm=Norm.NUMBER_FRACTION, **kwargs):
         Matter.__init__(self, **kwargs)
-        Compound.__init__( self,
+        Composite.__init__( self,
             MaterialSolver, Substance, expr, {  
                 'fraction': None,       
                 "mass": Units.ATOMIC_MASS,
@@ -47,7 +47,7 @@ class Material(Compound, Matter):
         
     def data_components(self, quantity:bool=True):
         def fn_row(s,m):
-            subs = m.data_compound()
+            subs = m.data_composite()
             return {
                 'fraction': m.proportion,
                 'mass':     m.component_mass,
@@ -57,8 +57,8 @@ class Material(Compound, Matter):
             }
         return self._data(self.cols_components, fn_row, quantity=quantity)
 
-    def data_compound(self, components:list=None, quantity:bool=True):
+    def data_composite(self, components:list=None, quantity:bool=True):
         def fn_row(s,m):
             return {}
-        return self._data(self.cols_compound, fn_row, stats=True, weight=False, components=components, quantity=quantity)
+        return self._data(self.cols_composite, fn_row, stats=True, weight=False, components=components, quantity=quantity)
             

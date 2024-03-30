@@ -1,7 +1,24 @@
 Elements
 ========
 
-Properties of individual :ref:`elements <materials/elements:list of elements>` are managed by ``Element`` class.
+Properties of individual elements are managed by ``Element`` class.
+Expressions of different elements carry information about their element types, isotope numbers and ionisation states.
+A comprehensive list of all available elements and their isotopes is given at the end of this section.
+Examples of element symbols of a carbon atom are given below:
+
+.. csv-table:: Notation of element symbols
+   :widths: 20, 20, 20, 40
+   :header-rows: 1
+
+   Symbol,    Abundance,  Ionisation, Note
+   "``C``",       natural,    neutral,    "naturally occuring carbon"
+   "``C{-3}``",   natural,    cation,     "positive natural ion"
+   "``C{+3}``",   natural,    anion,      "negative natural ion"
+   "``C{13}``",   isotope,    neutral,    "carbon-13 isotope"
+   "``C{13-3}``", isotope,    cation,     "positive isotope ion"
+   "``C{13+3}``", isotope,    anion,      "negative isotope ion"
+
+The ``Element`` class can be used in the following way.
 
 .. code-block:: python
 
@@ -22,7 +39,7 @@ If set to ``False``, an isotope with the highest abundance is used.
 .. note::
 
    The number of neutrons in naturally abundant elements is not always an integer.
-   This is due to calculation of averages over all element isotopes.
+   This is due to the calculation of averages over all element isotopes.
 
 .. code-block:: python
 
@@ -42,26 +59,6 @@ If its value is higher than one, all element properties are multiplied correspon
    >>> e.proportion, e.element, e.isotope, e.ionisation
    2, 'O', 16, 0
 
-The syntax of molecular formulas used in this solver is based on standard molecular formulas known from chemistry.
-The most basic part of formulas, an element symbol, carries information about element type, isotope number and ionisation state.
-A comprehensive list of all available :ref:`elements <materials/elements:list of elements>` and their isotopes is given at the end of this section.
-Examples of element symbols of a carbon atom are given below:
-
-.. csv-table:: Notation of element symbols
-   :widths: 20, 20, 20, 40
-   :header-rows: 1
-
-   Symbol,    Abundance,  Ionisation, Note
-   "``C``",       natural,    neutral,    "naturally occuring carbon"
-   "``C{-3}``",   natural,    cation,     "positive natural ion"
-   "``C{+3}``",   natural,    anion,      "negative natural ion"
-   "``C{13}``",   isotope,    neutral,    "carbon-13 isotope"
-   "``C{13-3}``", isotope,    cation,     "positive isotope ion"
-   "``C{13+3}``", isotope,    anion,      "negative isotope ion"
-   
-List of elements
-----------------
-
 Individual nucleons can be used in formulas in the same way as elements and have the following properties:
 
 .. csv-table:: Nucleon properties
@@ -75,7 +72,7 @@ Individual nucleons can be used in formulas in the same way as elements and have
 
 
 Symbols of the elements conform to a standard element notation. 
-In case of named Hydrogen isotopes, it is also possible to use the following short notation:
+In the case of named Hydrogen isotopes, it is also possible to use the following short notation:
 
 .. csv-table:: Special symbols of hydrogen isotopes
    :widths: 20, 20, 20

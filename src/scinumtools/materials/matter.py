@@ -22,12 +22,12 @@ class Matter:
         self.volume = volume
 
     def _norm(self):
-      # setup densities of the compound
+      # setup densities of the composite
         if self.mass_density:
             self.mass_density.to(Units.MASS_DENSITY)
-            self.number_density = (self.mass_density/self.compound_mass).to(Units.NUMBER_DENSITY)
-        elif self.number_density: # !! number density of a compound, not sum of all its components
-            self.mass_density = (self.number_density*self.compound_mass).to(Units.MASS_DENSITY)
+            self.number_density = (self.mass_density/self.composite_mass).to(Units.NUMBER_DENSITY)
+        elif self.number_density: # !! number density of a composite, not sum of all its components
+            self.mass_density = (self.number_density*self.composite_mass).to(Units.MASS_DENSITY)
             self.number_density.to(Units.NUMBER_DENSITY)
         if self.volume:
             self.mass = (self.mass_density * self.volume).to(Units.MATERIAL_MASS)

@@ -3,7 +3,7 @@ Materials
 
 Materials can be formed from one or more substances and their corresponding number (``x``, ``Norm.NUMBER_FRACTION``), or mass (``X``, ``Norm.MASS_FRACTION``) fractions.
 If number fractions are given, mass fractions are calculated using substance masses, and vice versa.
-Number and mass fraction values are always normalized to unity.
+Number and mass fraction values of components within a composite are automatically normalized.
 
 Individual material components can be given in a form of a string (format ``fraction <substance> fraction <substance> ...``)
 
@@ -18,7 +18,7 @@ Individual material components can be given in a form of a string (format ``frac
     H2O       0.2 18.015286 10.0  8.00471 10.0
    NaCl       0.3 58.442707 28.0 30.48480 28.0
    
-   Compound:
+   Composit:
    
    expr  x[%]       X[%]
     H2O  40.0  17.047121
@@ -55,7 +55,7 @@ or as a dictionary
      O2    20.946 31.998810 16.0 16.008960 16.0
      Ar     0.934 39.947799 18.0 21.985398 18.0
     CO2     0.036 44.009546 22.0 22.019660 22.0
-   >>> m.print_compound()
+   >>> m.print_composite()
    expr    x[%]       X[%]
      N2  78.084  75.517607
      O2  20.946  23.139564

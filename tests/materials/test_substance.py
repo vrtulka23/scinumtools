@@ -21,13 +21,13 @@ class Capturing(list):
 
 def test_empty():
     substance = Substance()
-    assert substance.data_compound() == None
+    assert substance.data_composite() == None
 
 def test_add_element():
     substance = Substance()
     substance.add('B')
     assert substance.expr == 'B'
-    assert substance.data_compound(quantity=False).to_text() == """
+    assert substance.data_composite(quantity=False).to_text() == """
   expr       mass    Z      N    e      x      X
 0    B  10.811028  5.0  5.801  5.0  100.0  100.0
 1  avg  10.811028  5.0  5.801  5.0  100.0  100.0
@@ -37,7 +37,7 @@ def test_add_element():
 def test_expression():
     substance = Substance('B{11}N{14}H{1}6')
     assert substance.expr == 'B{11}N{14}H{1}6'
-    assert substance.data_compound(quantity=False).to_text() == """
+    assert substance.data_composite(quantity=False).to_text() == """
     expr       mass      Z       N      e      x          X
 0  B{11}  11.009305   5.00   6.000   5.00   12.5   35.44605
 1  N{14}  14.003074   7.00   7.000   7.00   12.5   45.08492
@@ -48,20 +48,20 @@ def test_expression():
 
 def test_quantity():
     s = Substance('H2O')
-    assert s.data_compound(quantity=False).to_text() == """
+    assert s.data_composite(quantity=False).to_text() == """
   expr       mass          Z         N          e           x           X
 0    H   2.015882   2.000000  0.000230   2.000000   66.666667   11.189839
 1    O  15.999405   8.000000  8.004480   8.000000   33.333333   88.810161
 2  avg   6.005095   3.333333  2.668237   3.333333   33.333333   33.333333
 3  sum  18.015286  10.000000  8.004710  10.000000  100.000000  100.000000
 """.strip('\n')
-    data = s.data_compound()
+    data = s.data_composite()
     assert str(data.H.mass) == "Quantity(2.016e+00 Da)"
     assert str(data.H.Z) == "2.0"
     
 def test_context():
     with Substance('H2O') as c:
-        assert c.data_compound(quantity=False).to_text() == """
+        assert c.data_composite(quantity=False).to_text() == """
   expr       mass          Z         N          e           x           X
 0    H   2.015882   2.000000  0.000230   2.000000   66.666667   11.189839
 1    O  15.999405   8.000000  8.004480   8.000000   33.333333   88.810161
@@ -71,7 +71,7 @@ def test_context():
 
 def test_partial_data():
     substance = Substance('B{11}N{14}H{1}6')
-    assert substance.data_compound(['B{11}','N{14}'], quantity=False).to_text() == """
+    assert substance.data_composite(['B{11}','N{14}'], quantity=False).to_text() == """
     expr       mass     Z     N     e     x          X
 0  B{11}  11.009305   5.0   6.0   5.0  12.5  35.446050
 1  N{14}  14.003074   7.0   7.0   7.0  12.5  45.084920
@@ -129,7 +129,7 @@ def test_from_dict():
 1  N{14}       N       14           0  14.003074      1  7  7  7
 2   H{1}       H        1           0   1.007825      6  1  0  1
 """.strip('\n')
-    assert substance.data_compound(quantity=False).to_text() == """
+    assert substance.data_composite(quantity=False).to_text() == """
     expr       mass      Z       N      e      x          X
 0  B{11}  11.009305   5.00   6.000   5.00   12.5   35.44605
 1  N{14}  14.003074   7.00   7.000   7.00   12.5   45.08492
@@ -180,7 +180,7 @@ def test_most_abundant():
             '   H       H        1           0  1.007825    2.0  1  0  1', 
             '   O       O       16           0 15.994915    1.0  8  8  8', 
             '', 
-            'Compound:', 
+            'Composite:', 
             '', 
             'Total mass:     Quantity(1.801e+01 Da)', 
             'Total number:   3.0', 
@@ -227,7 +227,7 @@ def test_nucleons():
 1  [n]     [n]        0           0  1.008666    2.0  0  1  0
 2  [e]     [e]        0           0  0.000549    1.0  0  0  1
 """.strip('\n')
-    data = c.data_compound(quantity=False)
+    data = c.data_composite(quantity=False)
     assert data.to_text() == """
   expr      mass    Z         N         e           x           X
 0  [p]  3.021831  3.0  0.000000  0.000000   50.000000   59.960408
@@ -243,10 +243,10 @@ def test_parameter_selection():
         data = c.data_components()
         assert data.O['N'] == 8
         assert data.H.count == 2
-        data = c.data_compound()
+        data = c.data_composite()
         assert data['sum'].e == 10
         assert data.H.mass == Quantity(2.015650, 'Da')
-        data = c.data_compound(['H'], quantity=False)
+        data = c.data_composite(['H'], quantity=False)
         assert data.to_text() == """
   expr      mass    Z    N    e          x          X
 0    H  2.015650  2.0  0.0  2.0  66.666667  11.191487
@@ -267,7 +267,7 @@ def test_prints():
         ]
 
         with Capturing() as output:
-            c.print_compound()
+            c.print_composite()
         assert output == [
             'expr  mass[Da]         Z        N         e       x[%]       X[%]',
             '   H  2.015650  2.000000 0.000000  2.000000  66.666667  11.191487',

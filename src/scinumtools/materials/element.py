@@ -3,7 +3,7 @@ import numpy as np
 
 from . import Units
 from .matter import Matter
-from .compound import Component
+from .composite import Component
 from .periodic_table import *
 from ..units import Quantity, Unit
 from .. import RowCollector, ParameterTable
@@ -101,7 +101,7 @@ class Element(Component, Matter):
         else:
             raise Exception('Unrecognized expr', expr)
         self.component_mass = self.mass
-        self.compound_mass = self.mass
+        self.composite_mass = self.mass
         Matter._norm(self)
 
     def __mul__(self, other:float):

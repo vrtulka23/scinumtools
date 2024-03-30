@@ -3,6 +3,7 @@ Substances
 
 Several element expressions can be combined into a more complex molecular formula.
 In this context, we consider as substances pure elements, chemical compounds and molecules.
+The syntax of molecular formulas used in this solver is based on standard molecular formulas known from chemistry.
 The substance expression solver currently supports the following 3 basic operations:
 
 .. csv-table:: Operations in molecular formulas
@@ -30,7 +31,7 @@ In this case, the option applies to all elements in a substance.
    >>> Substance('H2O', natural=False)
    Substance(mass=18.011 Z=10 N=8.000 e=10)
 
-A substance can also be initialised from an explicit dictionary of element expressions and corresponding proportions.
+A substance can also be initialized from an explicit dictionary of element expressions and corresponding proportions.
 
 .. code-block:: python
 
@@ -41,8 +42,8 @@ A substance can also be initialised from an explicit dictionary of element expre
    >>> })
    Substance(mass=31.059 Z=18 N=13.000 e=18)
 
-Besides information about elements and nucleon, every substance calculate also other parameters.
-In the example below, we show an example for the substance of water ``H2O``.
+Besides information about elements and nucleons, every substance calculates also other parameters.
+In the example below, we show an example of the substance of water ``H2O``.
 A concise overview of all its properties can be printed using its ``print()`` method.
 Here the ``mass`` is an atomic mass, ``Z`` proton number, ``N`` number of neutrons, ``e`` number of electrons, ``x`` number fraction and ``X`` is a mass fraction.
 
@@ -56,7 +57,7 @@ Here the ``mass`` is an atomic mass, ``Z`` proton number, ``N`` number of neutro
       H       H        1           0  1.007825    2.0  1  0  1
       O       O       16           0 15.994915    1.0  8  8  8
    
-   Compound:
+   Composite:
    
    Total mass:     Quantity(1.801e+01 Da)
    Total number:   3.0
@@ -82,11 +83,11 @@ Here the ``mass`` is an atomic mass, ``Z`` proton number, ``N`` number of neutro
 
 In the example above, we additionally set substance density ``rho`` and its volume ``V``.
 Density is used for calculation of number ``n`` and mass ``rho`` densities.
-If volume is also set, total number of species ``N`` and total mass ``M`` are added.
+If volume is also set, the total number of species ``N`` and total mass ``M`` are added.
 
-Individual substance parameters can be accessed directly using ``data_components()``, ``data_compound()`` and ``data_matter()``.
+Individual substance parameters can be accessed directly using ``data_components()``, ``data_composite()`` and ``data_matter()``.
 Both methods return a :ref:`ParameterTable <misc/parameter_table:parametertable>` object with corresponding values.
-Corresponding tabular values can be printed using method ``print_components()``, ``print_compound()`` and ``print_matter()``.
+Corresponding tabular values can be printed using method ``print_components()``, ``print_composite()`` and ``print_matter()``.
 
 .. code-block:: python
 
@@ -96,7 +97,7 @@ Corresponding tabular values can be printed using method ``print_components()``,
    8
    >>>     data.H.count
    2
-   >>>     data = c.data_compound()
+   >>>     data = c.data_composite()
    >>>     data['sum'].e
    10
    >>>     data.H.mass

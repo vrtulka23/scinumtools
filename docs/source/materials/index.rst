@@ -7,13 +7,13 @@ This should serve as a quick tool when one needs to count the number of nucleons
 Classes in this module are grouped into the following categories. 
 
 .. csv-table:: Material cathegories
-   :widths: 20, 20, 20, 20
+   :widths: 20, 20, 20, 20, 30
    :header-rows: 1
 
-   "Class",       Matter,  Compound, Component
-   "Element",     "✔",     "",       "✔"
-   "Substance",   "✔",     "✔",      "✔"
-   "Material",    "✔",     "✔",      ""
+   "Class",       Matter,  Composite, Component, Note
+   "Element",     "✔",     "",        "✔",       "atoms and homoatomic molecules"
+   "Substance",   "✔",     "✔",       "✔",       "compounds"
+   "Material",    "✔",     "✔",       "",        "mixtures"
 
 Exact terminology for categories used in this code is given below.
 
@@ -27,18 +27,18 @@ Substance
    The smallest form of matter with constant chemical composition made of single atoms (e.g. O), or multiple atoms connected by covalent (molecules e.g. H2, H2O), ionic (crystals e.g. NaCl), or metallic (metals e.g. CaCl2) bonds.
 
 Material
-   It is a substance, or a mixture of substances, that constitute an object (e.g. Air, Seawater). Substances in a material are not bound chemically, but rather blended mechanically and retain their chemical properties.
+   It is a substance, or a mixture of substances, that constitutes an object (e.g. Air, Seawater). Substances in a material are not bound chemically, but rather blended mechanically and retain their chemical properties.
 
 Matter
    A physical material that occupies space (volume) and possesses some rest mass.
 
 Component
-   An elementary part of a compound that has a specific proportion (number, or a fraction).
+   An elementary part of a composite that has a specific proportion (number, or a fraction).
+   In substances, proportions are numbers (count) of individual atoms.
+   In materials, proportions are number, or mass fractions of individual substances.
    
-Compound
+Composite
    A chemical structure composed of several components. 
-   In the case of substances, component proportions are given by integer numbers (count) of individual atoms.
-   In the case of materials, component proportions are defined by number, or mass fractions of individual substances.
 
 Further description of the Element, Substance and Material classes is given in the following sections.
 

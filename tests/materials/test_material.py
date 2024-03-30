@@ -72,7 +72,7 @@ def test_print_data():
         'NaCl       0.8 58.442707 28.0 30.48480 28.0', 
     ]
     with Capturing() as output:
-        material.print_compound()
+        material.print_composite()
     assert output == [
         'expr  x[%]       X[%]', 
         ' H2O  20.0   7.154996', 
@@ -83,7 +83,7 @@ def test_print_data():
 
 def test_norm_number():
     material = Material('2 <H2O> 3 <NaCl>')
-    assert material.data_compound(quantity=False).to_text() == """
+    assert material.data_composite(quantity=False).to_text() == """
    expr      x           X
 0   H2O   40.0   17.047121
 1  NaCl   60.0   82.952879
@@ -93,7 +93,7 @@ def test_norm_number():
 
 def test_norm_number_fraction():
     material = Material('0.2 <H2O> 0.3 <NaCl>')
-    assert material.data_compound(quantity=False).to_text() == """
+    assert material.data_composite(quantity=False).to_text() == """
    expr      x           X
 0   H2O   40.0   17.047121
 1  NaCl   60.0   82.952879
@@ -104,7 +104,7 @@ def test_norm_number_fraction():
 def test_norm_mass_fraction():
     # setting mass fraction
     material = Material('0.2 <H2O> 0.3 <NaCl>', norm_type=Norm.MASS_FRACTION)
-    assert material.data_compound(quantity=False).to_text() == """
+    assert material.data_composite(quantity=False).to_text() == """
    expr           x      X
 0   H2O   68.381526   40.0
 1  NaCl   31.618474   60.0
@@ -114,7 +114,7 @@ def test_norm_mass_fraction():
     
     # checking if number fractions given above produce the same mass fractions
     material = Material('0.683815 <H2O> 0.316185 <NaCl>', norm_type=Norm.NUMBER_FRACTION)
-    assert material.data_compound(quantity=False).to_text() == """
+    assert material.data_composite(quantity=False).to_text() == """
    expr         x           X
 0   H2O   68.3815   39.999971
 1  NaCl   31.6185   60.000029
@@ -157,7 +157,7 @@ def test_example():
 2   Ar     0.934  39.947799  18.0  21.985398  18.0
 3  CO2     0.036  44.009546  22.0  22.019660  22.0
 """.strip('\n')
-    assert m.data_compound(quantity=False).to_text() == """
+    assert m.data_composite(quantity=False).to_text() == """
   expr        x           X
 0   N2   78.084   75.517607
 1   O2   20.946   23.139564
@@ -174,7 +174,7 @@ def test_matter():
 0   H2O       0.2  18.015286  10.0   8.00471  10.0
 1  NaCl       0.3  58.442707  28.0  30.48480  28.0
 """.strip('\n')
-    assert material.data_compound(quantity=False).to_text() == """
+    assert material.data_composite(quantity=False).to_text() == """
    expr      x           X
 0   H2O   40.0   17.047121
 1  NaCl   60.0   82.952879
@@ -209,7 +209,7 @@ def test_print():
         ' H2O       0.2 18.015286 10.0  8.00471 10.0', 
         'NaCl       0.3 58.442707 28.0 30.48480 28.0', 
         '', 
-        'Compound:', 
+        'Composite:', 
         '', 
         'expr  x[%]       X[%]', 
         ' H2O  40.0  17.047121', 
