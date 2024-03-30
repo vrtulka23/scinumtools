@@ -1,14 +1,16 @@
 import re
 import numpy as np
 
-from .compound import Component, Units
+from . import Units
+from .matter import Matter
+from .compound import Component
 from .periodic_table import *
 from ..units import Quantity, Unit
 from .. import RowCollector, ParameterTable
 
 PERIODIC_TABLE = ParameterTable(PT_HEADER, PT_DATA, keys=True)
 
-class Element(Component):
+class Element(Component, Matter):
     natural: bool
     element: str
     isotope: int
@@ -54,8 +56,9 @@ class Element(Component):
                 int(rc.ion[0]),
             )
 
-    def __init__(self, expr:str, count:int=1, natural:bool=True):
-        Component.__init__(self, count)
+    def __init__(self, expr:str, proportion:int=1, natural:bool=True, **kwargs):
+        Matter.__init__(self, **kwargs)
+        Component.__init__(self, proportion)
         self.expr = expr
         self.natural = natural
         # parse the expr
@@ -97,18 +100,44 @@ class Element(Component):
                 NA, self.mass, self.Z, self.N, self.e, self.isotope, self.ionisation = self.get_abundant(self.element, self.ionisation)
         else:
             raise Exception('Unrecognized expr', expr)
+        self.component_mass = self.mass
+        self.compound_mass = self.mass
+        Matter._norm(self)
 
     def __mul__(self, other:float):
-        return Element(self.expr, self.count*other, natural=self.natural)
+        return Element(self.expr, self.proportion*other, natural=self.natural)
     
     def __add__(self, other:'Element'):
         if self.expr!=other.expr:
             raise Exception("Only same elements can be added up:", self.expr, other.expr)
-        return Element(self.expr, self.count+other.count, natural=self.natural)
+        return Element(self.expr, self.proportion+other.proportion, natural=self.natural)
         
     def __str__(self):
-        if self.count>1:
-            return f"Element({self.expr}{self.count} mass={self.count*self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.count*self.Z} N={self.count*self.N:.3f} e={self.count*self.e})"
+        if self.proportion>1:
+            return f"Element({self.expr}{self.proportion} mass={self.proportion*self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.proportion*self.Z} N={self.proportion*self.N:.3f} e={self.proportion*self.e})"
         else:
             return f"Element({self.expr} mass={self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
-        
+    
+    def _print_table(self, columns:dict, fn_data:callable, **kwargs):
+        df = fn_data(quantity=False, **kwargs).to_dataframe()
+        df = df.rename(columns={k:f"{k}[{v}]" for k,v in columns.items() if v})
+        print( df.to_string(index=False) )
+
+    def _data(self, columns:dict, fn_row:callable, stats:bool=False, weight:bool=False, components:list=None, quantity:bool=True):
+        column_names = list(columns.keys())
+        pt = ParameterTable(column_names, keys=True, keyname='expr')
+        values = fn_row(self.expr, self)
+        row = []
+        for col in column_names:
+            value, unit = values[col], columns[col]
+            if quantity and unit: # returning quantities
+                if isinstance(value, Quantity):
+                    row.append(value.to(unit))
+                else:
+                    row.append(Quantity(value, unit))
+            elif isinstance(value, Quantity): # returning scalar
+                    row.append(value.value(unit) if unit else value.value())
+            else: # returning scalar
+                row.append(value)
+        pt[self.expr] = row
+        return pt

@@ -1,24 +1,18 @@
 import numpy as np
 from typing import Union, Dict
 
-from . import Norm
+from . import Norm, Units
+from .matter import Matter
 from .. import ParameterTable, RowCollector
 from ..units import Quantity
 
-class Units:
-    ATOMIC_MASS    = "Da"
-    MATERIAL_MASS  = "g"
-    NUMBER_DENSITY = "cm-3"
-    MASS_DENSITY   = "g/cm3"
-    FRACTION       = "%"
-
 class Component:
     expr: str                       # expression
-    count: Union[float,int]         # number of components
-    mass: Quantity                  # component mass
+    proportion: Union[float,int]    # proportion 
+    component_mass: Quantity        # mass of a component
 
-    def __init__(self, count:int=1):
-        self.count = count
+    def __init__(self, proportion:int=1):
+        self.proportion = proportion
 
 class Compound:
     components: Dict[str,Component] # list of compound components
@@ -29,13 +23,9 @@ class Compound:
     
     natural: bool                   # natural ements
     norm_type: Norm                 # type of compound norm
-    norm_count: Union[float,int]    # total number of components
-    norm_mass: Quantity             # total mass of components
+    proportion_norm: Union[float,int] # sum of all comonent proportions
+    compound_mass: Quantity         # sum of all component masses
     
-    mass_density: Quantity = None   # compound mass density
-    number_density: Quantity = None # compound number density
-    volume: Quantity = None         # compound volume
-
     def __enter__(self):
         return self
 
@@ -45,8 +35,7 @@ class Compound:
     def __init__(self, 
         solver:callable, component_class:callable, expr:Union[str,dict], 
         cols_components: dict, cols_compound: dict,
-        natural:bool, norm_type:Norm, 
-        number_density:Quantity=None, mass_density:Quantity=None, volume:Quantity=None
+        natural:bool, norm_type:Norm,
     ):
         self.expr = ''
         self.norm_type = norm_type
@@ -55,12 +44,6 @@ class Compound:
         self.cols_compound = cols_compound | {
             "x":     Units.FRACTION, 
             "X":     Units.FRACTION,
-        }
-        self.cols_matter = {
-            "n":     Units.NUMBER_DENSITY, 
-            "rho":   Units.MASS_DENSITY,
-            "N":     None,
-            "M":     Units.MATERIAL_MASS,
         }
         self.component_class = component_class
         self.components = {}
@@ -72,44 +55,25 @@ class Compound:
         elif isinstance(expr, dict) and expr:
             for expr, frac in expr.items():
                 self.add(expr, frac)
-        self.number_density = number_density
-        self.mass_density = mass_density
-        self.volume = volume
         self._norm()
     
     def _norm(self):
         # calculate total coutn and mass of all components
         components = self.components.values()
         if self.norm_type==Norm.MASS_FRACTION:
-            self.norm_count = np.sum([i.count/i.mass for i in components])
-            self.norm_mass  = np.sum([i.count for i in components])
+            self.proportion_norm = np.sum([i.proportion/i.component_mass for i in components])
+            self.compound_mass  = np.sum([i.proportion for i in components])
         else:
-            self.norm_count = np.sum([i.count for i in components])
-            self.norm_mass  = np.sum([i.count*i.mass for i in components])
-        # if compound is an component as well, register its component mass
-        if type(self) in Component.__subclasses__(): 
-            self.mass = self.norm_mass
-        # setup densities of the compound
-        if self.mass_density:
-            self.mass_density.to(Units.MASS_DENSITY)
-            self.number_density = (self.mass_density/self.norm_mass).to(Units.NUMBER_DENSITY)
-        elif self.number_density: # !! number density of a compound, not sum of all its components
-            self.mass_density = (self.number_density*self.norm_mass).to(Units.MASS_DENSITY)
-            self.number_density.to(Units.NUMBER_DENSITY)
+            self.proportion_norm = np.sum([i.proportion for i in components])
+            self.compound_mass  = np.sum([i.proportion*i.component_mass for i in components])
+        if type(self) in Component.__subclasses__():
+            self.component_mass = self.compound_mass
+        Matter._norm(self)
 
     def _data(self, columns:dict, fn_row:callable, stats:bool=False, weight:bool=False, components:list=None, quantity:bool=True):
         if not self.components: 
             return None   # no components
             
-        # create a new copy of the column list and remove unused columns
-        columns = dict(columns) 
-        if not self.mass_density:
-            if 'n' in columns: del columns['n']
-            if 'rho' in columns: del columns['rho']
-        if not self.volume:
-            if 'N' in columns and 'M' in columns: del columns['N']
-            if 'M' in columns: del columns['M']
-
         # populate columns with values
         weights = []
         column_names = list(columns.keys())
@@ -122,19 +86,13 @@ class Compound:
             # calculate matter properties
             row, values = [], fn_row(s,m)
             if self.norm_type in [Norm.NUMBER_FRACTION, Norm.NUMBER]:
-                values['x'] = Quantity(m.count/self.norm_count)
-                values['X'] = m.count*m.mass/self.norm_mass
-                weights.append(m.count)
+                values['x'] = Quantity(m.proportion/self.proportion_norm)
+                values['X'] = m.proportion*m.component_mass/self.compound_mass
+                weights.append(m.proportion)
             elif self.norm_type==Norm.MASS_FRACTION:
-                values['x'] = m.count/m.mass/self.norm_count
-                values['X'] = Quantity(m.count/self.norm_mass)
-                weights.append(m.count/m.mass)
-            if self.number_density:
-                values['n']   = m.count*self.number_density
-                values['rho'] = m.count*m.mass*self.number_density
-            if self.volume and 'M' in columns:
-                values['N'] = values['n']*self.volume
-                values['M'] = values['rho']*self.volume
+                values['x'] = m.proportion/m.component_mass/self.proportion_norm
+                values['X'] = Quantity(m.proportion/self.compound_mass)
+                weights.append(m.proportion/m.component_mass)
             # convert to proper units
             for col in column_names:
                 value, unit = values[col], columns[col]
@@ -164,44 +122,30 @@ class Compound:
             
         return pt
 
-    def data_matter(self, components:list=None, quantity:bool=True):
-        def fn_row(s,m):
-            values = {
-                'count': m.count
-            }
-            if self.number_density:
-                values['n']   = m.count*self.number_density
-                values['rho'] = m.count*m.mass*self.number_density
-            if self.volume:
-                values['N'] = values['n']*self.volume
-                values['M'] = values['rho']*self.volume
-            return values
-        return self._data(self.cols_matter, fn_row, stats=True, weight=True, components=components, quantity=quantity)
-
     def _multiply(self, compound, other):
         for expr, component in self.components.items():
-            compound.add(expr, component.count*other)
+            compound.add(expr, component.proportion*other)
         return compound
     
     def _add(self, compound, other):
         for expr, component in self.components.items():
-            compound.add(expr, component.count)
+            compound.add(expr, component.proportion)
         if isinstance(other, self.component_class):
-            compound.add(other.expr, other.count)
+            compound.add(other.expr, other.proportion)
         else:
             for expr, component in other.components.items():
-                compound.add(expr, component.count)
+                compound.add(expr, component.proportion)
         return compound
     
-    def _add_expr(self, expr:str, count:int):
+    def _add_expr(self, expr:str, proportion:int):
         pass
     
-    def add(self, expr:str, count:int=1):
-        self._add_expr(expr, count)
+    def add(self, expr:str, proportion:int=1):
+        self._add_expr(expr, proportion)
         if expr in self.components:
-            self.components[expr].count += count
+            self.components[expr].proportion += proportion
         else:
-            self.components[expr] = self.component_class(expr, natural=self.natural, count=count)
+            self.components[expr] = self.component_class(expr, natural=self.natural, proportion=proportion)
         self._norm()
 
     def _print_table(self, columns:dict, fn_data:callable, **kwargs):
@@ -215,9 +159,6 @@ class Compound:
     def print_compound(self, components:list=None):
         self._print_table(self.cols_compound, self.data_compound, components=components)
         
-    def print_matter(self, components:list=None):
-        self._print_table(self.cols_matter, self.data_matter, components=components)
-        
     def print(self):
         print("Components:")
         print("")
@@ -226,18 +167,10 @@ class Compound:
         print("Compound:")
         if self.norm_type == Norm.NUMBER:
             print("")
-            print(f"Total mass:     {self.norm_mass}")
-            print(f"Total number:   {self.norm_count}")
+            print(f"Total mass:     {self.compound_mass}")
+            print(f"Total number:   {self.proportion_norm}")
         print("")
         self._print_table(self.cols_compound, self.data_compound)
         if self.mass_density:
             print("")
-            print("Matter:")
-            print("")
-            if self.mass_density:
-                print(f"Mass density:   {self.mass_density}")
-                print(f"Number density: {self.number_density}")
-                if self.volume:
-                    print(f"Volume:         {self.volume}")
-            print("")
-            self._print_table(self.cols_matter, self.data_matter)
+            Matter.print(self)

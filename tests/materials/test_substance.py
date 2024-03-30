@@ -149,25 +149,25 @@ def test_arithmetic():
     c12 = c1 + c2
     for expr, element in c12.components.items():
         assert expr in c3.components
-        assert element.count == c3.components[expr].count
+        assert element.proportion == c3.components[expr].proportion
         
     # adding two same substances
     c22 = c2 + c2
     for expr, element in c22.components.items():
         assert expr in c2.components
-        assert element.count == c2.components[expr].count * 2
+        assert element.proportion == c2.components[expr].proportion * 2
         
     # addition of an element to a substance
     c1e = c1 + e1
     for expr, element in c1e.components.items():
         assert expr in c3.components
-        assert element.count == c3.components[expr].count
+        assert element.proportion == c3.components[expr].proportion
 
     # multiplication of a substance  
     c1m = c2 * 2
     for expr, element in c1m.components.items():
         assert expr in c2.components
-        assert element.count == c2.components[expr].count * 2
+        assert element.proportion == c2.components[expr].proportion * 2
     
 def test_most_abundant():
     with Substance('H2O', natural=False, mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l')) as c:
@@ -196,6 +196,7 @@ def test_most_abundant():
             'Mass density:   Quantity(9.970e-01 g*cm-3)', 
             'Number density: Quantity(3.334e+22 cm-3)', 
             'Volume:         Quantity(1.000e+00 l)', 
+            'Mass:           Quantity(9.970e+02 g)',
             '',
             'expr      n[cm-3]  rho[g/cm3]            N       M[g]',
             '   H 6.667280e+22    0.111579 6.667280e+25 111.579129',
