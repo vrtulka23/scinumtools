@@ -102,6 +102,7 @@ Matter:
 Mass density:   Quantity(9.970e-01 g*cm-3)
 Number density: Quantity(3.334e+22 cm-3)
 Volume:         Quantity(1.000e+00 l)
+Mass:           Quantity(9.970e+02 g)
 
 expr      n[cm-3]  rho[g/cm3]            N       M[g]
    H 6.667280e+22    0.111579 6.667280e+25 111.579129
