@@ -57,7 +57,7 @@ class Matter:
     def print_matter(self, components:list=None):
         self._print_table(self.cols_matter, self.data_matter, components=components)
 
-    def print(self):
+    def _print(self):
         print("Matter:")
         print("")
         if self.mass_density:

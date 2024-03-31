@@ -114,9 +114,9 @@ class Element(Component, Matter):
         
     def __str__(self):
         if self.proportion>1:
-            return f"Element({self.expr}{self.proportion} mass={self.proportion*self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.proportion*self.Z} N={self.proportion*self.N:.3f} e={self.proportion*self.e})"
+            return f"Element({self.expr}{self.proportion} mass={self.proportion*self.component_mass.value(Units.ATOMIC_MASS):.3f} Z={self.proportion*self.Z} N={self.proportion*self.N:.3f} e={self.proportion*self.e})"
         else:
-            return f"Element({self.expr} mass={self.mass.value(Units.ATOMIC_MASS):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
+            return f"Element({self.expr} mass={self.component_mass.value(Units.ATOMIC_MASS):.3f} Z={self.Z} N={self.N:.3f} e={self.e})"
     
     def _print_table(self, columns:dict, fn_data:callable, **kwargs):
         df = fn_data(quantity=False, **kwargs).to_dataframe()
@@ -141,3 +141,22 @@ class Element(Component, Matter):
                 row.append(value)
         pt[self.expr] = row
         return pt
+        
+    def print(self):
+        text =  "Element:\n\n"
+        if self.proportion>1:
+            text += f"Expression: {self.expr}{self.proportion}\n"
+            text += f"Mass:       {self.proportion*self.component_mass.value(Units.ATOMIC_MASS):.3f}\n"
+            text += f"Protons:    {self.proportion*self.Z}\n"
+            text += f"Neutrons:   {self.proportion*self.N:.3f}\n" 
+            text += f"Electrons:  {self.proportion*self.e}\n"
+        else:
+            text += f"Expression: {self.expr}\n"
+            text += f"Mass:       {self.component_mass.value(Units.ATOMIC_MASS):.3f}\n"
+            text += f"Protons:    {self.Z}\n"
+            text += f"Neutrons:   {self.N:.3f}\n"
+            text += f"Electrons:  {self.e}"
+        print(text)
+        if self.mass_density:
+            print("")
+            Matter._print(self)

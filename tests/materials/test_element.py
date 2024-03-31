@@ -42,7 +42,7 @@ def test_expression():
     assert isclose(e.mass.value(), 11.009306, rel_tol=MAGNITUDE_PRECISION)
     
 
-def test_print():
+def test_string():
     
     e = Element('O')
     assert str(e) == "Element(O mass=15.999 Z=8.0 N=8.004 e=8.0)"
@@ -77,11 +77,20 @@ def test_arithmetic():
 def test_matter():
     
     e = Element('B', mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l'))
+    assert str(e) == "Element(B mass=10.811 Z=5.0 N=5.801 e=5.0)"
     with Capturing() as output:
         e.print()
     assert output == [
-        'Matter:', 
+        'Element:', 
         '', 
+        'Expression: B', 
+        'Mass:       10.811', 
+        'Protons:    5.0', 
+        'Neutrons:   5.801', 
+        'Electrons:  5.0', 
+        '', 
+        'Matter:',
+        '',
         'Mass density:   Quantity(9.970e-01 g*cm-3)', 
         'Number density: Quantity(5.554e+22 cm-3)', 
         'Volume:         Quantity(1.000e+00 l)', 
@@ -98,3 +107,4 @@ def test_matter():
     ]
     data = e.data_matter()
     assert str(data.B.n) == "Quantity(5.554e+22 cm-3)"
+    

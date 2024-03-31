@@ -173,4 +173,4 @@ class Composite:
         self._print_table(self.cols_composite, self.data_composite)
         if self.mass_density:
             print("")
-            Matter.print(self)
+            Matter._print(self)
