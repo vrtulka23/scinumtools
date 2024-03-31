@@ -59,6 +59,31 @@ If its value is higher than one, all element properties are multiplied correspon
    >>> e.proportion, e.element, e.isotope, e.ionisation
    2, 'O', 16, 0
 
+Elements can also have properties of matter by adding a density and volume.
+All properties can be previewed using ``print()`` method.
+
+.. code-block:: python
+
+   >>> e = Element('B', mass_density=Quantity(997,'kg/m3'), volume=Quantity(1,'l'))
+   >>> e.print()
+   Element:
+    
+   Expression: B
+   Mass:       10.811
+   Protons:    5.0
+   Neutrons:   5.801
+   Electrons:  5.0
+    
+   Matter:
+   
+   Mass density:   Quantity(9.970e-01 g*cm-3)
+   Number density: Quantity(5.554e+22 cm-3)
+   Volume:         Quantity(1.000e+00 l)
+   Mass:           Quantity(9.970e+02 g)
+    
+   expr      n[cm-3]  rho[g/cm3]            N  M[g]
+      B 5.553657e+22       0.997 5.553657e+25 997.0
+
 Individual nucleons can be used in formulas in the same way as elements and have the following properties:
 
 .. csv-table:: Nucleon properties
