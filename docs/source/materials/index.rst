@@ -24,7 +24,7 @@ Element
    A single or multiple atoms of the same kind (e.g. O, H2).
 
 Substance
-   The smallest form of matter with constant chemical composition made of single atoms (e.g. O), or multiple atoms connected by covalent (molecules e.g. H2, H2O), ionic (crystals e.g. NaCl), or metallic (metals e.g. CaCl2) bonds.
+   The smallest form of matter with constant chemical composition made of single atoms (e.g. O), or multiple atoms connected by covalent, ionic, or metallic bonds.
 
 Material
    It is a substance, or a mixture of substances, that constitutes an object (e.g. Air, Seawater). Substances in a material are not bound chemically, but rather blended mechanically and retain their chemical properties.
