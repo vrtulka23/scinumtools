@@ -58,6 +58,17 @@ It is also possible to specify properties of individual columns using ``numpy`` 
      'col2': array(['1', '4'], dtype='<U1'),
      'col3': array([2., 5.])}
      
+Sometimes it is easier to define columns together with the first row.
+In this case, the values are apppended in a form of a dictionary.
+
+.. code-block::
+
+   >>> with RowCollector() as rc:
+   >>>     rc.append({'col1': 1, 'col2': 2})
+   >>>     rc.append({'col1': 3, 'col2': 4})
+   >>>     rc.to_dict()
+   {'col1': [1, 3], 'col2': [2, 4]}
+
 One can also sort such table according to values in one of the columns.
 
 .. code-block::
@@ -72,5 +83,3 @@ One can also sort such table according to values in one of the columns.
         col1 col2  col3
     0   True    4   5.0
     1  False    1   2.0
-
-    

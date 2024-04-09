@@ -179,3 +179,35 @@ def test_to_file(columns, rows, temp_file):
 1     4     5     6
 2     7     8     0
 """.strip('\n')
+
+def test_append_dict(columns,rows):
+    
+    # same column names, list
+    with snt.RowCollector() as rc:
+        for row in rows:
+            rc.append({
+                columns[0]: row[0],
+                columns[1]: row[1],
+                columns[2]: row[2],
+            })
+        assert rc.to_dict() == dict(
+            col1 = [1,4,7],
+            col2 = [2,5,8],
+            col3 = [3,6,0],
+        )
+        
+
+    # same column names, array
+    with snt.RowCollector(array=True) as rc:
+        for row in rows:
+            rc.append({
+                columns[0]: row[0],
+                columns[1]: row[1],
+                columns[2]: row[2],
+            })
+        np.testing.assert_equal(rc.to_dict(), dict(
+            col1 = [1,4,7],
+            col2 = [2,5,8],
+            col3 = [3,6,0],
+        ))
+        

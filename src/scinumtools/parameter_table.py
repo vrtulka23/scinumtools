@@ -108,7 +108,15 @@ class ParameterTable:
             raise Exception("Parameter table does not have string keys")
         else:
             return item in self._keys
-
+            
+    def _to_string(self):
+        keys = ", ".join(self._keys)
+        return f"ParameterSettings({keys})"
+    def __str__(self):
+        return self._to_string()
+    def __repr__(self):
+        return self._to_string()
+        
     def shape(self):
         return (len(self._data), len(self._settings))
     

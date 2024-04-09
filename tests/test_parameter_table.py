@@ -144,3 +144,10 @@ def test_to_text():
 0  d  1  2  3
 1  e  4  5  6
 """.strip('\n')
+
+def test_print():
+    pt = snt.ParameterTable(['a','b','c'],{
+        'd': [1, 2, 3],
+        'e': [4, 5, 6]
+    }, keys=True)
+    assert str(pt) == 'ParameterSettings(d, e)'

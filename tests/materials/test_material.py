@@ -222,7 +222,7 @@ def test_print():
         'Mass density:   Quantity(3.000e-01 g*cm-3)', 
         'Number density: Quantity(8.548e+21 cm-3)', 
         'Volume:         Quantity(1.000e+00 l)', 
-        'Mass:           Quantity(3.000e+02 g)',
+        'Mass:           Quantity(3.000e+02 g)', 
         '', 
         'expr      n[cm-3]  rho[g/cm3]            N       M[g]', 
         ' H2O 1.709551e+21    0.051141 1.709551e+24  51.141364', 

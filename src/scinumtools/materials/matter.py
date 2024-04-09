@@ -32,6 +32,18 @@ class Matter:
         if self.volume:
             self.mass = (self.mass_density * self.volume).to(Units.MATERIAL_MASS)
             
+    def _print(self):
+        print("Matter:")
+        print("")
+        if self.mass_density:
+            print(f"Mass density:   {self.mass_density}")
+            print(f"Number density: {self.number_density}")
+            if self.volume:
+                print(f"Volume:         {self.volume}")
+                print(f"Mass:           {self.mass}")
+        print("")
+        self._print_table(self.cols_matter, self.data_matter)
+        
     def data_matter(self, components:list=None, quantity:bool=True):
         def fn_row(s,m):
             values = {
@@ -56,15 +68,3 @@ class Matter:
 
     def print_matter(self, components:list=None):
         self._print_table(self.cols_matter, self.data_matter, components=components)
-
-    def _print(self):
-        print("Matter:")
-        print("")
-        if self.mass_density:
-            print(f"Mass density:   {self.mass_density}")
-            print(f"Number density: {self.number_density}")
-            if self.volume:
-                print(f"Volume:         {self.volume}")
-                print(f"Mass:           {self.mass}")
-        print("")
-        self._print_table(self.cols_matter, self.data_matter)

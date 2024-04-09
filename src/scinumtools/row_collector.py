@@ -30,23 +30,10 @@ class RowCollector:
     def __exit__(self, type, value, tb):
         pass
     
-    def __init__(self, columns: Union[list,dict], rows: list = None, array: bool = False):
+    def __init__(self, columns: Union[list,dict]=[], rows: list = None, array: bool = False):
         self._columns = []
         self._array = array
-        if self._array is False:
-            self._columns = []
-            for column in columns:      
-                setattr(self,column,[])
-                self._columns.append(column)
-        else:
-            if isinstance(columns,dict):
-                for column, kwargs in columns.items():
-                    setattr(self,column,np.array([],**kwargs))
-                    self._columns.append(column)
-            else:
-                for column in columns:
-                    setattr(self,column,np.array([]))
-                    self._columns.append(column)
+        self._append_columns(columns)
         if rows:
             for row in rows:
                 self.append(row)
@@ -60,14 +47,37 @@ class RowCollector:
     def __getitem__(self, key: Union[int, str]):
         return getattr(self, key)
         
+    def _append_columns(self, columns):
+        if self._array is False:
+            for column in columns:      
+                setattr(self,column,[])
+                self._columns.append(column)
+        else:
+            if isinstance(columns,dict):
+                for column, kwargs in columns.items():
+                    setattr(self,column,np.array([],**kwargs))
+                    self._columns.append(column)
+            else:
+                for column in columns:
+                    setattr(self,column,np.array([]))
+                    self._columns.append(column)
+                    
     def shape(self):
         return (len(self._columns), self.size())
 
-    def append(self, values: list):
+    def append(self, values: Union[list,dict]):
         """ Append a single row
 
         :param values: List of values for each column
         """
+        if isinstance(values,dict):
+            missing = [key for key in values.keys() if key not in self._columns]
+            if missing:
+                if self._columns:
+                    raise Exception('Missing columns:', missing)
+                else:
+                    self._append_columns(missing)
+            values = [values[name] for name in self._columns]
         if self._array:
             for n, name in enumerate(self._columns):
                 data = getattr(self,name)
