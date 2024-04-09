@@ -7,6 +7,7 @@ from scinumtools.stopwatch import Stopwatch
 from scinumtools.row_collector import RowCollector
 from scinumtools.parameter_table import ParameterTable
 from scinumtools.progress_bar import ProgressBar
+from scinumtools.image_metadata import ImageMetadata, Metadata
 
 import scinumtools.units as units
 import scinumtools.solver as solver
