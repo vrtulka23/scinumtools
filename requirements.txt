@@ -10,4 +10,3 @@ beautifulsoup4
 toml
 pyyaml
 pygments==2.16.1
-piexif
