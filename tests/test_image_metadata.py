@@ -2,7 +2,6 @@ import numpy as np
 import os
 import pytest
 from PIL import Image
-import piexif
 from io import StringIO 
 import sys
 sys.path.insert(0, 'src')
