@@ -20,3 +20,4 @@ Any more insights, and suggestion for best practices are welcomed.
    row_collector
    stopwatch
    thumbnail_image
+   image_metadata
