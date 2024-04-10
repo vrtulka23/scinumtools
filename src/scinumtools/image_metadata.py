@@ -61,3 +61,9 @@ class ImageMetadata:
             }
         metadata['Exif'][piexif.ExifIFD.UserComment] = json.dumps(self.metadata).encode()
         img.save(self.file_name, img.format, exif=piexif.dump(metadata))
+        
+    def print(self):
+        text = []
+        for key,value in self.metadata.items():
+            text.append(f"{key}: {self.metadata[key]}")
+        print("\n".join(text))
