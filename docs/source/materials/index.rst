@@ -12,7 +12,7 @@ Classes in this module are grouped into the following categories.
 
    "Class",       Matter,  Composite, Component, Note
    "Element",     "✔",     "",        "✔",       "atoms and homoatomic molecules"
-   "Substance",   "✔",     "✔",       "✔",       "compounds"
+   "Substance",   "✔",     "✔",       "✔",       "compounds and molecules"
    "Material",    "✔",     "✔",       "",        "mixtures"
 
 Exact terminology for categories used in this code is given below.

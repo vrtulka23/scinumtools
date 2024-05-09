@@ -39,7 +39,7 @@ tabulated values as a CSV and text format.
     >>>     rc.to_text()
     '   col1  col2  col3\n0     1     2     3\n1     4     5     6'
     >>>     rc.to_csv('data.csv')
-    >>>     rc.to_fiile('table.txt')
+    >>>     rc.to_file('table.txt')
         
 
 It is also possible to specify properties of individual columns using ``numpy`` arrays.
