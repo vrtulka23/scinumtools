@@ -59,8 +59,6 @@ class BaseUnits:
             self.baseunits = Dimensions.from_list(baseunits).value(dtype=dict)
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits.baseunits
-        elif isinstance(baseunits, (SI, CGS, AU)):
-            self.baseunits = {baseunits.value: 1}
         elif isinstance(baseunits, str):
             self.baseunits = UnitSolver(baseunits).baseunits
         else:

@@ -42,8 +42,6 @@ class Quantity:
             self.baseunits = BaseUnits(baseunits)
         elif isinstance(baseunits, BaseUnits):
             self.baseunits = baseunits
-        elif isinstance(baseunits, (SI,CGS,AU)):
-            self.baseunits = BaseUnits(baseunits)
         elif isinstance(baseunits, str):
             atom = UnitSolver(baseunits)
             self.magnitude *= atom.magnitude

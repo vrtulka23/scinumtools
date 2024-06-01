@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, 'src')
 
 from scinumtools.units import *
-from scinumtools.units.settings import SI
+from scinumtools.units.systems import SI
 from scinumtools.units.unit_environment import *
     
 def test_unit_list():
@@ -111,18 +111,25 @@ def test_definitions():
         assert base.dimensions.value(dtype=list) == unit.dimensions
         
 def test_unit_systems():
-    
-    assert SI.Pressure.value       == '#SPRE'
-    assert CGS.Energy.value        == '#CENE'
-    assert AU.ElectricCharge.value == '#AECH'
-    assert type(SI.Pressure)       == SI
 
-    # test if quantity lists work
-    assert str(Quantity(23, SI.Pressure))          == 'Quantity(2.300e+01 #SPRE)'
-    assert str(Quantity(23, 'Pa').to(SI.Pressure)) == 'Quantity(2.300e+01 #SPRE)'
-    assert str(Quantity(23, SI.Pressure).to('Pa')) == 'Quantity(2.300e+01 Pa)'
-    assert str(Quantity(1, '[a_0]').to(AU.Length)) == 'Quantity(1.000e+00 #ALEN)'
-    assert str(Unit(AU.Length))                    == "Quantity(1.000e+00 #ALEN)"
-    assert str(Unit('[a_0]')/Unit(AU.Length))      == 'Quantity(1.000e+00)'
-    assert str(Unit(AU.Length)*Unit('s'))          == 'Quantity(1.000e+00 #ALEN*s)'
-    assert str(Quantity(1, '#ALEN/s').to('m/s'))   == 'Quantity(5.292e-11 m*s-1)'
+    # get the quantity symbols
+    assert SI['Pressure']           == '#SPRE'
+    assert CGS['Energy']            == '#CENE'
+    assert AU['ElectricCharge']     == '#AECH'
+
+    # test if it works with Quantity
+    assert str(Quantity(23, SI['Pressure']))          == 'Quantity(2.300e+01 #SPRE)'
+    assert str(Quantity(23, 'Pa').to(SI['Pressure'])) == 'Quantity(2.300e+01 #SPRE)'
+    assert str(Quantity(23, SI['Pressure']).to('Pa')) == 'Quantity(2.300e+01 Pa)'
+    assert str(Quantity(1, '[a_0]').to(AU['Length'])) == 'Quantity(1.000e+00 #ALEN)'
+    assert str(Quantity(1, '#ALEN/s').to('m/s'))      == 'Quantity(5.292e-11 m*s-1)'
+
+    # test if it works with Unit
+    assert str(Unit(AU['Length']))                    == "Quantity(1.000e+00 #ALEN)"
+    assert str(Unit('[a_0]')/Unit(AU['Length']))      == 'Quantity(1.000e+00)'
+    assert str(Unit(AU['Length'])*Unit('s'))          == 'Quantity(1.000e+00 #ALEN*s)'
+
+    # test if arguments create a quantity
+    assert str(AU.Pressure())            == "Quantity(1.000e+00 #APRE)"  # equivalent to Unit
+    assert str(SI.Pressure(23))          == "Quantity(2.300e+01 #SPRE)"  # equivalent to Quantity
+    assert str(CGS.Pressure(23))         == "Quantity(2.300e+01 #CPRE)"

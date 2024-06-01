@@ -126,15 +126,28 @@ Since not all units have dedicated names (e.g. atomic units) we cathegorize them
 Units of three major :ref:`units/tables:unit systems` are available in following lists: International System ``SI``, Centimeter-Gram-Second system ``CGS`` and Hartree Atomic Units ``AU``.
 Unit symbols have a generic format ``#<sytem><abbreviation>``, where ``<system>`` specifies one of the unit systems (``S``\I, ``C``\GS, ``A``\U) and ``<abbreviation>`` is formed from corresponding quantity name.
 
+One way to use unit systems is to select a particular unit symbol from the corresponding unit list (e.g. ``CGS['Pressure']``.
+
 .. code-block::
 
-   >>> Unit(CGS.Energy)
+   >>> Unit(CGS['Energy'])
    Quantity(1.000e+00 #CENE)
-   >>> Quantity(1,AU.Length).to('m')
-   Quantity(5.292e-11 m)
-   >>> Quantity(23, '#ALEN/s').to(SI.Velocity)
+   >>> Quantity(2,AU['Length']).to('m')
+   Quantity(1.058e-10 m)
+   >>> Quantity(23, '#ALEN/s').to(SI['Velocity'])
    Quantity(1.217e-09 #SVEL)
 
+Alternatively, it is possible to create quantities direcectly using functions with a corresponding name (e.g. ``CGS.Pressure(23)``).
+
+.. code-block::
+
+   >>> CGS.Energy()
+   Quantity(1.000e+00 #CENE)
+   >>> AU.Length(2).to('m')
+   Quantity(1.058e-10 m)
+   >>> (AU.Length(23)/Unit(s)).to(SI['Velocity'])
+   Quantity(1.217e-09 #SVEL)   
+   
 Custom units
 """"""""""""
 

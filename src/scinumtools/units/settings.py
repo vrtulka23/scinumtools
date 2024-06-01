@@ -299,9 +299,3 @@ QUANTITY_LIST = RowCollector(['name','symbol', 'SI', 'AU', 'CGS', 'GAUSS', 'ESU'
 ('PermeabilityVacuum',    'PBV',   '[mu_0]',   '[mu_0]',               '[mu_0]',   '1',             '[c]-2',           '1',              ),
 ('PermittivityVacuum',    'PTV',   '[eps_0]',  '[eps_0]',              '[eps_0]',  '1',             '1',               '[c]-2',          ),
 ])
-SI    = Enum('SI',    dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}S{symbol}" for symbol in QUANTITY_LIST.symbol])))
-AU    = Enum('AU',    dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}A{symbol}" for symbol in QUANTITY_LIST.symbol])))
-CGS   = Enum('CGS',   dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}C{symbol}" for symbol in QUANTITY_LIST.symbol])))
-GAUSS = Enum('GAUSS', dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}G{symbol}" for symbol in QUANTITY_LIST.symbol])))
-ESU   = Enum('ESU',   dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}E{symbol}" for symbol in QUANTITY_LIST.symbol])))
-EMU   = Enum('EMU',   dict(zip(QUANTITY_LIST.name, [f"{SYMBOL_SYSTEM_UNIT}M{symbol}" for symbol in QUANTITY_LIST.symbol])))
