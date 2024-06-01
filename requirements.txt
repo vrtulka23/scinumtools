@@ -11,4 +11,4 @@ toml
 pyyaml
 pygments==2.16.1
 pytest-qt
-PyQt6
+#PyQt6

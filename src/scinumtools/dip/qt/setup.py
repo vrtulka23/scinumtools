@@ -1,3 +1,4 @@
+"""
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -67,3 +68,4 @@ window = MainWindow()
 window.show()
 
 app.exec()
+"""
