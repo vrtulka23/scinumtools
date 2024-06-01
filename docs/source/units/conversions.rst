@@ -145,7 +145,7 @@ Alternatively, it is possible to create quantities direcectly using functions wi
    Quantity(1.000e+00 #CENE)
    >>> AU.Length(2).to('m')
    Quantity(1.058e-10 m)
-   >>> (AU.Length(23)/Unit(s)).to(SI['Velocity'])
+   >>> (AU.Length(23)/Unit('s')).to(SI['Velocity'])
    Quantity(1.217e-09 #SVEL)   
    
 Custom units
