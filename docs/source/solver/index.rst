@@ -1,12 +1,12 @@
 Expression Solver
 =================
 
-In this section, we describe basic functionality of the expression solver.
-This tool has been implemented as a submodule in order to standardize solving of numerical expression in :ref:`units/index:physical units` and logical/numerical expressions in :ref:`dip/index:dimensional input parameters`. 
+In this section, we describe the basic functionality of the expression solver.
+This tool has been implemented as a submodule to standardize solving of numerical expression in :ref:`units/index:physical units` and logical/numerical expressions in :ref:`dip/index:dimensional input parameters`. 
 For more details and implementation patterns, we refer our reader directly to the source code of the mentioned submodules and corresponding PyTest-s.
 Nevertheless, it can be easily modified and used in other projects that require some mathematical expressions.
 
-Expression solver consist of the following classes:
+Expression solver consists of the following classes:
 
 **Solver**
 
@@ -14,7 +14,7 @@ Expression solver consist of the following classes:
   
 **Expression**
 
-  Expression class handles an expression string that is being parsed into tokens.
+  The expression class handles an expression string that is being parsed into tokens.
   
 **Tokens**
 
@@ -50,10 +50,16 @@ comparison and logical expressions.
    >>> np.sin(23) < 1 and 3*2 == 6 or not (23 > 43) and np.cos(0) == 1
    True
 
+.. note::
+   The Expression Solver described in this documentation is currently written in Python.
+   Nevertheless, a `C++ implementation <https://github.com/vrtulka23/exs-cpp>`_ is already available on GitHub.
+   This can be currently used only as a standalone library.
+   In the future, it will be incorporated into the 'scinumtools' project to boost its efficiency.
+   
 Atoms
 ^^^^^
 
-Atom parser is a central part of every solver, because it converts atomic expression into specific data type and implements operations with the data. Default atom class implements parsing and operation on float numbers. Functionality of the atom can be easily modified, as shown in the example below.
+Atom parser is a central part of every solver, because it converts atomic expression into specific data type and implements operations with the data. Default atom class implements parsing and operation on float numbers. The functionality of the atom can be easily modified, as shown in the example below.
 
 .. code-block::
 
@@ -94,9 +100,9 @@ A list of default operations is given in the table below.
    Equality,                "eq, ne, lt, gt, le, ge", "A==B, A!=B, A<B, A>B, A<=B, A>=B"
    Logical operators,       "and, or, not",           "A&&B, A||B, !B"
    
-Symbols ``A`` and ``B`` used in the table stand for atoms and ``E`` for expressions.
+Symbols ``A`` and ``B`` used in the table stand for atoms, and ``E`` for expressions.
 
-Operators can be easily overloaded or modified to match needs of your project.
+Operators can be easily overloaded or modified to match the needs of your project.
 
 .. code-block::
 
@@ -110,7 +116,7 @@ Operators can be easily overloaded or modified to match needs of your project.
 Operation steps
 ^^^^^^^^^^^^^^^
 
-It is very important, that operations described above are evaluated in a correct order after each other.
+It is critical, that the operations described above are evaluated in a correct order after each other.
 The table below summarizes evaluation steps, from first to last, that are implemented in the code.
 
 .. csv-table:: Operation steps
@@ -136,8 +142,8 @@ Logical and comparison operations are not included in the figure, but if used, t
 
 .. image:: ../_static/figures/operation_flow.png
 
-Order of operations can be used as it is, but it can be also modified.
-In the following example, we introduce completely new operators and implement their order into a custom operation step sequence.
+The order of operations can be used as it is, but it can also be modified.
+In the following example, we introduce entirely new operators and implement their order into a custom operation step sequence.
 
 .. code-block::
 

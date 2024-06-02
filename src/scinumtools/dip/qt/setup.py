@@ -1,4 +1,4 @@
-"""
+a = """
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
