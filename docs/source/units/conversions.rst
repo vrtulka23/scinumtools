@@ -138,7 +138,7 @@ One way to use unit systems is to select a particular unit symbol from the corre
    >>> Quantity(23, '#ALEN/s').to(SI['Velocity'])
    Quantity(1.217e-09 #SVEL)
 
-Alternatively, it is possible to create quantities direcectly using functions with a corresponding name (e.g. ``CGS.Pressure(23)``).
+Alternatively, it is possible to create quantities direcectly using functions with corresponding names (e.g. ``CGS.Pressure(23)``).
 
 .. code-block::
 
