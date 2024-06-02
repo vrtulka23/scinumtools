@@ -130,6 +130,7 @@ One way to use unit systems is to select a particular unit symbol from the corre
 
 .. code-block::
 
+   >>> from scinumtools.units import SI,AU,CGS
    >>> Unit(CGS['Energy'])
    Quantity(1.000e+00 #CENE)
    >>> Quantity(2,AU['Length']).to('m')
