@@ -41,7 +41,7 @@ Below is an overview of possible scalar values for each of them:
 Derived data types
 ------------------
 
-When DIP is parsing parameters for low level programming languages (e.g. C/C++ and Fotran), it is sometimes necessary to closely specify which precision float and integer values have.
+When DIP is parsing parameters for programming languages like C/C++ and Fotran, it is sometimes necessary to closely specify which precision float and integer values have.
 This can be done using derived data types.
 Such data types are internally identical to their standard counterparts, however, they carry additional information about their sign (``int``) and precision (both ``int`` and ``float``).
 The table below gives a list of all standard and corresponding derived data types that can be used in DIP.
