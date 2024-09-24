@@ -26,7 +26,7 @@ Besides several useful tools, package `scinumtools` consist of four main submodu
 ### Expression Solver
 
 Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of other submodules.
-For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html) please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/exs-cpp).
+For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html) please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scnt-exs).
 
 ``` python
 >>> from scinumtools.solver import *
@@ -53,7 +53,7 @@ For more description and examples of [Expression Solver](https://vrtulka23.githu
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
 For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html) please refer to the documentation.
-A C++ implementation of this module [puq-cpp](https://github.com/vrtulka23/puq-cpp) is currently in preparation.
+A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scnt-puq) is currently in preparation.
 
 ``` python
 >>> import numpy as np
