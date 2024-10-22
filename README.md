@@ -53,7 +53,7 @@ For more description and examples of [Expression Solver](https://vrtulka23.githu
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features unit convertor, supports calculations with uncertainties and can be used in combination with third party libraries like NumPy, or Decimal.
 For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html) please refer to the documentation.
-A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scnt-puq) is currently in preparation.
+A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scnt-puq) is currently available also as a Python module [pypuq](https://pypi.org/project/pypuq) on PyPi.
 
 ``` python
 >>> import numpy as np
