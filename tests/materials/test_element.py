@@ -23,7 +23,8 @@ def test_expression():
     
     # Natural abundance
     e = Element('B')
-    assert str([e.mass,e.Z,e.N,e.e]) == "[Quantity(1.081e+01 Da), 5.0, 5.801, 5.0]"
+    assert str(e.mass) == "Quantity(1.081e+01 Da)"
+    assert [e.Z,e.N,e.e] == [5.0, 5.801, 5.0]
     assert isclose(e.mass.value(), 10.811028046410001, rel_tol=MAGNITUDE_PRECISION)
     
     # Isotope
@@ -46,7 +47,8 @@ def test_string():
     
     e = Element('O')
     assert str(e) == "Element(O mass=15.999 Z=8.0 N=8.004 e=8.0)"
-    assert str((e.Z, e.N, e.e, e.mass)) == "(8.0, 8.00448, 8.0, Quantity(1.600e+01 Da))"
+    assert str(e.mass) == "Quantity(1.600e+01 Da)"
+    assert [e.Z, e.N, e.e] == [8.0, 8.00448, 8.0]
 
     e = Element('O', natural=False)
     assert str(e) == "Element(O mass=15.995 Z=8 N=8.000 e=8)"

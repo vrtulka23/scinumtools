@@ -62,7 +62,7 @@ class TemperatureUnitType(UnitType):
     process = ['Cel','degF']
     
     def _istype(self):
-        if np.any(np.in1d(self.baseunits1.units+self.baseunits2.units, self.process)):
+        if np.any(np.isin(self.baseunits1.units+self.baseunits2.units, self.process)):
             if len(self.baseunits1.units)!=1 or len(self.baseunits2.units)!=1:
                 raise Exception("Only simple units can be converted between each other:",
                                 self.baseunits1.units, self.baseunits2.units)
@@ -162,7 +162,7 @@ class LogarithmicUnitType(UnitType):
     }
     
     def _istype(self):
-        if np.any(np.in1d(self.baseunits1.units+self.baseunits2.units, self.process)):
+        if np.any(np.isin(self.baseunits1.units+self.baseunits2.units, self.process)):
             if len(self.baseunits1.units) not in [1,2] or len(self.baseunits2.units) not in [1,2]:
                 raise Exception("Only simple and fraction units can be converted between each other:",
                                 self.baseunits1.units, self.baseunits2.units)

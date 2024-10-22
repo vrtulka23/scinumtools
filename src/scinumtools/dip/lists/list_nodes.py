@@ -73,7 +73,7 @@ class NodeList:
         if tags:
             tagged = NodeList()
             for n in range(len(nodes)):
-                if nodes[n].tags and np.in1d(tags, nodes[n].tags):
+                if nodes[n].tags and np.isin(tags, nodes[n].tags):
                     tagged.append(nodes[n])
             nodes = tagged
         if order:
