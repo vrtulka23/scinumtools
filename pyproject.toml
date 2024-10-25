@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "SciNumTools v2"
+name = "scinumtools"
 version = "2.19.3"
 authors = [
   { name="Ondrej Pego Jaura", email="vrtulka23@pm.me" },
