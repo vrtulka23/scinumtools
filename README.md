@@ -115,7 +115,7 @@ expr      n[cm-3]  rho[g/cm3]            N       M[g]
 ### Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on the initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes the user interface with the code clear and straightforward. 
-For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation.
+For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scnt-dip/tree/main).
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
