@@ -75,14 +75,3 @@ class StyleLexer(Style):
 
         Token.Error:                     "border:#FF0000"
     }
-
-def pygments_monkeypatch_style(mod_name, cls):
-    import sys
-    import pygments.styles
-    cls_name = cls.__name__
-    mod = type(__import__("os"))(mod_name)
-    setattr(mod, cls_name, cls)
-    setattr(pygments.styles, mod_name, mod)
-    sys.modules["pygments.styles." + mod_name] = mod
-    from pygments.styles import STYLE_MAP
-    STYLE_MAP[mod_name] = mod_name + "::" + cls_name

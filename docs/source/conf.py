@@ -42,7 +42,7 @@ html_static_path = ['_static']
 html_logo = "_static/snt/snt.svg"
 html_theme_options = {
     'logo_only': False,
-    'display_version': True,
+    #'display_version': True,
 }
 html_css_files = [
     'css/sphinxdoc.css'
@@ -50,8 +50,7 @@ html_css_files = [
 
 # DIP Syntax Highlighter
 from sphinx.highlighting import lexers
-from scinumtools.dip.pygments import SyntaxLexer, SchemaLexer, StyleLexer, pygments_monkeypatch_style
-pygments_monkeypatch_style("StyleLexer", StyleLexer)
-pygments_style = 'StyleLexer'
+from scinumtools.dip.pygments import SyntaxLexer, SchemaLexer, StyleLexer
+pygments_style = 'scinumtools.dip.pygments.StyleLexer'
 lexers['DIP'] = SyntaxLexer(startinline=True, style=StyleLexer)
 lexers['DIPSchema'] = SchemaLexer(startinline=True, style=StyleLexer)

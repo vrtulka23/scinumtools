@@ -6,6 +6,15 @@
 Welcome to scinumtools's documentation!
 =======================================
 
+| SNT
+| scinumtools
+| SciNumTools v2
+| Scientific Numerical Tools v2
+
+.. note::
+
+   Currently a new C++ version of this project is being prepared in a separate `SciNumTools v3 github repository <https://github.com/vrtulka23/scinumtools3>`_.
+
 Python module ``scinumtools`` is an open source collection of various routines used in everyday programming and analysis of numerical simulations. 
 Source code and documentation of the ``scinumtools`` package is hosted on `GitHub <https://github.com/vrtulka23/scinumtools>`_ and Python package is available on `PyPi <https://pypi.org/project/scinumtools/>`_.
 
