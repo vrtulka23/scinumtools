@@ -8,6 +8,8 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
+This project is currently archived and is further developed in a new joint [SciNumTools v3 repository](https://github.com/vrtulka23/scinumtools3)
+
 ## Documentation
 
 For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
