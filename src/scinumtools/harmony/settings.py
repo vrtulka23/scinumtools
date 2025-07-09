@@ -1,12 +1,12 @@
 
 HALFTONES = 12
 
-NOTES = ["C":0,"D":2,"E":4,"F":5,"G":7,"A":9,"B":11]
+NOTES = {"C":0,"D":2,"E":4,"F":5,"G":7,"A":9,"B":11}
 
 ACCIDENTALS = {
     "b": {
         "name": "flat"
-    }
+    },
     "#": {
         "name": "sharp"
     }
@@ -39,11 +39,11 @@ CHORD_TRIADS = {
     "+": {
         "name": "augmented",
         "notes": [0,4,8],
-    }
+    },
     "o": {
         "name": "diminished",
         "notes": [0,3,6],
-    }
+    },
     "*": {
         "name": "half-diminished",
         "notes": [0,3,6],
