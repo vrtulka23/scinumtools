@@ -155,7 +155,31 @@ class Quantity:
         if not self.baseunits==other.baseunits:
             return False
         return True
-    
+
+    def __lt__(self, other):
+        if isinstance(other, (int, float)):
+            other = Quantity(other)
+        other = other.to(self.units())
+        return np.all(np.less(self.magnitude.value, other.magnitude.value))
+
+    def __le__(self, other):
+        if isinstance(other, (int, float)):
+            other = Quantity(other)
+        other = other.to(self.units())
+        return np.all(np.less_equal(self.magnitude.value, other.magnitude.value))
+
+    def __gt__(self, other):
+        if isinstance(other, (int, float)):
+            other = Quantity(other)
+        other = other.to(self.units())
+        return np.all(np.greater(self.magnitude.value, other.magnitude.value))
+
+    def __ge__(self, other):
+        if isinstance(other, (int, float)):
+            other = Quantity(other)
+        other = other.to(self.units())
+        return np.all(np.greater_equal(self.magnitude.value, other.magnitude.value))
+
     def __str__(self):
         magnitude = str(self.magnitude)
         baseunits = self.baseunits.expression
