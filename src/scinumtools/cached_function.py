@@ -3,8 +3,19 @@ import numpy as np
 import hashlib
 import json
 
+class SafeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, set):
+            return list(obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        # fallback:
+        return str(obj)
+
 def hash_file_name(file_cache, args, kwargs):
-    json_string = json.dumps({'args':args,'kwargs':kwargs}, sort_keys=True)
+    json_string = json.dumps({'args':args,'kwargs':kwargs}, cls=SafeEncoder, sort_keys=True)
     hash_object = hashlib.sha256()
     hash_object.update(json_string.encode())
     hash_value = hash_object.hexdigest()
