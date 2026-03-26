@@ -1,5 +1,5 @@
 pytest
-numpy<2.0
+numpy
 pandas
 h5py
 matplotlib
