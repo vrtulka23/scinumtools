@@ -62,7 +62,7 @@ class Element(Component, Matter):
         self.expr = expr
         self.natural = natural
         # parse the expr
-        if m := re.match("(\[(p|n|e)\])", expr):
+        if m := re.match(r"(\[(p|n|e)\])", expr):
             nucleon = m.group(2)
             self.element = expr
             NA, iso, ion = 100.0, None, None
@@ -71,7 +71,7 @@ class Element(Component, Matter):
             self.Z, self.N, self.e = nucleons[nucleon]
             self.isotope = 0
             self.ionisation = 0
-        elif m := re.match("([a-zA-Z]{1,2})(\{([0-9]+)([+-]{1}[0-9]*)\}|\{([0-9]+)\}|\{([+-]{1}[0-9]*)\}|)", expr):
+        elif m := re.match(r"([a-zA-Z]{1,2})(\{([0-9]+)([+-]{1}[0-9]*)\}|\{([0-9]+)\}|\{([+-]{1}[0-9]*)\}|)", expr):
             # Extract information about isos
             element, variant, iso1, ion1, iso2, ion3 = m.groups()
             if element=='D':

@@ -15,7 +15,7 @@ from ..units import Quantity, Unit
 class Substance(Composite, Component, Matter):
     
     def atom(self, expr:str):
-        if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
+        if m:=re.match(r"[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
             return float(expr)
         else:
             return Substance({expr: 1}, natural=self.natural)

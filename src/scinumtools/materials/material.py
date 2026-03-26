@@ -12,7 +12,7 @@ from ..units import Quantity, Unit
 class Material(Composite, Matter):
     
     def atom(self, expr:str):
-        if m:=re.match("[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
+        if m:=re.match(r"[0-9]+(\.[0-9]+|)([eE]{1}[+-]?[0-9]{0,3}|)",expr):
             return float(expr)
         else:
             return Material({expr: 1.0}, natural=self.natural, norm_type=self.norm_type)

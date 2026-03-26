@@ -69,7 +69,7 @@ class SourcesSection:
                     return f"{attributes}><b>{m.group(2)}</b>"
                 else:
                     return f"{attributes}>{m.group(2)}"
-        code = re.sub("class=\" \-DIP \-DIP\-([a-zA-Z]*)\">(.*?)(?=</span)", replace, code)
+        code = re.sub(r"class=\" \-DIP \-DIP\-([a-zA-Z]*)\">(.*?)(?=</span)", replace, code)
 
         return code
     

@@ -18,17 +18,17 @@ class MaterialSolver:
         pass
 
     def preprocess(self, expr):
-        PATTERN_NUMBER = "([0-9]+(\.([0-9]+([eE]{1}[+-]?[0-9]{0,3}|)|)|))"
-        PATTERN_MOLECULE = "(\<[^\<\>]+\>)"
+        PATTERN_NUMBER = r"([0-9]+(\.([0-9]+([eE]{1}[+-]?[0-9]{0,3}|)|)|))"
+        PATTERN_MOLECULE = r"(\<[^\<\>]+\>)"
         def repl1(m):
             return m.group(1)+CustomOperatorMul.symbol+m.group(5)
-        expr = re.sub(PATTERN_NUMBER+"\s*"+PATTERN_MOLECULE, repl1, expr)
+        expr = re.sub(PATTERN_NUMBER+r"\s*"+PATTERN_MOLECULE, repl1, expr)
         def repl1(m):
             return m.group(1)+CustomOperatorAdd.symbol+m.group(2)
-        expr = re.sub(PATTERN_MOLECULE+"\s*"+PATTERN_NUMBER, repl1, expr)
+        expr = re.sub(PATTERN_MOLECULE+r"\s*"+PATTERN_NUMBER, repl1, expr)
         def repl1(m):
             return m.group(1)+CustomOperatorAdd.symbol+m.group(2)
-        expr = re.sub(PATTERN_MOLECULE+"\s*"+PATTERN_MOLECULE, repl1, expr)
+        expr = re.sub(PATTERN_MOLECULE+r"\s*"+PATTERN_MOLECULE, repl1, expr)
         return expr
 
     def solve(self, expr):

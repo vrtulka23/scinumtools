@@ -93,21 +93,21 @@ class SyntaxLexer(RegexLexer):
             (r"[^'\\]+",               Token.DIP.String),
             (r"\\'",                   Token.DIP.String),
             (r"\\[^']",                Token.DIP.String),
-            ("(')(,)",
+            (r"(')(,)",
              bygroups(Token.DIP.String, Token.DIP.Text), "#pop"),
-            ("(')(\])",
+            (r"(')(\])",
              bygroups(Token.DIP.String, Token.DIP.Text), "#pop:2"),  # pop if in array
-            ("(')", Token.DIP.String, "unit"),
+            (r"(')", Token.DIP.String, "unit"),
         ],
         'str_double' : [
             (r'[^"\\]+',               Token.DIP.String),
             (r'\\"',                   Token.DIP.String),
             (r'\\[^"]',                Token.DIP.String),
-            ('(")(,)',
+            (r'(")(,)',
              bygroups(Token.DIP.String, Token.DIP.Text), "#pop"),
-            ('(")(\])',
+            (r'(")(\])',
              bygroups(Token.DIP.String, Token.DIP.Text), "#pop:2"),  # pop if in array
-            ('"', Token.DIP.String, "unit"),
+            (r'"', Token.DIP.String, "unit"),
         ],
         'str_triple' : [
             (r'[^"\\]+',               Token.DIP.String),
@@ -128,7 +128,7 @@ class SyntaxLexer(RegexLexer):
             (r"[^'\\{]+",              Token.DIP.Expression),
             (r"\\'",                   Token.DIP.Expression),
             (r"\\[^']",                Token.DIP.Expression),
-            ("(')(\))",
+            (r"(')(\))",
              bygroups(Token.DIP.Expression, Token.DIP.Text), "unit"),
         ],
         'expr_double' : [
@@ -138,7 +138,7 @@ class SyntaxLexer(RegexLexer):
             (r'[^"\\{]+',              Token.DIP.Expression),
             (r'\\"',                   Token.DIP.Expression),
             (r'\\[^"]',                Token.DIP.Expression),
-            ('(")(\))',
+            (r'(")(\))',
              bygroups(Token.DIP.Expression, Token.DIP.Text), "unit"),
         ],
         'expr_triple' : [
