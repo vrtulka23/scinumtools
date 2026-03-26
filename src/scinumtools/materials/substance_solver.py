@@ -18,10 +18,10 @@ class SubstanceSolver:
         pass
 
     def preprocess(self, expr):
-        pattern = "(([A-Z]+[a-z]?|\[p\]|\[n\]|\[e\])(\{[0-9+-]+\}|)([0-9]*))"
+        pattern = r"(([A-Z]+[a-z]?|\[p\]|\[n\]|\[e\])(\{[0-9+-]+\}|)([0-9]*))"
         # insert implicit additions
         while True:
-            expr_new = re.sub(pattern+"\s*"+pattern,"\g<1> + \g<5>",expr,count=1)
+            expr_new = re.sub(pattern+r"\s*"+pattern,r"\g<1> + \g<5>",expr,count=1)
             if expr_new == expr:
                 break
             else:
@@ -39,7 +39,7 @@ class SubstanceSolver:
                 return m.group(1) + CustomOperatorAdd.symbol + "("
             else:
                 return m.group(2) + "("
-        expr = re.sub("([^*+(\s]*)(\s*)\(", repl2, expr)
+        expr = re.sub(r"([^*+(\s]*)(\s*)\(", repl2, expr)
         def repl3(m):
             if m.group(1) and m.group(3):
                 return ")" + CustomOperatorMul.symbol + m.group(1) + CustomOperatorAdd.symbol + m.group(3)
@@ -49,7 +49,7 @@ class SubstanceSolver:
                 return ")" + CustomOperatorAdd.symbol + m.group(3)
             else:
                 return ")"+m.group(2)
-        expr = re.sub("\)([0-9]*)(\s*)([^+*)\s]*)", repl3, expr)
+        expr = re.sub(r"\)([0-9]*)(\s*)([^+*)\s]*)", repl3, expr)
         return expr
 
     def solve(self, expr):
