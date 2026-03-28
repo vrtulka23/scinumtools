@@ -1,0 +1,2 @@
+particles.scales.mass = 0.001 t
+system.time.end = 1 min

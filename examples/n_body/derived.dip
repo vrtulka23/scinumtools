@@ -1,0 +1,4 @@
+system
+  num_steps int = ("""
+  ( {?system.time.end} - {?system.time.start} ) / {?system.time.step}
+  """) 1                          # number of simulation steps

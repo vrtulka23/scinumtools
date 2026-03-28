@@ -106,7 +106,7 @@ The framework includes higher-level abstractions for representing domain-specifi
 - General-purpose parsing libraries enable expression evaluation but lack awareness of physical units and scientific context.
 - Configuration formats such as JSON, YAML [@yaml122] or TOML [@toml100] provide structured data storage but do not support dimensional validation or computation.
 
-In contrast, `SciNumTools v2` combines these capabilities into a single framework, enabling users to define, validate, and evaluate scientific workflows in a unified environment.
+In contrast, `SciNumTools2` combines these capabilities into a single framework, enabling users to define, validate, and evaluate scientific workflows in a unified environment.
 
 # Example use case
 
