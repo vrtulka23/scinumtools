@@ -1,9 +1,4 @@
 #!/usr/bin/python3
-# =========================
-# This code is a simple N-body solver in a 2D space.
-# DIP files are used to set default values, let the user to modify them,
-# and calculate secondary, derived, settings
-# =========================
 import numpy as np
 import matplotlib.pyplot as plt
 from scinumtools.dip import DIP
