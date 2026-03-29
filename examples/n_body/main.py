@@ -1,14 +1,21 @@
+#!/usr/bin/python3
+# =========================
+# This code is a simple N-body solver in a 2D space.
+# DIP files are used to set default values, let the user to modify them,
+# and calculate secondary, derived, settings
+# =========================
 import numpy as np
 import matplotlib.pyplot as plt
 from scinumtools.dip import DIP
+from scinumtools.dip.docs import ExportDocsPDF
 
 # =========================
 # PARAMETERS (example tuning interface)
 # =========================
 with DIP() as dip:
-    dip.add_file("default.dip")   # default settings
-    dip.add_file("settings.dip")  # user modifications
-    dip.add_file("derived.dip")   # derived settings
+    dip.add_file("defaults.dip")   # default settings
+    dip.add_file("settings.dip")   # user modifications
+    dip.add_file("derived.dip")    # derived settings
     params = dip.parse().data()
 
 # =========================
@@ -110,4 +117,5 @@ def plot_trajectory(trajectory, masses, params):
 # =========================
 if __name__ == "__main__":
     trajectory, masses = run_simulation(params)
-    plot_trajectory(trajectory, masses, params)
+    if params['figure']:
+        plot_trajectory(trajectory, masses, params)

@@ -1,19 +1,19 @@
-softening float = 1e-2 m          # prevent singularities
-seed int = 42                     # reproducibility
-system
-  time
-    start float = 0.0 s           # starting time
-    end float = 10 s              # ending time
-    step float = 0.01 s           # timestep
-  gravitation float = 1 [G]       # gravitational constant
-particles
-  number int = 5                  # number of particles in the simulation
-  scales
-    mass float = 10.0 kg          # scale of particle masses
-      !condition ("{?} <= 100 kg")
-    space float = 5 m             # initial position spread
-    velocity float = 0.5 m/s      # initial velocity spread
-figure
-  title str = "N-Body Simulation"
-  xlabel str = "x"
-  ylabel str = "y"
+softening float = 1e-2 m            # prevent singularities
+seed int = 42                       # reproducibility random seed
+system                              
+  time                              
+    start float = 0.0 s             # starting time
+    end float = 10 s                # ending time
+    step float = 0.01 s             # timestep
+  gravitation float = 1 [G]         # gravitational constant
+particles                           
+  number int = 5                    # number of particles in the simulation
+  scales                            
+    mass float = 10.0 kg            # scale of particle masses
+      !condition ("{?} <= 100 kg")  # constrain mass scale to less than 100 kg
+    space float = 5 m               # initial position spread
+    velocity float = 0.5 m/s        # initial velocity spread
+figure bool = true                  # specifies if figure is created at the end
+  title str = "N-Body Simulation"   # figure title
+  xlabel str = "x"                  # label of the x-axis
+  ylabel str = "y"                  # label of the y-axis

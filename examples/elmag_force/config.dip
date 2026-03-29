@@ -1,0 +1,20 @@
+# defaults
+ics
+  proton_mass float kg
+  elementary_charge float C
+  time_step float s
+  num_steps int = 10000
+
+output
+  file str = "trajectory.csv"
+
+plots
+  traj2d bool = true
+  traj3d bool = true
+  velocity bool = true
+  
+# user definitions
+ics
+  time_step = 1 ns
+  proton_mass = 1 [m_p]
+  elementary_charge = 1 [e]
