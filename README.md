@@ -8,7 +8,7 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
-## What problem does this solve?
+## 🔍 What problem does this solve?
 
 Modern scientific and engineering workflows often require combining **symbolic expressions, numerical evaluation, unit handling, and material-specific data** into a single pipeline. In practice, these components are typically handled by separate tools:
 
@@ -33,7 +33,7 @@ This project addresses these issues by providing a **cohesive framework** that i
 > SciNumTools v2 is implemented in Python and targets Python-based workflows. In contrast, [SciNumTools v3](https://github.com/vrtulka23/scinumtools3) is implemented in C++, moving parameter parsing, unit handling, and validation into a compiled core.
 > This allows configurations to be processed directly within performance-critical code and enables integration with HPC systems and other languages without relying on Python.
 
-## Key features
+## ✨ Key features
 
 * **Expression parsing and evaluation**  
   A flexible system for defining and evaluating mathematical expressions, enabling workflows that combine symbolic structure with numerical execution.
@@ -52,12 +52,12 @@ This project addresses these issues by providing a **cohesive framework** that i
 * **Lightweight and Python-native**  
   Designed to integrate easily with existing Python ecosystems without imposing heavy dependencies or complex setup requirements.
 
-## Documentation
+## 📚 Documentation
 
 For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
 Any comments and suggestions for improvement are heartily welcomed.
 
-## Quick start
+## ⚡ Quick start
 
 The newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
 
@@ -67,7 +67,7 @@ pip3 install scinumtools
 
 Besides several useful tools, the package `scinumtools` consists of four main submodules: expression solver, physical units, material properties and DIP.
 
-### Expression Solver
+### 🧮 Expression Solver
 
 Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of other submodules.
 For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html), please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scinumtools3).
@@ -93,7 +93,7 @@ For more description and examples of [Expression Solver](https://vrtulka23.githu
 'False'
 ```
 
-### Physical Units
+### 📏 Physical Units
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features a unit convertor, supports calculations with uncertainties and can be used in combination with third-party libraries like NumPy, or Decimal.
 For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html), please refer to the documentation.
@@ -115,7 +115,7 @@ Quantity(2.3340(30)e+01 cm)
 Quantity([4.796 7.681 4.472 3.162] m)
 ```
 
-### Material Properties
+### 🧱 Material Properties
 
 Simulation setups often require atomic and molecular properties of various materials. The core of this submodule, molecular expression solver, is designed to simplify calculations of such properties from a given molecular formula.
 For more descriptions and examples of [Material Properties](https://vrtulka23.github.io/scinumtools/materials/index.html), please refer to the documentation.
@@ -156,7 +156,7 @@ expr      n[cm-3]  rho[g/cm3]            N       M[g]
  sum 1.000092e+23    0.997000 1.000092e+26 997.000000
 ```
 
-### Dimensional Input Parameters
+### 🎛️ Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on the initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes the user interface with the code clear and straightforward. 
 For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scinumtools3).
