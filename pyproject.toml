@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scinumtools"
-version = "2.19.5"
+version = "2.19.6"
 authors = [
   { name="Ondrej Pego Jaura", email="vrtulka23@pm.me" },
 ]
 description = "Set of most frequently used tools for a rapid numerical code development in Python."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
