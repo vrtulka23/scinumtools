@@ -1,10 +1,10 @@
-⚡ Electromagnetic Force Simulator (C++)
+# ⚡ Electromagnetic Force Simulator (C++)
 
 This project demonstrates a simple electromagnetic particle simulation implemented in C++, combined with a lightweight Python workflow for building, running, and analyzing results.
 
 It also showcases how to integrate DIP into a C++/CMake-based build process.
 
-🚀 Usage
+## 🚀 Usage
 
 Run the full pipeline (initialize, build, execute, and plot):
 
@@ -12,7 +12,7 @@ Run the full pipeline (initialize, build, execute, and plot):
 python3 simulation.py --init --build --run --plot
 ```
 
-📄 Documentation
+## 📄 Documentation
 
 To generate a PDF containing the DIP parameter documentation:
 
@@ -20,13 +20,13 @@ To generate a PDF containing the DIP parameter documentation:
 python3 simulation.py --docs
 ```
 
-🧩 Overview
+## 🧩 Overview
 C++: Numerical simulation (Lorentz force)
 * CMake: Build system
 * Python: Workflow automation and plotting
 * DIP: Parameter handling and documentation
   
-📁 Output
+## 📁 Output
 
 The simulation produces:
 
