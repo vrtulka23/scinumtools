@@ -1,4 +1,4 @@
-from pygments.lexer import RegexLexer, include, bygroups
+from pygments.lexer import RegexLexer, bygroups
 from pygments.token import Token
     
 class SyntaxLexer(RegexLexer):
@@ -42,8 +42,8 @@ class SyntaxLexer(RegexLexer):
             (r' ', Token.DIP.Text, '#pop'),
         ],
         'type_dim': [
-            (f'[0-9.:]+',              Token.DIP.Dimension),
-            (f',',                     Token.DIP.Type),
+            ('[0-9.:]+',              Token.DIP.Dimension),
+            (',',                     Token.DIP.Type),
             (r'(\])([ ]+=)',
              bygroups(Token.DIP.Type, Token.DIP.Text), 'node_value'),
             (r'\]',                    Token.DIP.Type, 'unit'),

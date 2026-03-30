@@ -1,4 +1,3 @@
-import numpy as np
 
 from .settings import *
 from .quantity import Quantity

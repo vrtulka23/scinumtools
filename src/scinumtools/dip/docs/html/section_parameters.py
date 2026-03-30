@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import json
 
 from .settings import *
 from ..item_parameter import ParType
@@ -17,7 +16,7 @@ class ParametersSection:
     
     def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
-        self.html = BeautifulSoup(f"", 'html.parser')
+        self.html = BeautifulSoup("", 'html.parser')
 
     def styles(self):
         return None

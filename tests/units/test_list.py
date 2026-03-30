@@ -1,11 +1,9 @@
-import numpy as np
 import pytest
 from math import isclose
-import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.units import *
+from scinumtools.units import Quantity, Unit, CGS, Constant, AU
 from scinumtools.units.systems import SI
 from scinumtools.units.unit_environment import *
     

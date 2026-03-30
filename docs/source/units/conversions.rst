@@ -9,7 +9,7 @@ Quantities can be converted to other units (with the same dimensions) using ``to
 
 .. code-block::
 
-   >>> from scinumtools.units import *
+   >>> from scinumtools.units import Quantity
    >>> distance = Quantity(2, 'km')
    >>> distance.to('m')
    Quantity(2.000e+03 m)

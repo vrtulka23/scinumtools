@@ -2,17 +2,14 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import cm
-from enum import Enum
-import unicodedata
 import numpy as np
 
-from ...settings import ROOT_SOURCE
 
 SAMPLE_STYLE_SHEET = getSampleStyleSheet()
 
 FONT_NAME = 'Helvetica'
 FONT_SIZE = 10
-PAGE_HEIGHT=defaultPageSize[1]; 
+PAGE_HEIGHT=defaultPageSize[1] 
 PAGE_WIDTH=defaultPageSize[0]
 
 TABLE_HEADER_STYLE = ParagraphStyle(

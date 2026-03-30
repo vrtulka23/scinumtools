@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 
 from .settings import *
 from .item_node import NodeItem

@@ -8,7 +8,6 @@
 
 import sys
 sys.path.insert(0,"../../src")              # import recent version of scinumtools
-import scinumtools
 
 import toml
 data = toml.load("../../pyproject.toml")

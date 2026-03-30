@@ -1,8 +1,7 @@
-from typing import Union, List
+from typing import Union
 import numpy as np
 
 from .type_number import NumberType
-from .type_boolean import BooleanType
 
 class FloatType(NumberType):
     value: Union[float,list]

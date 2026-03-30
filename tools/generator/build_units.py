@@ -1,7 +1,9 @@
-import sys, os
+import sys
+import os
+import numpy as np
 sys.path.insert(0, os.environ['DIR_SOURCE'])
 
-from scinumtools.units.settings import *
+from scinumtools.units.settings import QUANTITY_UNITS, QUANTITY_LIST
 from scinumtools.units.unit_solver import UnitSolver
 from scinumtools.units.base_units import BaseUnits
 
@@ -37,11 +39,9 @@ def build_unit_systems():
     text = "\n".join(text)
     
     # test if new symbols are unique
-    try:
-        assert len(np.unique(symbols)) == len(symbols)
-    except:
-        unique = np.unique(symbols)
-        notunique = [s for s in unique if symbols.count(s)>1]
+    unique = np.unique(symbols)
+    if len(unique) != len(symbols):
+        notunique = [s for s in unique if symbols.count(s) > 1]
         raise Exception("Some units symbols are not unique:", notunique)
     
     # test if we produced a valid Python code

@@ -1,5 +1,4 @@
 import numpy as np
-from enum import Enum, auto
 
 from ..parameter_table import ParameterTable
 from ..row_collector import RowCollector

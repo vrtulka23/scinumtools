@@ -1,10 +1,7 @@
-from reportlab.platypus import Paragraph, Table, Spacer, PageBreak
+from reportlab.platypus import Paragraph, Table, Spacer
 from reportlab.lib.units import inch
-import numpy as np
-import re
 
 from .settings import *
-from ...nodes import ModNode
 
 class InjectionsSection:
     
@@ -54,7 +51,7 @@ class InjectionsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(Title(f"Injected values"), H2) )
+        blocks.append(Paragraph(Title("Injected values"), H2) )
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_item(item))

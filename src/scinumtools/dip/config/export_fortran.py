@@ -1,7 +1,7 @@
 import numpy as np
 
 from .export import ExportConfig
-from ..datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
+from ..datatypes import StringType, BooleanType, FloatType, IntegerType
 from ..settings import Sign
 
 class ExportConfigFortran(ExportConfig):

@@ -1,5 +1,4 @@
 import time
-import numpy as np
 
 from .row_collector import RowCollector
 

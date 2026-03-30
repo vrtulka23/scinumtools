@@ -7,7 +7,8 @@ python3 tools/generator/generator.py
 python3 tools/generator/generator.py build_docs
 python3 tools/generator/generator.py build_docs::build_temperature_units
 """
-import sys, os
+import sys
+import os
 from io import StringIO
 import importlib
 import traceback
@@ -80,7 +81,7 @@ def build():
                             print(f"{bcolors.OKGREEN}{module_name}::{generator_name}{bcolors.ENDC}\n{output}")
                         else:
                             print(f"{bcolors.OKGREEN}{module_name}::{generator_name}{bcolors.ENDC}")
-                    except Exception as error:
+                    except Exception:
                         print(f"{bcolors.FAIL}{module_name}::{generator_name}{bcolors.ENDC}")
                         traceback.print_exc()
                         if output:

@@ -1,7 +1,5 @@
-import numpy as np
 import re
 
-from .element import Element
 from ..solver import *
 
 class SubstanceSolver:

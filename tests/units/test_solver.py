@@ -1,11 +1,7 @@
-import numpy as np
-import pytest
-from math import isclose
-import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.units import *
+from scinumtools.units import Fraction, UnitSolver
 from scinumtools.units.unit_solver import AtomParser, Atom
 
 def test_atom():

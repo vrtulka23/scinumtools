@@ -1,17 +1,13 @@
-from reportlab.platypus import Paragraph, Table, Spacer, PageBreak, XPreformatted
+from reportlab.platypus import Paragraph, Table, Spacer, XPreformatted
 from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from pygments import highlight
-from pygments.lexers import PythonLexer
 from pygments.formatters import get_formatter_by_name
-from pygments.styles import get_style_by_name
 from pygments.token import STANDARD_TYPES, Token
-import numpy as np
 from pathlib import Path
 import re
 
 from .settings import *
-from ..settings import DocsType
 from ...settings import Sign, ROOT_SOURCE
 from ...pygments import SyntaxLexer, StyleLexer
 
@@ -101,7 +97,7 @@ class SourcesSection:
         t.keepWithNext = True
         blocks.append(t)
 
-        if not ROOT_SOURCE in item.name:
+        if ROOT_SOURCE not in item.name:
             code = self.highlight_python_code(item)
             c = XPreformatted(code, CODE_STYLE) 
             blocks.append(Spacer(1,0.1*inch))
@@ -111,7 +107,7 @@ class SourcesSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(Title(f"List of sources"), H2))
+        blocks.append(Paragraph(Title("List of sources"), H2))
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks += self.parse_item(item)

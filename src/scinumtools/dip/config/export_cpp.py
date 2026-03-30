@@ -1,7 +1,6 @@
-import numpy as np
 
 from .export_c import ExportConfigC
-from ..datatypes import StringType, BooleanType, NumberType, FloatType, IntegerType
+from ..datatypes import StringType, BooleanType, FloatType, IntegerType
 from ..settings import Sign
 
 class ExportConfigCPP(ExportConfigC):

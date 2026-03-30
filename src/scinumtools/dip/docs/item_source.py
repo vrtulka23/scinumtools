@@ -1,5 +1,4 @@
 from .settings import *
-from ..settings import ROOT_SOURCE
 
 class SourceItem:
     target: str

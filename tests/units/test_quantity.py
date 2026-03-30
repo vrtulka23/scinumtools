@@ -1,13 +1,9 @@
-import numpy as np
 import pytest
-from math import isclose
-import os
 import sys
-from decimal import Decimal
 sys.path.insert(0, 'src')
 
-from scinumtools import ParameterTable
-from scinumtools.units import *
+from scinumtools.units import Quantity, Constant, Unit, Fraction, Dimensions, BaseUnits
+from scinumtools.units import quant, unit, const
 
 def test_quantity():
     

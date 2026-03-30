@@ -1,4 +1,3 @@
-import json
 
 from .settings import *
 from .rst_parser import ParseRST

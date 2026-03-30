@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import pytest
 import sys
 sys.path.insert(0, 'src')

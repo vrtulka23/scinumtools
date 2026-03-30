@@ -4,7 +4,7 @@ from ...units import Unit, UnitEnvironment
 from .node_base import BaseNode
 from .node_select import SelectNode
 from ..solvers import NumericalSolver, FunctionSolver
-from ..datatypes import FloatType, IntegerType
+from ..datatypes import FloatType
 
 class FloatNode(BaseNode, SelectNode):
     keyword: str = 'float'

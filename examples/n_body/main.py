@@ -2,7 +2,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scinumtools.dip import DIP
-from scinumtools.dip.docs import ExportDocsPDF
 
 # =========================
 # PARAMETERS (example tuning interface)

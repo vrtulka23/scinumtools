@@ -1,5 +1,4 @@
 from typing import Union
-import copy
 
 from .operators import *
 from .expression import Expression

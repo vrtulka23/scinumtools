@@ -2,7 +2,7 @@ import numpy as np
 import re
 import os
 from pathlib import Path
-from typing import List, Callable, Tuple
+from typing import List, Callable
 from inspect import getframeinfo, stack
 
 from .environment import Environment
@@ -15,7 +15,6 @@ from .nodes import OptionNode, ConstantNode, FormatNode, ConditionNode, TagsNode
 from .nodes import ModNode, GroupNode
 from .nodes import BooleanNode, IntegerNode, FloatNode, StringNode, TableNode
 from .solvers import LogicalSolver
-from .datatypes import Type
 
 class DIP:
     """ DIP parser class
@@ -145,7 +144,7 @@ class DIP:
             if node and parser.is_empty():
                 break
         else:
-            raise Exception(f"Code cannot be parsed:",parser.ccode)
+            raise Exception("Code cannot be parsed:",parser.ccode)
         
         # Convert symbols to original letters
         def decode_symbols(value):
@@ -324,13 +323,13 @@ class DIP:
                 # If node wasn't defined, create a new node
                 else:
                     if node.keyword=='mod' and node.source[0].startswith(f"{self.name}_{STRING_SOURCE}"):
-                        raise Exception(f"Modifying undefined node:",node.name)
+                        raise Exception("Modifying undefined node:",node.name)
                     target.nodes.append(node)
         # Validate nodes
         for node in target.nodes:
             # Check if all declared nodes have assigned value
             if node.defined and node.value is None:
-                raise Exception(f"Node value must be defined:", node.code)
+                raise Exception("Node value must be defined:", node.code)
             # Check if node value is in options
             if isinstance(node,(IntegerNode, FloatNode, StringNode)):
                 node.validate_options()

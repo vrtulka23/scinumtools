@@ -1,12 +1,9 @@
 import numpy as np
-import pytest
-import os
 import sys
 from decimal import Decimal
-import numpy as np
 sys.path.insert(0, 'src')
 
-from scinumtools.units import *
+from scinumtools.units import Quantity
 
 def test_decimal():
     

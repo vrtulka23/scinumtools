@@ -1,7 +1,4 @@
-import numpy as np
 import re
-from math import isclose
-import copy
 from typing import Union
 
 from . import Norm, Units
@@ -9,8 +6,6 @@ from .matter import Matter
 from .composite import Composite, Component
 from .element import Element
 from .substance_solver import SubstanceSolver
-from .. import ParameterTable, RowCollector
-from ..units import Quantity, Unit
 
 class Substance(Composite, Component, Matter):
     

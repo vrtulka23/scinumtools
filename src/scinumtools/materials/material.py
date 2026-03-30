@@ -1,4 +1,3 @@
-import numpy as np
 import re
 from typing import Union
 
@@ -7,7 +6,6 @@ from .matter import Matter
 from .composite import Composite
 from .substance import Substance
 from .material_solver import MaterialSolver
-from ..units import Quantity, Unit
 
 class Material(Composite, Matter):
     

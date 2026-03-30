@@ -1,9 +1,6 @@
-from bs4 import BeautifulSoup
-import json
 
 from .settings import *
 from .rst_parser import ParseRST
-from ..item_parameter import ParType
 from ..documentation import Documentation
 
 class ReferencesSection:

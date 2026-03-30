@@ -1,13 +1,11 @@
-import numpy as np
-import os, sys
+import os
+import sys
 sys.path.insert(0, os.environ['DIR_SOURCE'])
 import requests
 from bs4 import BeautifulSoup
-import json
 import re
 
-from scinumtools import ProgressBar, CachedFunction
-from scinumtools.units import Quantity
+from scinumtools import CachedFunction
 
 path_materials = os.environ['DIR_SOURCE']+'/scinumtools/materials'
 
@@ -74,6 +72,8 @@ def build_periodic_table():
         text = "\n".join(text)
         
         # test if we produced a valid Python code
+        PT_HEADER = None
+        PT_DATA = None
         exec(text, globals())
         assert PT_HEADER
         assert PT_DATA

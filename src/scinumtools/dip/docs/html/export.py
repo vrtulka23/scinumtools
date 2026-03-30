@@ -60,7 +60,7 @@ class ExportDocsHTML:
         # parse menu
         
         menu = html.find(id='menu')
-        row = BeautifulSoup(f"<div><a href='./index.html'>Index</a></div>", 'html.parser')
+        row = BeautifulSoup("<div><a href='./index.html'>Index</a></div>", 'html.parser')
         menu.append(row)
 
         for i2, (name, settings) in enumerate(sections.items()):

@@ -40,8 +40,8 @@ class ProgressBar:
         else:
             rt = 0
         et = time.time()-self.time_start
-        text += f" Time "+self._time_text(et)
-        text += f"/"+self._time_text(rt+et)
+        text += " Time "+self._time_text(et)
+        text += "/"+self._time_text(rt+et)
         return text
         
     def close(self):
@@ -55,11 +55,11 @@ class ProgressBar:
         if info:
             pbar += f"   {info}"
         # Clean previous line
-        print("\033[A"+" "*(self.size+2)+f"\033[A")
+        print("\033[A"+" "*(self.size+2)+"\033[A")
         # Print a new line
         i = int(np.floor(self.size*self.current/self.nsteps))
         pbar = f"{pbar:{self.size}s}"
-        pbar = "\033[;7m"+pbar[:i]+"\033[;0m"+pbar[i:]+"\033[;0m";
+        pbar = "\033[;7m"+pbar[:i]+"\033[;0m"+pbar[i:]+"\033[;0m"
         print(f"|{pbar}|")
         # Update deque
         self.times.append(time.time())

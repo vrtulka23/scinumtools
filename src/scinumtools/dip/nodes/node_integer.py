@@ -4,7 +4,7 @@ import numpy as np
 from ...units import Unit, UnitEnvironment
 from .node_base import BaseNode
 from .node_select import SelectNode
-from ..datatypes import IntegerType,FloatType
+from ..datatypes import IntegerType
 from ..solvers import NumericalSolver, FunctionSolver
 
 class IntegerNode(BaseNode, SelectNode):

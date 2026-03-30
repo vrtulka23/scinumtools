@@ -1,5 +1,4 @@
 import numpy as np
-import itertools
 import matplotlib.pyplot as plt
 
 quant = ['Np','B','Bm/BmW/BW','BV/BuV','BuA','BOhm','BSPL','BSIL','BSWL','PR/AR','W','V','A','Ohm','Pa','W/m2']

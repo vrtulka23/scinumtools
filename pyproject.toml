@@ -25,3 +25,6 @@ classifiers = [
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.ruff]
+target-version = "py38"

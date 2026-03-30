@@ -1,11 +1,7 @@
-import numpy as np
-import pytest
-from math import isclose
-import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.units import *
+from scinumtools.units import Dimensions, Fraction
     
 def test_dimensions():
 

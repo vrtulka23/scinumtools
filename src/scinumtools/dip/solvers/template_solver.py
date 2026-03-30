@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import numpy as np
 from inspect import getframeinfo, stack
 
 from ..environment import Environment

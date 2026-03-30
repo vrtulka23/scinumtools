@@ -1,12 +1,9 @@
-import numpy as np
-import pytest
 from math import isclose
 from io import StringIO 
-import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.units import Quantity, Unit 
+from scinumtools.units import Quantity 
 from scinumtools.materials import *
 
 class Capturing(list):

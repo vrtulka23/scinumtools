@@ -1,10 +1,10 @@
-import sys, os
+import sys
 import pytest
 import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.units import Quantity
-from scinumtools.dip import DIP, Environment
+from scinumtools.dip import DIP
 from scinumtools.dip.settings import Format
 from scinumtools.dip.datatypes import IntegerType, FloatType, StringType, BooleanType
 from scinumtools.dip.solvers import TemplateSolver

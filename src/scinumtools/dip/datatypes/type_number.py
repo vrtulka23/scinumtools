@@ -1,5 +1,4 @@
 import numpy as np
-from math import isclose
 
 from ...units import Quantity, UnitEnvironment
 from .type import Type

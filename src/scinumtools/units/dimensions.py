@@ -1,6 +1,4 @@
-import numpy as np
 from dataclasses import dataclass, field #, fields
-from typing import Union
 
 from .fraction import Fraction
 from .settings import DIMENSION_LIST

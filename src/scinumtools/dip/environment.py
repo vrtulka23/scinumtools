@@ -1,9 +1,8 @@
 import numpy as np
-from typing import List, Dict, Union
 from dataclasses import dataclass, field
 import copy
 
-from ..units import Quantity, UnitEnvironment
+from ..units import Quantity
 from .datatypes import NumberType
 from .settings import *
 from .lists import *
@@ -59,13 +58,13 @@ class Environment:
                 nodes = self.sources[source].query(query, namespace, tags=tags)
         else:         # use values parsed in the current file
             if not self.nodes:
-                raise Exception(f"Local nodes are not available for DIP import:", path)
+                raise Exception("Local nodes are not available for DIP import:", path)
             nodes = self.nodes.query(query, tags=tags)
         if count:
             if isinstance(count, list) and len(nodes) not in count:
-                raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
+                raise Exception("Path returned invalid number of nodes:", path, count, len(nodes))
             elif np.isscalar(count) and len(nodes)!=count:
-                raise Exception(f"Path returned invalid number of nodes:", path, count, len(nodes))
+                raise Exception("Path returned invalid number of nodes:", path, count, len(nodes))
         return nodes
 
     def data(self, format:Format=Format.VALUE, verbose:bool=False, query:str=None, tags:list=None):

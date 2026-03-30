@@ -82,11 +82,11 @@ def AtomParser(string=None):
     if prefkeys:
         prefix = max(prefkeys, key=len)
         if isinstance(UNIT_STANDARD[base].prefixes,list) and prefix not in UNIT_STANDARD[base].prefixes:
-            raise Exception(f"Unit can have only following prefixes:", UNIT_STANDARD[base].prefixes, prefix)
+            raise Exception("Unit can have only following prefixes:", UNIT_STANDARD[base].prefixes, prefix)
         elif UNIT_STANDARD[base].prefixes is True and prefix not in UNIT_PREFIXES.keys():
-            raise Exception(f"Unknown unit prefix:", string_bak)
+            raise Exception("Unknown unit prefix:", string_bak)
         elif UNIT_STANDARD[base].prefixes is False:
-            raise Exception(f"Unit cannot have any prefixes:", base)
+            raise Exception("Unit cannot have any prefixes:", base)
         unitid = f"{prefix:s}{SYMBOL_UNITID}{unitid}"
     elif len(string)>1:
         raise Exception("Unknown unit prefix:", string)

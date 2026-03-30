@@ -10,7 +10,6 @@ from .node_constant import ConstantNode
 from .node_format import FormatNode
 from .node_condition import ConditionNode
 from .node_group import GroupNode
-from .node_import import ImportNode
 from .node_mod import ModNode
 from .node_boolean import BooleanNode
 from .node_integer import IntegerNode

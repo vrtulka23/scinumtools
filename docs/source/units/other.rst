@@ -39,7 +39,7 @@ Basic arithmetic operations of array quantities with their modifications are sum
 
 .. code-block::
 
-   >>> from scinumtools.units import *
+   >>> from scinumtools.units import Quantity
    >>> Quantity([2,3,4], 'm') + Quantity(2, 'cm')
    Quantity([2.02 3.02 4.02] m)
    >>> Quantity([2,3,4], 'm')**2

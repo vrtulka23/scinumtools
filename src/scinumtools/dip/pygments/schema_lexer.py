@@ -1,4 +1,4 @@
-from pygments.lexer import RegexLexer, include, bygroups
+from pygments.lexer import RegexLexer, bygroups
 from pygments.token import Token
     
 class SchemaLexer(RegexLexer):

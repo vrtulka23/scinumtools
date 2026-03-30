@@ -1,4 +1,3 @@
-import numpy as np
 import json
 
 from .export import ExportConfig

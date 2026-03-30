@@ -1,18 +1,11 @@
 from bs4 import BeautifulSoup
-import json
 from pathlib import Path
 from pygments import highlight
-from pygments.lexers import PythonLexer
 from pygments.formatters import get_formatter_by_name
-from pygments.styles import get_style_by_name
-from pygments.token import STANDARD_TYPES, Token
 from pygments.formatters import HtmlFormatter
-import re
 
 from .settings import *
-from ..item_parameter import ParType
 from ..documentation import Documentation
-from ...settings import Sign, ROOT_SOURCE
 from ...pygments import SyntaxLexer, StyleLexer
 
 class SettingsSection:
@@ -27,7 +20,7 @@ class SettingsSection:
     
     def __init__(self, docs: Documentation, **kwargs):
         self.docs = docs
-        self.html = BeautifulSoup(f"", 'html.parser')
+        self.html = BeautifulSoup("", 'html.parser')
                 
     def highlight_python_code(self, code, target):
         # format text using pygments

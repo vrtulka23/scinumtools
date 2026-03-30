@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union
+from typing import Dict
 
 @dataclass
 class FunctionList:

@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import Dict
 from dataclasses import dataclass, field
 import copy
 

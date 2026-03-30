@@ -1,4 +1,3 @@
-import numpy as np
 import toml
 
 from .export import ExportConfig

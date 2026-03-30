@@ -1,5 +1,4 @@
-import sys, os
-import pytest
+import sys
 import numpy as np
 sys.path.insert(0, 'src')
 

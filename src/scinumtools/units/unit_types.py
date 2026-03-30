@@ -42,11 +42,11 @@ class StandardUnitType(UnitType):
 
     def _istype(self):
         if self.baseunits1.dimensions==self.baseunits2.dimensions:
-            self.conversion = (f"_convert_linear",)
+            self.conversion = ("_convert_linear",)
         elif -self.baseunits1.dimensions==self.baseunits2.dimensions:
-            self.conversion = (f"_convert_inversed",)
+            self.conversion = ("_convert_inversed",)
         elif self.baseunits1.nobase and self.baseunits2.units==['rad']:
-            self.conversion = (f"_convert_linear",)
+            self.conversion = ("_convert_linear",)
         else:
             return False
         return True

@@ -1,13 +1,7 @@
-from reportlab.platypus import Paragraph, Table, Spacer, PageBreak
+from reportlab.platypus import Paragraph, Table, Spacer
 from reportlab.lib.units import inch
-import numpy as np
-import re
 
 from .settings import *
-from ..settings import DocsType
-from ...nodes import Node, ImportNode
-from ...settings import Order, Sign, Keyword, EnvType
-from ...environment import Environment
 
 class ImportsSection:
     
@@ -68,7 +62,7 @@ class ImportsSection:
         
     def parse(self):
         blocks = []
-        blocks.append(Paragraph(Title(f"Imported nodes"), H2) )
+        blocks.append(Paragraph(Title("Imported nodes"), H2) )
         for item in self.data:
             blocks.append(Spacer(1,0.1*inch))
             blocks.append(self.parse_item(item))

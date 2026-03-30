@@ -1,11 +1,7 @@
-import numpy as np
-import pytest
-from math import isclose
-import os
 import sys
 sys.path.insert(0, 'src')
 
-from scinumtools.units import *
+from scinumtools.units import Magnitude, Quantity
     
 def test_initialization():
     assert str(Magnitude(1))           == "1.000e+00"           # no error

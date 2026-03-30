@@ -1,8 +1,7 @@
-from typing import Union, List
+from typing import Union
 import numpy as np
 
 from .type import Type
-from .type_boolean import BooleanType
 
 class StringType(Type):    
     value: Union[str,list]

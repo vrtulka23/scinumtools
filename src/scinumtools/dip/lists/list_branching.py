@@ -1,10 +1,8 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union
-import numpy as np
+from typing import List, Dict
 import re
 
 from ..settings import Sign, Keyword
-from ..datatypes import BooleanType
 
 @dataclass
 class Case:
@@ -110,7 +108,7 @@ class BranchingList:
                 self._close_branch()
                 return
             else:
-                raise Exception(f"Invalid condition:", node.code)
+                raise Exception("Invalid condition:", node.code)
             case_id = fr"{Sign.CONDITION}{m.group(2)}"
             if path_new==path_old:  # same branch
                 branch_part = self._switch_case(case_id, node.case_type)
@@ -138,7 +136,7 @@ class BranchingList:
                 case_type   = node.case_type,    # case type CASE/ELSE/END
             )
         else:
-            raise Exception(f"Invalid condition:", node.code)
+            raise Exception("Invalid condition:", node.code)
 
     def prepare_node(self, node):
         """ Manage parameter nodes in a condition

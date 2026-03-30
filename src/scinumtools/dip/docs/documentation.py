@@ -1,5 +1,3 @@
-import numpy as np
-from typing import List, Dict, Union
 from dataclasses import dataclass, field
 import copy
 
@@ -10,8 +8,8 @@ from .item_import import ImportItem
 from .item_unit import UnitItem
 from .item_source import SourceItem
 from ..environment import Environment
-from ..nodes import ModNode, ImportNode, StringNode
-from ..settings import Sign, Keyword, EnvType
+from ..nodes import ImportNode
+from ..settings import EnvType
 
 @dataclass
 class Documentation:

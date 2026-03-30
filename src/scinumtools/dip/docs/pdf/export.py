@@ -1,12 +1,9 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, KeepTogether, PageBreak
+from reportlab.platypus import Paragraph, Spacer, PageBreak
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.tableofcontents import TableOfContents
-from reportlab.platypus.flowables import KeepTogether 
 from reportlab.platypus.frames import Frame
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import cm
-import numpy as np
-from dataclasses import dataclass
 
 from .settings import *
 from .node import NodeSection
@@ -17,9 +14,6 @@ from .parameters import ParametersSection
 from .units import UnitsSection
 from .sources import SourcesSection
 from ..documentation import Documentation
-from ..settings import DocsType
-from ...lists import NodeList
-from ...nodes import Node, BooleanNode, IntegerNode, FloatNode, StringNode, ModNode, ImportNode
 
 def pageSettings(canvas, doc):
     canvas.saveState()

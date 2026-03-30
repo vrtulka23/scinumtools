@@ -1,7 +1,5 @@
-import numpy as np
 import re
 
-from .substance import Substance
 from ..solver import *
 
 class MaterialSolver:

@@ -1,7 +1,5 @@
-import json
 
 from .node_base import BaseNode
-from ..datatypes import StringType
 
 class DescriptionNode(BaseNode):
     keyword: str = 'description'

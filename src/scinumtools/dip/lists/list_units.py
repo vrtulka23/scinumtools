@@ -1,8 +1,8 @@
-from typing import List, Dict, Union
+from typing import Dict
 from dataclasses import dataclass, field
 
 from ..settings import Sign
-from ...units import Quantity, UnitEnvironment
+from ...units import Quantity
 
 @dataclass
 class UnitList:

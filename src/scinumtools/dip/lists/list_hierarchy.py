@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Union
-import numpy as np
+from typing import List
 
 from ..settings import Sign
 

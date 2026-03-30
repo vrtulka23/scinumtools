@@ -1,4 +1,4 @@
-from PIL import Image, ExifTags
+from PIL import Image
 import json
 from enum import Enum
 

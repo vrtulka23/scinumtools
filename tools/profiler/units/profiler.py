@@ -1,15 +1,11 @@
 import numpy as np
-import pytest
-from math import isclose
-import os
 import pandas as pd
 import sys
-import time
 import cProfile
 import pstats
 sys.path.insert(0, '../../../src')
 
-from scinumtools.units import *
+from scinumtools.units import quant
 from scinumtools import RowCollector
 
 if __name__ == '__main__':

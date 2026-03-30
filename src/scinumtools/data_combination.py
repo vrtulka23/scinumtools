@@ -1,5 +1,4 @@
 import itertools
-from typing import Union
 
 class DataCombination:
     _items: list

@@ -4,10 +4,8 @@ import sys
 sys.path.insert(0, os.environ['DIR_SOURCE'])
 
 from scinumtools import RowCollector, ParameterTable
-from scinumtools.units import Dimensions
 from scinumtools.units.settings import *
 from scinumtools.units.unit_types import *
-from scinumtools.dip import DIP
 from scinumtools.materials.periodic_table import *
 
 path_docs_static = os.environ['DIR_DOCS']+'/source/_static/tables'

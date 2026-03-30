@@ -1,11 +1,10 @@
-import sys, os
+import sys
+import os
 import pytest
-import numpy as np
 sys.path.insert(0, 'src')
 
 from scinumtools.dip import DIP
 from scinumtools.dip.docs import ExportDocsPDF
-from scinumtools.dip.docs.settings import DocsType
 from scinumtools.dip.docs.item_parameter import ParType
 
 @pytest.fixture

@@ -7,7 +7,6 @@ def build_thumbnail_image():
     
     from scinumtools import ThumbnailImage
     import matplotlib.pyplot as plt
-    import numpy as np
     
     size = np.pi
     size1 = (100, 100)
@@ -49,7 +48,6 @@ def build_normalize_data():
     
     from scinumtools import NormalizeData
     import matplotlib.pyplot as plt
-    import numpy as np
     
     with NormalizeData(xaxis='lin', yaxis='lin') as nd:
         

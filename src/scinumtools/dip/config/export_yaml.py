@@ -1,4 +1,3 @@
-import numpy as np
 import yaml
 
 from .export import ExportConfig
