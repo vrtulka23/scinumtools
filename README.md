@@ -200,3 +200,10 @@ The alternative Python module [dipl](https://github.com/vrtulka23/dipl) implemen
 children str[3] = ["John","Jenny","Jonah"]
 car bool = true
 ```
+## 🤝 Contributing, Issues & License
+
+Contributions are welcome. If you find a bug, have a feature request, or want to improve the code or documentation, please open an issue or submit a pull request on GitHub.
+
+* **Issues:** Use the issue tracker to report bugs, suggest features, or ask questions
+* **Contributing:** Fork the repository, create a feature branch, and open a pull request with a clear description of your changes
+* **License:** This project is released under the MIT License (see LICENSE file for details)
