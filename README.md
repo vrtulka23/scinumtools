@@ -10,10 +10,50 @@ Python package `scinumtools` contains essential tools for scientific and numeric
 
 The new C++ implementation of this library is currently developed in a new [SciNumTools v3 repository](https://github.com/vrtulka23/scinumtools3)
 
+## What problem does this solve?
+
+Modern scientific and engineering workflows often require combining **symbolic expressions, numerical evaluation, unit handling, and material-specific data** into a single pipeline. In practice, these components are typically handled by separate tools:
+
+* numerical computation (e.g. NumPy/SciPy)
+* symbolic manipulation (e.g. SymPy)
+* unit systems (e.g. Pint)
+* configuration formats such as YAML or JSON
+
+This fragmentation introduces several recurring problems:
+
+* **Inconsistent representations** between symbolic and numerical stages
+* **Manual and error-prone unit conversions**
+* **Difficult integration of domain data** (e.g. material properties)
+* **Lack of validation for input parameters**, leading to silent errors or physically invalid configurations
+* **Configuration formats (e.g. YAML) treat values as plain scalars**, without native support for physical units or semantic constraints
+
+In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
+
+This project addresses these issues by providing a **cohesive framework** that integrates expression parsing, evaluation, unit-aware computation, and parameter validation into a single, consistent environment. The goal is not to replace established numerical libraries, but to **bridge the gap between symbolic definitions, physical units, structured configuration, and domain-specific data** in a lightweight and extensible way.
+
+## Key features
+
+* **Expression parsing and evaluation**  
+  A flexible system for defining and evaluating mathematical expressions, enabling workflows that combine symbolic structure with numerical execution.
+* **Integrated unit handling**  
+  Built-in support for physical units allows calculations to remain consistent and reduces the risk of unit-related errors during model development.
+* **Validated parameter definitions**  
+  Parameters can be defined with constraints and semantic meaning, enabling early detection of invalid, inconsistent, or incomplete inputs.
+* **Unit-aware configuration support**  
+  Provides a structured alternative to plain YAML-style configurations, where values, units, and constraints are handled explicitly rather than implicitly.
+* **Material property integration**  
+  Enables structured inclusion of material-specific parameters directly into computational workflows, avoiding scattered or hard-coded values.
+* **Domain-oriented design (DIP support)**  
+  Supports domain-informed processing pipelines, allowing users to encode problem-specific logic while maintaining a clear computational structure.
+* **Modular and extensible architecture**  
+  Components such as parsing, evaluation, and data handling are composable and adaptable to different scientific domains.
+* **Lightweight and Python-native**  
+  Designed to integrate easily with existing Python ecosystems without imposing heavy dependencies or complex setup requirements.
+
 ## Documentation
 
 For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
-The documentation is currently in a process of writing, so any comments and suggestions for improvement are heartily welcomed.
+Any comments and suggestions for improvement are heartily welcomed.
 
 ## Quick start
 
