@@ -8,10 +8,6 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
-> [!NOTE]
-> SciNumTools v2 is implemented in Python and targets Python-based workflows. In contrast, [SciNumTools v3](https://github.com/vrtulka23/scinumtools3) is implemented in C++, moving parameter parsing, unit handling, and validation into a compiled core.
-> This allows configurations to be processed directly within performance-critical code and enables integration with HPC systems and other languages without relying on Python.
-
 ## What problem does this solve?
 
 Modern scientific and engineering workflows often require combining **symbolic expressions, numerical evaluation, unit handling, and material-specific data** into a single pipeline. In practice, these components are typically handled by separate tools:
@@ -32,6 +28,10 @@ This fragmentation introduces several recurring problems:
 In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
 
 This project addresses these issues by providing a **cohesive framework** that integrates expression parsing, evaluation, unit-aware computation, and parameter validation into a single, consistent environment. The goal is not to replace established numerical libraries, but to **bridge the gap between symbolic definitions, physical units, structured configuration, and domain-specific data** in a lightweight and extensible way.
+
+> [!NOTE]
+> SciNumTools v2 is implemented in Python and targets Python-based workflows. In contrast, [SciNumTools v3](https://github.com/vrtulka23/scinumtools3) is implemented in C++, moving parameter parsing, unit handling, and validation into a compiled core.
+> This allows configurations to be processed directly within performance-critical code and enables integration with HPC systems and other languages without relying on Python.
 
 ## Key features
 
