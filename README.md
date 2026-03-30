@@ -8,6 +8,8 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
+It is intedended for computational and simulation-focused scientists and engineers—especially Python users dealing with units, configurations, and complex numerical workflows.
+
 ## 🔍 What problem does this solve?
 
 Modern scientific and engineering workflows often require combining **symbolic expressions, numerical evaluation, unit handling, and material-specific data** into a single pipeline. In practice, these components are typically handled by separate tools:
