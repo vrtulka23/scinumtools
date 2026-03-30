@@ -23,7 +23,7 @@ This fragmentation introduces several recurring problems:
 * **Manual and error-prone unit conversions**
 * **Difficult integration of domain data** (e.g. material properties)
 * **Lack of validation for input parameters**, leading to silent errors or physically invalid configurations
-* **Configuration formats lacks native support for domain semantics**, requiring external interpretation layers
+* **Configuration formats lack native support for domain semantics**, requiring external interpretation layers
 
 In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
 
@@ -65,7 +65,9 @@ The newest release of `scinumtools` is available on [PyPi](https://pypi.org/proj
 pip3 install scinumtools
 ```
 
-Besides several useful tools, the package `scinumtools` consists of four main submodules: expression solver, physical units, material properties and DIP.
+The package is organized into four main submodules: expression solver, physical units, material properties, and **DIP (Dimensional Input Parameters)**, which provides structured, unit-aware configuration and validation.
+
+The examples below demonstrate individual components. For complete workflows, see the `examples` directory or test cases in `tests` directory.
 
 ### 🧮 Expression Solver
 
@@ -107,7 +109,7 @@ Quantity(2.334e+08 erg)
 >>> u = Unit()                                # calculations with units
 >>> 34*u.cm + 53*u.dm  
 Quantity(5.640e+02 cm)
->>> Quantity(23.34, 'cm', abse=0.03)          # uncertainities
+>>> Quantity(23.34, 'cm', abse=0.03)          # uncertainties
 Quantity(2.3340(30)e+01 cm)
 >>> Quantity(3, 'A').value('dBA')             # logarithmic units
 9.542425094393248
