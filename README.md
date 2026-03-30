@@ -23,7 +23,7 @@ This fragmentation introduces several recurring problems:
 * **Manual and error-prone unit conversions**
 * **Difficult integration of domain data** (e.g. material properties)
 * **Lack of validation for input parameters**, leading to silent errors or physically invalid configurations
-* **Configuration formats (e.g. YAML) lacks native support for domain semantics**, requiring external interpretation layers
+* **Configuration formats lacks native support for domain semantics**, requiring external interpretation layers
 
 In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
 
