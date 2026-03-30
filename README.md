@@ -1,6 +1,8 @@
 [![PyPI](https://img.shields.io/pypi/v/scinumtools)](https://pypi.org/project/scinumtools)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/scinumtools)](https://pypi.org/project/scinumtools/)
 [![PyTest](https://github.com/vrtulka23/scinumtools/actions/workflows/pytest.yml/badge.svg)](https://github.com/vrtulka23/scinumtools/actions/workflows/pytest.yml)
+[![License](https://img.shields.io/github/license/vrtulka23/scinumtools)](https://github.com/vrtulka23/scinumtools/blob/main/LICENSE)
+[![Docs](https://img.shields.io/badge/docs-online-blue)](https://vrtulka23.github.io/scinumtools/)
 
 # SciNumTools v2
 
