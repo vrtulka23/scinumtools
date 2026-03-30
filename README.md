@@ -68,7 +68,7 @@ Besides several useful tools, the package `scinumtools` consists of four main su
 ### Expression Solver
 
 Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of other submodules.
-For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html), please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scnt-exs).
+For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html), please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scinumtools3).
 
 ``` python
 >>> from scinumtools.solver import *
@@ -95,7 +95,7 @@ For more description and examples of [Expression Solver](https://vrtulka23.githu
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features a unit convertor, supports calculations with uncertainties and can be used in combination with third-party libraries like NumPy, or Decimal.
 For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html), please refer to the documentation.
-A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scnt-puq) is currently available also as a Python module [pypuq](https://pypi.org/project/pypuq) on PyPi.
+A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scinumtools3) is currently available also as a Python module [pypuq](https://pypi.org/project/pypuq) on PyPi.
 
 ``` python
 >>> import numpy as np
@@ -157,7 +157,7 @@ expr      n[cm-3]  rho[g/cm3]            N       M[g]
 ### Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on the initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes the user interface with the code clear and straightforward. 
-For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scnt-dip/tree/main).
+For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scinumtools3).
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
