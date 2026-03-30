@@ -8,9 +8,9 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
-The new C++ implementation of this library is currently developed in a new [SciNumTools v3 repository](https://github.com/vrtulka23/scinumtools3)
+It is intedended for computational and simulation-focused scientists and engineers—especially Python users dealing with units, configurations, and complex numerical workflows.
 
-## What problem does this solve?
+## 🔍 What problem does this solve?
 
 Modern scientific and engineering workflows often require combining **symbolic expressions, numerical evaluation, unit handling, and material-specific data** into a single pipeline. In practice, these components are typically handled by separate tools:
 
@@ -25,13 +25,17 @@ This fragmentation introduces several recurring problems:
 * **Manual and error-prone unit conversions**
 * **Difficult integration of domain data** (e.g. material properties)
 * **Lack of validation for input parameters**, leading to silent errors or physically invalid configurations
-* **Configuration formats (e.g. YAML) treat values as plain scalars**, without native support for physical units or semantic constraints
+* **Configuration formats lack native support for domain semantics**, requiring external interpretation layers
 
 In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
 
 This project addresses these issues by providing a **cohesive framework** that integrates expression parsing, evaluation, unit-aware computation, and parameter validation into a single, consistent environment. The goal is not to replace established numerical libraries, but to **bridge the gap between symbolic definitions, physical units, structured configuration, and domain-specific data** in a lightweight and extensible way.
 
-## Key features
+> [!NOTE]
+> SciNumTools v2 is implemented in Python and targets Python-based workflows. In contrast, [SciNumTools v3](https://github.com/vrtulka23/scinumtools3) is implemented in C++, moving parameter parsing, unit handling, and validation into a compiled core.
+> This allows configurations to be processed directly within performance-critical code and enables integration with HPC systems and other languages without relying on Python.
+
+## ✨ Key features
 
 * **Expression parsing and evaluation**  
   A flexible system for defining and evaluating mathematical expressions, enabling workflows that combine symbolic structure with numerical execution.
@@ -50,12 +54,12 @@ This project addresses these issues by providing a **cohesive framework** that i
 * **Lightweight and Python-native**  
   Designed to integrate easily with existing Python ecosystems without imposing heavy dependencies or complex setup requirements.
 
-## Documentation
+## 📚 Documentation
 
 For more information, see the scinumtools [documentation](https://vrtulka23.github.io/scinumtools/).
 Any comments and suggestions for improvement are heartily welcomed.
 
-## Quick start
+## ⚡ Quick start
 
 The newest release of `scinumtools` is available on [PyPi](https://pypi.org/project/scinumtools/) and can be easily installed using `pip` package manager:
 
@@ -63,12 +67,14 @@ The newest release of `scinumtools` is available on [PyPi](https://pypi.org/proj
 pip3 install scinumtools
 ```
 
-Besides several useful tools, the package `scinumtools` consists of four main submodules: expression solver, physical units, material properties and DIP.
+The package is organized into four main submodules: expression solver, physical units, material properties, and **DIP (Dimensional Input Parameters)**, which provides structured, unit-aware configuration and validation.
 
-### Expression Solver
+The examples below demonstrate individual components. For complete workflows, see the `examples` directory or test cases in `tests` directory.
+
+### 🧮 Expression Solver
 
 Using `expression solver` one can quickly build a custom parser that can process numerical, logical and textual expressions. This module is an integral part of other submodules.
-For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html), please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scnt-exs).
+For more description and examples of [Expression Solver](https://vrtulka23.github.io/scinumtools/solver/index.html), please refer to the documentation. C++ implementation of this module is available in a separate [GitHub repository](https://github.com/vrtulka23/scinumtools3).
 
 ``` python
 >>> from scinumtools.solver import *
@@ -91,11 +97,11 @@ For more description and examples of [Expression Solver](https://vrtulka23.githu
 'False'
 ```
 
-### Physical Units
+### 📏 Physical Units
 
 This submodule has an aim to make calculations with `physical units` quick and easy. It includes multiple types of units, constants and implements standard numerical operations with physical quantities. Besides that, it features a unit convertor, supports calculations with uncertainties and can be used in combination with third-party libraries like NumPy, or Decimal.
 For more description and examples of [Physical Units](https://vrtulka23.github.io/scinumtools/units/index.html), please refer to the documentation.
-A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scnt-puq) is currently available also as a Python module [pypuq](https://pypi.org/project/pypuq) on PyPi.
+A C++ implementation of this module [scnt-puq](https://github.com/vrtulka23/scinumtools3) is currently available also as a Python module [pypuq](https://pypi.org/project/pypuq) on PyPi.
 
 ``` python
 >>> import numpy as np
@@ -105,7 +111,7 @@ Quantity(2.334e+08 erg)
 >>> u = Unit()                                # calculations with units
 >>> 34*u.cm + 53*u.dm  
 Quantity(5.640e+02 cm)
->>> Quantity(23.34, 'cm', abse=0.03)          # uncertainities
+>>> Quantity(23.34, 'cm', abse=0.03)          # uncertainties
 Quantity(2.3340(30)e+01 cm)
 >>> Quantity(3, 'A').value('dBA')             # logarithmic units
 9.542425094393248
@@ -113,7 +119,7 @@ Quantity(2.3340(30)e+01 cm)
 Quantity([4.796 7.681 4.472 3.162] m)
 ```
 
-### Material Properties
+### 🧱 Material Properties
 
 Simulation setups often require atomic and molecular properties of various materials. The core of this submodule, molecular expression solver, is designed to simplify calculations of such properties from a given molecular formula.
 For more descriptions and examples of [Material Properties](https://vrtulka23.github.io/scinumtools/materials/index.html), please refer to the documentation.
@@ -154,10 +160,10 @@ expr      n[cm-3]  rho[g/cm3]            N       M[g]
  sum 1.000092e+23    0.997000 1.000092e+26 997.000000
 ```
 
-### Dimensional Input Parameters
+### 🎛️ Dimensional Input Parameters
 
 `DIP` is a serialization language that was designed to collect, manage, convert, document and validate dimensional input parameters used by numerical codes. The main goal of this package is to help developers to focus less on the initialization processes mentioned above and more on actual code development. `DIP` should serve as a quick tool that makes the user interface with the code clear and straightforward. 
-For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scnt-dip/tree/main).
+For more description and examples of [DIP](https://vrtulka23.github.io/scinumtools/dip/index.html), please refer to the documentation. A C++ implementation of this library is currently being developed in a [separate GIT repository](https://github.com/vrtulka23/scinumtools3).
 
 ``` python
 >>> from scinumtools.dip import DIP, Format
@@ -194,3 +200,10 @@ The alternative Python module [dipl](https://github.com/vrtulka23/dipl) implemen
 children str[3] = ["John","Jenny","Jonah"]
 car bool = true
 ```
+## 🤝 Contributing, Issues & License
+
+Contributions are welcome. If you find a bug, have a feature request, or want to improve the code or documentation, please open an issue or submit a pull request on GitHub.
+
+* **Issues:** Use the issue tracker to report bugs, suggest features, or ask questions
+* **Contributing:** Fork the repository, create a feature branch, and open a pull request with a clear description of your changes
+* **License:** This project is released under the MIT License (see LICENSE file for details)
