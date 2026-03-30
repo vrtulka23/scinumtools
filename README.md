@@ -8,7 +8,9 @@
 
 Python package `scinumtools` contains essential tools for scientific and numerical calculations, simulation setup and data analysis. 
 
-The new C++ implementation of this library is currently developed in a new [SciNumTools v3 repository](https://github.com/vrtulka23/scinumtools3)
+> [!NOTE]
+> SciNumTools v2 is implemented in Python and targets Python-based workflows. In contrast, [SciNumTools v3](https://github.com/vrtulka23/scinumtools3) is implemented in C++, moving parameter parsing, unit handling, and validation into a compiled core.
+> This allows configurations to be processed directly within performance-critical code and enables integration with HPC systems and other languages without relying on Python.
 
 ## What problem does this solve?
 
@@ -25,7 +27,7 @@ This fragmentation introduces several recurring problems:
 * **Manual and error-prone unit conversions**
 * **Difficult integration of domain data** (e.g. material properties)
 * **Lack of validation for input parameters**, leading to silent errors or physically invalid configurations
-* **Configuration formats (e.g. YAML) treat values as plain scalars**, without native support for physical units or semantic constraints
+* **Configuration formats (e.g. YAML) lacks native support for domain semantics**, requiring external interpretation layers
 
 In particular, while formats like YAML are widely used for configuring simulations and models, they do not treat **units as first-class entities**. As a result, units are either omitted, encoded as strings, or handled externally, which increases the risk of misinterpretation and inconsistencies. Similarly, parameter definitions are typically not validated beyond basic typing, making it easy to define incomplete, incompatible, or physically meaningless inputs.
 
