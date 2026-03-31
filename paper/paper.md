@@ -35,19 +35,40 @@ Scientific software development often requires combining multiple independent to
 In practice, integrating these components requires additional code for:
 
 - parsing and validating input parameters,
+- documentation of the parameters,
 - enforcing dimensional consistency,
 - evaluating derived quantities,
 - maintaining reproducible configurations.
 
-This leads to duplicated validation logic, inconsistent abstractions, and error-prone workflows. For example, combining YAML-based configuration with a unit library requires manual parsing and explicit validation of units and expressions, which is not handled by existing tools.
+This leads to duplicated validation logic, inconsistent abstractions, and error-prone workflows. For example, combining YAML-based configuration with a unit library typically requires manual parsing and explicit validation of units and expressions—tasks not handled by existing tools. As a result, scientists often spend significant time developing and testing their own input handling and validation code instead of focusing on the underlying scientific questions.
 
-`SciNumTools2` addresses this gap by providing a unified framework in which parameter definition, unit handling, and expression evaluation are part of the same execution model.
+`SciNumTools2` addresses this gap by providing a unified framework in which parameter definition, unit handling, and expression evaluation are integrated into a single execution model. This approach enables scientists to move quickly and safely past the initial hurdles of parameter definition, validation, and documentation, allowing them to concentrate on solving physics or engineering problems.
 
-# Functionality and design
+# State of the field
 
-The architecture of `SciNumTools2` consists of four integrated components.
+Existing libraries address parts of the problem but do not provide an integrated workflow.
 
-## Unit-aware numerical system
+Pint [@pint] supports unit-aware computation but does not define how parameters are structured or evaluated.
+SymPy [@sympy] and asteval [@asteval] evaluate expressions but are not designed for unit-aware parameter workflows.
+Configuration formats such as YAML [@yaml122] and TOML [@toml100] provide structured data but lack dimensional validation and computation.
+
+In contrast, `SciNumTools2` combines these capabilities into a single system where parameters, units, and expressions are defined and evaluated together. This reduces boilerplate code and ensures consistency across the workflow.
+
+# Software design
+
+The architecture of `SciNumTools2` consists of four integrated components: the **Expression Solver** (EXS), **Physical Units & Quantities** (PUQ), the **Dimensional Input Parameter** (DIP) parser, and the **Material Properties** (MAT) solver. At its core is the general-purpose EXS engine, which is utilized across all other components. The PUQ and MAT modules can operate as standalone tools or be seamlessly integrated within the DIP parser.
+
+## Expression solver (EXS)
+
+An extensible expression parser allows evaluation of mathematical expressions involving variables, functions, and units. Features include:
+
+- evaluation of user-defined expressions,
+- integration with unit-aware quantities,
+- extensibility via custom functions and operators.
+
+This enables definition of derived quantities directly within parameter specifications.
+
+## Physical Units & Quantities (PUQ)
 
 The framework provides physical quantities with associated units, supporting:
 
@@ -59,39 +80,41 @@ The framework provides physical quantities with associated units, supporting:
 
 Invalid operations (e.g., adding incompatible units) are detected during computation.
 
-## Expression evaluation engine
-
-An extensible expression parser allows evaluation of mathematical expressions involving variables, functions, and units. Features include:
-
-- evaluation of user-defined expressions,
-- integration with unit-aware quantities,
-- extensibility via custom functions and operators.
-
-This enables definition of derived quantities directly within parameter specifications.
-
 ## Dimensional Input Parameters (DIP)
 
 `SciNumTools2` introduces **Dimensional Input Parameters (DIP)**, a lightweight domain-specific language for defining structured, unit-aware parameters with dependencies.
 
-A minimal example:
+A minimal example demonstrating the definition of a simulation domain for a typical solar system using DIP settings, along with their parsing in a Python script, is given below.
 
+**settings.dip**
+```DIP
+solar_system
+  semimajor_axis float = 30.07 AU      # semimajor axis of the solar system in astronomical units
+  sphere 
+    radius float = {?semimajor_axis}   # inject default value
+  planets
+    count int = 8                     # number of planets
+    names str[8] = ["Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune"] # planet names
+```
+
+**main.py**
 ```python
 >>> from scinumtools.dip import DIP, Format
 >>> with DIP() as dip:
->>>     dip.add_source("settings", 'settings.dip')
->>>     dip.add_unit("length", 1, "m")
->>>     dip.add_string("""
->>>     box
->>>       width float = 23 [length]
->>>       height float = 11.5 cm
->>>     sphere
->>>       radius float = {settings?sphere.radius}
->>>     box.height = 2 m
+>>>     dip.add_source("settings", 'settings.dip')  # load general settings
+>>>     dip.add_unit("length", 1e6, "km")           # define custom units: million-kilometer
+>>>     dip.add_string("""                          # modify settings
+>>>     box.width = 2.34e3 [length]                 # modified with custom units
+>>>     box.height = 1e9                            # modified assuming the original units
+>>>     sphere.radius = {settings?sphere.radius}    # injected value from the source
 >>>     """)
 >>>     env = dip.parse()
->>>     env.data(Format.TUPLE)
+>>>     data = env.data(Format.TUPLE)
+>>>     print(data)
 {'box.width': (23.0, '[length]'), 'box.height': (200, 'cm'), 'sphere.radius': (34.2, 'mm')}
+# These parameters are parsed and validated for subsequent use in the following Python code...
 ```
+
 The parameter `box.height`, defined as `2 m`, is automatically converted to `200 cm` to match the internal representation, with dimensional consistency enforced during evaluation. Custom units (e.g., `[length]`) can be defined and used transparently within expressions. Parameters such as `sphere.radius` may reference values from both local definitions and external sources.
 
 DIP supports:
@@ -104,40 +127,37 @@ DIP supports:
 
 This removes the need for separate configuration parsing and validation logic.
 
-## Domain-level modeling utilities
+## Material Properties (MAT)
 
-The framework provides higher-level abstractions for representing structured scientific entities such as materials and compositions. These build on the unit and expression systems to support:
+The framework provides higher-level abstractions for representing structured scientific entities such as elements, substances and materials and their corresponding compositions. These build on the unit and expression systems to support:
 
 - computation of derived physical properties,
 - structured scientific data representation,
 - integration into computational pipelines.
   
-# Comparison with existing tools
+## Example use case
 
-Existing libraries address parts of the problem but do not provide an integrated workflow.
+A typical workflow with `SciNumTools2` involves defining input parameters using the DIP component, parsing and validating these parameters together with their physical units, evaluating derived expressions, and performing computations with guaranteed dimensional consistency.
 
-Pint [@pint] supports unit-aware computation but does not define how parameters are structured or evaluated.
-SymPy [@sympy] and asteval [@asteval] evaluate expressions but are not designed for unit-aware parameter workflows.
-Configuration formats such as YAML [@yaml122] and TOML [@toml100] provide structured data but lack dimensional validation and computation.
+In a representative simulation setup, derived quantities (e.g., area, density, or rates) can be specified directly within the parameter definitions. These quantities are then automatically evaluated and validated prior to execution, reducing the risk of unit inconsistencies and runtime errors.
 
-In contrast, `SciNumTools2` combines these capabilities into a single system where parameters, units, and expressions are defined and evaluated together. This reduces boilerplate code and ensures consistency across the workflow.
+`SciNumTools2` is implemented in Python and distributed via the Python Package Index (PyPI). The source code is publicly available on GitHub under an OSI-approved license, with accompanying documentation and usage examples provided online.
 
-# Example use case
+The framework follows a modular design: it can be used as an integrated workflow system or as a set of independent components, such as for unit handling, expression evaluation, or parameter parsing.
 
-A typical workflow consists of:
+# Research impact statement
 
-Defining input parameters using DIP,
-Parsing and validating parameters with units,
-Evaluating derived expressions,
-Performing computations with guaranteed dimensional consistency.
+The software implements core abstractions for dimensional input parameter handling and physical unit-aware computations, aimed at improving robustness and clarity in scientific simulation workflows. These concepts have been applied by the author in a number of astrophysical simulation studies, where they supported the consistent handling of physical quantities across complex parameter spaces.
 
-For example, in a simulation setup, derived quantities (e.g., area, density, or rates) can be defined directly in the parameter specification and automatically validated before execution.
+While these initial applications were based on earlier, non-public implementations, they informed the design of the present, consolidated framework. The current version generalizes these ideas into a reusable and well-documented software package, with explicit support for reproducible workflows and transparent handling of units and parameters.
 
-# Availability and reuse
+Related approaches have also been explored in plasma physics simulation contexts, including fusion and laser–matter interaction scenarios, further motivating the generality of the design.
 
-`SciNumTools2` is implemented in Python and distributed via the Python Package Index (PyPI). The source code is available on GitHub under an OSI-approved license, with documentation and usage examples provided online.
+The project is developed as an open-source tool with a modular architecture, documented examples, and test coverage to facilitate independent use. Initial external contributions and repository activity indicate emerging interest, and the software is structured to support broader adoption in computational research settings where dimensional consistency and parameter management are critical.
 
-The framework is modular and can be used either as a complete workflow system or as individual components (e.g., unit handling or parameter evaluation).
+# AI usage disclosure
+
+No generative AI tools were used in the implementation of the software itself; all source code was written by the author. Generative AI tools were used in a limited supporting role, including (i) identifying relevant coding standards and software design practices, (ii) polishing and improving the clarity of the manuscript text, and (iii) providing illustrative code examples for exploration. All AI-assisted outputs were carefully reviewed, validated, and, where necessary, revised by the author to ensure correctness, consistency, and alignment with the scientific and technical goals of the project.
 
 # Acknowledgements
 
