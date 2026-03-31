@@ -46,13 +46,17 @@ This leads to duplicated validation logic, inconsistent abstractions, and error-
 
 # State of the field
 
-Existing libraries address parts of the problem but do not provide an integrated workflow.
+Existing tools address individual aspects of scientific parameter handling but do not provide an integrated, unit-aware workflow combining structured parameter definition, dependency resolution, and expression evaluation.
 
-Pint [@pint] supports unit-aware computation but does not define how parameters are structured or evaluated.
-SymPy [@sympy] and asteval [@asteval] evaluate expressions but are not designed for unit-aware parameter workflows.
-Configuration formats such as YAML [@yaml122] and TOML [@toml100] provide structured data but lack dimensional validation and computation.
+Unit libraries such as **Pint** [@pint] and **astropy.units** [@astropy2013] support dimensional computation but operate at the level of numerical values rather than structured parameter systems. Expression tools such as **SymPy** [@sympy] enable evaluation of mathematical expressions but are not designed for unit-aware parameter workflows.
 
-In contrast, `SciNumTools2` combines these capabilities into a single system where parameters, units, and expressions are defined and evaluated together. This reduces boilerplate code and ensures consistency across the workflow.
+Configuration formats such as **YAML** [@yaml122] and **TOML** [@toml100], along with frameworks like **Hydra** [@hydra], provide structured and composable parameter definitions, but treat data as static and lack native support for units, expression evaluation, and dimensional validation.
+
+Frameworks such as **OpenMDAO** [@openmdao2019] come closest to integrating parameter dependencies with unit-aware computation, but target large-scale optimization workflows and impose a heavier, model-centric architecture.
+
+In practice, scientific applications combine multiple such tools, requiring additional glue code for parsing, validation, and evaluation. `SciNumTools2` addresses this gap by providing a unified, declarative system in which parameters, units, and expressions are defined and evaluated together with automatic dependency resolution and dimensional consistency.
+
+The decision to develop a new framework rather than extend existing tools is motivated by this integration gap: current libraries operate at different abstraction levels and do not provide a cohesive model for unit-consistent parameter workflows.
 
 # Software design
 
