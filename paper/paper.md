@@ -28,9 +28,9 @@ The framework is particularly suited for simulation setup, engineering calculati
 
 Scientific software development often requires combining multiple independent tools:
 
-- unit-handling libraries (e.g., Pint [@pint]),
-- configuration formats (e.g., YAML [@yaml122], TOML [@toml100]),
-- expression evaluators (e.g., SymPy [@sympy], asteval [@asteval]).
+- unit-handling libraries,
+- configuration formats,
+- expression evaluators.
 
 In practice, integrating these components requires additional code for:
 
