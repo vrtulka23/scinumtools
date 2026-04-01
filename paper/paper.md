@@ -90,16 +90,10 @@ Invalid operations (e.g., adding incompatible units) are detected during computa
 
 A minimal example demonstrating the definition of a simulation domain for a typical solar system using DIP settings, along with their parsing in a Python script, is given below.
 
-**settings.dip**
-```DIP
-solar_system
-  semimajor_axis float = 30.07 AU      # semimajor axis of the solar system in astronomical units
-  sphere 
-    radius float = {?semimajor_axis}   # inject default value
-  planets
-    count int = 8                     # number of planets
-    names str[8] = ["Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune"] # planet names
-```
+# Physical constants used across multiple simulations
+constants
+  stefan_boltzmann float = 5.67e-8 W/(m2*K4)
+  gas_constant float = 8.314 J/(mol*K)
 
 **main.py**
 ```python
