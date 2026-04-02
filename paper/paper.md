@@ -88,17 +88,9 @@ Invalid operations (e.g., adding incompatible units) are detected during computa
 
 `SciNumTools2` introduces **Dimensional Input Parameters (DIP)**, a lightweight domain-specific language for defining structured, unit-aware parameters with dependencies.
 
-DIP supports:
+DIP provides declarative parameter definitions, automatic dependency resolution, dimensional validation, parsing from text representations, and integration with expression evaluation. By unifying these capabilities, it eliminates the need for separate configuration parsing and validation layers in scientific codes, reducing complexity and potential errors.
 
-- declarative parameter definitions,
-- automatic dependency resolution,
-- dimensional validation,
-- parsing from text representations,
-- integration with expression evaluation.
-
-This removes the need for separate configuration parsing and validation logic.
-
-A minimal example demonstrating some of the DIP capabilities is given below, where the first file contains settings written in DIP and in the second file we parse the parameters in Python an print them out.
+A minimal example is shown below: the first file defines parameters using DIP syntax, and the second demonstrates parsing and access in Python.
 
 **settings.dip**
 ```dip
@@ -112,7 +104,7 @@ sphere
   mass float = ("{?sphere.density} * {?sphere.volume}") kg      # get mass of a single sphere
 ```
 
-Note that in the settings we can both define the primitive parameters and use expressions to derive dependant ones.
+Note that the settings allow both the definition of primitive parameters and the use of expressions to derive dependent ones.
 
 **main.py**
 ```python
@@ -136,7 +128,7 @@ Number of spheres: Quantity(2.450e+02)
 Total mass:        Quantity(1.275e+01 kg)
 ```
 
-Parsing interface can take multiple DIP sources, either from strings, or files and produces a dictionary of clean and normalized parameters that can be used further in the code.
+The parsing interface accepts multiple DIP sources, provided either as strings or files, and produces a dictionary of normalized, validated parameters for downstream use.
 
 ## Material Properties (MAT)
 
