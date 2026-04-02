@@ -20,25 +20,14 @@ bibliography: paper.bib
 
 Scientific and engineering computations frequently combine numerical operations, physical units, parameter definitions, and derived expressions. While libraries such as `NumPy` and `SciPy` provide efficient numerical primitives, they do not address how inputs are structured, validated, and evaluated in a unit-consistent workflow. To our knowledge, there is no widely used Python framework that provides declarative, unit-aware parameter graphs with integrated expression evaluation in a single execution model.
 
-`SciNumTools2` is a Python framework that integrates unit-aware computation, expression evaluation, and declarative parameter definition into a single system. Its primary contribution is a unified abstraction that allows users to define scientific computations as structured, unit-aware parameter sets with automatically evaluated dependencies.
+This is where Python framework `SciNumTools2` comes into play. Its primary contribution is a unified abstraction that allows users to define scientific computations as structured, unit-aware parameter sets with automatically evaluated dependencies.
 
 The framework is particularly suited for simulation setup, engineering calculations, and scientific prototyping, where dimensional correctness and reproducibility are required.
 
 # Statement of need
 
-Scientific software development often requires combining multiple independent tools:
-
-- unit-handling libraries,
-- configuration formats,
-- expression evaluators.
-
-In practice, integrating these components requires additional code for:
-
-- parsing and validating input parameters,
-- documentation of the parameters,
-- enforcing dimensional consistency,
-- evaluating derived quantities,
-- maintaining reproducible configurations.
+Scientific software development often requires combining multiple independent tools, including unit-handling libraries, configuration formats, and expression evaluators.
+In practice, integrating these components requires additional code for parsing and validating input parameters, documenting parameters, enforcing dimensional consistency, evaluating derived quantities, and maintaining reproducible configurations.
 
 This leads to duplicated validation logic, inconsistent abstractions, and error-prone workflows. For example, combining YAML-based configuration with a unit library typically requires manual parsing and explicit validation of units and expressions—tasks not handled by existing tools. As a result, scientists often spend significant time developing and testing their own input handling and validation code instead of focusing on the underlying scientific questions.
 
@@ -110,22 +99,25 @@ Note that the settings allow both the definition of primitive parameters, defini
 
 **main.py**
 ```python
->>> from scinumtools.dip import DIP, Format
->>> 
->>> with DIP() as dip:
->>>     dip.add_source("settings", "settings.dip")  # add an external source
->>>     dip.add_string("""                          # add some more DIP code
->>>     system
->>>       # import number of spheres
->>>       {settings?box.num_spheres}
->>>       # calculate mass in gramms
->>>       total_mass float = (" {settings?sphere.mass} * {?system.num_spheres} ") g
->>>     """)
->>>     env = dip.parse()                 # parse DIP code
->>>     data = env.data(Format.QUANTITY)  # extract parameters in a dictionary
->>> 
->>> print("Number of spheres:", data['system.num_spheres'])
->>> print("Total mass:       ", data['system.total_mass'].to('kg'))  # convert to kg
+from scinumtools.dip import DIP, Format
+
+with DIP() as dip:
+    dip.add_source("settings", "settings.dip")  # add an external source
+    dip.add_string("""                          # add some more DIP code
+    system
+      # import number of spheres
+      {settings?box.num_spheres}
+      # calculate mass in gramms
+      total_mass float = (" {settings?sphere.mass} * {?system.num_spheres} ") g
+    """)
+    env = dip.parse()                 # parse DIP code
+    data = env.data(Format.QUANTITY)  # extract parameters in a dictionary
+
+print("Number of spheres:", data['system.num_spheres'])
+print("Total mass:       ", data['system.total_mass'].to('kg'))  # convert to kg
+```
+
+``` bash
 Number of spheres: Quantity(2.450e+02)
 Total mass:        Quantity(1.275e+01 kg)
 ```
