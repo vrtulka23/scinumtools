@@ -1,2 +1,4 @@
 build/*
 trajectory.csv
+config.h
+documentation.pdf

@@ -4,6 +4,8 @@ import os
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
+sys.path.insert(1, '../../src')   # run with local SNT version
 from scinumtools.dip.config import ExportConfigCPP
 from scinumtools.dip.docs import ExportDocsPDF
 from scinumtools.dip import DIP

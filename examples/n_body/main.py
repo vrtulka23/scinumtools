@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+sys.path.insert(1, '../../src')   # run with local SNT version
 from scinumtools.dip import DIP
+import argparse
 
 # =========================
 # PARAMETERS (example tuning interface)
@@ -110,6 +113,19 @@ def plot_trajectory(trajectory, masses, params):
 # MAIN
 # =========================
 if __name__ == "__main__":
+
+    # parse arguments
+    parser = argparse.ArgumentParser(description="Simple N-body simulation")
+    parser.add_argument("--pytest", action="store_true", help="PyTest output")
+    args = parser.parse_args()
+    
+    # run simulation
     trajectory, masses = run_simulation(params)
-    if params['figure']:
-        plot_trajectory(trajectory, masses, params)
+
+    # this output is for a PyTest only to check the validity
+    if args.pytest:
+        print(trajectory[-1][-1])
+    
+    # plot figure
+    if params['figure'] and not args.pytest:
+        plot_trajectory(trajectory, masses, params, )

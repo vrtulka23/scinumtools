@@ -1,0 +1,8 @@
+box
+  size float = 94.3 cm       # define box size
+  num_spheres int = 245      # define number of spheres in a box
+  volume float = ("pow( {?box.size}, 3)") cm3  # derive box volume
+sphere
+  density float = 30.4 kg/m3 # set material density
+  volume float = ("{?box.volume} / {?box.num_spheres} / 2") cm3 # derive volume of a single sphere
+  mass float = ("{?sphere.density} * {?sphere.volume}") kg      # get mass of a single sphere
