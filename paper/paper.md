@@ -10,7 +10,7 @@ authors:
   - name: Ondrej Pêgo Jaura
     affiliation: 1
 affiliations:
-  - name: Independent Researcher
+  - name: Independent Researcher, Germany
     index: 1
 date: 2026
 bibliography: paper.bib
