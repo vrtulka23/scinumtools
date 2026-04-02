@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-Scientific and engineering computations frequently combine numerical operations, physical units, parameter definitions, and derived expressions. While libraries such as `NumPy` and `SciPy` provide efficient numerical primitives, they do not address how inputs are structured, validated, and evaluated in a unit-consistent workflow. To our knowledge, no existing Python framework provides declarative, unit-aware parameter graphs with integrated expression evaluation in a single execution model.
+Scientific and engineering computations frequently combine numerical operations, physical units, parameter definitions, and derived expressions. While libraries such as `NumPy` and `SciPy` provide efficient numerical primitives, they do not address how inputs are structured, validated, and evaluated in a unit-consistent workflow. To our knowledge, there is no widely used Python framework that provides declarative, unit-aware parameter graphs with integrated expression evaluation in a single execution model.
 
 `SciNumTools2` is a Python framework that integrates unit-aware computation, expression evaluation, and declarative parameter definition into a single system. Its primary contribution is a unified abstraction that allows users to define scientific computations as structured, unit-aware parameter sets with automatically evaluated dependencies.
 
@@ -90,16 +90,10 @@ Invalid operations (e.g., adding incompatible units) are detected during computa
 
 A minimal example demonstrating the definition of a simulation domain for a typical solar system using DIP settings, along with their parsing in a Python script, is given below.
 
-**settings.dip**
-```DIP
-solar_system
-  semimajor_axis float = 30.07 AU      # semimajor axis of the solar system in astronomical units
-  sphere 
-    radius float = {?semimajor_axis}   # inject default value
-  planets
-    count int = 8                     # number of planets
-    names str[8] = ["Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune"] # planet names
-```
+# Physical constants used across multiple simulations
+constants
+  stefan_boltzmann float = 5.67e-8 W/(m2*K4)
+  gas_constant float = 8.314 J/(mol*K)
 
 **main.py**
 ```python
