@@ -88,33 +88,6 @@ Invalid operations (e.g., adding incompatible units) are detected during computa
 
 `SciNumTools2` introduces **Dimensional Input Parameters (DIP)**, a lightweight domain-specific language for defining structured, unit-aware parameters with dependencies.
 
-A minimal example demonstrating the definition of a simulation domain for a typical solar system using DIP settings, along with their parsing in a Python script, is given below.
-
-# Physical constants used across multiple simulations
-constants
-  stefan_boltzmann float = 5.67e-8 W/(m2*K4)
-  gas_constant float = 8.314 J/(mol*K)
-
-**main.py**
-```python
->>> from scinumtools.dip import DIP, Format
->>> with DIP() as dip:
->>>     dip.add_source("settings", 'settings.dip')  # load general settings
->>>     dip.add_unit("length", 1e6, "km")           # define custom units: million-kilometer
->>>     dip.add_string("""                          # modify settings
->>>     box.width = 2.34e3 [length]                 # modified with custom units
->>>     box.height = 1e9                            # modified assuming the original units
->>>     sphere.radius = {settings?sphere.radius}    # injected value from the source
->>>     """)
->>>     env = dip.parse()
->>>     data = env.data(Format.TUPLE)
->>>     print(data)
-{'box.width': (23.0, '[length]'), 'box.height': (200, 'cm'), 'sphere.radius': (34.2, 'mm')}
-# These parameters are parsed and validated for subsequent use in the following Python code...
-```
-
-The parameter `box.height`, defined as `2 m`, is automatically converted to `200 cm` to match the internal representation, with dimensional consistency enforced during evaluation. Custom units (e.g., `[length]`) can be defined and used transparently within expressions. Parameters such as `sphere.radius` may reference values from both local definitions and external sources.
-
 DIP supports:
 
 - declarative parameter definitions,
@@ -124,6 +97,46 @@ DIP supports:
 - integration with expression evaluation.
 
 This removes the need for separate configuration parsing and validation logic.
+
+A minimal example demonstrating some of the DIP capabilities is given below, where the first file contains settings written in DIP and in the second file we parse the parameters in Python an print them out.
+
+**settings.dip**
+```dip
+box
+  size float = 94.3 cm       # define box size
+  num_spheres int = 245      # define number of spheres in a box
+  volume float = ("pow( {?box.size}, 3)") cm3  # derive box volume
+sphere
+  density float = 30.4 kg/m3 # set material density
+  volume float = ("{?box.volume} / {?box.num_spheres} / 2") cm3 # derive volume of a single sphere
+  mass float = ("{?sphere.density} * {?sphere.volume}") kg      # get mass of a single sphere
+```
+
+Note that in the settings we can both define the primitive parameters and use expressions to derive dependant ones.
+
+**main.py**
+```python
+>>> from scinumtools.dip import DIP, Format
+>>> 
+>>> with DIP() as dip:
+>>>     dip.add_source("settings", "settings.dip")  # add an external source
+>>>     dip.add_string("""                          # add some more DIP code
+>>>     system
+>>>       # import number of spheres
+>>>       {settings?box.num_spheres}
+>>>       # calculate mass in gramms
+>>>       total_mass float = (" {settings?sphere.mass} * {?system.num_spheres} ") g
+>>>     """)
+>>>     env = dip.parse()                 # parse DIP code
+>>>     data = env.data(Format.QUANTITY)  # extract parameters in a dictionary
+>>> 
+>>> print("Number of spheres:", data['system.num_spheres'])
+>>> print("Total mass:       ", data['system.total_mass'].to('kg'))  # convert to kg
+Number of spheres: Quantity(2.450e+02)
+Total mass:        Quantity(1.275e+01 kg)
+```
+
+Parsing interface can take multiple DIP sources, either from strings, or files and produces a dictionary of clean and normalized parameters that can be used further in the code.
 
 ## Material Properties (MAT)
 
