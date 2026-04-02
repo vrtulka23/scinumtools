@@ -95,11 +95,13 @@ A minimal example is shown below: the first file defines parameters using DIP sy
 **settings.dip**
 ```dip
 box
-  size float = 94.3 cm       # define box size
-  num_spheres int = 245      # define number of spheres in a box
+  size float = 94.3 cm            # define box size
   volume float = ("pow( {?box.size}, 3)") cm3  # derive box volume
+    !condition ("{?} < 0.85 m3")  # constrain maximum volume
+  num_spheres int = 245           # define number of spheres
 sphere
-  density float = 30.4 kg/m3 # set material density
+  density float = 30.4 kg/m3      # set material density
+    !constant                     # density must stay constant
   volume float = ("{?box.volume} / {?box.num_spheres} / 2") cm3 # derive volume of a single sphere
   mass float = ("{?sphere.density} * {?sphere.volume}") kg      # get mass of a single sphere
 ```
