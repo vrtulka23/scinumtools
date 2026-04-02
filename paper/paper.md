@@ -106,7 +106,7 @@ sphere
   mass float = ("{?sphere.density} * {?sphere.volume}") kg      # get mass of a single sphere
 ```
 
-Note that the settings allow both the definition of primitive parameters and the use of expressions to derive dependent ones.
+Note that the settings allow both the definition of primitive parameters, definition of their properties and the use of expressions to derive dependent ones.
 
 **main.py**
 ```python
