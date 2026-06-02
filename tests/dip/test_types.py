@@ -23,6 +23,37 @@ very-long.node23_NAME int = 1
     with pytest.raises(Exception) as e_info:
         parse('wrong$name int = 3')
     assert e_info.value.args[0] == "Name has an invalid format: wrong$name int = 3"
+
+def test_dict():
+    
+    data = parse('''
+vegetable[carrot]
+    color str = "orange"
+    variant[nantes]
+      shape str = "cylindrical"
+    variant[imperator]
+      shape str = "long, tapered"
+vegetable[potato]
+    color str = "brown"
+    ''')
+    np.testing.assert_equal(data,{
+        'vegetable': {
+            'carrot': {
+                'color': StringType("orange"),
+                'variant': {
+                    'nantes': {
+                        'shape': StringType("cylindrical")
+                    },
+                    'imperator': {
+                        'shape': StringType("long, tapered")
+                    }
+                }
+            },
+            'potato': {
+                'color': StringType("brown")
+            }
+        }
+    })
     
 def test_types():
     

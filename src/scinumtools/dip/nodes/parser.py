@@ -151,7 +151,7 @@ class Parser(Node):
 
     def part_name(self, path=True):
         if path is True:
-            m=re.match(r'^([a-zA-Z0-9_.-]+)', self.ccode)  # format of node names
+            m=re.match(r'^([a-zA-Z0-9_.\-\[\]]+)', self.ccode)  # format of node names
         else:
             m=re.match(r'^([a-zA-Z0-9_]+)', self.ccode)    # format of unit names
         if m:

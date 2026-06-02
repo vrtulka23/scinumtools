@@ -1,5 +1,6 @@
 import numpy as np
 from dataclasses import dataclass, field
+import re
 import copy
 
 from ..units import Quantity
@@ -84,23 +85,46 @@ class Environment:
             nodes = self.nodes
         for node in nodes:
             if format==Format.VALUE:
-                data[node.name] = node.value.value
+                value = node.value.value
             elif format==Format.TYPE:
-                data[node.name] = node.value
+                value = node.value
             elif format==Format.TUPLE:
                 if isinstance(node.value, NumberType) and node.value.unit is not None:
-                    data[node.name] = (node.value.value, node.value.unit)
+                    value = (node.value.value, node.value.unit)
                 else:
-                    data[node.name] = node.value.value
+                    value = node.value.value
             elif format==Format.QUANTITY:
                 if isinstance(node.value, NumberType):
-                    data[node.name] = Quantity(node.value.value, node.value.unit)
+                    value = Quantity(node.value.value, node.value.unit)
                 else:
-                    data[node.name] = node.value.value
+                    value = node.value.value
             elif format==Format.NODE:
-                data[node.name] = node
+                value = node
             else:
                 raise Exception("Data format not recognized:", format)
+            if node.name.count("[") != node.name.count("]"):
+                raise Exception("Unclosed group symbols in the node name:", node.name)
+            elif "[" in node.name:
+                parts = re.split(r'(\[[^\]]+\])', node.name)
+                current = data
+                for part in parts[:-1]:
+                    if part[0] == "[":
+                        if current is None:
+                            current = {}
+                        if part[1:-1] not in current:
+                            current[part[1:-1]] = {}
+                        current = current[part[1:-1]]
+                    else:
+                        if part[0] == ".":
+                            part = part[1:]
+                        if part not in current:
+                            current[part] = {}
+                        current = current[part]
+                part = parts[-1]
+                part = part[1:] if part[0]=="." else part
+                current[part] = value
+            else:
+                data[node.name] = value
             if verbose:
                  print(node.name,'|',node.indent,'|',node.keyword,'|',str(node.value),
                        '|',repr(node.units_raw), end='')
